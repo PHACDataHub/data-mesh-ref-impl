@@ -1,4 +1,4 @@
-# Data Mesh Reference Implementation with standalone example use cases
+# Data Mesh Reference Implementation with example use cases
 
 **Examples use cases (not exhaustive)**
 - Retool + GraphQL 
