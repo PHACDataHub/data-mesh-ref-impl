@@ -30,7 +30,7 @@
 - RTOLAP accommondation Rockset, Apache Pinot, Apache Druid, Materialized, Tiny Bird, or Clickhouse.
 - Metrics via Datadog, AppDynamics, or Prometheus & Grafana
 
-[Streaming Data Mesh by Hubert Dulay, Stephen Mooney](https://www.oreilly.com/library/view/streaming-data-mesh/9781098130718/)
+Below are some excerpts from [Streaming Data Mesh by Hubert Dulay, Stephen Mooney](https://www.oreilly.com/library/view/streaming-data-mesh/9781098130718/)
 
 **7 requirements for data-as-a-product**
 - Sigh quality: Transforms data to the standards defined by all of the domains in the data mesh; filtering out bad records if required.
