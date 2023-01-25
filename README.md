@@ -41,6 +41,8 @@
 - Easily searchable and Self-describing: The data product should be discoverable using a search engine and is descriptive enough for consumers to have trust in it.
 - Provide historical data: The data product supports serving a historical data not just latest changes.
 
+![Example for a streaming data mesh](./mt.jpg)
+
 **Requirements for data governance in a streaming data mesh:**
 - When data is in motion, domains need to be extra careful that protected data isn’t breaking any regulations that may cost them a lot in fines and customer trust. Domains need to identify the regulations that affect the streaming data products and provide domain tools that will make it easy to safeguard protected data.
 - Since domains will be sharing data between themselves, there needs to be a set of standards that promote interoperability. To do this, there will need to be a way to define data models using schemas so that domains can easily define and consume these standards programmatically.
@@ -52,9 +54,11 @@
 - Agents deployed within the domains that communicate with the control plane.
 - The replication of data between domains is the data plane.
 - The central streaming data mesh is the control plane (everything except the domains).
+![Control planes](./controlplane.jpg)
 
 **Control planes:**
 - Metadata & registry plane: The metadata & registry plane holds many of the open source tools the control needs to use. They include OpenLineage, APICurio, Schema Registry, and jFrog (an artifact repository). These tools hold much of the metadata consumers need to trust the streaming data products published in the streaming data mesh.
 - Management plane: The management plane provides access for users to monitor the streaming data mesh as well as initiate commands.
 - Self-services plane: The self-services plane are the domain facing services.
+![Three planes](./sdm-solution.jpg)
 
