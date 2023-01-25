@@ -35,7 +35,7 @@
 Below are some excerpts from [Streaming Data Mesh by Hubert Dulay, Stephen Mooney](https://www.oreilly.com/library/view/streaming-data-mesh/9781098130718/).
 
 **7 requirements for data-as-a-product**
-- Sigh quality: Transforms data to the standards defined by all of the domains in the data mesh; filtering out bad records if required.
+- High quality: Transforms data to the standards defined by all of the domains in the data mesh; filtering out bad records if required.
 - Secure and Trustworthy: All personal identifiable information (PII) or personal health information (PHI) are obfuscated by either tokenization or encryption.Authorization and authentication is defined as access control levels (ACLs) or role based access controls (RBACs) rules.
 - Interoperable: Data products should provide schemas that represent the final data product. Schemas serves as a contract between the producing domain and the consuming domain. Data products should be in a format that supports consumers written in multiple programming languages (polyglot). Some examples are: JSON, Avro or Protobuf.
 - Easily consumable: The data product must be quickly and easily accessible through simple technical means. The data product must optimized for reading and serving. Some ways to optimize data are: partitioning, indexing, bucketing or compaction.
