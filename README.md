@@ -29,6 +29,8 @@
 - Apache Pulsar
 - RTOLAP accommondation Rockset, Apache Pinot, Apache Druid, Materialized, Tiny Bird, or Clickhouse.
 - Metrics via Datadog, AppDynamics, or Prometheus & Grafana
+- Data Governance as candidate?
+- Data Management as candidate?
 
 &nbsp;
 
@@ -64,3 +66,11 @@ Below are some excerpts from [Streaming Data Mesh by Hubert Dulay, Stephen Moone
 - Self-services plane: The self-services plane are the domain facing services.
 ![Three planes](./sdm-solution.jpg)
 
+&nbsp;
+
+**DevOps**
+- Docker Compose first, but fullly supported by K8s
+- Github workflows
+- unit-, functional/integration-, BDD tests
+- Living documentation
+- Handling datasets, secrets, etc from cloud storage
