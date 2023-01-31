@@ -59,7 +59,7 @@ We performed data ingestion to prepare the FAERS graph and run a few example ana
 ### C.1. Quickstart
 
 <details>
-<summary>Technical instructions for people with little time:</summary>
+<summary>Technical instructions for people with little time.</summary>
 <p>
 
 Clone the GitHub repository
@@ -495,6 +495,8 @@ Data is imported ✅
 </p>
 </details>
 
+&nbsp;
+
 We can take a look at a case view as a graph of connected entities:
 
 ![Case 111791005](../img/health-analytics/case-111791005.png)
@@ -512,8 +514,11 @@ collect(distinct(outcome)) as outcomes
 
 ## E. Performing Data Analytics
 
-<a id="neodash">Setup a Neodash dashboard:</a> Navigate your browser to `http://localhost:5005`, your instance of [Neodash](https://neo4j.com/labs/neodash/) should already be running there.
+<a id="neodash">Setup a Neodash dashboard:</a> Navigate your browser to `http://localhost:5005`. 
 
+<details>
+<summary>Your instance of [Neodash](https://neo4j.com/labs/neodash/) should already be running there.</summary>
+<p>
 <img src="../img/health-analytics/neodash-new-dashboard.png" alt="Neodash New Dashboard" width="640"/>
 
 Choose to create a new dashboard, then use with `neo4j` and `phac2022` as credential.
@@ -523,6 +528,10 @@ Choose to create a new dashboard, then use with `neo4j` and `phac2022` as creden
 And finally click the `Load Dashboard` button on the left menu panel, then paste in the content of [neodash_dashboard.json](../conf/health-analytics/neodash_dashboard.json), which was created by the `Cypher` queries below.
 
 <img src="../img/health-analytics/neodash-load-dashboard.png" alt="Neodash Load Dashboard" width="640"/>
+</p>
+</details>
+
+&nbsp;
 
 ### E.1. Side Effects
 
