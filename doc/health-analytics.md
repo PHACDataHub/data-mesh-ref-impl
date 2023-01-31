@@ -273,7 +273,7 @@ This execute the Cyper queries included in [neo4j_import.cql](../conf/health-ana
 <p>
 
 ```Cypher
-LOAD CSV WITH HEADERS FROM "file:///demographics.csv" AS row
+LOAD CSV WITH HEADERS FROM "file:///csv/demographics.csv" AS row
 
 //Conditionally create Case nodes, set properties on first create
 MERGE (c:Case { primaryid: toInteger(row.primaryid) })
@@ -309,7 +309,7 @@ MERGE (c:Case { primaryid: toInteger(row.primaryid) })
 - Load outcomes and link them with cases 
 
 ```Cypher
-LOAD CSV WITH HEADERS FROM "file:///outcome.csv" AS row
+LOAD CSV WITH HEADERS FROM "file:///csv/outcome.csv" AS row
 
 // Conditionally create outcome node
 MERGE (o:Outcome { code: row.code })
@@ -330,7 +330,7 @@ WITH o, row
 - Load reactions and link them with cases 
 
 ```Cypher
-LOAD CSV WITH HEADERS FROM "file:///reaction.csv" AS row
+LOAD CSV WITH HEADERS FROM "file:///csv/reaction.csv" AS row
 
 //Conditionally create reaction node
 MERGE (r:Reaction { description: row.description })
@@ -349,7 +349,7 @@ WITH r, row
 - Load report sources and link them with cases 
 
 ```Cypher
-LOAD CSV WITH HEADERS FROM "file:///reportSources.csv" AS row
+LOAD CSV WITH HEADERS FROM "file:///csv/reportSources.csv" AS row
 
 // Conditionally create reportSource node
 MERGE (r:ReportSource { code: row.code })
@@ -378,7 +378,7 @@ WITH c, r
 - Load drugs with indications and link them with cases using relationships based on their roles for the cases
 
 ```Cypher
-LOAD CSV WITH HEADERS FROM "file:///drugs-indication.csv" AS row
+LOAD CSV WITH HEADERS FROM "file:///csv/drugs-indication.csv" AS row
 
 CALL { WITH row
 
@@ -418,7 +418,7 @@ CALL { WITH row
 - Load therapies and link them with cases and drugs 
 
 ```Cypher
-LOAD CSV WITH HEADERS FROM "file:///therapy.csv" AS row
+LOAD CSV WITH HEADERS FROM "file:///csv/therapy.csv" AS row
 
 //Conditionally create therapy node
 MERGE (t:Therapy { primaryid: toInteger(row.primaryid) })
