@@ -480,15 +480,15 @@ collect(distinct(outcome)) as outcomes
 
 Navigate your browser to `http://localhost:5005`, your instance of [Neodash](https://neo4j.com/labs/neodash/) should already be running there.
 
-![Neodash New Dashboard](../img/health-analytics/neodash-new-dashboard.png)
+<img src="../img/health-analytics/neodash-new-dashboard.png" alt="Neodash New Dashboard" width="640"/>
 
 Choose to create a new dashboard, then login with `neo4j` and `phac2022` credential.
 
-![Neodash Login](../img/health-analytics/neodash-login.png)
+<img src="../img/health-analytics/neodash-login.png" alt="Neodash Login" width="640"/>
 
 And finally click the `Load Dashboard` button on the left menu panel, then paste in the content of [neodash_dashboard.json](../conf/neodash_dashboard.json), which was created by the `Cypher` queries below.
 
-![Neodash Dashboard](../img/health-analytics/neodash-load-dashboard.png)
+<img src="../img/health-analytics/neodash-load-dashboard.png" alt="Neodash Load Dashboard" width="640"/>
 
 ### E.1. Side Effects
 
