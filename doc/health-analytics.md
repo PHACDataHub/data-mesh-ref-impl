@@ -495,8 +495,6 @@ Data is imported ✅
 </p>
 </details>
 
-&nbsp;
-
 We can take a look at a case view as a graph of connected entities:
 
 ![Case 111791005](../img/health-analytics/case-111791005.png)
@@ -530,8 +528,6 @@ And finally click the `Load Dashboard` button on the left menu panel, then paste
 <img src="../img/health-analytics/neodash-load-dashboard.png" alt="Neodash Load Dashboard" width="640"/>
 </p>
 </details>
-
-&nbsp;
 
 ### E.1. Side Effects
 
