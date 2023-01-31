@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // A. Load cases, manufacturers and relate them 
 
-LOAD CSV WITH HEADERS FROM "https://raw.githubusercontent.com/neo4j-graph-examples/healthcare-analytics/main/data/csv/demographics.csv" AS row
+LOAD CSV WITH HEADERS FROM "file:///demographics.csv" AS row
 
 //Conditionally create Case nodes, set properties on first create
 MERGE (c:Case { primaryid: toInteger(row.primaryid) })
@@ -35,7 +35,7 @@ MERGE (c:Case { primaryid: toInteger(row.primaryid) })
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // B.1 Load outcomes and link them with cases 
 
-LOAD CSV WITH HEADERS FROM "https://raw.githubusercontent.com/neo4j-graph-examples/healthcare-analytics/main/data/csv/outcome.csv" AS row
+LOAD CSV WITH HEADERS FROM "file:///outcome.csv" AS row
 
 // Conditionally create outcome node
 MERGE (o:Outcome { code: row.code })
@@ -56,7 +56,7 @@ WITH o, row
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // B.2 Load reactions and link them with cases 
 
-LOAD CSV WITH HEADERS FROM "https://raw.githubusercontent.com/neo4j-graph-examples/healthcare-analytics/main/data/csv/reaction.csv" AS row
+LOAD CSV WITH HEADERS FROM "file:///reaction.csv" AS row
 
 //Conditionally create reaction node
 MERGE (r:Reaction { description: row.description })
@@ -75,7 +75,7 @@ WITH r, row
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // B.3 Load report sources and link them with cases 
 
-LOAD CSV WITH HEADERS FROM "https://raw.githubusercontent.com/neo4j-graph-examples/healthcare-analytics/main/data/csv/reportSources.csv" AS row
+LOAD CSV WITH HEADERS FROM "file:///reportSources.csv" AS row
 
 // Conditionally create reportSource node
 MERGE (r:ReportSource { code: row.code })
@@ -103,7 +103,7 @@ WITH c, r
 // C.1 Load drugs with indications and link them with cases using relationships based on their roles for the cases
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-LOAD CSV WITH HEADERS FROM "https://raw.githubusercontent.com/neo4j-graph-examples/healthcare-analytics/main/data/csv/drugs-indication.csv" AS row
+LOAD CSV WITH HEADERS FROM "file:///drugs-indication.csv" AS row
 
 CALL { WITH row
 
@@ -143,7 +143,7 @@ CALL { WITH row
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // C.2 Load therapies and link them with cases and drugs 
 
-LOAD CSV WITH HEADERS FROM "https://raw.githubusercontent.com/neo4j-graph-examples/healthcare-analytics/main/data/csv/therapy.csv" AS row
+LOAD CSV WITH HEADERS FROM "file:///therapy.csv" AS row
 
 //Conditionally create therapy node
 MERGE (t:Therapy { primaryid: toInteger(row.primaryid) })

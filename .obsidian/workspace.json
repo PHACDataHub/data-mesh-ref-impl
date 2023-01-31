@@ -15,7 +15,7 @@
               "state": {
                 "file": "doc/health-analytics.md",
                 "mode": "source",
-                "source": false
+                "source": true
               }
             }
           }
@@ -148,6 +148,7 @@
   },
   "active": "eabbef8e9e3879eb",
   "lastOpenFiles": [
+    "doc/health-analytics.md",
     "doc/docker.md",
     "README.md",
     "doc/common/docker.md",

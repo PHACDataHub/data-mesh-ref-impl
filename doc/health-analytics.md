@@ -56,6 +56,36 @@ We performed data ingestion to prepare the FAERS graph and run a few example ana
 
 ## C. Getting Neo4j up and running
 
+### C.1. Quickstart
+
+<details>
+<summary>Technical instructions for people with little time:</summary>
+<p>
+
+Clone the GitHub repository
+```bash
+git clone https://github.com/PHACDataHub/data-mesh-ref-impl.git
+```
+
+(Optional) Setup Docker
+```bash
+./scripts/docker/install.sh
+./scripts/docker/test.sh
+```
+
+Setup Neo4j instance, create constraints/indexes, and import data
+```bash
+./scripts/neo4j/start_first_time.sh
+./scripts/neo4j/health-analytics/setup_database.sh
+./scripts/neo4j/health-analytics/import_data.sh
+```
+
+Then continue to [setup Neodash dashboard](#neodash).
+</p>
+</details>
+
+### C.2. Detailed setup
+
 We are going to use containerized images to provide a consistent executable environment. Please follow the instructions in [Install Docker Engine and Docker Compose](./docker.md) to get your Docker ready. Then pull and create a set of Neo4j Docker-images as follow:
 
 <details>
@@ -107,12 +137,9 @@ neo4j  | 2023-01-31 03:21:46.332+0000 INFO  Started.
 ```
 </p>
 </details>
+2. Create constraints and indexes for faster data search (run only once)
 
-<details>
-<summary>2. Create constraints and indexes for faster data search (run only once)</summary>
-<p>
-
-First, we define some [constraints](https://neo4j.com/docs/cypher-manual/current/constraints/) and [indexes](https://neo4j.com/docs/cypher-manual/current/indexes-for-search-performance/) for the entities - to enforce uniqueness and higher search performance. The following constraints and indexes are specified in [health_analytics_neo4j_constraints.cql](../conf/health_analytics_neo4j_constraints.cql).
+First, we define some [constraints](https://neo4j.com/docs/cypher-manual/current/constraints/) and [indexes](https://neo4j.com/docs/cypher-manual/current/indexes-for-search-performance/) for the entities - to enforce uniqueness and higher search performance. The following constraints and indexes are specified in [neo4j_constraints.cql](../conf/health-analytics/neo4j_constraints.cql).
 
 *Constraints:*
 ```Cypher
@@ -134,9 +161,12 @@ CREATE INDEX index_case_eventdate IF NOT EXISTS FOR (n: `Case`) ON (n.`eventDate
 CREATE INDEX index_case_reportdate IF NOT EXISTS FOR (n: `Case`) ON (n.`reportDate`);
 ```
 
-Then executing the query (only once) to set them up:
+<details>
+<summary>Then executing the query (only once) to set them up:</summary>
+<p>
+
 ```bash
-./scripts/neo4j/setup_database.sh
+./scripts/neo4j/health-analytics/setup_database.sh
 ```
 
 ```bash
@@ -227,19 +257,23 @@ Remove Neo4j
 
 ### D.2. Import data into Neo4j
 
-We import three sets of data by running 
+<details>
+<summary>First, we import three sets of data:</summary>
+<p>
 ```bash
-./scripts/neo4j/import_data.sh
+./scripts/neo4j/health-analytics/import_data.sh
 ```
 
-This execute the Cyper queries included in [health_analytics_neo4j_import.cql](../conf/health_analytics_neo4j_import.cql), whose content is shown and explained as below.
+This execute the Cyper queries included in [neo4j_import.cql](../conf/health-analytics/neo4j_import.cql), whose content is shown and explained as below.
+</p>
+</details>
 
 <details>
 <summary>1. Load cases, manufacturers and relate them</summary>
 <p>
 
 ```Cypher
-LOAD CSV WITH HEADERS FROM "https://raw.githubusercontent.com/neo4j-graph-examples/healthcare-analytics/main/data/csv/demographics.csv" AS row
+LOAD CSV WITH HEADERS FROM "file:///demographics.csv" AS row
 
 //Conditionally create Case nodes, set properties on first create
 MERGE (c:Case { primaryid: toInteger(row.primaryid) })
@@ -275,7 +309,7 @@ MERGE (c:Case { primaryid: toInteger(row.primaryid) })
 - Load outcomes and link them with cases 
 
 ```Cypher
-LOAD CSV WITH HEADERS FROM "https://raw.githubusercontent.com/neo4j-graph-examples/healthcare-analytics/main/data/csv/outcome.csv" AS row
+LOAD CSV WITH HEADERS FROM "file:///outcome.csv" AS row
 
 // Conditionally create outcome node
 MERGE (o:Outcome { code: row.code })
@@ -296,7 +330,7 @@ WITH o, row
 - Load reactions and link them with cases 
 
 ```Cypher
-LOAD CSV WITH HEADERS FROM "https://raw.githubusercontent.com/neo4j-graph-examples/healthcare-analytics/main/data/csv/reaction.csv" AS row
+LOAD CSV WITH HEADERS FROM "file:///reaction.csv" AS row
 
 //Conditionally create reaction node
 MERGE (r:Reaction { description: row.description })
@@ -315,7 +349,7 @@ WITH r, row
 - Load report sources and link them with cases 
 
 ```Cypher
-LOAD CSV WITH HEADERS FROM "https://raw.githubusercontent.com/neo4j-graph-examples/healthcare-analytics/main/data/csv/reportSources.csv" AS row
+LOAD CSV WITH HEADERS FROM "file:///reportSources.csv" AS row
 
 // Conditionally create reportSource node
 MERGE (r:ReportSource { code: row.code })
@@ -344,7 +378,7 @@ WITH c, r
 - Load drugs with indications and link them with cases using relationships based on their roles for the cases
 
 ```Cypher
-LOAD CSV WITH HEADERS FROM "https://raw.githubusercontent.com/neo4j-graph-examples/healthcare-analytics/main/data/csv/drugs-indication.csv" AS row
+LOAD CSV WITH HEADERS FROM "file:///drugs-indication.csv" AS row
 
 CALL { WITH row
 
@@ -384,7 +418,7 @@ CALL { WITH row
 - Load therapies and link them with cases and drugs 
 
 ```Cypher
-LOAD CSV WITH HEADERS FROM "https://raw.githubusercontent.com/neo4j-graph-examples/healthcare-analytics/main/data/csv/therapy.csv" AS row
+LOAD CSV WITH HEADERS FROM "file:///therapy.csv" AS row
 
 //Conditionally create therapy node
 MERGE (t:Therapy { primaryid: toInteger(row.primaryid) })
@@ -478,15 +512,15 @@ collect(distinct(outcome)) as outcomes
 
 ## E. Performing Data Analytics
 
-Navigate your browser to `http://localhost:5005`, your instance of [Neodash](https://neo4j.com/labs/neodash/) should already be running there.
+<a id="neodash">Setup a Neodash dashboard:</a> Navigate your browser to `http://localhost:5005`, your instance of [Neodash](https://neo4j.com/labs/neodash/) should already be running there.
 
 <img src="../img/health-analytics/neodash-new-dashboard.png" alt="Neodash New Dashboard" width="640"/>
 
-Choose to create a new dashboard, then login with `neo4j` and `phac2022` credential.
+Choose to create a new dashboard, then use with `neo4j` and `phac2022` as credential.
 
 <img src="../img/health-analytics/neodash-login.png" alt="Neodash Login" width="640"/>
 
-And finally click the `Load Dashboard` button on the left menu panel, then paste in the content of [neodash_dashboard.json](../conf/neodash_dashboard.json), which was created by the `Cypher` queries below.
+And finally click the `Load Dashboard` button on the left menu panel, then paste in the content of [neodash_dashboard.json](../conf/health-analytics/neodash_dashboard.json), which was created by the `Cypher` queries below.
 
 <img src="../img/health-analytics/neodash-load-dashboard.png" alt="Neodash Load Dashboard" width="640"/>
 
@@ -535,6 +569,7 @@ RETURN drug, reactions[0..5] as sideEffects, totalReactions
 ORDER BY totalReactions DESC
 LIMIT 5;
 ```
+*It is important to note that in the `Parameter Select` box of the `Manufacturer` you can chose the company by typing part of its name, for example `TAK` for `TAKEDA`.*
 
 ![Companies](../img/health-analytics/companies.png)
 
@@ -601,6 +636,9 @@ collect(
 collect(distinct outcome.outcome) as outcomes
 RETURN age, gender, treatment, sideEffects, outcomes ;
 ```
+
+*It is important to note that in the `Parameter Select` box of the `Manufacturer` you can chose the case by typing part of its identification, for example `111` for `111791005`.*
+
 ![Drug Combination and Case Details](../img/health-analytics/drug-combination-and-case-details.png)
 
 ### E.5. Age Groups
@@ -639,5 +677,7 @@ ORDER BY perc DESC
 ```
 
 ![Age Groups](../img/health-analytics/age-groups.png)
+
+To save the dashboard for later use, select the `Save` button on the left menu and then save it into `Neo4j` instance (the dashboard now is a part of the `Neo4j` database.)
 
 [Back](../README.md)
