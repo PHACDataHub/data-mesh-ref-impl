@@ -66,7 +66,7 @@ We are going to use containerized images to provide a consistent executable envi
 ./scripts/neo4j/start_first_time.sh
 ```
 
-```
+```bash
 Start all services ...
 [+] Running 2/2
  ⠿ Network backend  Created                                                             0.0s
@@ -115,7 +115,7 @@ neo4j  | 2023-01-31 03:21:46.332+0000 INFO  Started.
 First, we define some [constraints](https://neo4j.com/docs/cypher-manual/current/constraints/) and [indexes](https://neo4j.com/docs/cypher-manual/current/indexes-for-search-performance/) for the entities - to enforce uniqueness and higher search performance. The following constraints and indexes are specified in [health_analytics_neo4j_constraints.cql](../conf/health_analytics_neo4j_constraints.cql).
 
 *Constraints:*
-```
+```Cypher
 CREATE CONSTRAINT constraint_drug_name IF NOT EXISTS FOR (n: `Drug`) REQUIRE n.`name` IS UNIQUE;
 CREATE CONSTRAINT constraint_case_primaryid IF NOT EXISTS FOR (n: `Case`) REQUIRE n.`primaryid` IS UNIQUE;
 CREATE CONSTRAINT constraint_reaction_description IF NOT EXISTS FOR (n: `Reaction`) REQUIRE n.`description` IS UNIQUE;
@@ -126,7 +126,7 @@ CREATE CONSTRAINT constraint_manufacturer_name IF NOT EXISTS FOR (n: `Manufactur
 ```
 
 *Indexes:*
-```
+```Cypher
 CREATE INDEX index_case_age IF NOT EXISTS FOR (n: `Case`) ON (n.`age`);
 CREATE INDEX index_case_ageUnit IF NOT EXISTS FOR (n: `Case`) ON (n.`ageUnit`);
 CREATE INDEX index_case_gender IF NOT EXISTS FOR (n: `Case`) ON (n.`gender`);
@@ -238,7 +238,7 @@ This execute the Cyper queries included in [health_analytics_neo4j_import.cql](.
 <summary>1. Load cases, manufacturers and relate them</summary>
 <p>
 
-```
+```Cypher
 LOAD CSV WITH HEADERS FROM "https://raw.githubusercontent.com/neo4j-graph-examples/healthcare-analytics/main/data/csv/demographics.csv" AS row
 
 //Conditionally create Case nodes, set properties on first create
@@ -274,7 +274,7 @@ MERGE (c:Case { primaryid: toInteger(row.primaryid) })
 
 - Load outcomes and link them with cases 
 
-```
+```Cypher
 LOAD CSV WITH HEADERS FROM "https://raw.githubusercontent.com/neo4j-graph-examples/healthcare-analytics/main/data/csv/outcome.csv" AS row
 
 // Conditionally create outcome node
@@ -295,7 +295,7 @@ WITH o, row
 
 - Load reactions and link them with cases 
 
-```
+```Cypher
 LOAD CSV WITH HEADERS FROM "https://raw.githubusercontent.com/neo4j-graph-examples/healthcare-analytics/main/data/csv/reaction.csv" AS row
 
 //Conditionally create reaction node
@@ -314,7 +314,7 @@ WITH r, row
 
 - Load report sources and link them with cases 
 
-```
+```Cypher
 LOAD CSV WITH HEADERS FROM "https://raw.githubusercontent.com/neo4j-graph-examples/healthcare-analytics/main/data/csv/reportSources.csv" AS row
 
 // Conditionally create reportSource node
@@ -343,7 +343,7 @@ WITH c, r
 
 - Load drugs with indications and link them with cases using relationships based on their roles for the cases
 
-```
+```Cypher
 LOAD CSV WITH HEADERS FROM "https://raw.githubusercontent.com/neo4j-graph-examples/healthcare-analytics/main/data/csv/drugs-indication.csv" AS row
 
 CALL { WITH row
@@ -383,7 +383,7 @@ CALL { WITH row
 
 - Load therapies and link them with cases and drugs 
 
-```
+```Cypher
 LOAD CSV WITH HEADERS FROM "https://raw.githubusercontent.com/neo4j-graph-examples/healthcare-analytics/main/data/csv/therapy.csv" AS row
 
 //Conditionally create therapy node
@@ -412,7 +412,7 @@ WITH c, t, row
 <summary>Import results</summary>
 <p>
 
-```
+```bash
 Importing data ...
 +-----------+
 | count (c) |
@@ -517,7 +517,7 @@ ORDER BY totalSideEffects DESC LIMIT 5;
 
 1. What are the manufacturing companies which have most drugs which reported side effects?
 
-```
+```Cypher
 MATCH (m:Manufacturer)-[:REGISTERED]->(c)-[:HAS_REACTION]->(r)
 RETURN m.manufacturerName as company, count(distinct r) as numberOfSideEffects
 ORDER BY numberOfSideEffects DESC LIMIT 5;
@@ -527,7 +527,7 @@ ORDER BY numberOfSideEffects DESC LIMIT 5;
 * What are the top 5 drugs from a particular company with side effects? 
 * What are the side effects from those drugs?
 
-```
+```Cypher
 MATCH (m:Manufacturer {manufacturerName: 'NOVARTIS'})-[:REGISTERED]->(c)
 MATCH (r:Reaction)<--(c)-[:IS_PRIMARY_SUSPECT]->(d)
 WITH d.name as drug,collect(distinct r.description) AS reactions, count(distinct r) as totalReactions
@@ -542,7 +542,7 @@ LIMIT 5;
 
 1. What are the top 5 drugs which are reported directly by consumers for the side effects?
 
-```
+```Cypher
 MATCH (c:Case)-[:REPORTED_BY]->(rpsr:ReportSource {name: "Consumer"})
 MATCH (c)-[:IS_PRIMARY_SUSPECT]->(d)
 MATCH (c)-[:HAS_REACTION]->(r)
@@ -553,7 +553,7 @@ ORDER BY total desc LIMIT 5;
 
 2. What are the top 5 drugs whose side effects resulted in Death of patients as an outcome?
 
-```
+```Cypher
 MATCH (c:Case)-[:RESULTED_IN]->(o:Outcome {outcome:"Death"})
 MATCH (c)-[:IS_PRIMARY_SUSPECT]->(d)
 MATCH (c)-[:HAS_REACTION]->(r)
@@ -569,7 +569,7 @@ LIMIT 5;
 
 1. Show top 10 drug combinations which have most side effects when consumed together
 
-```
+```Cypher
 MATCH (c:Case)-[:IS_PRIMARY_SUSPECT]->(d1)
 MATCH (c:Case)-[:IS_SECONDARY_SUSPECT]->(d2)
 MATCH (c)-[:HAS_REACTION]->(r)
@@ -584,7 +584,7 @@ LIMIT 10;
 2. Take one of the case, and list demographics, all the drugs given, side effects and outcome for the patient.
 This actually is split into three panels.
 
-```
+```Cypher
 MATCH (c:Case {primaryid: 111791005})
 MATCH (c)-[consumed]->(drug:Drug)
 MATCH (c)-[:RESULTED_IN]->(outcome)
@@ -607,7 +607,7 @@ RETURN age, gender, treatment, sideEffects, outcomes ;
 
 1. What is the age group which reported highest side effects, and what are those side effects?
 
-```
+```Cypher
 MATCH (a:AgeGroup)<-[:FALLS_UNDER]-(c:Case)
 MATCH (c)-[:HAS_REACTION]->(r)
 WITH a, collect(r.description) as sideEffects, count(r) as total
@@ -618,7 +618,7 @@ LIMIT 1;
 
 2. What are the highest side effects reported in Children and what are the drugs those caused these side effects?
 
-```
+```Cypher
 MATCH (a:AgeGroup {ageGroup:"Child"})<-[:FALLS_UNDER]-(c)
 MATCH (c)-[:HAS_REACTION]->(r)
 MATCH (c)-[:IS_PRIMARY_SUSPECT]->(d)
@@ -629,7 +629,7 @@ ORDER BY sideEffectCount desc LIMIT 5;
 
 3. What is the percentage wise allocation of side effects for each age group?
 
-```
+```Cypher
 MATCH (c:Case)-[:HAS_REACTION]->(r)
 WITH count(r) as totalReactions
 MATCH (a:AgeGroup)<-[:FALLS_UNDER]-(c)-[:HAS_REACTION]->(r)
