@@ -4,16 +4,16 @@
     "type": "split",
     "children": [
       {
-        "id": "bd9961a65edc9e81",
+        "id": "b34cfddfffcb211b",
         "type": "tabs",
         "children": [
           {
-            "id": "fede1feb0c7d13af",
+            "id": "eabbef8e9e3879eb",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "README.md",
+                "file": "doc/health-analytics.md",
                 "mode": "source",
                 "source": false
               }
@@ -85,7 +85,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "README.md",
+                "file": "doc/health-analytics.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -102,7 +102,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "README.md",
+                "file": "doc/health-analytics.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -125,7 +125,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "README.md"
+                "file": "doc/health-analytics.md"
               }
             }
           }
@@ -146,9 +146,14 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "fede1feb0c7d13af",
+  "active": "eabbef8e9e3879eb",
   "lastOpenFiles": [
-    "doc/ideas.md",
-    "README.md"
+    "doc/docker.md",
+    "README.md",
+    "doc/common/docker.md",
+    "doc/example-001/README.md",
+    "doc/common/neo4j.md",
+    "doc/example-001/healthcare-analytics-load-and-analyze-fda-adverse-event-reporting-system-data-with-neo4j.md",
+    "doc/ideas.md"
   ]
 }

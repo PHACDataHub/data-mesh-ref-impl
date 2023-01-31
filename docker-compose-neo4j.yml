@@ -1,0 +1,66 @@
+version: "3.8"
+
+##############################################################################
+#
+# services
+# - neo4j
+# - neodash
+#
+##############################################################################
+services:
+
+  ####################
+  # neo4j
+  ####################
+  neo4j:
+    image: neo4j:5.3.0
+    container_name: neo4j
+    networks:
+      - backend
+    ports:
+      - 7474:7474
+      - 7473:7473
+      - 7687:7687
+    environment:
+      - NEO4J_ACCEPT_LICENSE_AGREEMENT=yes
+      - NEO4J_AUTH=${NEO4J_USERNAME}/${NEO4J_PASSWORD}
+      - NEO4J_server_memory_pagecache_size=4G
+      - NEO4J_server_memory_heap.initial__size=4G
+      - NEO4J_server_memory_heap_max__size=8G
+      - NEO4J_PLUGINS=["apoc", "graph-data-science"]
+      - NEO4J_apoc_export_file_enabled=true
+      - NEO4J_apoc_import_file_enabled=true
+      - NEO4J_apoc_import_file_use__neo4j__config=true
+      - NEO4J_dbms_security_procedures_unrestricted=apoc.*,gds.*
+      - NEO4J_dbms_connector_bolt_advertised__address=7474
+    restart: always
+    healthcheck:
+      test: [ "CMD", "/var/lib/neo4j/bin/cypher-shell", "-u", "${NEO4J_USERNAME}", "-p", "${NEO4J_PASSWORD}", "MATCH () RETURN count(*) as count" ]
+      interval: 10s
+      timeout: 10s
+      retries: 20
+    volumes:
+      - $PWD/data/neo4j/import:/import
+
+  ####################
+  # neodash
+  ####################
+  neodash: 
+    image: nielsdejong/neodash:2.2.1
+    container_name: neodash
+    networks:
+      - backend
+    ports:
+      - 5005:5005
+    restart: always
+
+################################################################################
+#
+# networks
+# - backend
+#
+################################################################################
+networks:
+  backend:
+    name: backend
+    # external: true
