@@ -121,7 +121,7 @@ broker-2:29094 is ready ✅
 Kafka cluster is ready ✅
 ```
 
-3. Run basic tests
+3. Run basic test (can be repeated multiple times):
 
 ```
 ./scripts/kafka/tests/test_brokers.sh
@@ -269,7 +269,7 @@ schema-registry:8081 is ready ✅
 Kafka cluster is ready ✅
 ```
 
-3. Run basic tests
+3. Run basic test (can be repeated multiple times):
 
 ```
 ./scripts/kafka/tests/test_schema_registry.sh
@@ -354,3 +354,137 @@ daily-report deleted ✅
 
 </p>
 </details>
+
+&nbsp;
+
+### D. Adding Connect and SpoolDir Source Connector
+
+<details>
+<summary>Click here for technical details.</summary>
+<p>
+
+**Credit [Kafka Connect Deep Dive – Converters and Serialization Explained](https://www.confluent.io/blog/kafka-connect-deep-dive-converters-serialization-explained/)**
+
+Kafka Connect is part of Apache Kafka®, providing streaming integration between data stores (e.g. including databases) and Kafka. Kafka Connect is modular in nature, providing a very powerful way of handling integration requirements. Some key components include:
+- Connectors – the JAR files that define how to integrate with the data store itself
+- Converters – handling serialization and deserialization of data
+- Transforms – optional in-flight manipulation of messages
+
+This section demonstrates a test with the [SpoolDir Source Connector](https://github.com/jcustenborder/kafka-connect-spooldir) which is capable of digesting [`csv`-format files](../data/kafka-ce/counties.csv).
+
+![Kafka Connect with Sourrce](../img/kafka-ce/kafka-connect-source.png)
+
+The test to run (can be repeated multiple times):
+```
+./scripts/kafka/tests/test_connect.sh
+```
+```bash
+Listing all available plugins ...
+"io.confluent.connect.jdbc.JdbcSinkConnector"
+"streams.kafka.connect.sink.Neo4jSinkConnector"
+"com.github.jcustenborder.kafka.connect.spooldir.SpoolDirAvroSourceConnector"
+"com.github.jcustenborder.kafka.connect.spooldir.SpoolDirBinaryFileSourceConnector"
+"com.github.jcustenborder.kafka.connect.spooldir.SpoolDirCsvSourceConnector"
+"com.github.jcustenborder.kafka.connect.spooldir.SpoolDirJsonSourceConnector"
+"com.github.jcustenborder.kafka.connect.spooldir.SpoolDirLineDelimitedSourceConnector"
+"com.github.jcustenborder.kafka.connect.spooldir.SpoolDirSchemaLessJsonSourceConnector"
+"com.github.jcustenborder.kafka.connect.spooldir.elf.SpoolDirELFSourceConnector"
+"io.confluent.connect.jdbc.JdbcSourceConnector"
+"org.apache.kafka.connect.mirror.MirrorCheckpointConnector"
+"org.apache.kafka.connect.mirror.MirrorHeartbeatConnector"
+"org.apache.kafka.connect.mirror.MirrorSourceConnector"
+"streams.kafka.connect.source.Neo4jSourceConnector"
+
+Listing all connectors ...
+
+Copying data into for spooldir ...
+data/kafka-ce/counties.csv is copied.
+Folders for spooldir data created ✅
+
+counties county_fips population:int32,lat:float32,lng:float32
+HTTP/1.1 201 Created
+Date: Wed, 08 Feb 2023 04:38:01 GMT
+Location: http://localhost:8083/connectors/spooldir_counties
+Content-Type: application/json
+Content-Length: 639
+Server: Jetty(9.4.48.v20220622)
+
+{"name":"spooldir_counties","config":{"connector.class":"com.github.jcustenborder.kafka.connect.spooldir.SpoolDirCsvSourceConnector","topic":"topic-counties","input.path":"/data/unprocessed","finished.path":"/data/processed","error.path":"/data/error","input.file.pattern":"^counties-[0-9]+\\.csv","schema.generation.enabled":"true","schema.generation.key.fields":"county_fips","csv.first.row.as.header":"true","transforms":"castTypes","transforms.castTypes.type":"org.apache.kafka.connect.transforms.Cast$Value","transforms.castTypes.spec":"population:int32,lat:float32,lng:float32","name":"spooldir_counties"},"tasks":[],"type":"source"}
+Wait for delivery ...
+
+Listing all connectors ...
+"spooldir_counties"
+
+List all topics ...
+__consumer_offsets
+_confluent-monitoring
+_schemas
+docker-connect-configs
+docker-connect-offsets
+docker-connect-status
+topic-counties
+
+List all current subjects ...
+"topic-counties-key"
+"topic-counties-value"
+
+List all versions of topic-counties-key...
+{
+  "subject": "topic-counties-key",
+  "version": 3,
+  "id": 3,
+  "schema": "{\"type\":\"record\",\"name\":\"Key\",\"namespace\":\"com.github.jcustenborder.kafka.connect.model\",\"fields\":[{\"name\":\"county_fips\",\"type\":[\"null\",\"string\"],\"default\":null}],\"connect.name\":\"com.github.jcustenborder.kafka.connect.model.Key\"}"
+}
+
+List all versions of topic-counties-value...
+{
+  "subject": "topic-counties-value",
+  "version": 3,
+  "id": 4,
+  "schema": "{\"type\":\"record\",\"name\":\"Value\",\"namespace\":\"com.github.jcustenborder.kafka.connect.model\",\"fields\":[{\"name\":\"county\",\"type\":[\"null\",\"string\"],\"default\":null},{\"name\":\"county_ascii\",\"type\":[\"null\",\"string\"],\"default\":null},{\"name\":\"county_full\",\"type\":[\"null\",\"string\"],\"default\":null},{\"name\":\"county_fips\",\"type\":[\"null\",\"string\"],\"default\":null},{\"name\":\"state_id\",\"type\":[\"null\",\"string\"],\"default\":null},{\"name\":\"state_name\",\"type\":[\"null\",\"string\"],\"default\":null},{\"name\":\"lat\",\"type\":[\"null\",\"float\"],\"default\":null},{\"name\":\"lng\",\"type\":[\"null\",\"float\"],\"default\":null},{\"name\":\"population\",\"type\":[\"null\",\"int\"],\"default\":null}],\"connect.name\":\"com.github.jcustenborder.kafka.connect.model.Value\"}"
+}
+
+Consume messages ...
+{"county":{"string":"Los Angeles"},"county_ascii":{"string":"Los Angeles"},"county_full":{"string":"Los Angeles County"},"county_fips":{"string":"06037"},"state_id":{"string":"CA"},"state_name":{"string":"California"},"lat":{"float":34.3209},"lng":{"float":-118.2247},"population":{"int":10040682}}
+{"county":{"string":"Cook"},"county_ascii":{"string":"Cook"},"county_full":{"string":"Cook County"},"county_fips":{"string":"17031"},"state_id":{"string":"IL"},"state_name":{"string":"Illinois"},"lat":{"float":41.8401},"lng":{"float":-87.8168},"population":{"int":5169517}}
+{"county":{"string":"Harris"},"county_ascii":{"string":"Harris"},"county_full":{"string":"Harris County"},"county_fips":{"string":"48201"},"state_id":{"string":"TX"},"state_name":{"string":"Texas"},"lat":{"float":29.8578},"lng":{"float":-95.3936},"population":{"int":4680609}}
+{"county":{"string":"Maricopa"},"county_ascii":{"string":"Maricopa"},"county_full":{"string":"Maricopa County"},"county_fips":{"string":"04013"},"state_id":{"string":"AZ"},"state_name":{"string":"Arizona"},"lat":{"float":33.349},"lng":{"float":-112.4915},"population":{"int":4412779}}
+{"county":{"string":"San Diego"},"county_ascii":{"string":"San Diego"},"county_full":{"string":"San Diego County"},"county_fips":{"string":"06073"},"state_id":{"string":"CA"},"state_name":{"string":"California"},"lat":{"float":33.0343},"lng":{"float":-116.735},"population":{"int":3323970}}
+{"county":{"string":"Orange"},"county_ascii":{"string":"Orange"},"county_full":{"string":"Orange County"},"county_fips":{"string":"06059"},"state_id":{"string":"CA"},"state_name":{"string":"California"},"lat":{"float":33.7031},"lng":{"float":-117.7609},"population":{"int":3170345}}
+{"county":{"string":"Miami-Dade"},"county_ascii":{"string":"Miami-Dade"},"county_full":{"string":"Miami-Dade County"},"county_fips":{"string":"12086"},"state_id":{"string":"FL"},"state_name":{"string":"Florida"},"lat":{"float":25.6149},"lng":{"float":-80.5623},"population":{"int":2705528}}
+{"county":{"string":"Dallas"},"county_ascii":{"string":"Dallas"},"county_full":{"string":"Dallas County"},"county_fips":{"string":"48113"},"state_id":{"string":"TX"},"state_name":{"string":"Texas"},"lat":{"float":32.7666},"lng":{"float":-96.7778},"population":{"int":2622634}}
+{"county":{"string":"Kings"},"county_ascii":{"string":"Kings"},"county_full":{"string":"Kings County"},"county_fips":{"string":"36047"},"state_id":{"string":"NY"},"state_name":{"string":"New York"},"lat":{"float":40.6395},"lng":{"float":-73.9385},"population":{"int":2576771}}
+{"county":{"string":"Riverside"},"county_ascii":{"string":"Riverside"},"county_full":{"string":"Riverside County"},"county_fips":{"string":"06065"},"state_id":{"string":"CA"},"state_name":{"string":"California"},"lat":{"float":33.7437},"lng":{"float":-115.9938},"population":{"int":2437864}}
+Processed a total of 10 messages
+
+Delete topic-counties-key subject ...
+3
+
+Delete topic-counties-value subject ...
+3
+
+List all current subjects ...
+
+Deleting topic-counties ...
+topic-counties deleted ✅
+
+Delete connector ...
+spooldir_counties connector deleted ✅
+```
+
+</p>
+</details>
+
+### E. Adding Debezium CDC Connector for MySQL
+
+To perform Change Data Capture, i.e. capturing changes occured by creation, modification, or deletion of data in a data store. This section demonstrates use of [Debezium](https://debezium.io) which is capable of capturing any changes occured in a [MySQL Database](https://debezium.io/documentation/reference/stable/connectors/mysql).
+
+<details>
+<summary>Click here for technical details.</summary>
+<p>
+
+</p>
+</details>
+
+
+

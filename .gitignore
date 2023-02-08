@@ -3,7 +3,7 @@
 vol*
 data/health-analytics/csv
 data/neo4j
-kafka/plugins
+kafka-ce
 .obsidian
 
 ## Ignore Visual Studio temporary files, build results, and

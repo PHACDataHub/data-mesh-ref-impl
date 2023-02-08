@@ -42,7 +42,7 @@ curl --silent -X GET http://${schema_registry_local_host}:${schema_registry_port
 echo ''
 
 echo "List all current subjects ..." 
-curl --silent -X GET http://localhost:8081/subjects | jq .[]
+curl --silent -X GET http://${schema_registry_local_host}:${schema_registry_port}/subjects | jq .[]
 echo ''
 
 echo "Add key schema for daily reports ..." 

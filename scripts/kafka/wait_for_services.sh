@@ -25,6 +25,13 @@ docker exec -it zookeeper cub sr-ready $schema_registry_host $schema_registry_po
 echo "${schema_registry_host}:${schema_registry_port} is ready ✅";
 echo ''
 
+connect_host=connect
+connect_port=8083
+echo "Wait for ${connect_host}:${connect_port} ...";
+docker exec -it zookeeper cub connect-ready $connect_host $connect_port $timeout > /dev/null
+echo "${connect_host}:${connect_port} is ready ✅";
+echo ''
+
 # rest_proxy_host=rest-proxy
 # rest_proxy_port=8082
 # echo "Wait for ${rest_proxy_host}:${rest_proxy_port} ...";
@@ -37,13 +44,6 @@ echo ''
 # echo "Wait for ${ksqldb_server_host}:${ksqldb_server_port} ...";
 # docker exec -it zookeeper cub ksql-server-ready $ksqldb_server_host $ksqldb_server_port $timeout > /dev/null
 # echo "${ksqldb_server_host}:${ksqldb_server_port} is ready ✅";
-# echo ''
-
-# connect_host=connect
-# connect_port=8083
-# echo "Wait for ${connect_host}:${connect_port} ...";
-# docker exec -it zookeeper cub connect-ready $connect_host $connect_port $timeout > /dev/null
-# echo "${connect_host}:${connect_port} is ready ✅";
 # echo ''
 
 # control_center_host=control-center

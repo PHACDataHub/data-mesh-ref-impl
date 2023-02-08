@@ -18,34 +18,13 @@ echo 'Volumes for zookeeper and broker(s) created ✅'
 echo ''
 
 echo 'Setting permissions for plugins and data folders ...'
-for item in data kafka/plugins
+for item in kafka-ce/connect/data/error kafka-ce/connect/data/processed kafka-ce/connect/data/unprocessed kafka-ce/plugins 
 do
+    mkdir -p $item;
     sudo chown -R $CURRENT_UID $item;
     sudo chgrp -R $CURRENT_GID $item;
     sudo chmod -R u+rwX,g+rX,o+wrx $item;
     echo $item 'folder permissions are set.'
 done
 echo 'Permissions for data & plugins folders set ✅'
-
-# echo 'Creating folders for spooldir data ...'
-# for item in data/error data/processed data/unprocessed
-# do
-#     mkdir -p $item;
-#     sudo chown -R $CURRENT_UID $item;
-#     sudo chgrp -R $CURRENT_GID $item;
-#     sudo chmod -R u+rwX,g+rX,o+wrx $item;
-#     echo $item 'folder is created.'
-# done
-# echo 'Folders for spooldir data created ✅'
-# echo ''
-
-# echo 'Copying data into for spooldir ...'
-# cd data; tar xzvf data.tar.gz; cd ..;
-# for item in counties airports arptoarp dailyc19
-# do
-#     cp data/csv/${item}.csv data/unprocessed/.;
-#     echo data/csv/${item}.csv 'is copied.'
-# done
-# echo 'Folders for spooldir data created ✅'
-# echo ''
 
