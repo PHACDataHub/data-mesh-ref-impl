@@ -1,11 +1,9 @@
 # Project specific
 
 vol*
-data/csv
-data/processed
-data/unprocessed
-data/error
+data/health-analytics/csv
 data/neo4j
+kafka/plugins
 .obsidian
 
 ## Ignore Visual Studio temporary files, build results, and
