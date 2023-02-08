@@ -4,6 +4,8 @@ CURRENT_UID=$(id -u)
 CURRENT_GID=$(id -g)
 
 topic_avro=daily-report
+schema_dir=conf/kafka-ce
+data_dir=data/kafka-ce
 schema_key_avsc=${topic_avro}-key.avsc
 schema_value_avsc=${topic_avro}-value.avsc
 data_file=${topic_avro}-data.txt
@@ -44,7 +46,7 @@ curl --silent -X GET http://localhost:8081/subjects | jq .[]
 echo ''
 
 echo "Add key schema for daily reports ..." 
-escaped_avsc=$(cat data/kafka-ce/$schema_key_avsc | sed 's/\t/ /g' | sed -e ':a' -e 'N' -e '$!ba' -e 's/\n/ /g' | sed 's/\"/\\"/g' )
+escaped_avsc=$(cat $schema_dir/$schema_key_avsc | sed 's/\t/ /g' | sed -e ':a' -e 'N' -e '$!ba' -e 's/\n/ /g' | sed 's/\"/\\"/g' )
 escaped_avsc=$(echo {\"schema\": \"$escaped_avsc\"})
 curl --silent -X POST -H "Content-Type: application/vnd.schemaregistry.v1+json" \
     --data "$escaped_avsc" \
@@ -56,7 +58,7 @@ curl --silent -X GET http://${schema_registry_local_host}:${schema_registry_port
 echo ''
 
 echo "Add value schema for daily reports ..." 
-escaped_avsc=$(cat data/kafka-ce/$schema_value_avsc | sed 's/\t/ /g' | sed -e ':a' -e 'N' -e '$!ba' -e 's/\n/ /g' | sed 's/\"/\\"/g' )
+escaped_avsc=$(cat $schema_dir/$schema_value_avsc | sed 's/\t/ /g' | sed -e ':a' -e 'N' -e '$!ba' -e 's/\n/ /g' | sed 's/\"/\\"/g' )
 escaped_avsc=$(echo {\"schema\": \"$escaped_avsc\"})
 curl --silent -X POST -H "Content-Type: application/vnd.schemaregistry.v1+json" \
     --data "$escaped_avsc" \
@@ -78,7 +80,7 @@ echo ''
 key_schema_id=$(curl --silent -X GET http://${schema_registry_local_host}:${schema_registry_port}/subjects/daily-report-key/versions/latest | jq .id)
 value_schema_id=$(curl --silent -X GET http://${schema_registry_local_host}:${schema_registry_port}/subjects/daily-report-value/versions/latest | jq .id)
 
-cp data/kafka-ce/$data_file vol/schema-registry/data/.
+cp $data_dir/$data_file vol/schema-registry/data/.
 
 echo "Produce messages ..." 
 docker exec ${schema_registry_container} bash -c \
