@@ -16,6 +16,8 @@ The `Kafka` Cluster Community Edition is setup in [`docker-compose-kafka-ce.yml`
 
 ### A. Common tasks
 
+Kick-off the `Kafka` cluster.
+
 <details>
 <summary>Click here for technical details.</summary>
 <p>
@@ -59,11 +61,11 @@ The `Kafka` Cluster Community Edition is setup in [`docker-compose-kafka-ce.yml`
 
 ### B. Zookeeper and Brokers
 
+First, we comment all other services in the `services` section of the  [`docker-compose-kafka-ce.yml`](../docker-compose-kafka-ce.yml), leaving only `zookeper`, `broker-1`, and `broker-2`.
+
 <details>
 <summary>Click here for technical details.</summary>
 <p>
-
-First, we comment all other services in the `services` section of the  [`docker-compose-kafka-ce.yml`](../docker-compose-kafka-ce.yml), leaving only `zookeper`, `broker-1`, and `broker-2`.
 
 1. Prepare folders for data, logs, and test files
 
@@ -183,11 +185,7 @@ Instance files removed ✅
 
 &nbsp;
 
-### C. Adding Schema Registry
-
-<details>
-<summary>Click here for technical details.</summary>
-<p>
+### C. Schema Registry
 
 **Credit** [Kafka Schema Registry & Avro: Introduction by Rob Golder](https://www.lydtechconsulting.com/blog-kafka-schema-registry-intro.html)
 
@@ -218,6 +216,10 @@ Confluent’s Kafka avro serializer library provides the KafkaAvroSerializer and
 - Step 6 - The message is deserialized, verified using the retrieved schema.
 
 &nbsp;
+
+<details>
+<summary>Click here for technical details.</summary>
+<p>
 
 Now, we comment out `schema-registry` service in the `services` section of the [`docker-compose-kafka-ce.yml`](../docker-compose-kafka-ce.yml).
 
@@ -357,11 +359,7 @@ daily-report deleted ✅
 
 &nbsp;
 
-### D. Adding Connect and SpoolDir Source Connector
-
-<details>
-<summary>Click here for technical details.</summary>
-<p>
+### D. Connect, SpoolDir Source Connector, and JDBC Sink Connector
 
 **Credit [Kafka Connect Deep Dive – Converters and Serialization Explained](https://www.confluent.io/blog/kafka-connect-deep-dive-converters-serialization-explained/)**
 
@@ -370,13 +368,24 @@ Kafka Connect is part of Apache Kafka®, providing streaming integration between
 - Converters – handling serialization and deserialization of data
 - Transforms – optional in-flight manipulation of messages
 
-This section demonstrates a test with the [SpoolDir Source Connector](https://github.com/jcustenborder/kafka-connect-spooldir) which is capable of digesting [`csv`-format files](../data/kafka-ce/counties.csv).
+This section demonstrates a test with:
+- The [SpoolDir Source Connector](https://github.com/jcustenborder/kafka-connect-spooldir) which is capable of digesting [`csv`-format files](../data/kafka-ce/counties.csv).
 
-![Kafka Connect with Sourrce](../img/kafka-ce/kafka-connect-source.png)
+<img src="../img/kafka-ce/kafka-connect-source.png" alt="Kafka Connect with Sourrce" width="640"/>
+
+- The [JDBC Sink Connector](https://docs.confluent.io/kafka-connectors/jdbc/current/sink-connector/overview.html#features) to support delievery of Kafka records from topics into a `PostgreSQL` databse.
+
+<img src="../img/kafka-ce/kafka-connect-sink.png" alt="Kafka Connect with Sink" width="640"/>
+
+&nbsp;
+
+<details>
+<summary>Click here for technical details.</summary>
+<p>
 
 The test to run (can be repeated multiple times):
 ```
-./scripts/kafka/tests/test_connect.sh
+./scripts/kafka/tests/test_connect_sas.sh
 ```
 ```bash
 Listing all available plugins ...
@@ -403,17 +412,18 @@ Folders for spooldir data created ✅
 
 counties county_fips population:int32,lat:float32,lng:float32
 HTTP/1.1 201 Created
-Date: Wed, 08 Feb 2023 04:38:01 GMT
-Location: http://localhost:8083/connectors/spooldir_counties
+Date: Wed, 08 Feb 2023 14:59:13 GMT
+Location: http://localhost:8083/connectors/spooldir-counties
 Content-Type: application/json
 Content-Length: 639
 Server: Jetty(9.4.48.v20220622)
 
-{"name":"spooldir_counties","config":{"connector.class":"com.github.jcustenborder.kafka.connect.spooldir.SpoolDirCsvSourceConnector","topic":"topic-counties","input.path":"/data/unprocessed","finished.path":"/data/processed","error.path":"/data/error","input.file.pattern":"^counties-[0-9]+\\.csv","schema.generation.enabled":"true","schema.generation.key.fields":"county_fips","csv.first.row.as.header":"true","transforms":"castTypes","transforms.castTypes.type":"org.apache.kafka.connect.transforms.Cast$Value","transforms.castTypes.spec":"population:int32,lat:float32,lng:float32","name":"spooldir_counties"},"tasks":[],"type":"source"}
+{"name":"spooldir-counties","config":{"connector.class":"com.github.jcustenborder.kafka.connect.spooldir.SpoolDirCsvSourceConnector","topic":"topic-counties","input.path":"/data/unprocessed","finished.path":"/data/processed","error.path":"/data/error","input.file.pattern":"^counties-[0-9]+\\.csv","schema.generation.enabled":"true","schema.generation.key.fields":"county_fips","csv.first.row.as.header":"true","transforms":"castTypes","transforms.castTypes.type":"org.apache.kafka.connect.transforms.Cast$Value","transforms.castTypes.spec":"population:int32,lat:float32,lng:float32","name":"spooldir-counties"},"tasks":[],"type":"source"}
+
 Wait for delivery ...
 
 Listing all connectors ...
-"spooldir_counties"
+"spooldir-counties"
 
 List all topics ...
 __consumer_offsets
@@ -431,7 +441,7 @@ List all current subjects ...
 List all versions of topic-counties-key...
 {
   "subject": "topic-counties-key",
-  "version": 3,
+  "version": 13,
   "id": 3,
   "schema": "{\"type\":\"record\",\"name\":\"Key\",\"namespace\":\"com.github.jcustenborder.kafka.connect.model\",\"fields\":[{\"name\":\"county_fips\",\"type\":[\"null\",\"string\"],\"default\":null}],\"connect.name\":\"com.github.jcustenborder.kafka.connect.model.Key\"}"
 }
@@ -439,7 +449,7 @@ List all versions of topic-counties-key...
 List all versions of topic-counties-value...
 {
   "subject": "topic-counties-value",
-  "version": 3,
+  "version": 13,
   "id": 4,
   "schema": "{\"type\":\"record\",\"name\":\"Value\",\"namespace\":\"com.github.jcustenborder.kafka.connect.model\",\"fields\":[{\"name\":\"county\",\"type\":[\"null\",\"string\"],\"default\":null},{\"name\":\"county_ascii\",\"type\":[\"null\",\"string\"],\"default\":null},{\"name\":\"county_full\",\"type\":[\"null\",\"string\"],\"default\":null},{\"name\":\"county_fips\",\"type\":[\"null\",\"string\"],\"default\":null},{\"name\":\"state_id\",\"type\":[\"null\",\"string\"],\"default\":null},{\"name\":\"state_name\",\"type\":[\"null\",\"string\"],\"default\":null},{\"name\":\"lat\",\"type\":[\"null\",\"float\"],\"default\":null},{\"name\":\"lng\",\"type\":[\"null\",\"float\"],\"default\":null},{\"name\":\"population\",\"type\":[\"null\",\"int\"],\"default\":null}],\"connect.name\":\"com.github.jcustenborder.kafka.connect.model.Value\"}"
 }
@@ -457,32 +467,227 @@ Consume messages ...
 {"county":{"string":"Riverside"},"county_ascii":{"string":"Riverside"},"county_full":{"string":"Riverside County"},"county_fips":{"string":"06065"},"state_id":{"string":"CA"},"state_name":{"string":"California"},"lat":{"float":33.7437},"lng":{"float":-115.9938},"population":{"int":2437864}}
 Processed a total of 10 messages
 
+Start postgres ...
+WARN[0000] Found orphan containers ([connect schema-registry broker3 broker2 broker zookeeper]) for this project. If you removed or renamed this service in your compose file, you can run this command with the --remove-orphans flag to clean it up. 
+[+] Running 1/1
+ ⠿ Container postgres  Started                                                                                                                    0.3s
+
+Wait for postgres ready ...
+
+Creating posrgres sink connector ...
+{"name":"sink-postgres","config":{"connector.class":"io.confluent.connect.jdbc.JdbcSinkConnector","connection.url":"jdbc:postgresql://postgres:5432/","connection.user":"postgres","connection.password":"postgres","tasks.max":"1","topics":"topic-counties","auto.create":"true","auto.evolve":"true","pk.mode":"record_value","pk.fields":"county_fips","insert.mode":"upsert","table.name.format":"topic-counties","name":"sink-postgres"},"tasks":[],"type":"sink"}
+Postgres sink connector created ✅
+
+Wait for delivery ...
+
+Listing all connectors ...
+"sink-postgres"
+"spooldir-counties"
+
+Verifying database records ...
+   county    | county_ascii |    county_full     | county_fips | state_id | state_name |   lat   |    lng    | population 
+-------------+--------------+--------------------+-------------+----------+------------+---------+-----------+------------
+ Los Angeles | Los Angeles  | Los Angeles County | 06037       | CA       | California | 34.3209 | -118.2247 |   10040682
+ Cook        | Cook         | Cook County        | 17031       | IL       | Illinois   | 41.8401 |  -87.8168 |    5169517
+ Harris      | Harris       | Harris County      | 48201       | TX       | Texas      | 29.8578 |  -95.3936 |    4680609
+ Maricopa    | Maricopa     | Maricopa County    | 04013       | AZ       | Arizona    |  33.349 | -112.4915 |    4412779
+ San Diego   | San Diego    | San Diego County   | 06073       | CA       | California | 33.0343 |  -116.735 |    3323970
+ Orange      | Orange       | Orange County      | 06059       | CA       | California | 33.7031 | -117.7609 |    3170345
+ Miami-Dade  | Miami-Dade   | Miami-Dade County  | 12086       | FL       | Florida    | 25.6149 |  -80.5623 |    2705528
+ Dallas      | Dallas       | Dallas County      | 48113       | TX       | Texas      | 32.7666 |  -96.7778 |    2622634
+ Kings       | Kings        | Kings County       | 36047       | NY       | New York   | 40.6395 |  -73.9385 |    2576771
+ Riverside   | Riverside    | Riverside County   | 06065       | CA       | California | 33.7437 | -115.9938 |    2437864
+(10 rows)
+
+Database records verified ✅
+
+Delete database records ...
+DELETE 10
+Database records deleted ✅
+
+Shutting down postgres ...
+[+] Running 1/1
+ ⠿ Container postgres  Removed                                                                                                                    0.1s
+Postgres shutdown ✅
 Delete topic-counties-key subject ...
-3
+13
 
 Delete topic-counties-value subject ...
-3
+13
 
 List all current subjects ...
 
+Delete connector ...
+spooldir-counties connector deleted ✅
+Delete connector ...
+sink-postgres connector deleted ✅
 Deleting topic-counties ...
 topic-counties deleted ✅
-
-Delete connector ...
-spooldir_counties connector deleted ✅
 ```
-
 </p>
 </details>
 
-### E. Adding Debezium CDC Connector for MySQL
+&nbsp;
 
-To perform Change Data Capture, i.e. capturing changes occured by creation, modification, or deletion of data in a data store. This section demonstrates use of [Debezium](https://debezium.io) which is capable of capturing any changes occured in a [MySQL Database](https://debezium.io/documentation/reference/stable/connectors/mysql).
+### E. Change Data Capture with Debezium and MySQL
+
+To perform Change Data Capture, i.e. capturing changes occured by creation, modification, or deletion of data in a data store. This section demonstrates use of [Debezium](https://debezium.io) which is capable of capturing any changes occured in a `MySQL` database by using the [Debezium MySQL CDC Source Connector](https://www.confluent.io/hub/debezium/debezium-connector-mysql).
 
 <details>
 <summary>Click here for technical details.</summary>
 <p>
 
+1. Verify if `debezium` plugin is loaded.
+```bash
+./scripts/kafka/tests/get_current_info.sh
+```
+```bash
+Listing all available plugins ...
+"io.confluent.connect.jdbc.JdbcSinkConnector"
+"streams.kafka.connect.sink.Neo4jSinkConnector"
+"com.github.jcustenborder.kafka.connect.spooldir.SpoolDirAvroSourceConnector"
+"com.github.jcustenborder.kafka.connect.spooldir.SpoolDirBinaryFileSourceConnector"
+"com.github.jcustenborder.kafka.connect.spooldir.SpoolDirCsvSourceConnector"
+"com.github.jcustenborder.kafka.connect.spooldir.SpoolDirJsonSourceConnector"
+"com.github.jcustenborder.kafka.connect.spooldir.SpoolDirLineDelimitedSourceConnector"
+"com.github.jcustenborder.kafka.connect.spooldir.SpoolDirSchemaLessJsonSourceConnector"
+"com.github.jcustenborder.kafka.connect.spooldir.elf.SpoolDirELFSourceConnector"
+"io.confluent.connect.jdbc.JdbcSourceConnector"
+"io.debezium.connector.mysql.MySqlConnector"
+"org.apache.kafka.connect.mirror.MirrorCheckpointConnector"
+"org.apache.kafka.connect.mirror.MirrorHeartbeatConnector"
+"org.apache.kafka.connect.mirror.MirrorSourceConnector"
+"streams.kafka.connect.source.Neo4jSourceConnector"
+
+Listing all connectors ...
+
+List all topics ...
+__consumer_offsets
+_confluent-monitoring
+_schemas
+counties
+docker-connect-configs
+docker-connect-offsets
+docker-connect-status
+mysqldb
+mysqldb.geo.counties
+```
+
+Make sure that `io.debezium.connector.mysql.MySqlConnector` plugins and and `mysqldb.geo.counties` topic are appeared in the result.
+
+*Possible fix: stop and restart `Kafka Connect`*
+```bash 
+docker compose -f docker-compose-kafka-ce.yml stop connect
+docker compose -f docker-compose-kafka-ce.yml start connect
+```
+
+2. Prepare content of `mysql` database and `connector`:
+
+```bash
+./scripts/kafka/tests/test_connect_cdc_prepare.sh 
+```
+```bash
+Start mysql ...
+WARN[0000] Found orphan containers ([connect broker3 broker2 schema-registry broker zookeeper]) for this project. If you removed or renamed this service in your compose file, you can run this command with the --remove-orphans flag to clean it up. 
+[+] Running 1/1
+ ⠿ Container mysql  Started                                                                                                                            0.2s
+Wait for container 'mysql' to be healthy for max 60 seconds...
+Container is healthy after 4 seconds ✅
+
+Writing database records ...
+mysql: [Warning] Using a password on the command line interface can be insecure.
+mysql: [Warning] Using a password on the command line interface can be insecure.
+county	county_ascii	county_full	county_fips	state_id	state_name	lat	lng	population
+Los Angeles	Los Angeles	Los Angeles County	06037	CA	California	34.3209	-118.2247	10040682
+Cook	Cook	Cook County	17031	IL	Illinois	41.8401	-87.8168	5169517
+Harris	Harris	Harris County	48201	TX	Texas	29.8578	-95.3936	4680
+Maricopa	Maricopa	Maricopa County	04013	AZ	Arizona	33.3490	-112.4915	4412779
+San Diego	San Diego	San Diego County	06073	CA	California	33.0343	-116.7350	3323970
+Orange	Orange	Orange County	06059	CA	California	33.7031	-117.7609	3170345
+Miami-Dade	Miami-Dade	Miami-Dade County	12086	FL	Florida	25.6149	-80.5623	2705528
+Dallas	Dallas	Dallas County	48113	TX	Texas	32.7666	-96.7778	2622634
+Kings	Kings	Kings County	36047	NY	New York	40.6395	-73.9385	2576771
+Riverside	Riverside	Riverside County	06065	CA	California	33.7437	-115.9938	2437864
+Database records written ✅
+
+Listing all available plugins ...
+"io.confluent.connect.jdbc.JdbcSinkConnector"
+"streams.kafka.connect.sink.Neo4jSinkConnector"
+"com.github.jcustenborder.kafka.connect.spooldir.SpoolDirAvroSourceConnector"
+"com.github.jcustenborder.kafka.connect.spooldir.SpoolDirBinaryFileSourceConnector"
+"com.github.jcustenborder.kafka.connect.spooldir.SpoolDirCsvSourceConnector"
+"com.github.jcustenborder.kafka.connect.spooldir.SpoolDirJsonSourceConnector"
+"com.github.jcustenborder.kafka.connect.spooldir.SpoolDirLineDelimitedSourceConnector"
+"com.github.jcustenborder.kafka.connect.spooldir.SpoolDirSchemaLessJsonSourceConnector"
+"com.github.jcustenborder.kafka.connect.spooldir.elf.SpoolDirELFSourceConnector"
+"io.confluent.connect.jdbc.JdbcSourceConnector"
+"io.debezium.connector.mysql.MySqlConnector"
+"org.apache.kafka.connect.mirror.MirrorCheckpointConnector"
+"org.apache.kafka.connect.mirror.MirrorHeartbeatConnector"
+"org.apache.kafka.connect.mirror.MirrorSourceConnector"
+"streams.kafka.connect.source.Neo4jSourceConnector"
+
+Listing all connectors ...
+
+List all topics ...
+__consumer_offsets
+_confluent-monitoring
+_schemas
+counties
+docker-connect-configs
+docker-connect-offsets
+docker-connect-status
+mysqldb
+mysqldb.geo.counties
+
+Creating connector-counties connector ...
+HTTP/1.1 201 Created
+Date: Wed, 08 Feb 2023 21:37:44 GMT
+Location: http://localhost:8083/connectors/connector-counties
+Content-Type: application/json
+Content-Length: 513
+Server: Jetty(9.4.48.v20220622)
+
+{"name":"connector-counties","config":{"connector.class":"io.debezium.connector.mysql.MySqlConnector","tasks.max":"1","database.hostname":"mysql","database.port":"3306","database.user":"mysqluser","database.password":"mysqlpw","database.server.id":"1","database.server.name":"mysqldb","database.allowPublicKeyRetrieval":"true","database.include.list":"geo","database.history.kafka.bootstrap.servers":"broker:29092","database.history.kafka.topic":"counties","name":"connector-counties"},"tasks":[],"type":"source"}
+
+Preparation done ✅
+```
+
+If the database records (e.g. `Los Angeles`) and the connector info (`connector-counties`) are listed, then it is done.
+
+3. Consuming messages by automatically connecting to the topic `mysqldb.geo.counties`. The changes in the database are already delivered into it.
+
+```bash
+./scripts/kafka/tests/test_connect_cdc_multiple.sh 
+```
+```
+Listing all connectors ...
+"connector-counties"
+
+List all topics ...
+__consumer_offsets
+_confluent-monitoring
+_schemas
+counties
+docker-connect-configs
+docker-connect-offsets
+docker-connect-status
+mysqldb
+mysqldb.geo.counties
+
+Receiving messages from mysqldb.geo.counties ...
+Processed a total of 10 messages
+
+Read total 10 messages ✅
+```
+
+4. Cleanup the environment 
+
+```bash
+./scripts/kafka/tests/test_connect_cdc_cleanup.sh 
+```
+
+Note that by doing so, `mysql` container, `connector-counties` connector, and changes in `mysqldb.geo.counties` will disappear.
 </p>
 </details>
 

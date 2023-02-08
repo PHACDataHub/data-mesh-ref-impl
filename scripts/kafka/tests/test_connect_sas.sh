@@ -19,6 +19,14 @@ key_fields_counties=county_fips
 cast_types_counties=population:int32,lat:float32,lng:float32
 no_messages=10
 topic_spooldir=topic-counties
+connector_spooldir=spooldir-counties
+
+postgres_host=postgres
+postgres_port=5432
+postgres_user=postgres
+postgres_pass=postgres
+composite_keys=county_fips
+connector_sink=sink-postgres
 
 echo "Listing all available plugins ...";
 curl -s -XGET http://${connect_local_host}:${connect_port}/connector-plugins |jq '.[].class'
@@ -46,10 +54,10 @@ do
     echo ${item} ${key_fields} ${cast_types}
 
     curl -i -X PUT -H "Accept:application/json" \
-        -H  "Content-Type:application/json" http://${connect_local_host}:${connect_port}/connectors/spooldir_${item}/config \
+        -H  "Content-Type:application/json" http://${connect_local_host}:${connect_port}/connectors/${connector_spooldir}/config \
         -d '{
             "connector.class":"com.github.jcustenborder.kafka.connect.spooldir.SpoolDirCsvSourceConnector",
-            "topic":"topic-'${item}'",
+            "topic":"'${topic_spooldir}'",
             "input.path":"/data/unprocessed",
             "finished.path":"/data/processed",
             "error.path":"/data/error",
@@ -61,6 +69,7 @@ do
             "transforms.castTypes.type":"org.apache.kafka.connect.transforms.Cast$Value",
             "transforms.castTypes.spec":"'${cast_types}'"
             }'
+    echo ''
     echo ''
 done
 
@@ -99,6 +108,57 @@ docker exec -it ${schema_registry_container} kafka-avro-console-consumer  \
     --property schema.registry.url=http://${schema_registry_internal_host}:${schema_registry_port}
 echo ''
 
+echo "Start postgres ...";
+docker compose -f docker-compose-postgres.yml up -d
+echo ''
+
+echo "Wait for postgres ready ..." 
+sleep 3
+echo ''
+
+echo "Creating posrgres sink connector ...";
+curl -X PUT http://${connect_local_host}:${connect_port}/connectors/${connector_sink}/config \
+    -H "Content-Type: application/json" \
+    -d '{
+        "connector.class": "io.confluent.connect.jdbc.JdbcSinkConnector",
+        "connection.url": "jdbc:postgresql://'${postgres_host}':'${postgres_port}'/",
+        "connection.user": "'${postgres_user}'",
+        "connection.password": "'${postgres_pass}'",
+        "tasks.max": "1",
+        "topics": "'${topic_spooldir}'",
+        "auto.create": "true",
+        "auto.evolve":"true",
+        "pk.mode":"record_value",
+        "pk.fields":"'${composite_keys}'",
+        "insert.mode": "upsert",
+        "table.name.format":"'${topic_spooldir}'"
+    }'
+echo ''
+echo "Postgres sink connector created ✅";
+echo ''
+
+echo "Wait for delivery ..." 
+sleep 3
+echo ''
+
+echo "Listing all connectors ...";
+curl -s -X GET http://${connect_local_host}:${connect_port}/connectors | jq '.[]'
+echo ''
+
+echo "Verifying database records ...";
+docker exec -it postgres psql -U postgres -d postgres -c 'SELECT * FROM "topic-counties";' 
+echo "Database records verified ✅";
+echo ''
+
+echo "Delete database records ...";
+docker exec -it postgres psql -U postgres -d postgres -c 'DELETE FROM "topic-counties";'
+echo "Database records deleted ✅";
+echo ''
+
+echo "Shutting down postgres ...";
+docker compose -f docker-compose-postgres.yml down
+echo "Postgres shutdown ✅";
+
 echo "Delete ${topic_spooldir}-key subject ..." 
 curl --silent -X DELETE http://${schema_registry_local_host}:${schema_registry_port}/subjects/${topic_spooldir}-key | jq .[]
 echo ''
@@ -111,6 +171,14 @@ echo "List all current subjects ..."
 curl --silent -X GET http://${schema_registry_local_host}:${schema_registry_port}/subjects | jq .[]
 echo ''
 
+echo "Delete connector ..." 
+curl --silent -X DELETE http://${connect_local_host}:${connect_port}/connectors/${connector_spooldir} | jq .[]
+echo ${connector_spooldir} "connector deleted ✅";
+
+echo "Delete connector ..." 
+curl --silent -X DELETE http://${connect_local_host}:${connect_port}/connectors/${connector_sink} | jq .[]
+echo ${connector_sink} "connector deleted ✅";
+
 echo "Deleting ${topic_spooldir} ...";
 docker exec -it ${broker_container_name} /bin/kafka-topics \
     --delete --topic ${topic_spooldir} \
@@ -118,8 +186,9 @@ docker exec -it ${broker_container_name} /bin/kafka-topics \
 echo ${topic_spooldir} "deleted ✅";
 echo ''
 
-echo "Delete connector ..." 
-curl --silent -X DELETE http://${connect_local_host}:${connect_port}/connectors/spooldir_counties | jq .[]
-echo "spooldir_counties connector deleted ✅";
+echo "List all topics ...";
+docker exec -it ${broker_container_name} /bin/kafka-topics \
+    --bootstrap-server ${broker_internal_host}:${broker_internal_port} --list;
+echo ''
 
 rm -rf kafka-ce/connect/data/processed/counties-*.csv;

@@ -19,7 +19,7 @@ echo ''
 
 echo "Removing instance files ...";
 sudo rm -rf vol*
-for item in kafka-ce/connect/data kafka-ce/plugins
+for item in kafka-ce/connect kafka-ce/plugins
 do
     sudo rm -rf $item;
 done
