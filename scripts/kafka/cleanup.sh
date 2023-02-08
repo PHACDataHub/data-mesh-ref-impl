@@ -5,7 +5,7 @@ CURRENT_UID=$(id -u)
 CURRENT_GID=$(id -g)
 
 if [ ! -d "vol/zk" ]; then
-    echo "The cluster is not setup yet.";
+    echo "The cluster is not setup yet ❌";
     exit 1
 fi
 
@@ -13,12 +13,7 @@ fi
 echo ''
 
 echo "Shutting down containers...";
-if [[ $OSTYPE == 'Linux' ]]; then
-    docker compose -f docker-compose-kafka.yml down
-fi
-if [[ $OSTYPE == 'Darwin' ]]; then
-    docker compose -f docker-compose-kafka-osx.yml down
-fi
+docker compose -f docker-compose-kafka-ce.yml down
 echo "Containers shutdown ✅";
 echo ''
 
