@@ -19,5 +19,5 @@ echo ''
 
 echo "Removing instance files ...";
 sudo rm -rf vol*
-sudo rm -rf data/error data/unprocessed data/processed
+sudo rm -rf kafka/plugins
 echo "Instance files removed ✅";
