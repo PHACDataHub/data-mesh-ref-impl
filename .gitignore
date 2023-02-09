@@ -1,9 +1,8 @@
 # Project specific
 
-vol*
-data/health-analytics/csv
-data/neo4j
-kafka-ce
+./data/health-analytics/csv
+./data/neo4j
+./kafka-ce
 .obsidian
 .cache
 
