@@ -685,4 +685,31 @@ ORDER BY perc DESC
 
 To save the dashboard for later use, select the `Save` button on the left menu and then save it into `Neo4j` instance (the dashboard now is a part of the `Neo4j` database.)
 
+## F. [Alternative Visualization with Power BI](#power-bi-viz)
+
+If you have a licensed version of [Power BI Desktop](https://powerbi.microsoft.com/en-us/desktop/) installed on your machine, you can access and visualize `Cypher` queries directly from `Power BI`.
+
+First, install the [Neo4j DataConnector For Power BI](https://github.com/cskardon/Neo4jDataConnectorForPowerBi), just follow the instructions below:
+- Copy the driver to your `<user>/Documents/Power BI Desktop/Custom Connectors` folder (if you don't have that folder - create it!)
+- Allow `Power BI` to see the connector: Open `Power BI`, Go to `File -> Options and Settings -> Options`, Select `Security` from the left hand side bar, in the `Data Extensions` section, select: `(Not Recommended) Allow any extension to load without validation or warning`, say `OK`. Close and restart `Power BI`.
+- Click on `Get Data` and choose `Neo4j 2.0 (Beta)`.
+
+Let choose the `Cypher` associated to `What are the top 5 side effects reported?`:
+
+```Cypher
+MATCH (c:Case)-[:HAS_REACTION]->(r:Reaction) 
+RETURN r.description AS description, count(c) As count
+ORDER BY count(c) DESC 
+LIMIT 5;
+```
+
+put it into the `Cypher` text box of the `Execute Cypher Output`, let `http` be the `Scheme`, `localhost` as `Address`, `7474` for `port`, `4.3` as `Neo4j Version` (although we have a higher one, which is backward-compatible), `neo4j` as `Database Name`, and `30` seconds for timeout.
+
+![Power BI Cypher config](../img/health-analytics/power-bi-cypher-config.png)
+
+Then by executing and configuring the dashboard. Happy viz!
+
+![Power BI Cypher config](../img/health-analytics/power-bi-cypher-backed-dashboard.png)
+
+
 [Back](../README.md)

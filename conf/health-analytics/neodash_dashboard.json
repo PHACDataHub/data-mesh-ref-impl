@@ -1,324 +1,346 @@
 {
-    "title": "Healthcare Analytics Sandbox: Load and Analyze FDA Adverse Event Reporting System Data With Neo4j",
-    "version": "2.2",
-    "settings": {
-      "pagenumber": 0,
-      "editable": false,
-      "fullscreenEnabled": true,
-      "parameters": {
-        "neodash_case_primaryid": 101678656,
-        "neodash_manufacturer_manufacturername": "TAKEDA"
-      },
-      "downloadImageEnabled": true
+  "title": "Healthcare Analytics Sandbox: Load and Analyze FDA Adverse Event Reporting System Data With Neo4j",
+  "version": "2.2",
+  "settings": {
+    "pagenumber": 0,
+    "editable": true,
+    "fullscreenEnabled": true,
+    "parameters": {
+      "neodash_case_primaryid": 101678656,
+      "neodash_manufacturer_manufacturername": "NOVARTIS"
     },
-    "pages": [
-      {
-        "title": "Side Effects",
-        "reports": [
-          {
-            "title": "What are the top 5 side effects reported?",
-            "query": "MATCH (c:Case)-[:HAS_REACTION]->(r:Reaction) \nRETURN r.description AS description, count(c) As count\nORDER BY count(c) DESC \nLIMIT 5;\n\n\n",
-            "width": 12,
-            "height": 2,
-            "x": 0,
-            "y": 0,
-            "type": "table",
-            "selection": {},
-            "settings": {
-              "nodePositions": {},
-              "allowDownload": true,
-              "columnWidths": "[15,10]"
-            }
-          },
-          {
-            "title": "What are the top 5 drugs reported with side effects? Get drugs along with their side effects.",
-            "query": "MATCH (c:Case)-[:IS_PRIMARY_SUSPECT]->(d:Drug)\nMATCH (c)-[:HAS_REACTION]->(r:Reaction)\nWITH d.name as drugName, collect(r.description) as sideEffects, count(r.description) as totalSideEffects\nRETURN drugName, sideEffects[0..5] as sideEffects, totalSideEffects \nORDER BY totalSideEffects DESC LIMIT 5;\n\n\n",
-            "width": 12,
-            "height": 2,
-            "x": 0,
-            "y": 2,
-            "type": "table",
-            "selection": {},
-            "settings": {
-              "nodePositions": {},
-              "allowDownload": true,
-              "columnWidths": "[45,75,20]"
-            }
+    "downloadImageEnabled": true
+  },
+  "pages": [
+    {
+      "title": "Side Effects",
+      "reports": [
+        {
+          "title": "What are the top 5 side effects reported?",
+          "query": "MATCH (c:Case)-[:HAS_REACTION]->(r:Reaction) \nRETURN r.description AS description, count(c) As count\nORDER BY count(c) DESC \nLIMIT 5;\n\n\n",
+          "width": 12,
+          "height": 2,
+          "x": 0,
+          "y": 0,
+          "type": "table",
+          "selection": {},
+          "settings": {
+            "nodePositions": {},
+            "allowDownload": true,
+            "columnWidths": "[15,10]"
           }
-        ]
-      },
-      {
-        "title": "Companies",
-        "reports": [
-          {
-            "title": "What are the manufacturing companies which have most drugs which reported side effects?",
-            "query": "MATCH (m:Manufacturer)-[:REGISTERED]->(c)-[:HAS_REACTION]->(r)\nRETURN m.manufacturerName as company, count(distinct r) as numberOfSideEffects\nORDER BY numberOfSideEffects DESC LIMIT 5;\n\n\n",
-            "width": 9,
-            "height": 2,
-            "x": 0,
-            "y": 0,
-            "type": "table",
-            "selection": {},
-            "settings": {
-              "nodePositions": {}
-            }
-          },
-          {
-            "title": "Top 5 registered Drugs and their Side Effects (of the selected Manufacturer)",
-            "query": "MATCH (m:Manufacturer {manufacturerName: $neodash_manufacturer_manufacturername})-[:REGISTERED]->(c)\nMATCH (r:Reaction)<--(c)-[:IS_PRIMARY_SUSPECT]->(d)\nWITH d.name as drug,collect(distinct r.description) AS reactions, count(distinct r) as totalReactions\nRETURN drug, reactions[0..5] as sideEffects, totalReactions \nORDER BY totalReactions DESC\nLIMIT 5;\n\n",
-            "width": 12,
-            "height": 2,
-            "x": 0,
-            "y": 2,
-            "type": "table",
-            "selection": {},
-            "settings": {
-              "nodePositions": {},
-              "description": "* What are the top 5 drugs from a particular company with side effects? \n* What are the side effects from those drugs?",
-              "columnWidths": "[15,110,15]"
-            }
-          },
-          {
-            "title": "Manufacturer",
-            "query": "MATCH (n:`Manufacturer`) \nWHERE toLower(toString(n.`manufacturerName`)) CONTAINS toLower($input) \nRETURN DISTINCT n.`manufacturerName` as value ORDER BY size(toString(value)) ASC LIMIT 5",
-            "width": 3,
-            "height": 2,
-            "x": 9,
-            "y": 0,
-            "type": "select",
-            "selection": {},
-            "settings": {
-              "nodePositions": {},
-              "type": "Node Property",
-              "entityType": "Manufacturer",
-              "propertyType": "manufacturerName",
-              "parameterName": "neodash_manufacturer_manufacturername"
-            }
+        },
+        {
+          "title": "What are the top 5 drugs reported with side effects? Get drugs along with their side effects.",
+          "query": "MATCH (c:Case)-[:IS_PRIMARY_SUSPECT]->(d:Drug)\nMATCH (c)-[:HAS_REACTION]->(r:Reaction)\nWITH d.name as drugName, collect(r.description) as sideEffects, count(r.description) as totalSideEffects\nRETURN drugName, sideEffects[0..5] as sideEffects, totalSideEffects \nORDER BY totalSideEffects DESC LIMIT 5;\n\n\n",
+          "width": 12,
+          "height": 2,
+          "x": 0,
+          "y": 2,
+          "type": "table",
+          "selection": {},
+          "settings": {
+            "nodePositions": {},
+            "allowDownload": true,
+            "columnWidths": "[45,75,20]"
           }
-        ]
-      },
-      {
-        "title": "Consumer Reports",
-        "reports": [
-          {
-            "title": "What are the top 5 drugs which are reported directly by consumers for the side effects?",
-            "query": "MATCH (c:Case)-[:REPORTED_BY]->(rpsr:ReportSource {name: \"Consumer\"})\nMATCH (c)-[:IS_PRIMARY_SUSPECT]->(d)\nMATCH (c)-[:HAS_REACTION]->(r)\nWITH rpsr.name as reporter, d.name as drug, collect(distinct r.description) as sideEffects, count(distinct r) as total\nRETURN drug, reporter, sideEffects[0..5] as sideEffects \nORDER BY total desc LIMIT 5;\n\n\n",
-            "width": 12,
-            "height": 2,
-            "x": 0,
-            "y": 0,
-            "type": "table",
-            "selection": {},
-            "settings": {
-              "columnWidths": "[30,10,70]",
-              "allowDownload": true
-            }
-          },
-          {
-            "title": "What are the top 5 drugs whose side effects resulted in Death of patients as an outcome?",
-            "query": "MATCH (c:Case)-[:RESULTED_IN]->(o:Outcome {outcome:\"Death\"})\nMATCH (c)-[:IS_PRIMARY_SUSPECT]->(d)\nMATCH (c)-[:HAS_REACTION]->(r)\nWITH d.name as drug, collect(distinct r.description) as sideEffects, o.outcome as outcome, count(distinct c) as cases\nRETURN drug, sideEffects[0..5] as sideEffects, outcome, cases\nORDER BY cases DESC\nLIMIT 5;",
-            "width": 12,
-            "height": 2,
-            "x": 0,
-            "y": 2,
-            "type": "table",
-            "selection": {},
-            "settings": {
-              "columnWidths": "[20,70,10,10]",
-              "allowDownload": true
-            }
+        }
+      ]
+    },
+    {
+      "title": "Companies",
+      "reports": [
+        {
+          "title": "What are the manufacturing companies which have most drugs which reported side effects?",
+          "query": "MATCH (m:Manufacturer)-[:REGISTERED]->(c)-[:HAS_REACTION]->(r)\nRETURN m.manufacturerName as company, count(distinct r) as numberOfSideEffects\nORDER BY numberOfSideEffects DESC LIMIT 5;\n\n\n",
+          "width": 9,
+          "height": 2,
+          "x": 0,
+          "y": 0,
+          "type": "table",
+          "selection": {},
+          "settings": {
+            "nodePositions": {}
           }
-        ]
-      },
-      {
-        "title": "Drug Combination and Case Details",
-        "reports": [
-          {
-            "title": "Show top 10 drug combinations which have most side effects when consumed together",
-            "query": "MATCH (c:Case)-[:IS_PRIMARY_SUSPECT]->(d1)\nMATCH (c:Case)-[:IS_SECONDARY_SUSPECT]->(d2)\nMATCH (c)-[:HAS_REACTION]->(r)\nMATCH (c)-[:RESULTED_IN]->(o)\nWHERE d1<>d2\nWITH d1.name as primaryDrug, d2.name as secondaryDrug,\ncollect(r.description) as sideEffects, count(r.description) as totalSideEffects, collect(o.outcome) as outcomes\nRETURN primaryDrug, secondaryDrug, sideEffects[0..3] as sideEffects, totalSideEffects, outcomes[0] ORDER BY totalSideEffects desc\nLIMIT 10;\n\n\n",
-            "width": 12,
-            "height": 3,
-            "x": 0,
-            "y": 0,
-            "type": "table",
-            "selection": {},
-            "settings": {
-              "allowDownload": true,
-              "columnWidths": "[20,25,70,15,35]"
-            }
-          },
-          {
-            "title": "Patient ID",
-            "query": "MATCH (n:`Case`) \nWHERE toLower(toString(n.`primaryid`)) CONTAINS toLower($input) \nRETURN DISTINCT n.`primaryid` as value ORDER BY size(toString(value)) ASC LIMIT 5",
-            "width": 2,
-            "height": 1,
-            "x": 0,
-            "y": 3,
-            "type": "select",
-            "selection": {},
-            "settings": {
-              "allowDownload": true,
-              "transposed": false,
-              "type": "Node Property",
-              "entityType": "Case",
-              "propertyType": "primaryid",
-              "parameterName": "neodash_case_primaryid"
-            }
-          },
-          {
-            "title": "Patient info",
-            "query": "MATCH (c:Case {primaryid: $neodash_case_primaryid})\nRETURN c.age + ' ' + c.ageUnit as age, c.gender as gender\n\n\n\n",
-            "width": 2,
-            "height": 1,
-            "x": 0,
-            "y": 4,
-            "type": "table",
-            "selection": {},
-            "settings": {
-              "columnWidths": "[10,10]"
-            }
-          },
-          {
-            "title": "Treatments",
-            "query": "MATCH (c:Case {primaryid: $neodash_case_primaryid})\nMATCH (c)-[consumed]->(drug:Drug)\nMATCH (therapy)-[prescribed:PRESCRIBED]-(drug)\nRETURN  \n    distinct {   drug: drug.name,\n        dose: consumed.doseAmount + ' '  + consumed.doseUnit,\n        indication: consumed.indication,\n        route: consumed.route\n    } as treatment;\n\n\n",
-            "width": 6,
-            "height": 2,
-            "x": 2,
-            "y": 3,
-            "type": "table",
-            "selection": {},
-            "settings": {
-              "nodePositions": {}
-            }
-          },
-          {
-            "title": "Side Effects",
-            "query": "MATCH (c:Case {primaryid: $neodash_case_primaryid})\nMATCH (c)-[:RESULTED_IN]->(outcome)\nMATCH (c)-[:HAS_REACTION]->(reaction)\nRETURN  \ncollect(distinct reaction.description) as sideEffects;\n\n\n",
-            "width": 4,
-            "height": 1,
-            "x": 8,
-            "y": 3,
-            "type": "table",
-            "selection": {},
-            "settings": {
-              "allowDownload": true
-            }
-          },
-          {
-            "title": "Outcomes",
-            "query": "MATCH (c:Case {primaryid: $neodash_case_primaryid})\nMATCH (c)-[:RESULTED_IN]->(outcome)\nMATCH (c)-[:HAS_REACTION]->(reaction)\nRETURN \ncollect(distinct outcome.outcome) as outcomes;",
-            "width": 4,
-            "height": 1,
-            "x": 8,
-            "y": 4,
-            "type": "table",
-            "selection": {},
-            "settings": {
-              "allowDownload": true
-            }
+        },
+        {
+          "title": "Top 5 registered Drugs and their Side Effects (of the selected Manufacturer)",
+          "query": "MATCH (m:Manufacturer {manufacturerName: $neodash_manufacturer_manufacturername})-[:REGISTERED]->(c)\nMATCH (r:Reaction)<--(c)-[:IS_PRIMARY_SUSPECT]->(d)\nWITH d.name as drug,collect(distinct r.description) AS reactions, count(distinct r) as totalReactions\nRETURN drug, reactions[0..5] as sideEffects, totalReactions \nORDER BY totalReactions DESC\nLIMIT 5;\n\n",
+          "width": 12,
+          "height": 2,
+          "x": 0,
+          "y": 2,
+          "type": "table",
+          "selection": {},
+          "settings": {
+            "nodePositions": {},
+            "description": "* What are the top 5 drugs from a particular company with side effects? \n* What are the side effects from those drugs?",
+            "columnWidths": "[15,110,15]"
           }
-        ]
-      },
-      {
-        "title": "Age Groups",
-        "reports": [
-          {
-            "title": "What is the age group which reported highest side effects, and what are those side effects?",
-            "query": "MATCH (a:AgeGroup)<-[:FALLS_UNDER]-(c:Case)\nMATCH (c)-[:HAS_REACTION]->(r)\nWITH a, collect(r.description) as sideEffects, count(r) as total\nRETURN a.ageGroup as ageGroupName, sideEffects[0..6] as sideEffects \nORDER BY total DESC\nLIMIT 1;\n\n\n",
-            "width": 12,
-            "height": 1,
-            "x": 0,
-            "y": 0,
-            "type": "table",
-            "selection": {},
-            "settings": {
-              "allowDownload": true,
-              "columnWidths": "[15,85]"
-            }
-          },
-          {
-            "title": "What are the highest side effects reported in Children and what are the drugs those caused these side effects?",
-            "query": "MATCH (a:AgeGroup {ageGroup:\"Child\"})<-[:FALLS_UNDER]-(c)\nMATCH (c)-[:HAS_REACTION]->(r)\nMATCH (c)-[:IS_PRIMARY_SUSPECT]->(d)\nWITH distinct r.description as sideEffect, collect(distinct d.name) as drugs, count(r) as sideEffectCount\nRETURN sideEffect, drugs \nORDER BY sideEffectCount desc LIMIT 5;\n\n\n",
-            "width": 12,
-            "height": 2,
-            "x": 0,
-            "y": 1,
-            "type": "table",
-            "selection": {},
-            "settings": {
-              "allowDownload": true,
-              "columnWidths": "[20,80]"
-            }
-          },
-          {
-            "title": "What is the percentage wise allocation of side effects for each age group?",
-            "query": "MATCH (c:Case)-[:HAS_REACTION]->(r)\nWITH count(r) as totalReactions\nMATCH (a:AgeGroup)<-[:FALLS_UNDER]-(c)-[:HAS_REACTION]->(r)\nWITH a, count(r) as ageGroupWiseReactions, totalReactions\nRETURN a.ageGroup as ageGroupName, (ageGroupWiseReactions*100.00)/totalReactions as perc\nORDER BY perc DESC\n\n\n",
-            "width": 12,
-            "height": 2,
-            "x": 0,
-            "y": 3,
-            "type": "table",
-            "selection": {},
-            "settings": {
-              "columnWidths": "[35,35]"
-            }
+        },
+        {
+          "title": "Manufacturer",
+          "query": "MATCH (n:`Manufacturer`) \nWHERE toLower(toString(n.`manufacturerName`)) CONTAINS toLower($input) \nRETURN DISTINCT n.`manufacturerName` as value ORDER BY size(toString(value)) ASC LIMIT 5",
+          "width": 3,
+          "height": 2,
+          "x": 9,
+          "y": 0,
+          "type": "select",
+          "selection": {},
+          "settings": {
+            "nodePositions": {},
+            "type": "Node Property",
+            "entityType": "Manufacturer",
+            "propertyType": "manufacturerName",
+            "parameterName": "neodash_manufacturer_manufacturername"
           }
-        ]
-      },
-      {
-        "title": "Metadata & Statistics",
-        "reports": [
-          {
-            "title": "",
-            "query": "call apoc.meta.graph();\n\n\n",
-            "width": 6,
-            "height": 4,
-            "x": 0,
-            "y": 0,
-            "type": "graph",
-            "selection": {
-              "AgeGroup": "name",
-              "Case": "name",
-              "Drug": "name",
-              "Manufacturer": "name",
-              "Outcome": "name",
-              "Reaction": "name",
-              "ReportSource": "name",
-              "Therapy": "name"
-            },
-            "settings": {
-              "nodePositions": {}
-            }
-          },
-          {
-            "title": "Node Statistics",
-            "query": "MATCH (n) RETURN labels(n) AS NodeType, count(n) AS NumberOfNodes;\n\n",
-            "width": 6,
-            "height": 2,
-            "x": 6,
-            "y": 0,
-            "type": "table",
-            "selection": {},
-            "settings": {
-              "nodePositions": {}
-            }
-          },
-          {
-            "title": "Relationship Statistics",
-            "query": "// Count relationships by type\nmatch (u)-[p]-() with type(p) as RelationshipName, \ncount(p) as RelationshipNumber \nreturn RelationshipName, RelationshipNumber;\n\n\n",
-            "width": 6,
-            "height": 2,
-            "x": 6,
-            "y": 2,
-            "type": "table",
-            "selection": {},
-            "settings": {
-              "nodePositions": {}
-            }
+        }
+      ]
+    },
+    {
+      "title": "Consumer Reports",
+      "reports": [
+        {
+          "title": "What are the top 5 drugs which are reported directly by consumers for the side effects?",
+          "query": "MATCH (c:Case)-[:REPORTED_BY]->(rpsr:ReportSource {name: \"Consumer\"})\nMATCH (c)-[:IS_PRIMARY_SUSPECT]->(d)\nMATCH (c)-[:HAS_REACTION]->(r)\nWITH rpsr.name as reporter, d.name as drug, collect(distinct r.description) as sideEffects, count(distinct r) as total\nRETURN drug, reporter, sideEffects[0..5] as sideEffects \nORDER BY total desc LIMIT 5;\n\n\n",
+          "width": 12,
+          "height": 2,
+          "x": 0,
+          "y": 0,
+          "type": "table",
+          "selection": {},
+          "settings": {
+            "columnWidths": "[30,10,70]",
+            "allowDownload": true
           }
-        ]
-      }
-    ],
-    "parameters": {},
-    "extensions": {}
-  }
+        },
+        {
+          "title": "What are the top 5 drugs whose side effects resulted in Death of patients as an outcome?",
+          "query": "MATCH (c:Case)-[:RESULTED_IN]->(o:Outcome {outcome:\"Death\"})\nMATCH (c)-[:IS_PRIMARY_SUSPECT]->(d)\nMATCH (c)-[:HAS_REACTION]->(r)\nWITH d.name as drug, collect(distinct r.description) as sideEffects, o.outcome as outcome, count(distinct c) as cases\nRETURN drug, sideEffects[0..5] as sideEffects, outcome, cases\nORDER BY cases DESC\nLIMIT 5;",
+          "width": 12,
+          "height": 2,
+          "x": 0,
+          "y": 2,
+          "type": "table",
+          "selection": {},
+          "settings": {
+            "columnWidths": "[20,70,10,10]",
+            "allowDownload": true
+          }
+        }
+      ]
+    },
+    {
+      "title": "Drug Combination and Case Details",
+      "reports": [
+        {
+          "title": "Show top 10 drug combinations which have most side effects when consumed together",
+          "query": "MATCH (c:Case)-[:IS_PRIMARY_SUSPECT]->(d1)\nMATCH (c:Case)-[:IS_SECONDARY_SUSPECT]->(d2)\nMATCH (c)-[:HAS_REACTION]->(r)\nMATCH (c)-[:RESULTED_IN]->(o)\nWHERE d1<>d2\nWITH d1.name as primaryDrug, d2.name as secondaryDrug,\ncollect(r.description) as sideEffects, count(r.description) as totalSideEffects, collect(o.outcome) as outcomes\nRETURN primaryDrug, secondaryDrug, sideEffects[0..3] as sideEffects, totalSideEffects, outcomes[0] ORDER BY totalSideEffects desc\nLIMIT 10;\n\n\n",
+          "width": 12,
+          "height": 3,
+          "x": 0,
+          "y": 0,
+          "type": "table",
+          "selection": {},
+          "settings": {
+            "allowDownload": true,
+            "columnWidths": "[20,25,70,15,35]"
+          }
+        },
+        {
+          "title": "Case ID",
+          "query": "MATCH (n:`Case`) \nWHERE toLower(toString(n.`primaryid`)) CONTAINS toLower($input) \nRETURN DISTINCT n.`primaryid` as value ORDER BY size(toString(value)) ASC LIMIT 5",
+          "width": 2,
+          "height": 1,
+          "x": 0,
+          "y": 3,
+          "type": "select",
+          "selection": {},
+          "settings": {
+            "allowDownload": true,
+            "transposed": false,
+            "type": "Node Property",
+            "entityType": "Case",
+            "propertyType": "primaryid",
+            "parameterName": "neodash_case_primaryid"
+          }
+        },
+        {
+          "title": "Treatments",
+          "query": "MATCH (c:Case {primaryid: $neodash_case_primaryid})\nMATCH (c)-[consumed]->(drug:Drug)\nMATCH (therapy)-[prescribed:PRESCRIBED]-(drug)\nRETURN  \n    distinct {   drug: drug.name,\n        dose: consumed.doseAmount + ' '  + consumed.doseUnit,\n        indication: consumed.indication,\n        route: consumed.route\n    } as treatment;\n\n\n",
+          "width": 6,
+          "height": 2,
+          "x": 2,
+          "y": 3,
+          "type": "table",
+          "selection": {},
+          "settings": {
+            "nodePositions": {}
+          }
+        },
+        {
+          "title": "Side Effects",
+          "query": "MATCH (c:Case {primaryid: $neodash_case_primaryid})\nMATCH (c)-[:RESULTED_IN]->(outcome)\nMATCH (c)-[:HAS_REACTION]->(reaction)\nRETURN  \ncollect(distinct reaction.description) as sideEffects;\n\n\n",
+          "width": 4,
+          "height": 1,
+          "x": 8,
+          "y": 3,
+          "type": "table",
+          "selection": {},
+          "settings": {
+            "allowDownload": true
+          }
+        },
+        {
+          "title": "Outcomes",
+          "query": "MATCH (c:Case {primaryid: $neodash_case_primaryid})\nMATCH (c)-[:RESULTED_IN]->(outcome)\nMATCH (c)-[:HAS_REACTION]->(reaction)\nRETURN \ncollect(distinct outcome.outcome) as outcomes;",
+          "width": 4,
+          "height": 1,
+          "x": 8,
+          "y": 4,
+          "type": "table",
+          "selection": {},
+          "settings": {
+            "allowDownload": true
+          }
+        },
+        {
+          "title": "Patient",
+          "query": "MATCH (c:Case {primaryid: $neodash_case_primaryid})\nRETURN c.age + ' ' + c.ageUnit as age, c.gender as gender\n\n\n",
+          "width": 2,
+          "height": 1,
+          "x": 0,
+          "y": 4,
+          "type": "table",
+          "selection": {},
+          "settings": {
+            "nodePositions": {},
+            "frozen": false
+          }
+        },
+        {
+          "title": "",
+          "query": "MATCH (c:Case {primaryid: $neodash_case_primaryid})\nMATCH (c)-[r1]->(drug:Drug)\nMATCH (c)-[r2:RESULTED_IN]->(outcome)\nMATCH (c)-[r3:HAS_REACTION]->(reaction)\nMATCH (therapy)-[prescribed:PRESCRIBED]-(drug)\nRETURN c, r1, drug, r2, outcome, r3, reaction, prescribed, therapy\n\n\n\n",
+          "width": 12,
+          "height": 6,
+          "x": 0,
+          "y": 5,
+          "type": "graph",
+          "selection": {
+            "Case": "(label)",
+            "Drug": "name",
+            "Outcome": "(label)",
+            "Reaction": "(label)",
+            "Therapy": "(label)"
+          },
+          "settings": {
+            "nodePositions": {},
+            "frozen": false
+          }
+        }
+      ]
+    },
+    {
+      "title": "Age Groups",
+      "reports": [
+        {
+          "title": "What is the age group which reported highest side effects, and what are those side effects?",
+          "query": "MATCH (a:AgeGroup)<-[:FALLS_UNDER]-(c:Case)\nMATCH (c)-[:HAS_REACTION]->(r)\nWITH a, collect(r.description) as sideEffects, count(r) as total\nRETURN a.ageGroup as ageGroupName, sideEffects[0..6] as sideEffects \nORDER BY total DESC\nLIMIT 1;\n\n\n",
+          "width": 12,
+          "height": 1,
+          "x": 0,
+          "y": 0,
+          "type": "table",
+          "selection": {},
+          "settings": {
+            "allowDownload": true,
+            "columnWidths": "[15,85]"
+          }
+        },
+        {
+          "title": "What are the highest side effects reported in Children and what are the drugs those caused these side effects?",
+          "query": "MATCH (a:AgeGroup {ageGroup:\"Child\"})<-[:FALLS_UNDER]-(c)\nMATCH (c)-[:HAS_REACTION]->(r)\nMATCH (c)-[:IS_PRIMARY_SUSPECT]->(d)\nWITH distinct r.description as sideEffect, collect(distinct d.name) as drugs, count(r) as sideEffectCount\nRETURN sideEffect, drugs \nORDER BY sideEffectCount desc LIMIT 5;\n\n\n",
+          "width": 12,
+          "height": 2,
+          "x": 0,
+          "y": 1,
+          "type": "table",
+          "selection": {},
+          "settings": {
+            "allowDownload": true,
+            "columnWidths": "[20,80]"
+          }
+        },
+        {
+          "title": "What is the percentage wise allocation of side effects for each age group?",
+          "query": "MATCH (c:Case)-[:HAS_REACTION]->(r)\nWITH count(r) as totalReactions\nMATCH (a:AgeGroup)<-[:FALLS_UNDER]-(c)-[:HAS_REACTION]->(r)\nWITH a, count(r) as ageGroupWiseReactions, totalReactions\nRETURN a.ageGroup as ageGroupName, (ageGroupWiseReactions*100.00)/totalReactions as perc\nORDER BY perc DESC\n\n\n",
+          "width": 12,
+          "height": 2,
+          "x": 0,
+          "y": 3,
+          "type": "table",
+          "selection": {},
+          "settings": {
+            "columnWidths": "[35,35]"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Metadata & Statistics",
+      "reports": [
+        {
+          "title": "",
+          "query": "call apoc.meta.graph();\n\n\n",
+          "width": 6,
+          "height": 4,
+          "x": 0,
+          "y": 0,
+          "type": "graph",
+          "selection": {
+            "AgeGroup": "name",
+            "Case": "name",
+            "Drug": "name",
+            "Manufacturer": "name",
+            "Outcome": "name",
+            "Reaction": "name",
+            "ReportSource": "name",
+            "Therapy": "name",
+            "_Neodash_Dashboard": "name"
+          },
+          "settings": {
+            "nodePositions": {}
+          }
+        },
+        {
+          "title": "Node Statistics",
+          "query": "MATCH (n) RETURN labels(n) AS NodeType, count(n) AS NumberOfNodes;\n\n",
+          "width": 6,
+          "height": 2,
+          "x": 6,
+          "y": 0,
+          "type": "table",
+          "selection": {},
+          "settings": {
+            "nodePositions": {}
+          }
+        },
+        {
+          "title": "Relationship Statistics",
+          "query": "// Count relationships by type\nmatch (u)-[p]-() with type(p) as RelationshipName, \ncount(p) as RelationshipNumber \nreturn RelationshipName, RelationshipNumber;\n\n\n",
+          "width": 6,
+          "height": 2,
+          "x": 6,
+          "y": 2,
+          "type": "table",
+          "selection": {},
+          "settings": {
+            "nodePositions": {}
+          }
+        }
+      ]
+    }
+  ],
+  "parameters": {},
+  "extensions": {}
+}
