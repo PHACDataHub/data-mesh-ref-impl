@@ -371,11 +371,11 @@ Kafka Connect is part of Apache Kafka®, providing streaming integration between
 This section demonstrates a test with:
 - The [SpoolDir Source Connector](https://github.com/jcustenborder/kafka-connect-spooldir) which is capable of digesting [`csv`-format files](../data/kafka-ce/counties.csv).
 
-![Kafka Connect with Source](../img/kafka-ce/kafka-connect-source.png)
+<img src="../img/kafka-ce/kafka-connect-source.png" alt="" width="640"/>
 
 - The [JDBC Sink Connector](https://docs.confluent.io/kafka-connectors/jdbc/current/sink-connector/overview.html#features) to support delievery of Kafka records from topics into a `PostgreSQL` databse.
 
-![Kafka Connect with Sink](../img/kafka-ce/kafka-connect-sink.png)
+<img src="../img/kafka-ce/kafka-connect-sink.png" alt="Kafka Connect with Sink" width="640"/>
 
 &nbsp;
 
