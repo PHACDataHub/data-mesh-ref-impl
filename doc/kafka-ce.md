@@ -691,5 +691,167 @@ Note that by doing so, `mysql` container, `connector-counties` connector, and ch
 </p>
 </details>
 
+&nbsp;
 
+### F. Event stream processing with KSQL
 
+We show an [example use case](https://developer.confluent.io/tutorials/geo-distance/ksql.html).
+
+Suppose you work for a company that insures cellphones. The company records events that would result in an insurance claim, such as a customer dropping their phone in water. The company has data about where the event occurred and the latitude and longitude data for repair shops. In this tutorial, we'll calculate the closest repair shop to each customer in kilometers.
+
+<details>
+<summary>Click here for technical details.</summary>
+<p>
+
+```SQL
+CREATE TABLE repair_center_tab (repair_state VARCHAR PRIMARY KEY, long DOUBLE, lat DOUBLE)
+  WITH (kafka_topic='repair_center', value_format='avro', partitions=1);
+
+CREATE STREAM insurance_event_stream (customer_name VARCHAR, phone_model VARCHAR, event VARCHAR, state VARCHAR, long DOUBLE, lat DOUBLE)
+  WITH (kafka_topic='phone_event_raw', value_format='avro', partitions=1);
+
+CREATE STREAM insurance_event_with_repair_info AS
+SELECT * FROM insurance_event_stream iev
+INNER JOIN repair_center_tab rct ON iev.state = rct.repair_state;
+
+CREATE STREAM insurance_event_dist AS
+SELECT iev_customer_name, iev_state, geo_distance(iev_lat, iev_long, rct_lat, rct_long, 'km') AS dist_to_repairer_km
+FROM insurance_event_with_repair_info;
+```
+
+Test data
+```json
+{
+  "inputs": [
+    {
+      "topic": "repair_center",
+      "key": "NSW",
+      "value": {
+        "LONG": 151.1169,
+        "LAT": -33.863
+      }
+    },
+    {
+      "topic": "repair_center",
+      "key": "VIC",
+      "value": {
+        "LONG": 145.1549,
+        "LAT": -37.9389
+      }
+    },
+    {
+      "topic": "phone_event_raw",
+      "value": {
+        "CUSTOMER_NAME": "Lindsey",
+        "PHONE_MODEL": "iPhone 11 Pro",
+        "EVENT": "dropped",
+        "STATE": "NSW",
+        "LONG": 151.25664,
+        "LAT": -33.85995
+      }
+    },
+    {
+      "topic": "phone_event_raw",
+      "value": {
+        "CUSTOMER_NAME": "Debbie",
+        "PHONE_MODEL": "Samsung Note 20",
+        "EVENT": "water",
+        "STATE": "NSW",
+        "LONG": 151.24504,
+        "LAT": -33.89640
+      }
+    }
+  ]
+}
+```
+
+Output data
+```json
+{
+  "outputs": [
+    {
+      "topic": "INSURANCE_EVENT_WITH_REPAIR_INFO",
+      "key": "NSW",
+      "value": {
+        "IEV_CUSTOMER_NAME": "Lindsey",
+        "IEV_PHONE_MODEL": "iPhone 11 Pro",
+        "IEV_EVENT": "dropped",
+        "IEV_LONG": 151.25664,
+        "IEV_LAT": -33.85995,
+        "RCT_REPAIR_STATE": "NSW",
+        "RCT_LONG": 151.1169,
+        "RCT_LAT": -33.863
+      }
+    },
+    {
+      "topic": "INSURANCE_EVENT_WITH_REPAIR_INFO",
+      "key": "NSW",
+      "value": {
+        "IEV_CUSTOMER_NAME": "Debbie",
+        "IEV_PHONE_MODEL": "Samsung Note 20",
+        "IEV_EVENT": "water",
+        "IEV_LONG": 151.24504,
+        "IEV_LAT": -33.8964,
+        "RCT_REPAIR_STATE": "NSW",
+        "RCT_LONG": 151.1169,
+        "RCT_LAT": -33.863
+      }
+    },
+    {
+      "topic": "INSURANCE_EVENT_DIST",
+      "key": "NSW",
+      "value": {
+        "IEV_CUSTOMER_NAME": "Lindsey",
+        "DIST_TO_REPAIRER_KM": 12.907325150628191
+      }
+    },
+    {
+      "topic": "INSURANCE_EVENT_DIST",
+      "key": "NSW",
+      "value": {
+        "IEV_CUSTOMER_NAME": "Debbie",
+        "DIST_TO_REPAIRER_KM": 12.398568134716221
+      }
+    }
+  ]
+}
+```
+
+Run the test (can be repeated multiple times)
+```bash
+./scripts/kafka/tests/test_ksql_cli.sh
+```
+
+```bash
+Invoking the tests using the test runner and the statements file ...
+	 >>> Test passed!
+Test completed ✅
+```
+
+</p>
+</details>
+
+&nbsp;
+
+### G. Rest Proxy
+
+The `Confluent REST Proxy` provides a RESTful interface to an `Apache Kafka` cluster, making it easy to produce and consume messages, view the state of the cluster, and perform administrative actions without using the native `Kafka` protocol or clients.
+
+<details>
+<summary>Click here for technical details.</summary>
+<p>
+
+Run the test (can be repeated multiple times)
+```bash
+./scripts/kafka/tests/test_rest_proxy.sh
+```
+```bash
+{"offsets":[{"partition":0,"offset":1,"error_code":null,"error":null}],"key_schema_id":null,"value_schema_id":1}
+{"offsets":[{"partition":0,"offset":1,"error_code":null,"error":null}],"key_schema_id":2,"value_schema_id":1}
+{"instance_id":"my_consumer_instance","base_uri":"http://rest-proxy:8082/consumers/my_avro_consumer/instances/my_consumer_instance"}
+[{"topic":"avrotest","key":null,"value":{"name":"testUser"},"partition":0,"offset":1}]
+Test completed ✅
+```
+
+</p>
+</details>

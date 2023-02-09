@@ -33,15 +33,14 @@ services:
       ZOOKEEPER_LOG4J_ROOT_LOGLEVEL: "WARN"
       ZOOKEEPER_TOOLS_LOG4J_LOGLEVEL: "ERROR"
     volumes:
-      - $PWD/vol/zk/data:/var/lib/zookeeper/data
-      - $PWD/vol/zk/txn-logs:/var/lib/zookeeper/log
+      - $PWD/kafka-ce/zk/data:/var/lib/zookeeper/data
+      - $PWD/kafka-ce/zk/txn-logs:/var/lib/zookeeper/log
     restart: always
 
   ####################
   # broker
   ####################
   broker:
-    # image: confluentinc/cp-server:7.3.1
     image: confluentinc/cp-kafka:7.3.1
     hostname: broker
     container_name: broker
@@ -77,14 +76,13 @@ services:
       KAFKA_LOG_RETENTION_MS: -1
       KAFKA_LOG4J_LOGGERS: org.apache.zookeeper=WARN,org.apache.kafka=WARN,kafka=WARN,kafka.cluster=WARN,kafka.controller=WARN,kafka.coordinator=WARN,kafka.log=WARN,kafka.server=WARN,kafka.zookeeper=WARN,state.change.logger=WARN
     volumes:
-      - $PWD/vol/broker/data:/var/lib/kafka/data
+      - $PWD/kafka-ce/broker/data:/var/lib/kafka/data
     restart: always
 
   ####################
   # broker2
   ####################
   broker2:
-    # image: confluentinc/cp-server:7.3.1
     image: confluentinc/cp-kafka:7.3.1
     hostname: broker2
     container_name: broker2
@@ -121,14 +119,13 @@ services:
       KAFKA_LOG_RETENTION_MS: -1
       KAFKA_LOG4J_LOGGERS: org.apache.zookeeper=WARN,org.apache.kafka=WARN,kafka=WARN,kafka.cluster=WARN,kafka.controller=WARN,kafka.coordinator=WARN,kafka.log=WARN,kafka.server=WARN,kafka.zookeeper=WARN,state.change.logger=WARN
     volumes:
-      - $PWD/vol/broker2/data:/var/lib/kafka/data
+      - $PWD/kafka-ce/broker2/data:/var/lib/kafka/data
     restart: always
 
   ####################
   # broker3
   ####################
   broker3:
-    # image: confluentinc/cp-server:7.3.1
     image: confluentinc/cp-kafka:7.3.1
     hostname: broker3
     container_name: broker3
@@ -165,7 +162,7 @@ services:
       KAFKA_LOG_RETENTION_MS: -1
       KAFKA_LOG4J_LOGGERS: org.apache.zookeeper=WARN,org.apache.kafka=WARN,kafka=WARN,kafka.cluster=WARN,kafka.controller=WARN,kafka.coordinator=WARN,kafka.log=WARN,kafka.server=WARN,kafka.zookeeper=WARN,state.change.logger=WARN
     volumes:
-      - $PWD/vol/broker3/data:/var/lib/kafka/data
+      - $PWD/kafka-ce/broker3/data:/var/lib/kafka/data
     restart: always    
 
   ####################
@@ -188,14 +185,13 @@ services:
       SCHEMA_REGISTRY_LOG4J_ROOT_LOGLEVEL: "WARN"
       SCHEMA_REGISTRY_TOOLS_LOG4J_LOGLEVEL: "ERROR"
     volumes:
-      - $PWD/vol/schema-registry/data:/data
+      - $PWD/kafka-ce/schema-registry/data:/data
     restart: always
 
   ####################
   # connect
   ####################
   connect:
-    # image: confluentinc/cp-server-connect:7.3.1
     image: confluentinc/cp-kafka-connect:7.3.1
     hostname: connect
     container_name: connect
@@ -254,6 +250,100 @@ services:
       - $PWD/kafka-ce/plugins:/usr/share/confluent-hub-components
     restart: always
 
+  ####################
+  # ksqldb-server
+  ####################
+  ksqldb-server:
+    image: confluentinc/cp-ksqldb-server:7.3.1
+    hostname: ksqldb-server
+    container_name: ksqldb-server
+    depends_on:
+      - broker
+      - connect
+    networks:
+      - backend
+    ports:
+      - "8088:8088"
+    environment:
+      KSQL_CONFIG_DIR: "/etc/ksql"
+      KSQL_BOOTSTRAP_SERVERS: "broker:29092"
+      KSQL_HOST_NAME: ksqldb-server
+      KSQL_LISTENERS: "http://0.0.0.0:8088"
+      KSQL_CACHE_MAX_BYTES_BUFFERING: 0
+      KSQL_KSQL_SCHEMA_REGISTRY_URL: "http://schema-registry:8081"
+      KSQL_PRODUCER_INTERCEPTOR_CLASSES: "io.confluent.monitoring.clients.interceptor.MonitoringProducerInterceptor"
+      KSQL_CONSUMER_INTERCEPTOR_CLASSES: "io.confluent.monitoring.clients.interceptor.MonitoringConsumerInterceptor"
+      KSQL_KSQL_CONNECT_URL: "http://connect:8083"
+      KSQL_KSQL_LOGGING_PROCESSING_TOPIC_REPLICATION_FACTOR: 3
+      KSQL_KSQL_LOGGING_PROCESSING_TOPIC_AUTO_CREATE: 'true'
+      KSQL_KSQL_LOGGING_PROCESSING_STREAM_AUTO_CREATE: 'true'
+      KSQL_LOG4J_ROOT_LOGLEVEL: "WARN"
+      KSQL_TOOLS_LOG4J_LOGLEVEL: "ERROR"
+    restart: always
+
+  ####################
+  # ksqldb-cli
+  ####################
+  ksqldb-cli:
+    image: confluentinc/cp-ksqldb-cli:7.3.1
+    container_name: ksqldb-cli
+    depends_on:
+      - broker
+      - connect
+      - ksqldb-server
+    networks:
+      - backend
+    entrypoint: /bin/sh
+    tty: true
+    volumes:
+      - $PWD/kafka-ce/ksqldb-cli/src:/opt/app/src
+      - $PWD/kafka-ce/ksqldb-cli/test:/opt/app/test
+    restart: always
+
+  ####################
+  # rest-proxy
+  ####################
+  rest-proxy:
+    image: confluentinc/cp-kafka-rest:7.3.1
+    depends_on:
+      - broker
+      - schema-registry
+    networks:
+      - backend
+    ports:
+      - 8082:8082
+    hostname: rest-proxy
+    container_name: rest-proxy
+    environment:
+      KAFKA_REST_HOST_NAME: rest-proxy
+      KAFKA_REST_BOOTSTRAP_SERVERS: 'broker:29092'
+      KAFKA_REST_LISTENERS: "http://0.0.0.0:8082"
+      KAFKA_REST_SCHEMA_REGISTRY_URL: 'http://schema-registry:8081'
+      KAFKA_REST_LOG4J_ROOT_LOGLEVEL: "WARN"
+      KAFKA_REST_TOOLS_LOG4J_LOGLEVEL: "ERROR"
+    restart: always
+
+  ####################
+  # kafkacat
+  ####################
+  kafkacat:
+    image: confluentinc/cp-kcat:7.3.1
+    container_name: kafkacat
+    links:
+      - broker
+      - schema-registry
+    networks:
+      - backend
+    entrypoint: 
+      - /bin/sh 
+      - -c 
+      - |
+        apk add jq; 
+        while [ 1 -eq 1 ];do sleep 60;done
+    restart: always
+    volumes:
+      - $PWD/vol/kcat/data:/data
+
 ################################################################################
 #
 # networks
@@ -294,94 +384,3 @@ networks:
   #     CONTROL_CENTER_LOG4J_ROOT_LOGLEVEL: "WARN"
   #     CONTROL_CENTER_TOOLS_LOG4J_LOGLEVEL: "ERROR"
   #   restart: always
-
-  # ####################
-  # # ksqldb-server
-  # ####################
-  # ksqldb-server:
-  #   image: confluentinc/cp-ksqldb-server:7.3.1
-  #   hostname: ksqldb-server
-  #   container_name: ksqldb-server
-  #   depends_on:
-  #     - broker
-  #     - connect
-  #   networks:
-  #     - backend
-  #   ports:
-  #     - "8088:8088"
-  #   environment:
-  #     KSQL_CONFIG_DIR: "/etc/ksql"
-  #     KSQL_BOOTSTRAP_SERVERS: "broker:29092"
-  #     KSQL_HOST_NAME: ksqldb-server
-  #     KSQL_LISTENERS: "http://0.0.0.0:8088"
-  #     KSQL_CACHE_MAX_BYTES_BUFFERING: 0
-  #     KSQL_KSQL_SCHEMA_REGISTRY_URL: "http://schema-registry:8081"
-  #     KSQL_PRODUCER_INTERCEPTOR_CLASSES: "io.confluent.monitoring.clients.interceptor.MonitoringProducerInterceptor"
-  #     KSQL_CONSUMER_INTERCEPTOR_CLASSES: "io.confluent.monitoring.clients.interceptor.MonitoringConsumerInterceptor"
-  #     KSQL_KSQL_CONNECT_URL: "http://connect:8083"
-  #     KSQL_KSQL_LOGGING_PROCESSING_TOPIC_REPLICATION_FACTOR: 1
-  #     KSQL_KSQL_LOGGING_PROCESSING_TOPIC_AUTO_CREATE: 'true'
-  #     KSQL_KSQL_LOGGING_PROCESSING_STREAM_AUTO_CREATE: 'true'
-  #     KSQL_LOG4J_ROOT_LOGLEVEL: "WARN"
-  #     KSQL_TOOLS_LOG4J_LOGLEVEL: "ERROR"
-  #   restart: always
-
-  # ####################
-  # # ksqldb-cli
-  # ####################
-  # ksqldb-cli:
-  #   image: confluentinc/cp-ksqldb-cli:7.3.1
-  #   container_name: ksqldb-cli
-  #   depends_on:
-  #     - broker
-  #     - connect
-  #     - ksqldb-server
-  #   networks:
-  #     - backend
-  #   entrypoint: /bin/sh
-  #   tty: true
-  #   restart: always
-
-  # ####################
-  # # rest-proxy
-  # ####################
-  # rest-proxy:
-  #   image: confluentinc/cp-kafka-rest:7.3.1
-  #   depends_on:
-  #     - broker
-  #     - schema-registry
-  #   networks:
-  #     - backend
-  #   ports:
-  #     - 8082:8082
-  #   hostname: rest-proxy
-  #   container_name: rest-proxy
-  #   environment:
-  #     KAFKA_REST_HOST_NAME: rest-proxy
-  #     KAFKA_REST_BOOTSTRAP_SERVERS: 'broker:29092'
-  #     KAFKA_REST_LISTENERS: "http://0.0.0.0:8082"
-  #     KAFKA_REST_SCHEMA_REGISTRY_URL: 'http://schema-registry:8081'
-  #     KAFKA_REST_LOG4J_ROOT_LOGLEVEL: "WARN"
-  #     KAFKA_REST_TOOLS_LOG4J_LOGLEVEL: "ERROR"
-  #   restart: always
-
-  # ####################
-  # # kafkacat
-  # ####################
-  # kafkacat:
-  #   image: confluentinc/cp-kcat:7.3.1
-  #   container_name: kafkacat
-  #   links:
-  #     - broker-1
-  #     # - schema-registry
-  #   networks:
-  #     - backend
-  #   entrypoint: 
-  #     - /bin/sh 
-  #     - -c 
-  #     - |
-  #       apk add jq; 
-  #       while [ 1 -eq 1 ];do sleep 60;done
-  #   restart: always
-  #   volumes:
-  #     - $PWD/vol/kcat/data:/data

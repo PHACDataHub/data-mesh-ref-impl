@@ -32,19 +32,19 @@ docker exec -it zookeeper cub connect-ready $connect_host $connect_port $timeout
 echo "${connect_host}:${connect_port} is ready ✅";
 echo ''
 
-# rest_proxy_host=rest-proxy
-# rest_proxy_port=8082
-# echo "Wait for ${rest_proxy_host}:${rest_proxy_port} ...";
-# docker exec -it zookeeper cub kr-ready $rest_proxy_host $rest_proxy_port $timeout > /dev/null
-# echo "${rest_proxy_host}:${rest_proxy_port} is ready ✅";
-# echo ''
+ksqldb_server_host=ksqldb-server
+ksqldb_server_port=8088
+echo "Wait for ${ksqldb_server_host}:${ksqldb_server_port} ...";
+docker exec -it zookeeper cub ksql-server-ready $ksqldb_server_host $ksqldb_server_port $timeout > /dev/null
+echo "${ksqldb_server_host}:${ksqldb_server_port} is ready ✅";
+echo ''
 
-# ksqldb_server_host=ksqldb-server
-# ksqldb_server_port=8088
-# echo "Wait for ${ksqldb_server_host}:${ksqldb_server_port} ...";
-# docker exec -it zookeeper cub ksql-server-ready $ksqldb_server_host $ksqldb_server_port $timeout > /dev/null
-# echo "${ksqldb_server_host}:${ksqldb_server_port} is ready ✅";
-# echo ''
+rest_proxy_host=rest-proxy
+rest_proxy_port=8082
+echo "Wait for ${rest_proxy_host}:${rest_proxy_port} ...";
+docker exec -it zookeeper cub kr-ready $rest_proxy_host $rest_proxy_port $timeout > /dev/null
+echo "${rest_proxy_host}:${rest_proxy_port} is ready ✅";
+echo ''
 
 # control_center_host=control-center
 # control_center_port=9021
