@@ -5,6 +5,7 @@ Here is the [**project management site (GitHub project).**](https://github.com/o
 **List of current standalone example cases:**
 1. [Healthcare Analytics Sandbox: Load and Analyze FDA Adverse Event Reporting System Data With Neo4j](./doc/health-analytics.md)
 2. [Kafka Cluster - Community Edition: Zookeeper, 3 Brokers, Schema Registry, Connect (JDBC, SpoolDir, Debezium, Neo4j), ksqlDB (+ CLI), Rest Proxy, Kafkacat](./doc/kafka-ce.md)
+3. [Natural Language Processing Cluster for Movie Recommdation](./doc/movie-rec.md)
 
 [**Check this out to know more about our workshops**](./doc/Data%20Mesh%20PoC%20-%201st%20workshop.pptx)
 1. First workshop on Friday, February 03, 2023.
