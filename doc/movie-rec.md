@@ -58,3 +58,7 @@ Brief Description:
   + Data-to-Text: producing text from non-linguistic input, such as databases of records, spreadsheets, and expert system knowledge bases.
 
 ![NLP Task](../img/movie-rec/NLP_tasks.png)
+
+### B. Architecture Overview
+
+![Architecture Overview](../img/movie-rec/DMRI-EXC3-Movie-Recommendation.001.png)
