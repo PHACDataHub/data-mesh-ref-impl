@@ -13,6 +13,10 @@ Brief Description:
 
 **Credit [NLP PLanet](https://www.nlplanet.org)**
 
+<details>
+<summary>Click here for more details.</summary>
+<p>
+
 1. Text Preprocessing
   + Coreference Resolution: clustering mentions in text that refer to the same underlying real-world entities.
   + Part Of Speech (POS) tagging: tagging a word in a text with its part of speech. A part of speech is a category of words with similar grammatical properties, such as noun, verb, adjective, adverb, pronoun, preposition, conjunction, etc.
@@ -58,6 +62,9 @@ Brief Description:
   + Data-to-Text: producing text from non-linguistic input, such as databases of records, spreadsheets, and expert system knowledge bases.
 
 ![NLP Task](../img/movie-rec/NLP_tasks.png)
+
+</p>
+</details>
 
 ### B. Architecture Overview
 
