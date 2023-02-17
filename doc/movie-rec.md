@@ -69,3 +69,30 @@ Brief Description:
 ### B. Architecture Overview
 
 ![Architecture Overview](../img/movie-rec/DMRI-EXC3-Movie-Recommendation.001.png)
+
+### C. Iterations
+
+#### [C.1. Iteration 1](#c1-iteration-1)
+
+In this iteration, we aim to accomplish the following:
+1. **Task 1** - Creation of a `Pipelayer` [ReactFlow](https://reactflow.dev)-based tool that allow
+  + visual design of the data streams between the components of the `Kafka Cluster` and the `NLP Cluster`.
+  + providing configuration files for the components in order to connect to `Kafka` data streaming infrastructure as well as to customize the generic `NLP task`.
+  + keep the whole visual design and its configuration parameters in a `json` file for later purposes such as easy reloading, management, and monitoring.
+2. **Task 2** -  Creation of multiple generic `NLP tasks`, packaged as `Docker` images, equipped with `Python`-based `Kafka` consumers and providers, and easy to be customized by configuration provided by the `Pipelayer`.
+3. **Task 3** - Data integration 
+  + Integration of an `RSS Kafka Connect Source Connector` that enables capture of daily news from  [`ScreenRant`](https://screenrant.com)
+  + Integration of a `SpoolDir TSV Source Connector` that enables to import the `IMDb dataset`.
+4. **Task 4**: Graph database for movie data, tracking lineage, and data visualization
+  - Setup a `Neo4j` instance to accepts movie news processing status and information.
+  - Setup a `Neodash` instance to display `top recent movie recommendation` and `movie data lineage` (processing result throughout our data streams)
+5. **Task 5**: Showcasing
+  - Allow access to `Neodash` dashboards for all users
+  - Allow access to `Pipelayer`, `Neo4j` only at local machine.
+
+![Iteration 1](../img/movie-rec/DMRI-Example-Case-3-Movie-Recommendation-Iteration-1.png)
+
+What will not be included in this iteration:
+- Personalization, the site will be public for all user and no personalized feature.
+- No scaling for multiple `Kafka brokers` or `NLP tasks`.
+- No customization for `NLP pipelines` or `Recommendation dashboard`.
