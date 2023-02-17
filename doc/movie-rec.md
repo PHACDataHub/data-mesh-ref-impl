@@ -96,3 +96,13 @@ What will not be included in this iteration:
 - Personalization, the site will be public for all user and no personalized feature.
 - No scaling for multiple `Kafka brokers` or `NLP tasks`.
 - No customization for `NLP pipelines` or `Recommendation dashboard`.
+
+**Task 2** `NLP` task as `Docker` image
+
+A virtual machine is created in the `Google Cloud Platform`:
+- `n1-standard-8`, 8 vCPU, 30GB RAM, `threads-per-core=2`, `visible-core-count=4`
+- `NVIDIA T4`
+- `ubuntu-2204-jammy-v20230114`
+- 100 GB persistent disk
+- access via SSH (keys)
+- allow HTTP/HTTPS (with provisioned static internal/external IPs)
