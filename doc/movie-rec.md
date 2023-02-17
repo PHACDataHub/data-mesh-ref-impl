@@ -105,6 +105,8 @@ What will not be included in this iteration:
 
 **Task 2** `NLP` task as `Docker` image
 
+**Credit** [Develop like a Pro with NVIDIA + Docker + VS Code + PyTorch](https://blog.roboflow.com/nvidia-docker-vscode-pytorch/)
+
 1. A virtual machine is created in the `Google Cloud Platform`:
 - `n1-standard-8`, 8 vCPU, 30GB RAM, `threads-per-core=2`, `visible-core-count=4`
 - `NVIDIA T4`
