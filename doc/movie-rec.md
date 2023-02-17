@@ -97,12 +97,222 @@ What will not be included in this iteration:
 - No scaling for multiple `Kafka brokers` or `NLP tasks`.
 - No customization for `NLP pipelines` or `Recommendation dashboard`.
 
+<details>
+<summary>Click here for more details.</summary>
+<p>
+
+&nbsp;
+
 **Task 2** `NLP` task as `Docker` image
 
-A virtual machine is created in the `Google Cloud Platform`:
+1. A virtual machine is created in the `Google Cloud Platform`:
 - `n1-standard-8`, 8 vCPU, 30GB RAM, `threads-per-core=2`, `visible-core-count=4`
 - `NVIDIA T4`
 - `ubuntu-2204-jammy-v20230114`
 - 100 GB persistent disk
 - access via SSH (keys)
 - allow HTTP/HTTPS (with provisioned static internal/external IPs)
+
+2. Install Docker and test the installation:
+```bash
+./scripts/docker/install.sh
+./scripts/docker/test.sh
+```
+
+3. Install `gcc`, `make`
+```bash
+sudo apt install gcc make
+```
+
+4. Download driver for `NVIDIA Tesla T4` supporting `CUDA 11.7`
+```bash
+wget "https://us.download.nvidia.com/tesla/515.86.01/NVIDIA-Linux-x86_64-515.86.01.run"
+chmod +x NVIDIA-Linux-x86_64-515.86.01.run
+sudo ./NVIDIA-Linux-x86_64-515.86.01.run
+```
+
+5. Run `nvidia-smi` to verify installation
+```bash
+nvidia-smi
+```
+```bash
+Fri Feb 17 20:21:13 2023       
++-----------------------------------------------------------------------------+
+| NVIDIA-SMI 515.86.01    Driver Version: 515.86.01    CUDA Version: 11.7     |
+|-------------------------------+----------------------+----------------------+
+| GPU  Name        Persistence-M| Bus-Id        Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp  Perf  Pwr:Usage/Cap|         Memory-Usage | GPU-Util  Compute M. |
+|                               |                      |               MIG M. |
+|===============================+======================+======================|
+|   0  Tesla T4            Off  | 00000000:00:04.0 Off |                    0 |
+| N/A   38C    P0    28W /  70W |      2MiB / 15360MiB |      4%      Default |
+|                               |                      |                  N/A |
++-------------------------------+----------------------+----------------------+
+                                                                               
++-----------------------------------------------------------------------------+
+| Processes:                                                                  |
+|  GPU   GI   CI        PID   Type   Process name                  GPU Memory |
+|        ID   ID                                                   Usage      |
+|=============================================================================|
+|  No running processes found                                                 |
++-----------------------------------------------------------------------------+
+```
+
+6. Install Nvidia Docker for GPU-Accelerated Containers
+The NVIDIA Container Toolkit allows users to build and run GPU accelerated containers. The toolkit includes a container runtime library and utilities to automatically configure containers to leverage NVIDIA GPUs.
+
+![NVIDIA Container Toolkit](../img/movie-rec/nvidia-container-toolkit.png)
+
+```bash
+distribution=$(. /etc/os-release;echo $ID$VERSION_ID) \
+  && curl -fsSL https://nvidia.github.io/libnvidia-container/gpgkey | sudo gpg --dearmor -o /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg \
+  && curl -s -L https://nvidia.github.io/libnvidia-container/$distribution/libnvidia-container.list | \
+  sed 's#deb https://#deb [signed-by=/usr/share/keyrings/nvidia-container-toolkit-keyring.gpg] https://#g' | \
+  sudo tee /etc/apt/sources.list.d/nvidia-container-toolkit.list
+sudo apt-get update
+sudo apt-get install -y nvidia-docker2
+sudo systemctl restart docker
+```
+
+7. Test the installation. You should see the correct output *from* `nvidia-smi` *inside the container*. 
+```bash
+docker run --rm --gpus all nvidia/cuda:11.7.1-base-ubuntu22.04 nvidia-smi
+```
+```bash
+Fri Feb 17 20:23:57 2023       
++-----------------------------------------------------------------------------+
+| NVIDIA-SMI 515.86.01    Driver Version: 515.86.01    CUDA Version: 11.7     |
+|-------------------------------+----------------------+----------------------+
+| GPU  Name        Persistence-M| Bus-Id        Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp  Perf  Pwr:Usage/Cap|         Memory-Usage | GPU-Util  Compute M. |
+|                               |                      |               MIG M. |
+|===============================+======================+======================|
+|   0  Tesla T4            Off  | 00000000:00:04.0 Off |                    0 |
+| N/A   40C    P0    28W /  70W |      2MiB / 15360MiB |      5%      Default |
+|                               |                      |                  N/A |
++-------------------------------+----------------------+----------------------+
+                                                                               
++-----------------------------------------------------------------------------+
+| Processes:                                                                  |
+|  GPU   GI   CI        PID   Type   Process name                  GPU Memory |
+|        ID   ID                                                   Usage      |
+|=============================================================================|
+|  No running processes found                                                 |
++-----------------------------------------------------------------------------+
+```
+
+`--gpus` is used to specify which GPU the container should see, all means "all of them". If you want to expose only one you can pass its id `--gpus 1`. You can also specify a list of GPUs to use, `--gpus "device=1,2"`
+
+8. Run GPU Accelerated Containers with PyTorch
+```bash
+docker run --gpus all -it --rm nvcr.io/nvidia/pytorch:23.01-py3
+```
+
+9. Changing to higher performance command line options
+```bash
+docker run --gpus all --ipc=host --ulimit memlock=-1 --ulimit stack=67108864 -it --rm nvcr.io/nvidia/pytorch:23.01-py3
+```
+
+```bash
+=============
+== PyTorch ==
+=============
+
+NVIDIA Release 23.01 (build 52269074)
+PyTorch Version 1.14.0a0+44dac51
+
+Container image Copyright (c) 2023, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+
+Copyright (c) 2014-2023 Facebook Inc.
+Copyright (c) 2011-2014 Idiap Research Institute (Ronan Collobert)
+Copyright (c) 2012-2014 Deepmind Technologies    (Koray Kavukcuoglu)
+Copyright (c) 2011-2012 NEC Laboratories America (Koray Kavukcuoglu)
+Copyright (c) 2011-2013 NYU                      (Clement Farabet)
+Copyright (c) 2006-2010 NEC Laboratories America (Ronan Collobert, Leon Bottou, Iain Melvin, Jason Weston)
+Copyright (c) 2006      Idiap Research Institute (Samy Bengio)
+Copyright (c) 2001-2004 Idiap Research Institute (Ronan Collobert, Samy Bengio, Johnny Mariethoz)
+Copyright (c) 2015      Google Inc.
+Copyright (c) 2015      Yangqing Jia
+Copyright (c) 2013-2016 The Caffe contributors
+All rights reserved.
+
+Various files include modifications (c) NVIDIA CORPORATION & AFFILIATES.  All rights reserved.
+
+This container image and its contents are governed by the NVIDIA Deep Learning Container License.
+By pulling and using the container, you accept the terms and conditions of this license:
+https://developer.nvidia.com/ngc/nvidia-deep-learning-container-license
+
+NOTE: CUDA Forward Compatibility mode ENABLED.
+  Using CUDA 12.0 driver version 525.85.11 with kernel driver version 515.86.01.
+  See https://docs.nvidia.com/deploy/cuda-compatibility/ for details.
+
+root@6e7bbf2efd04:/workspace# python
+Python 3.8.10 (default, Nov 14 2022, 12:59:47) 
+[GCC 9.4.0] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import torch
+>>> torch.cuda.is_available()
+True
+>>> torch.backends.cudnn.version()
+8700
+>>> 
+```
+
+10. Now we can proceed to test [`MNIST Handwritten Digit Recognition in PyTorch`](../src/movie-rec/train.py)
+```bash
+./scripts/movie-rec/test.sh
+```
+
+```bash
+Downloading http://yann.lecun.com/exdb/mnist/train-images-idx3-ubyte.gz
+Downloading http://yann.lecun.com/exdb/mnist/train-images-idx3-ubyte.gz to ../data/MNIST/raw/train-images-idx3-ubyte.gz
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 9912422/9912422 [00:00<00:00, 42952511.03it/s]
+Extracting ../data/MNIST/raw/train-images-idx3-ubyte.gz to ../data/MNIST/raw
+
+Downloading http://yann.lecun.com/exdb/mnist/train-labels-idx1-ubyte.gz
+Downloading http://yann.lecun.com/exdb/mnist/train-labels-idx1-ubyte.gz to ../data/MNIST/raw/train-labels-idx1-ubyte.gz
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 28881/28881 [00:00<00:00, 15283332.55it/s]
+Extracting ../data/MNIST/raw/train-labels-idx1-ubyte.gz to ../data/MNIST/raw
+
+Downloading http://yann.lecun.com/exdb/mnist/t10k-images-idx3-ubyte.gz
+Downloading http://yann.lecun.com/exdb/mnist/t10k-images-idx3-ubyte.gz to ../data/MNIST/raw/t10k-images-idx3-ubyte.gz
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 1648877/1648877 [00:00<00:00, 10997068.46it/s]
+Extracting ../data/MNIST/raw/t10k-images-idx3-ubyte.gz to ../data/MNIST/raw
+
+Downloading http://yann.lecun.com/exdb/mnist/t10k-labels-idx1-ubyte.gz
+Downloading http://yann.lecun.com/exdb/mnist/t10k-labels-idx1-ubyte.gz to ../data/MNIST/raw/t10k-labels-idx1-ubyte.gz
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 4542/4542 [00:00<00:00, 20528587.03it/s]
+Extracting ../data/MNIST/raw/t10k-labels-idx1-ubyte.gz to ../data/MNIST/raw
+
+Train Epoch: 1 [0/60000 (0%)]	Loss: 2.282550
+Train Epoch: 1 [640/60000 (1%)]	Loss: 1.385302
+Train Epoch: 1 [1280/60000 (2%)]	Loss: 0.936717
+...
+Train Epoch: 14 [58880/60000 (98%)]	Loss: 0.003294
+Train Epoch: 14 [59520/60000 (99%)]	Loss: 0.004645
+
+Test set: Average loss: 0.0263, Accuracy: 9919/10000 (99%)
+```
+
+11. Test `Docker` images for our `NLP Tasks`
+
+```bash
+docker compose -f docker-compose-movie-rec.yml up
+```
+```bash
+question-answer  |       score  start  end               answer
+question-answer  | 0  0.938275    141  160  Joker: Folie à Deux
+question-answer  | 
+summerizer       |  Todd Phillips took to Instagram to unveil the first look at Lady Gaga in the sequel Joker: Folie à Deux. All signs appear to point to the multi-hyphenate portraying iconic DC character Harley Quinn. The Joker sequel is set to release on October 4, 2024. 
+summerizer       | 
+text-classifier  |                                             sequence     labels    scores
+text-classifier  | 0  Who says Valentine's Day can't have some jokes...      movie  0.551902
+text-classifier  | 1  Who says Valentine's Day can't have some jokes...      sport  0.205438
+text-classifier  | 2  Who says Valentine's Day can't have some jokes...   business  0.103893
+text-classifier  | 3  Who says Valentine's Day can't have some jokes...     health  0.084764
+text-classifier  | 4  Who says Valentine's Day can't have some jokes...  education  0.027428
+text-classifier  | 5  Who says Valentine's Day can't have some jokes...   politics  0.026575
+```
+
+</p>
+</details>

@@ -1,0 +1,62 @@
+version: "3.8"
+
+##############################################################################
+#
+# services
+# - text-classifier
+#
+##############################################################################
+services:
+
+  ####################
+  # text-classifier
+  ####################
+  text-classifier:
+    image: text-classifier:latest
+    container_name: text-classifier
+    build:
+      context: ./
+      dockerfile: conf/movie-rec/nlp/text-classifier/Dockerfile
+    networks:
+      - backend
+    volumes:
+      - $PWD/data/nlp/text-classifier:/data
+
+  ####################
+  # question-answer
+  ####################
+  question-answer:
+    image: question-answer:latest
+    container_name: question-answer
+    build:
+      context: ./
+      dockerfile: conf/movie-rec/nlp/question-answer/Dockerfile
+    networks:
+      - backend
+    volumes:
+      - $PWD/data/nlp/question-answer:/data
+
+  ####################
+  # summerizer
+  ####################
+  summerizer:
+    image: summerizer:latest
+    container_name: summerizer
+    build:
+      context: ./
+      dockerfile: conf/movie-rec/nlp/summerizer/Dockerfile
+    networks:
+      - backend
+    volumes:
+      - $PWD/data/nlp/summerizer:/data
+
+################################################################################
+#
+# networks
+# - backend
+#
+################################################################################
+networks:
+  backend:
+    name: backend
+    # external: true
