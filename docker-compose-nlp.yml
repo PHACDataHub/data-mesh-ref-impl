@@ -25,6 +25,7 @@ services:
     volumes:
       - $PWD/cache/nlp/text-classifier/datasets:/cache/datasets
       - $PWD/cache/nlp/text-classifier/transformers:/cache/transformers
+      - $PWD/conf/nlp/text-classifier:/conf
 
   ####################
   # question-answer
@@ -43,6 +44,7 @@ services:
     volumes:
       - $PWD/cache/nlp/question-answer/datasets:/cache/datasets
       - $PWD/cache/nlp/question-answer/transformers:/cache/transformers
+      - $PWD/conf/nlp/question-answer:/conf
 
   ####################
   # summarizer
@@ -61,6 +63,7 @@ services:
     volumes:
       - $PWD/cache/nlp/summarizer/datasets:/cache/datasets
       - $PWD/cache/nlp/summarizer/transformers:/cache/transformers
+      - $PWD/conf/nlp/summarizer:/conf
 
 ################################################################################
 #

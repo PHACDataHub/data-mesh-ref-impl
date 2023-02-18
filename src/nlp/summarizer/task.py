@@ -7,7 +7,7 @@ def display(model_outputs):
     print(df)
 
 config = configparser.ConfigParser()
-config.read('task.ini')
+config.read('/conf/task.ini')
 
 summarizer = pipeline(
     config['pipeline']['name'], 
