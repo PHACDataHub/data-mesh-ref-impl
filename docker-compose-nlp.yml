@@ -16,11 +16,15 @@ services:
     container_name: text-classifier
     build:
       context: ./
-      dockerfile: conf/movie-rec/nlp/text-classifier/Dockerfile
+      dockerfile: conf/nlp/text-classifier/Dockerfile
     networks:
       - backend
+    environment:
+      - HF_DATASETS_CACHE=/cache/datasets
+      - TRANSFORMERS_CACHE=/cache/transformers
     volumes:
-      - $PWD/data/nlp/text-classifier:/data
+      - $PWD/cache/nlp/text-classifier/datasets:/cache/datasets
+      - $PWD/cache/nlp/text-classifier/transformers:/cache/transformers
 
   ####################
   # question-answer
@@ -30,25 +34,33 @@ services:
     container_name: question-answer
     build:
       context: ./
-      dockerfile: conf/movie-rec/nlp/question-answer/Dockerfile
+      dockerfile: conf/nlp/question-answer/Dockerfile
     networks:
       - backend
+    environment:
+      - HF_DATASETS_CACHE=/cache/datasets
+      - TRANSFORMERS_CACHE=/cache/transformers
     volumes:
-      - $PWD/data/nlp/question-answer:/data
+      - $PWD/cache/nlp/question-answer/datasets:/cache/datasets
+      - $PWD/cache/nlp/question-answer/transformers:/cache/transformers
 
   ####################
-  # summerizer
+  # summarizer
   ####################
-  summerizer:
-    image: summerizer:latest
-    container_name: summerizer
+  summarizer:
+    image: summarizer:latest
+    container_name: summarizer
     build:
       context: ./
-      dockerfile: conf/movie-rec/nlp/summerizer/Dockerfile
+      dockerfile: conf/nlp/summarizer/Dockerfile
     networks:
       - backend
+    environment:
+      - HF_DATASETS_CACHE=/cache/datasets
+      - TRANSFORMERS_CACHE=/cache/transformers
     volumes:
-      - $PWD/data/nlp/summerizer:/data
+      - $PWD/cache/nlp/summarizer/datasets:/cache/datasets
+      - $PWD/cache/nlp/summarizer/transformers:/cache/transformers
 
 ################################################################################
 #

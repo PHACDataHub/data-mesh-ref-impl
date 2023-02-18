@@ -108,6 +108,7 @@ What will not be included in this iteration:
 **Credit** [Develop like a Pro with NVIDIA + Docker + VS Code + PyTorch](https://blog.roboflow.com/nvidia-docker-vscode-pytorch/)
 
 1. A virtual machine is created in the `Google Cloud Platform`:
+
 - `n1-standard-8`, 8 vCPU, 30GB RAM, `threads-per-core=2`, `visible-core-count=4`
 - `NVIDIA T4`
 - `ubuntu-2204-jammy-v20230114`
@@ -116,17 +117,20 @@ What will not be included in this iteration:
 - allow HTTP/HTTPS (with provisioned static internal/external IPs)
 
 2. Install Docker and test the installation:
+
 ```bash
 ./scripts/docker/install.sh
 ./scripts/docker/test.sh
 ```
 
 3. Install `gcc`, `make`
+
 ```bash
 sudo apt install gcc make
 ```
 
 4. Download driver for `NVIDIA Tesla T4` supporting `CUDA 11.7`
+
 ```bash
 wget "https://us.download.nvidia.com/tesla/515.86.01/NVIDIA-Linux-x86_64-515.86.01.run"
 chmod +x NVIDIA-Linux-x86_64-515.86.01.run
@@ -161,6 +165,7 @@ Fri Feb 17 20:21:13 2023
 ```
 
 6. Install Nvidia Docker for GPU-Accelerated Containers
+
 The NVIDIA Container Toolkit allows users to build and run GPU accelerated containers. The toolkit includes a container runtime library and utilities to automatically configure containers to leverage NVIDIA GPUs.
 
 ![NVIDIA Container Toolkit](../img/movie-rec/nvidia-container-toolkit.png)
@@ -177,6 +182,7 @@ sudo systemctl restart docker
 ```
 
 7. Test the installation. You should see the correct output *from* `nvidia-smi` *inside the container*. 
+
 ```bash
 docker run --rm --gpus all nvidia/cuda:11.7.1-base-ubuntu22.04 nvidia-smi
 ```
@@ -206,11 +212,13 @@ Fri Feb 17 20:23:57 2023
 `--gpus` is used to specify which GPU the container should see, all means "all of them". If you want to expose only one you can pass its id `--gpus 1`. You can also specify a list of GPUs to use, `--gpus "device=1,2"`
 
 8. Run GPU Accelerated Containers with PyTorch
+
 ```bash
 docker run --gpus all -it --rm nvcr.io/nvidia/pytorch:23.01-py3
 ```
 
 9. Changing to higher performance command line options
+
 ```bash
 docker run --gpus all --ipc=host --ulimit memlock=-1 --ulimit stack=67108864 -it --rm nvcr.io/nvidia/pytorch:23.01-py3
 ```
@@ -261,8 +269,9 @@ True
 ```
 
 10. Now we can proceed to test [`MNIST Handwritten Digit Recognition in PyTorch`](../src/movie-rec/train.py)
+
 ```bash
-./scripts/movie-rec/test.sh
+./scripts/nlp/test.sh
 ```
 
 ```bash
@@ -299,7 +308,7 @@ Test set: Average loss: 0.0263, Accuracy: 9919/10000 (99%)
 11. Test `Docker` images for our `NLP Tasks`
 
 ```bash
-docker compose -f docker-compose-movie-rec.yml up
+docker compose -f docker-compose-nlp.yml up
 ```
 ```bash
 question-answer  |       score  start  end               answer

@@ -15,6 +15,6 @@ Plot details are not known at the moment.
 However, this image appears to correlate with Harley Quinn's origin as Joker's psychiatrist in Arkham Asylum, the presumed location for the sequel.
 The ending of Joker found Arthur having his way in the famed Gotham facility."""
 
-summarizer = pipeline("summarization")
+summarizer = pipeline("summarization", model="sshleifer/distilbart-cnn-12-6")
 outputs = summarizer(text, max_length=100, clean_up_tokenization_spaces=True)
 print(outputs[0]['summary_text'], '\n')
