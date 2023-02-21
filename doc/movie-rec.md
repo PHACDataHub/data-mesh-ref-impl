@@ -397,8 +397,9 @@ Train Epoch: 14 [59520/60000 (99%)]	Loss: 0.004645
 
 Test set: Average loss: 0.0263, Accuracy: 9919/10000 (99%)
 ```
+</p>
+</details>
 
----
 
 *Task 2: Part 2:* Creating our `NLP tasks` 
 
@@ -408,6 +409,10 @@ We create our `NLP tasks` as following:
 - Make these dockers *easily configurable* per each of the `NLP Tasks`: `text classification`, `question-answering`, and `text summarization` (and many more)
 - Add a `Kafka consumer` and a `Kafka producer` to consume incoming messages and produce outgoing messages to `Kafka topics`.
 - Allow `content-based routing` for the outgoing messages depending on the processing result of the imcoming messages.
+
+<details>
+<summary>Click here for more details.</summary>
+<p>
 
 1. Test `Docker` images for our `NLP Tasks`
 
@@ -440,7 +445,7 @@ text-classifier  | 5  Who says Valentine's Day can't have some jokes...   politi
 
 **Task 3** - Data integration 
 
-**Task 3 - Part 1: Integration of an `RSS Kafka Connect Source Connector` that enables capture of daily news from  [`ScreenRant`](https://screenrant.com)**
+*Task 3 - Part 1: Integration of an `RSS Kafka Connect Source Connector` that enables capture of daily news from  [`ScreenRant`](https://screenrant.com)*
 
 [`Screenrant`](https://screenrant.com) Screen Rant - headquartered in  Ogden, Utah, US - is arguably the most visited, non-corporate-owned movie and TV news site online. We cover the hot topics that movie and TV fans are looking for. Our readers are influencers in the movie and TV category: people others come to for recommendations on what to watch on TV and go see at the movies.  
 
@@ -500,15 +505,15 @@ Our purpose is to capture, extract, and transform it into the format show below,
 ```
 
 and later post-process all properties to gain `named entities`, clustering based on `categories`, and many other.
-In addition `description`, `content` can be used to extract:
+In addition `description` and `content` tags can be used to extract:
 - URL links to `tags` on [`Screenrant`](https://screenrant.com), which is a nice way to resolve `tags` to this `movie news`.
-- Emphasis by HTML `<em>` tags to elevate content to higer relevancy.
+- Emphasis by HTML `<em>` tags to elevate content to higher relevancy.
 
 <details>
 <summary>Click here for more details.</summary>
 <p>
 
-We use the []`FilePulse Source Connector`](https://streamthoughts.github.io/kafka-connect-file-pulse/)
+We use the [`FilePulse Source Connector`](https://streamthoughts.github.io/kafka-connect-file-pulse/)
 
 1. First, we define a [`value schema`](../conf/movie-rec/screenrant-value.avsc) for the news `item` based on [this](https://streamthoughts.github.io/kafka-connect-file-pulse/docs/developer-guide/configuration/#defining-connect-record-schema):
 
@@ -589,7 +594,7 @@ And finally, the created `value.connect.schema`, which is to be sent to `Kafka C
 "value.connect.schema":"{ \"name\": \"screentrant_value\", \"type\":\"STRUCT\", \"fieldSchemas\": { \"link\":{\"type\":\"STRING\", \"isOptional\":false}, \"pub_date\":{\"type\":\"STRING\", \"isOptional\":false}, \"category\": {\"type\":\"ARRAY\", \"isOptional\":true, \"valueSchema\": {\"type\": \"STRING\"}}, \"content\":{\"type\":\"STRING\", \"isOptional\":false}, \"creator\":{\"type\":\"STRING\", \"isOptional\":false}, \"description\":{\"type\":\"STRING\", \"isOptional\":false}, \"enclosure_url\":{\"type\":\"STRING\", \"isOptional\":false}, \"title\":{\"type\":\"STRING\", \"isOptional\":false} } }"
 ```
 
-The [Developer Guide](https://streamthoughts.github.io/kafka-connect-file-pulse/docs/developer-guide/) is amazingly details, although it is not written for beginners. It is worth to study the connector by the following articles (for file-based (or anything that can be turned into a file) `XML`)
+The [Developer Guide](https://streamthoughts.github.io/kafka-connect-file-pulse/docs/developer-guide/) is amazingly details, although it is not written for beginners. It is worth to study the connector by the following articles (for file-based or anything that can be turned into an XML file)
 - [Kafka Connect FilePulse - One Connector to Ingest them All!](https://medium.com/streamthoughts/kafka-connect-filepulse-one-connector-to-ingest-them-all-faed018a725c)
 - [Streaming data into Kafka S01/E02 - Loading XML file](https://dev.to/fhussonnois/streaming-data-into-kafka-s01-e02-loading-xml-file-529i)
 - [Ingesting XML data into Kafka - Option 3: Kafka Connect FilePulse connector](https://rmoff.net/2020/10/01/ingesting-xml-data-into-kafka-option-3-kafka-connect-filepulse-connector/)
