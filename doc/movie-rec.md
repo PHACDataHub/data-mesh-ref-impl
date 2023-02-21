@@ -316,7 +316,6 @@ Test set: Average loss: 0.0263, Accuracy: 9919/10000 (99%)
 ```
 </p>
 </details>
----
 
 
 *Task 2: Part 2:* Creating our `NLP tasks` 
