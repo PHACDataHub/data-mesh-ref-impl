@@ -357,7 +357,7 @@ text-classifier  | 5  Who says Valentine's Day can't have some jokes...   politi
 
 **Task 3** - Data integration 
 
-**Task 3 - Part 1: Integration of an `RSS Kafka Connect Source Connector` that enables capture of daily news from  [`ScreenRant`](https://screenrant.com)**
+*Task 3 - Part 1: Integration of an `RSS Kafka Connect Source Connector` that enables capture of daily news from  [`ScreenRant`](https://screenrant.com)*
 
 [`Screenrant`](https://screenrant.com) Screen Rant - headquartered in  Ogden, Utah, US - is arguably the most visited, non-corporate-owned movie and TV news site online. We cover the hot topics that movie and TV fans are looking for. Our readers are influencers in the movie and TV category: people others come to for recommendations on what to watch on TV and go see at the movies.  
 
