@@ -314,8 +314,10 @@ Train Epoch: 14 [59520/60000 (99%)]	Loss: 0.004645
 
 Test set: Average loss: 0.0263, Accuracy: 9919/10000 (99%)
 ```
-
+</p>
+</details>
 ---
+
 
 *Task 2: Part 2:* Creating our `NLP tasks` 
 
@@ -325,6 +327,10 @@ We create our `NLP tasks` as following:
 - Make these dockers *easily configurable* per each of the `NLP Tasks`: `text classification`, `question-answering`, and `text summarization` (and many more)
 - Add a `Kafka consumer` and a `Kafka producer` to consume incoming messages and produce outgoing messages to `Kafka topics`.
 - Allow `content-based routing` for the outgoing messages depending on the processing result of the imcoming messages.
+
+<details>
+<summary>Click here for more details.</summary>
+<p>
 
 1. Test `Docker` images for our `NLP Tasks`
 
