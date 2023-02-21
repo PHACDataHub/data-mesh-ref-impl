@@ -81,8 +81,8 @@ In this iteration, we aim to accomplish the following:
   + keep the whole visual design and its configuration parameters in a `json` file for later purposes such as easy reloading, management, and monitoring.
 2. **Task 2** -  Creation of multiple generic `NLP tasks`, packaged as `Docker` images, equipped with `Python`-based `Kafka` consumers and providers, and easy to be customized by configuration provided by the `Pipelayer`.
 3. **Task 3** - Data integration 
-  + Integration of an `RSS Kafka Connect Source Connector` that enables capture of daily news from  [`ScreenRant`](https://screenrant.com)
-  + Integration of a `SpoolDir TSV Source Connector` that enables to import the `IMDb dataset`.
+  + Integration of an instance of `FilePulse Source Connector` for `XML files` that enables capture of daily news from  [`ScreenRant`](https://screenrant.com)
+  + Integration of another instance of `FilePulse Source Connector` for `TSV files` that enables to import the [`IMDb dataset`](https://www.imdb.com/interfaces/).
 4. **Task 4**: Graph database for movie data, tracking lineage, and data visualization
   - Setup a `Neo4j` instance to accepts movie news processing status and information.
   - Setup a `Neodash` instance to display `top recent movie recommendation` and `movie data lineage` (processing result throughout our data streams)
