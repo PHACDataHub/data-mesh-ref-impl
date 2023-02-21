@@ -7,6 +7,89 @@ Brief Description:
 - some harvesters to collect movie news (from sources highlighted in the diagram)
 - the one that will probably takes large portion of time is to construct a UI which capable to issue formal and “natural language” queries, based on React, communicating via GraphQL, and capable of doing some good visualizations.
 
+**The example**
+
+Excerpt from this news [First 'Joker: Folie à Deux' Image of Lady Gaga's Harley Quinn](https://collider.com/joker-2-image-lady-gaga-joaquin-phoenix/):
+```
+Who says Valentine's Day can't have some jokes?
+Director Todd Phillips took to Instagram to unveil the first look at Lady Gaga in the sequel Joker: Folie à Deux.
+While her role is currently under wraps, all signs appear to point to the multi-hyphenate portraying iconic DC character Harley Quinn.
+The Joker sequel is set to release on October 4, 2024.
+Gaga isn't alone in the image, which sees the return of Joaquin Phoenix's Arthur Fleck/Joker.
+He's complete in marred clown makeup and clearly happy to be in the embrace of her character.
+Plot details are not known at the moment.
+However, this image appears to correlate with Harley Quinn's origin as Joker's psychiatrist in Arkham Asylum, the presumed location for the sequel.
+The ending of Joker found Arthur having his way in the famed Gotham facility.
+```
+
+Below a few so-called `Natural Language Processing Tasks` (in short `NLP tasks`) are shown.
+
+*Task 1 - Summarize the news in a few sentences*
+
+```bash
+Todd Phillips took to Instagram to unveil the first look at Lady Gaga in the sequel Joker: Folie à Deux. All signs appear to point to the multi-hyphenate portraying iconic DC character Harley Quinn. The Joker sequel is set to release on October 4, 2024.
+```
+
+*Task 2 - What is the news about: education, politics, business, health, sport, or movie?*
+
+```bash
+                                            sequence     labels    scores
+0  Who says Valentine's Day can't have some jokes...      movie  0.551902
+1  Who says Valentine's Day can't have some jokes...      sport  0.205439
+2  Who says Valentine's Day can't have some jokes...   business  0.103893
+3  Who says Valentine's Day can't have some jokes...     health  0.084764
+4  Who says Valentine's Day can't have some jokes...  education  0.027428
+5  Who says Valentine's Day can't have some jokes...   politics  0.026575
+```
+
+*Task 3 - What named entities (people, date, organization, location, etc) mentioned in the news?*
+
+```bash
+   entity_group     score                  word  start  end
+0          MISC  0.996852     Valentine ' s Day      9   24
+1           PER  0.999712         Todd Phillips     57   70
+2          MISC  0.594972                 Insta     79   84
+3           PER  0.998348             Lady Gaga    117  126
+4          MISC  0.986863  Joker : Folie à Deux    141  160
+5           ORG  0.971730                    DC    270  272
+6           PER  0.995922          Harley Quinn    283  295
+7          MISC  0.983769                 Joker    301  306
+8           PER  0.999261                  Gaga    352  356
+9           PER  0.999269       Joaquin Phoenix    408  423
+10          PER  0.970964          Arthur Fleck    426  438
+11          PER  0.996184                 Joker    439  444
+12          PER  0.998973          Harley Quinn    628  640
+13          PER  0.991769                 Joker    653  658
+14          LOC  0.992751         Arkham Asylum    677  690
+15         MISC  0.767194                 Joker    744  749
+16          PER  0.999083                Arthur    756  762
+17          LOC  0.997191                Gotham    791  797
+```
+
+*Task 4 - Answering the question "What movie is in the news?"*
+
+```bash
+score  start  end               answer
+0  0.938275    141  160  Joker: Folie à Deux
+```
+
+*Task 5 - Answering the question "Who is the director of the movie?"*
+```bash
+      score  start  end         answer
+0  0.984972     57   70  Todd Phillips
+```
+
+*Task 6 - Answering the question "Who plays the main villain of the movie?"*
+
+```bash
+      score  start  end        answer
+0  0.334782    283  295  Harley Quinn
+```
+
+The beauty of it is that *all these tasks are plug-and-play* and *they can scale very well* because there is no limitation on the number of instances on the cloud. Obviously a good knowledge base needs to be built for movie, actor, etc but those are available at IMDb, etc. 
+
+`Kafka Cluster` will be used as *the underlaying streaming architecture* to exchange messages between these tasks. So each of the `NLP tasks` can work independently, producing/consuming messages into/out-of Kafka topics.
+
 &nbsp;
 
 ### A. Natural Language Processing Tasks
