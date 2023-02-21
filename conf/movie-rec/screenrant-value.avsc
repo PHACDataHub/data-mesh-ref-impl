@@ -1,0 +1,15 @@
+{
+	"type":"record",
+	"namespace": "ca.gov.phac.cdsb.dmia.oan.dmri",
+	"name": "screentrant_value",
+	"fields": [
+		{"name":"category", "type":"array", "items":"string", "isOptional":true},
+		{"name":"content", "type":"string"},
+		{"name":"creator", "type":"string"},
+		{"name":"description", "type":"string"},
+		{"name":"enclosure_url", "type":"string"},
+		{"name":"guid_url", "type":"string"},
+		{"name":"pub_date", "type":"string"},
+		{"name":"title", "type":"string"}
+	]
+}

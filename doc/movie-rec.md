@@ -97,15 +97,29 @@ What will not be included in this iteration:
 - No scaling for multiple `Kafka brokers` or `NLP tasks`.
 - No customization for `NLP pipelines` or `Recommendation dashboard`.
 
-<details>
-<summary>Click here for more details.</summary>
-<p>
-
 &nbsp;
+
+---
 
 **Task 2** `NLP` task as `Docker` image
 
+*Task 2: Part 1:* Installing `NVIDIA driver`, `NVIDIA Container Toolkit`, and `Pytorch` docker.
+
 **Credit** [Develop like a Pro with NVIDIA + Docker + VS Code + PyTorch](https://blog.roboflow.com/nvidia-docker-vscode-pytorch/)
+
+The `NVIDIA Container Toolkit` allows users to build and run GPU accelerated containers. The toolkit includes a container runtime library and utilities to automatically configure containers to leverage `NVIDIA` GPUs.
+
+![`NVIDIA Container Toolkit`](../img/movie-rec/nvidia-container-toolkit.png)
+
+We need to install:
+- the proper `NVIDIA Driver` for the GPUs coming with the virtual machine (unless they are provided by a serverless enviroment)
+- `Nvidia Docker` for GPU-Accelerated Containers
+- `PyTorch Docker` supported by the `NVIDIA Container Toolkit` and then test the docker by running `MNIST algorithm`
+
+
+<details>
+<summary>Click here for more details.</summary>
+<p>
 
 1. A virtual machine is created in the `Google Cloud Platform`:
 
@@ -165,10 +179,6 @@ Fri Feb 17 20:21:13 2023
 ```
 
 6. Install Nvidia Docker for GPU-Accelerated Containers
-
-The NVIDIA Container Toolkit allows users to build and run GPU accelerated containers. The toolkit includes a container runtime library and utilities to automatically configure containers to leverage NVIDIA GPUs.
-
-![NVIDIA Container Toolkit](../img/movie-rec/nvidia-container-toolkit.png)
 
 ```bash
 distribution=$(. /etc/os-release;echo $ID$VERSION_ID) \
@@ -305,7 +315,18 @@ Train Epoch: 14 [59520/60000 (99%)]	Loss: 0.004645
 Test set: Average loss: 0.0263, Accuracy: 9919/10000 (99%)
 ```
 
-11. Test `Docker` images for our `NLP Tasks`
+---
+
+*Task 2: Part 2:* Creating our `NLP tasks` 
+
+We create our `NLP tasks` as following:
+- Extend the `Pytorch` docker, 
+- Adding `HuggingFace` `pipelines`, make its `transformers` and `datasets` easily *cached*,
+- Make these dockers *easily configurable* per each of the `NLP Tasks`: `text classification`, `question-answering`, and `text summarization` (and many more)
+- Add a `Kafka consumer` and a `Kafka producer` to consume incoming messages and produce outgoing messages to `Kafka topics`.
+- Allow `content-based routing` for the outgoing messages depending on the processing result of the imcoming messages.
+
+1. Test `Docker` images for our `NLP Tasks`
 
 ```bash
 docker compose -f docker-compose-nlp.yml up
@@ -325,5 +346,432 @@ text-classifier  | 4  Who says Valentine's Day can't have some jokes...  educati
 text-classifier  | 5  Who says Valentine's Day can't have some jokes...   politics  0.026575
 ```
 
+(**TBC**)
+
 </p>
 </details>
+
+---
+
+&nbsp;
+
+**Task 3** - Data integration 
+
+**Task 3 - Part 1: Integration of an `RSS Kafka Connect Source Connector` that enables capture of daily news from  [`ScreenRant`](https://screenrant.com)**
+
+[`Screenrant`](https://screenrant.com) Screen Rant - headquartered in  Ogden, Utah, US - is arguably the most visited, non-corporate-owned movie and TV news site online. We cover the hot topics that movie and TV fans are looking for. Our readers are influencers in the movie and TV category: people others come to for recommendations on what to watch on TV and go see at the movies.  
+
+Its (bi-)hourly feed [Screen Rant RSS Feed](https://screenrant.com/feed/) followed by 2M+ `Facebookers`, 246K+ `Twitters`. The feed contains approx. 100 latest news called `item` in `XML format`, with an example as below:
+```xml
+<item>
+  <title>
+    <![CDATA[
+      Every Family Member Of Discovery’s Michael Burnham In Star Trek
+    ]]>
+  </title>
+  <link>
+    https://screenrant.com/star-trek-discovery-michael-burnham-family-members/
+  </link>
+  <dc:creator>
+    <![CDATA[ John Orquiola ]]>
+  </dc:creator>
+  <enclosure url="https://static1.srcdn.com/wordpress/wp-content/uploads/2023/02/every-family-member-of-discovery-s-michael-burnham-in-star-trek.jpg" length="656" type="image/jpeg"/>
+  <category>
+    <![CDATA[ TV ]]>
+  </category>
+  <category>
+    <![CDATA[ star trek discovery ]]>
+  </category>
+  <category>
+    <![CDATA[ Star Trek ]]>
+  </category>
+  <description>
+    <![CDATA[
+    Star Trek: Discovery's Captain Michael Burnham is a member of two families and she has relatives in two different eras of Star Trek.
+    ]]>
+  </description>
+  <content:encoded>
+    <![CDATA[
+      <p>Captain Michael Burnham (Sonequa Martin-Green) in <a href="https://screenrant.com/tag/star-trek-discovery/"><em><strong>Star Trek: Discovery</strong></em></a> is fortunate to be part of two families in two different eras. Burnham is <em>Discovery</em>&#39;s central character, and the focus on Michael as the primary lead distinguishes <em>Discovery </em>from other Star Trek series. In turn, Michael&#39;s rich backstory is supported by multiple parental figures, siblings, and a couple of notable love affairs with Lt. Ash Tyler (Shazad Latif) and Cleveland Booker (David Ajala).</p>
+    ]]>
+  </content:encoded>
+  <pubDate>Mon, 20 Feb 2023 18:40:14 GMT</pubDate>
+  <guid isPermaLink="true">
+    https://screenrant.com/star-trek-discovery-michael-burnham-family-members/
+  </guid>
+</item>
+```
+
+Our purpose is to capture, extract, and transform it into the format show below,
+```json
+{
+  "title":"Every Family Member Of Discovery’s Michael Burnham In Star Trek",
+  "link":"https://screenrant.com/star-trek-discovery-michael-burnham-family-members/",
+  "creator":"John Orquiola",
+  "enclosure_url":"https://static1.srcdn.com/wordpress/wp-content/uploads/2023/02/every-family-member-of-discovery-s-michael-burnham-in-star-trek.jpg",
+  "category":{"array":["TV","star trek discovery","Star Trek"]},
+  "description":"Star Trek: Discovery's Captain Michael Burnham is a member of two families and she has relatives in two different eras of Star Trek.",
+  "content":"<p>Captain Michael Burnham (Sonequa Martin-Green) in <a href=\"https://screenrant.com/tag/star-trek-discovery/\"><em><strong>Star Trek: Discovery</strong></em></a> is fortunate to be part of two families in two different eras. Burnham is <em>Discovery</em>&#39;s central character, and the focus on Michael as the primary lead distinguishes <em>Discovery </em>from other Star Trek series. In turn, Michael&#39;s rich backstory is supported by multiple parental figures, siblings, and a couple of notable love affairs with Lt. Ash Tyler (Shazad Latif) and Cleveland Booker (David Ajala).</p>",
+  "pub_date":"Mon, 20 Feb 2023 18:40:14 GMT"
+}
+```
+
+and later post-process all properties to gain `named entities`, clustering based on `categories`, and many other.
+In addition `description`, `content` can be used to extract:
+- URL links to `tags` on [`Screenrant`](https://screenrant.com), which is a nice way to resolve `tags` to this `movie news`.
+- Emphasis by HTML `<em>` tags to elevate content to higer relevancy.
+
+<details>
+<summary>Click here for more details.</summary>
+<p>
+
+We use the []`FilePulse Source Connector`](https://streamthoughts.github.io/kafka-connect-file-pulse/)
+
+1. First, we define a [`value schema`](../conf/movie-rec/screenrant-value.avsc) for the news `item` based on [this](https://streamthoughts.github.io/kafka-connect-file-pulse/docs/developer-guide/configuration/#defining-connect-record-schema):
+
+```json
+{
+	"name": "screentrant_value",
+	"type":"STRUCT",
+	"fieldSchemas": {
+		"link":{"type":"STRING", "isOptional":false},
+		"pub_date":{"type":"STRING", "isOptional":false},
+		"category": {"type":"ARRAY", "isOptional":true, "valueSchema": {"type": "STRING"}},
+		"content":{"type":"STRING", "isOptional":false},
+		"creator":{"type":"STRING", "isOptional":false},
+		"description":{"type":"STRING", "isOptional":false},
+		"enclosure_url":{"type":"STRING", "isOptional":false},
+		"title":{"type":"STRING", "isOptional":false}
+	}
+}
+```
+
+2. The `Source Connector` is [defined in-line](../scripts/movie-rec/create_filepulse_connector.sh) as follow
+
+```bash
+curl -i -X PUT -H "Accept:application/json" -H  "Content-Type:application/json" \
+  http://${connect_local_host}:${connect_port}/connectors/${connector}/config \
+  -d '{
+    "connector.class":"io.streamthoughts.kafka.connect.filepulse.source.FilePulseSourceConnector",
+    "fs.listing.class":"io.streamthoughts.kafka.connect.filepulse.fs.LocalFSDirectoryListing",
+    "fs.listing.directory.path":"/data/filepulse/xml",
+    "fs.listing.filters":"io.streamthoughts.kafka.connect.filepulse.fs.filter.RegexFileListFilter",
+    "fs.listing.interval.ms":10000,
+    "fs.cleanup.policy.class": "io.streamthoughts.kafka.connect.filepulse.fs.clean.LogCleanupPolicy ",
+    "file.filter.regex.pattern":".*\\.xml$",
+    "offset.strategy":"name",
+    "reader.xpath.expression":"/rss/channel/item",
+    "reader.xpath.result.type":"NODESET",
+    "reader.xml.force.array.on.fields":"category",
+    "reader.xml.parser.validating.enabled":true,
+    "reader.xml.parser.namespace.aware.enabled":true,
+    "filters":"enclosure,content,pubDate,Exclude",
+    "filters.enclosure.type":"io.streamthoughts.kafka.connect.filepulse.filter.MoveFilter",
+    "filters.enclosure.source":"enclosure.url",
+    "filters.enclosure.target":"enclosure_url",
+    "filters.content.type":"io.streamthoughts.kafka.connect.filepulse.filter.RenameFilter",
+    "filters.content.field":"encoded",
+    "filters.content.target":"content",
+    "filters.pubDate.type":"io.streamthoughts.kafka.connect.filepulse.filter.RenameFilter",
+    "filters.pubDate.field":"pubDate",
+    "filters.pubDate.target":"pub_date",
+    "filters.Exclude.type":"io.streamthoughts.kafka.connect.filepulse.filter.ExcludeFilter",
+    "filters.Exclude.fields":"enclosure,guid",
+    "topic":"'${topic}'",
+    "tasks.file.status.storage.bootstrap.servers":"'${broker_internal_host}':'${broker_internal_port}'",
+    "tasks.file.status.storage.topic":"connect-file-pulse-status",
+    "tasks.reader.class":"io.streamthoughts.kafka.connect.filepulse.fs.reader.LocalXMLFileInputReader",
+    "tasks.max": 1,
+    "value.connect.schema":"{ \"name\": \"screentrant_value\", \"type\":\"STRUCT\", \"fieldSchemas\": { \"link\":{\"type\":\"STRING\", \"isOptional\":false}, \"pub_date\":{\"type\":\"STRING\", \"isOptional\":false}, \"category\": {\"type\":\"ARRAY\", \"isOptional\":true, \"valueSchema\": {\"type\": \"STRING\"}}, \"content\":{\"type\":\"STRING\", \"isOptional\":false}, \"creator\":{\"type\":\"STRING\", \"isOptional\":false}, \"description\":{\"type\":\"STRING\", \"isOptional\":false}, \"enclosure_url\":{\"type\":\"STRING\", \"isOptional\":false}, \"title\":{\"type\":\"STRING\", \"isOptional\":false} } }"
+  }'
+```
+
+The filter `filters.enclosure` uses a `MoveFilter` to move the `url` inside the tag `<enclosure>` into the (converted) `json` field `enclosure_url`, there is no need for `XML` attribute `size` `type` (although we might need if we want to propulate a website with those images, abeit the dimensions can be detected as well (?)).
+
+It is worth to mention that to extract a single `RSS` feed containing `100` `items` of movie news into 100 `Kafka` messages, an `XPath` to identify the items need to be defined in the configuration
+```json
+"reader.xpath.expression":"/rss/channel/item",
+```
+
+It is decided to obtains the results as `NODESET`, since each of the properties of an `item` can have attribute that is valueable, such as `url` for the `enclosure` `XML` tag, so the configuration has to be done accordingly:
+```json
+"reader.xpath.result.type":"NODESET",
+```
+
+Note that the `FilePulse` library convert `XML` tags with names in form `<part1>:<part2>` into `<part2>`, for example `dc:creator` and `content:encoded` are converted into `creator` and `encoded`. Thus, the filter `filters.content` is used to rename the `encloded` into `content`. Filter `filters.pubDate` is to convert `pubDate` into `pub_date` for the sake of consistency. Last, filter `filters.Exclude` is used to drop the (extracted) `enclosure` and `guid` (since both `link` and `guid` have the same content and it makes more sense to refer back to the news using the `link` rather then `guid`, which is unfortunately not within our namespace).
+
+
+And finally, the created `value.connect.schema`, which is to be sent to `Kafka Connect`, defined in just above, is `double-quote escaped`, `tabs removed`, and `linefeeds removed`, in order to convert into a `escaped` string that can be used in the configuration:
+```json
+"value.connect.schema":"{ \"name\": \"screentrant_value\", \"type\":\"STRUCT\", \"fieldSchemas\": { \"link\":{\"type\":\"STRING\", \"isOptional\":false}, \"pub_date\":{\"type\":\"STRING\", \"isOptional\":false}, \"category\": {\"type\":\"ARRAY\", \"isOptional\":true, \"valueSchema\": {\"type\": \"STRING\"}}, \"content\":{\"type\":\"STRING\", \"isOptional\":false}, \"creator\":{\"type\":\"STRING\", \"isOptional\":false}, \"description\":{\"type\":\"STRING\", \"isOptional\":false}, \"enclosure_url\":{\"type\":\"STRING\", \"isOptional\":false}, \"title\":{\"type\":\"STRING\", \"isOptional\":false} } }"
+```
+
+The [Developer Guide](https://streamthoughts.github.io/kafka-connect-file-pulse/docs/developer-guide/) is amazingly details, although it is not written for beginners. It is worth to study the connector by the following articles (for file-based (or anything that can be turned into a file) `XML`)
+- [Kafka Connect FilePulse - One Connector to Ingest them All!](https://medium.com/streamthoughts/kafka-connect-filepulse-one-connector-to-ingest-them-all-faed018a725c)
+- [Streaming data into Kafka S01/E02 - Loading XML file](https://dev.to/fhussonnois/streaming-data-into-kafka-s01-e02-loading-xml-file-529i)
+- [Ingesting XML data into Kafka - Option 3: Kafka Connect FilePulse connector](https://rmoff.net/2020/10/01/ingesting-xml-data-into-kafka-option-3-kafka-connect-filepulse-connector/)
+
+Note that it is important the the `XML` files (feeds) location is configured as 
+```json
+"fs.listing.directory.path":"/data/filepulse/xml",
+```
+
+thus, they have to be downloaded and placed into `$PWD/kafka-ce/connect/data`, which is mapped to the local volume by [docker-compose-kafka-ce.yml](../docker-compose-kafka-ce.yml)
+
+```yaml
+  ####################
+  # connect
+  ####################
+  connect:
+    image: confluentinc/cp-kafka-connect:7.3.1
+    hostname: connect
+    container_name: connect
+    ...
+    volumes:
+      - $PWD/kafka-ce/connect/data:/data
+      - $PWD/kafka-ce/plugins:/usr/share/confluent-hub-components
+    restart: always
+```
+
+3. Run the test
+
+First, (setup Docker, test the setup, and then) start Kafka
+```bash
+./scripts/kafka/setup.sh
+./scripts/kafka/start_after_setup.sh
+```
+
+Then run the test
+```bash
+./scripts/movie-rec/test_filepulse_screenrant.sh
+```
+
+What does it do? Lets take a look at its content:
+```bash
+# Download the current RSS feed from https://screenrant.com/feed/
+# In production it is recommended to run a cronjob, note that the feed is updated frequently
+# We don't worry about duplication, since the messages are fed into Kafka and it will eliminate duplicates - depending on our choice for unique constraints
+./scripts/movie-rec/download_current_rss.sh
+
+# List the current Connect plugins
+# What we need is the "io.streamthoughts.kafka.connect.filepulse.source.FilePulseSourceConnector"
+./scripts/movie-rec/list_connect_plugins.sh
+
+# List the current connector instances
+# It could show an earlier version of the "filepulse-screenrant" connector, but don't worry, it will be updated
+./scripts/movie-rec/list_connectors.sh
+
+# List the current topics
+# It could show that the topic "topic-screenrant" exists, but that will have no effect
+./scripts/movie-rec/list_topics.sh
+
+# List the current subject in the "schema registry" of the Kafka cluster
+# It could show that the subject "topic-screenrant-value" exists, this script will update it with a new version
+./scripts/movie-rec/list_subjects.sh
+
+# Create the FilePulse connector with the configuration shown above to read XML messages
+./scripts/movie-rec/create_filepulse_connector.sh ${topic} ${connector} ${test_internal_ms_setup}
+
+# Wait until the connector instance becomes available
+./scripts/movie-rec/wait_for_connector.sh ${connector}
+
+# Wait until the schema registry subject becomes available
+./scripts/movie-rec/wait_for_subject.sh ${subject}
+
+# Wait until the topic becomes available
+./scripts/movie-rec/wait_for_topic.sh ${topic}
+
+# The FilePulse source connector instance will 
+# - automatically kick-in, 
+# - reading messages, 
+# - process them according to the "filters" instructions
+# - convert them from XML into AVRO messages according to the schema (now) stored in the schema registry
+# - produce these messages into the topic
+
+# Test consuming messages with in a number of seconds
+# The consumer_group variable is used to define a consumer group,
+# that will be used to reset the consumer offsets if messages need to be reread
+./scripts/movie-rec/consume_messages.sh ${topic} ${timeout_ms} ${consumer_group}
+echo ''
+
+# Here messages are reread and reprocessed
+echo Reset consumer offset and consume again ✅
+./scripts/movie-rec/consume_messages.sh ${topic} ${timeout_ms} ${consumer_group}
+
+# Subject, topic, and connector instance are deleted to cleanup the cluster
+./scripts/movie-rec/delete_subject.sh ${subject}
+./scripts/movie-rec/delete_topic.sh ${topic}
+./scripts/movie-rec/delete_connector.sh ${connector}
+
+# Downloaded RSS files are removed
+./scripts/movie-rec/remove_all_downloaded_rss.sh
+```
+
+Console output listed below, some truncated for ease to read,
+```bash
+Downloading data into for filepulse folder ...
+kafka-ce/connect/data/filepulse/xmlscreenrant-rss-1676937347476.xml is downloaded. ✅
+
+Listing all available plugins ...
+curl -s -XGET http://localhost:8083/connector-plugins | jq '.[].class'
+"io.confluent.connect.jdbc.JdbcSinkConnector"
+"streams.kafka.connect.sink.Neo4jSinkConnector"
+"com.github.jcustenborder.kafka.connect.spooldir.SpoolDirAvroSourceConnector"
+"com.github.jcustenborder.kafka.connect.spooldir.SpoolDirBinaryFileSourceConnector"
+"com.github.jcustenborder.kafka.connect.spooldir.SpoolDirCsvSourceConnector"
+"com.github.jcustenborder.kafka.connect.spooldir.SpoolDirJsonSourceConnector"
+"com.github.jcustenborder.kafka.connect.spooldir.SpoolDirLineDelimitedSourceConnector"
+"com.github.jcustenborder.kafka.connect.spooldir.SpoolDirSchemaLessJsonSourceConnector"
+"com.github.jcustenborder.kafka.connect.spooldir.elf.SpoolDirELFSourceConnector"
+"io.confluent.connect.jdbc.JdbcSourceConnector"
+"io.debezium.connector.mysql.MySqlConnector"
+"io.streamthoughts.kafka.connect.filepulse.source.FilePulseSourceConnector"
+"org.apache.kafka.connect.mirror.MirrorCheckpointConnector"
+"org.apache.kafka.connect.mirror.MirrorHeartbeatConnector"
+"org.apache.kafka.connect.mirror.MirrorSourceConnector"
+"streams.kafka.connect.source.Neo4jSourceConnector"
+
+Listing all connectors ...
+curl -s -XGET http://localhost:8083/connectors | jq '.[]'
+
+List all topics ...
+docker exec -it broker /bin/kafka-topics --bootstrap-server broker:29092 --list
+__consumer_offsets
+__transaction_state
+_confluent-ksql-default__command_topic
+_confluent-monitoring
+_schemas
+connect-file-pulse-status
+default_ksql_processing_log
+docker-connect-configs
+docker-connect-offsets
+docker-connect-status
+
+List all current subjects ...
+curl --silent -X GET http://localhost:8081/subjects | jq .[]
+
+Creating filepulse connector ...
+curl -i -X PUT -H Accept:application/json -H  Content-Type:application/json     http://localhost:8083/connectors/filepulse-screenrant/config     -d '{
+        connector.class:io.streamthoughts.kafka.connect.filepulse.source.FilePulseSourceConnector,
+        fs.listing.class:io.streamthoughts.kafka.connect.filepulse.fs.LocalFSDirectoryListing,
+        fs.listing.directory.path:/data/filepulse/xml,
+        fs.listing.filters:io.streamthoughts.kafka.connect.filepulse.fs.filter.RegexFileListFilter,
+        fs.listing.interval.ms:${internal_ms_setup},
+        fs.cleanup.policy.class: io.streamthoughts.kafka.connect.filepulse.fs.clean.LogCleanupPolicy ,
+        file.filter.regex.pattern:.*\.xml,
+        offset.strategy:name,
+        reader.xpath.expression:/rss/channel/item,
+        reader.xpath.result.type:NODESET,
+        reader.xml.force.array.on.fields:category,
+        reader.xml.parser.validating.enabled:true,
+        reader.xml.parser.namespace.aware.enabled:true,
+        filters:enclosure,content,pubDate,Exclude,
+        filters.enclosure.type:io.streamthoughts.kafka.connect.filepulse.filter.MoveFilter,
+        filters.enclosure.source:enclosure.url,
+        filters.enclosure.target:enclosure_url,
+        filters.content.type:io.streamthoughts.kafka.connect.filepulse.filter.RenameFilter,
+        filters.content.field:encoded,
+        filters.content.target:content,
+        filters.pubDate.type:io.streamthoughts.kafka.connect.filepulse.filter.RenameFilter,
+        filters.pubDate.field:pubDate,
+        filters.pubDate.target:pub_date,
+        filters.Exclude.type:io.streamthoughts.kafka.connect.filepulse.filter.ExcludeFilter,
+        filters.Exclude.fields:enclosure,guid,
+        topic:${topic},
+        tasks.file.status.storage.bootstrap.servers:${broker_internal_host}:${broker_internal_port},
+        tasks.file.status.storage.topic:connect-file-pulse-status,
+        tasks.reader.class:io.streamthoughts.kafka.connect.filepulse.fs.reader.LocalXMLFileInputReader,
+        tasks.max: 1,
+        value.connect.schema:{ "name": "screentrant_value", "type":"STRUCT", "fieldSchemas": { "link":{"type":"STRING", "isOptional":false}, "pub_date":{"type":"STRING", "isOptional":false}, "category": {"type":"ARRAY", "isOptional":true, "valueSchema": {"type": "STRING"}}, "content":{"type":"STRING", "isOptional":false}, "creator":{"type":"STRING", "isOptional":false}, "description":{"type":"STRING", "isOptional":false}, "enclosure_url":{"type":"STRING", "isOptional":false}, "title":{"type":"STRING", "isOptional":false} } }
+    }'
+
+HTTP/1.1 201 Created
+Date: Mon, 20 Feb 2023 23:55:49 GMT
+Location: http://localhost:8083/connectors/filepulse-screenrant
+Content-Type: application/json
+Content-Length: 2383
+Server: Jetty(9.4.48.v20220622)
+
+{"name":"filepulse-screenrant","config":{"connector.class":"io.streamthoughts.kafka.connect.filepulse.source.FilePulseSourceConnector","fs.listing.class":"io.streamthoughts.kafka.connect.filepulse.fs.LocalFSDirectoryListing","fs.listing.directory.path":"/data/filepulse/xml","fs.listing.filters":"io.streamthoughts.kafka.connect.filepulse.fs.filter.RegexFileListFilter","fs.listing.interval.ms":"10000","fs.cleanup.policy.class":"io.streamthoughts.kafka.connect.filepulse.fs.clean.LogCleanupPolicy ","file.filter.regex.pattern":".*\\.xml$","offset.strategy":"name","reader.xpath.expression":"/rss/channel/item","reader.xpath.result.type":"NODESET","reader.xml.force.array.on.fields":"category","reader.xml.parser.validating.enabled":"true","reader.xml.parser.namespace.aware.enabled":"true","filters":"enclosure,content,pubDate,Exclude","filters.enclosure.type":"io.streamthoughts.kafka.connect.filepulse.filter.MoveFilter","filters.enclosure.source":"enclosure.url","filters.enclosure.target":"enclosure_url","filters.content.type":"io.streamthoughts.kafka.connect.filepulse.filter.RenameFilter","filters.content.field":"encoded","filters.content.target":"content","filters.pubDate.type":"io.streamthoughts.kafka.connect.filepulse.filter.RenameFilter","filters.pubDate.field":"pubDate","filters.pubDate.target":"pub_date","filters.Exclude.type":"io.streamthoughts.kafka.connect.filepulse.filter.ExcludeFilter","filters.Exclude.fields":"enclosure,guid","topic":"topic-screenrant","tasks.file.status.storage.bootstrap.servers":"broker:29092","tasks.file.status.storage.topic":"connect-file-pulse-status","tasks.reader.class":"io.streamthoughts.kafka.connect.filepulse.fs.reader.LocalXMLFileInputReader","tasks.max":"1","value.connect.schema":"{ \"name\": \"screentrant_value\", \"type\":\"STRUCT\", \"fieldSchemas\": { \"link\":{\"type\":\"STRING\", \"isOptional\":false}, \"pub_date\":{\"type\":\"STRING\", \"isOptional\":false}, \"category\": {\"type\":\"ARRAY\", \"isOptional\":true, \"valueSchema\": {\"type\": \"STRING\"}}, \"content\":{\"type\":\"STRING\", \"isOptional\":false}, \"creator\":{\"type\":\"STRING\", \"isOptional\":false}, \"description\":{\"type\":\"STRING\", \"isOptional\":false}, \"enclosure_url\":{\"type\":\"STRING\", \"isOptional\":false}, \"title\":{\"type\":\"STRING\", \"isOptional\":false} } }","name":"filepulse-screenrant"},"tasks":[],"type":"source"}
+Filepulse connector created ✅
+
+Wait for connector filepulse-screenrant ...
+filepulse-screenrant connector ready ✅
+Wait for the subject topic-screenrant-value be ready ...
+
+List all versions of topic-screenrant-value...
+curl --silent -X GET http://localhost:8081/subjects/topic-screenrant-value/versions | jq
+[
+  5
+]
+
+Wait for topic topic-screenrant to be ready...
+Topic topic-screenrant with replications ready ✅
+Reset all consumer offsets of filepulse-consumer group ...
+docker exec -it broker /bin/kafka-consumer-groups     --bootstrap-server broker:29092     --group screenrant-consumer --reset-offsets --to-earliest --all-topics --execute;
+
+
+GROUP                          TOPIC                          PARTITION  NEW-OFFSET     
+Consumer offsets reset ✅
+
+Consume messages ...
+docker exec -it schema-registry kafka-avro-console-consumer      --bootstrap-server broker:29092     --topic topic-screenrant --group screenrant-consumer --from-beginning --timeout-ms 5000     --property schema.registry.url=http://schema-registry:8081
+
+{"pub_date":"Mon, 20 Feb 2023 23:51:14 GMT","creator":"Corey Larson","enclosure_url":"https://static1.srcdn.com/wordpress/wp-content/uploads/2023/02/star-wars-needs-mandalorian-movie-jon-favreau-wrong.jpg","link":"https://screenrant.com/star-wars-needs-mandalorian-movie-jon-favreau-wrong/","description":"\n                                            Jon Favreau thinks that The Mandalorian works great as a Disney+ tv series. But it could be so much more if made into a blockbuster movie. \n                                        ","category":{"array":["Movies","The Mandalorian","Star Wars (Franchise)"]},"title":"Jon Favreau's Wrong, Star Wars Needs A Mandalorian Movie","content":"\n                                                                                                                    <p><a href=\"https://screenrant.com/tag/the-mandalorian/\"><strong><em>The Mandalorian</em></strong></a> season 3 is headed to Disney+ on March 1st, but some fans wonder why it continues to be relegated to a Disney+ TV show when it could be so much more. <em>Star Wars</em> may have taken a gap from the big screen, but the last few years have seen Lucasfilm transform it into a success transmedia franchise. <em>The Mandalorian</em> is essentially Disney+&#39;s flagship TV show, with the first episode releasing on the day Disney launched the streaming service.</p>\n    \n                                                                                            "}
+{"pub_date":"Mon, 20 Feb 2023 23:30:48 GMT","creator":"Amy DeVore","enclosure_url":"https://static1.srcdn.com/wordpress/wp-content/uploads/2021/04/BELOW-DECK-SAILING-YACHT-GLEN.jpg","link":"https://screenrant.com/below-deck-captain-glenn-leadership-style-fan-reactions/","description":"\n                                            In a franchise that is often riddled with questionable leadership, Below Deck Sailing Yacht Captain Glenn is quickly becoming a fan-favorite.\n                                        ","category":{"array":["Reality TV","Below Deck Sailing Yacht","below deck"]},"title":"Below Deck Fans Praise Captain Glenn’s Leadership Style","content":"\n                                                                                                                    <p>After seasons of division over differing captain leadership styles, fans weighed in with an agreed-upon perspective: Captain Glenn Shephard from <a href=\"https://screenrant.com/tag/below-deck-sailing-yacht/\"><em><strong>Below Deck Sailing Yacht</strong></em></a> is leading the way with his top tier management style. <em>Sailing Yacht</em> is the third in a series of spin-offs, succeeded by the original<em> </em><a href=\"https://screenrant.com/tag/below-deck/\"><em>Below Deck</em></a>, coming alongside <a href=\"https://screenrant.com/tag/below-deck-mediterranean/\"><em>Below Deck Mediterranean</em></a><em>, </em><a href=\"https://screenrant.com/tag/below-deck-adventure/\"><em>Below Deck Adventure</em></a><em>, </em>and <a href=\"https://screenrant.com/tag/below-deck-down-under/\"><em>Below Deck Down Under</em></a><em>. </em>Each of these series has its own captain, yacht, and crew. Captain Glenn has been at the helm of <em>Sailing Yacht</em> since the series premiered<em> </em>in<em> </em>2020, a position he still maintains.</p>\n    \n                                                                                            "}
+{"pub_date":"Mon, 20 Feb 2023 23:30:14 GMT","creator":"Dashiel Reaves","enclosure_url":"https://static1.srcdn.com/wordpress/wp-content/uploads/2022/11/lobo-james-gunn-tease.jpg","link":"https://screenrant.com/dceased-lobo-anti-life-zombie-immunity-save-universe/","description":"\n                                            Lobo is one of the most ridiculous characters in the entire DC Comics Universe and it seems that now he's also their best hope for survival.\n                                        ","category":{"array":["Comics","DC Comics","lobo","Dceased"]},"title":"DC's Lobo Just Became the Universe's Most Important Hero","content":"\n                                                                                                                    <p><span class=\"article-alert\">Warning! Contains a preview for DCeased: War of the Undead Gods #6.</span><a href=\"https://screenrant.com/tag/lobo/\"><strong>Lobo</strong></a> is one of the most absurd and dangerous anti-heroes in all of <a href=\"https://screenrant.com/tag/dc-comics/\"><strong>DC Comics</strong></a>, having clashed time and time again with characters such as Superman, but in the world of <a href=\"https://screenrant.com/tag/dceased/\"><strong><em>DCeased</em></strong></a> it seems the main man is finally getting his chance to prove he could save the universe if he wants too.</p>\n    \n                                                                                            "}
+...
+{"pub_date":"Mon, 20 Feb 2023 18:37:59 GMT","creator":"Sarah Beth Waldrop","enclosure_url":"https://static1.srcdn.com/wordpress/wp-content/uploads/2023/02/tori-and-devin-1.jpg","link":"https://screenrant.com/the-challenge-fans-thrilled-about-devin-tori-win/","description":"\n                                            Fans are rejoicing after Tori and Devin's win on The Challenge: Ride or Dies. Find out why audiences are applauding the duo following the final.\n                                        ","category":{"array":["Reality TV","The Challenge","Are You the One?"]},"title":"Why The Challenge Fans Are Thrilled About Devin & Tori’s Win","content":"\n                                                                                                                    <p>Fans are overjoyed after Tori Deal and Devin Walker took home the ultimate prize on <em><strong><a href=\"https://screenrant.com/tag/the-challenge/\">The Challenge: Ride or Dies</a></strong></em>.<em><strong> </strong></em>Tori and Devin&#39;s relationship over the years has grown immensely since their first meeting on <em><a href=\"https://screenrant.com/tag/are-you-the-one/\">Are You The One: Second Chances</a> </em>back in 2017. On the show, they formed a rivalry that carried over into <em>The Challenge, </em>affecting them when they were forced to be partners on <em>The Challenge: Double Agents. </em>Despite their distaste for each other at the time, Tori and Devin both admitted that they worked extremely well together, which seemed to foreshadow what was to come.</p>\n    \n                                                                                            "}
+{"pub_date":"Mon, 20 Feb 2023 18:34:13 GMT","creator":"Gianna Nocera","enclosure_url":"https://static1.srcdn.com/wordpress/wp-content/uploads/2021/08/Jersey-Shore-Family-Vacation-Nikki-Hall.jpg","link":"https://screenrant.com/jersey-shore-family-vacation-nikki-hall-update/","description":"\n                                            Although she has not been in any recent episode of Jersey Shore: Family Vacation, Pauly D's girlfriend, Nikki Hall, has been keeping quite busy.\n                                        ","category":{"array":["Reality TV","Jersey Shore: Family Vacation","Jersey Shore","Double Shot At Love"]},"title":"Jersey Shore: What Nikki Hall Has Been Up To","content":"\n                                                                                                                    <p>With the new season of <a href=\"https://screenrant.com/tag/jersey-shore-family-vacation/\"><strong><em>Jersey Shore: Family Vacation</em></strong></a> underway, viewers have noticed that Pauly D&#39;s girlfriend, Nikki Hall, has been missing from recent episodes. Amid her absence, it has been vague as to what the <a href=\"https://screenrant.com/tag/jersey-shore/\"><em>Jersey Shore</em></a> girlfriend has been up to if she has not been filming for the hit spinoff series. Nikki first joined the cast in 2020 after she and Pauly got back together.</p>\n    \n                                                                                            "}
+{"pub_date":"Mon, 20 Feb 2023 18:31:16 GMT","creator":"Bruno Yonezawa","enclosure_url":"https://static1.srcdn.com/wordpress/wp-content/uploads/2023/02/diablo-4-open-beta-dates-lilith-key-art.jpg","link":"https://screenrant.com/diablo-4-open-beta-sign-up-dates-platforms/","description":"\n                                            Diablo 4 will have two open beta sessions before its release in June, and one of them will be made available for everyone. Here’s how to play.\n                                        ","category":{"array":["Gaming","Diablo 4","PC"]},"title":"Diablo 4 Open Beta Dates: How & Where To Sign Up","content":"\n                                                                                                                    <p><a href=\"https://screenrant.com/tag/diablo-4/\"><strong><em>Diablo 4</em></strong></a>&rsquo;s open beta dates have been revealed, allowing interested players to prepare themselves to test the highly awaited action RPG ahead of its release. Developer Blizzard&rsquo;s title was originally announced at BlizzCon 2019 and has since been in development leading up to this year&rsquo;s scheduled launch. The game will have two distinct testing periods, one of which is limited to a smaller group of players, and the other one is available for everyone.</p>\n    \n                                                                                            "}
+[2023-02-20 23:56:19,692] ERROR Error processing message, terminating consumer process:  (kafka.tools.ConsoleConsumer$)
+org.apache.kafka.common.errors.TimeoutException
+Processed a total of 100 messages
+
+
+Reset consumer offset and consume again ✅
+Reset all consumer offsets of filepulse-consumer group ...
+docker exec -it broker /bin/kafka-consumer-groups     --bootstrap-server broker:29092     --group screenrant-consumer --reset-offsets --to-earliest --all-topics --execute;
+
+
+GROUP                          TOPIC                          PARTITION  NEW-OFFSET     
+screenrant-consumer            topic-screenrant               0          0              
+Consumer offsets reset ✅
+
+Consume messages ...
+docker exec -it schema-registry kafka-avro-console-consumer      --bootstrap-server broker:29092     --topic topic-screenrant --group screenrant-consumer --from-beginning --timeout-ms 5000     --property schema.registry.url=http://schema-registry:8081
+
+{"pub_date":"Mon, 20 Feb 2023 23:51:14 GMT","creator":"Corey Larson","enclosure_url":"https://static1.srcdn.com/wordpress/wp-content/uploads/2023/02/star-wars-needs-mandalorian-movie-jon-favreau-wrong.jpg","link":"https://screenrant.com/star-wars-needs-mandalorian-movie-jon-favreau-wrong/","description":"\n                                            Jon Favreau thinks that The Mandalorian works great as a Disney+ tv series. But it could be so much more if made into a blockbuster movie. \n                                        ","category":{"array":["Movies","The Mandalorian","Star Wars (Franchise)"]},"title":"Jon Favreau's Wrong, Star Wars Needs A Mandalorian Movie","content":"\n                                                                                                                    <p><a href=\"https://screenrant.com/tag/the-mandalorian/\"><strong><em>The Mandalorian</em></strong></a> season 3 is headed to Disney+ on March 1st, but some fans wonder why it continues to be relegated to a Disney+ TV show when it could be so much more. <em>Star Wars</em> may have taken a gap from the big screen, but the last few years have seen Lucasfilm transform it into a success transmedia franchise. <em>The Mandalorian</em> is essentially Disney+&#39;s flagship TV show, with the first episode releasing on the day Disney launched the streaming service.</p>\n    \n                                                                                            "}
+{"pub_date":"Mon, 20 Feb 2023 23:30:48 GMT","creator":"Amy DeVore","enclosure_url":"https://static1.srcdn.com/wordpress/wp-content/uploads/2021/04/BELOW-DECK-SAILING-YACHT-GLEN.jpg","link":"https://screenrant.com/below-deck-captain-glenn-leadership-style-fan-reactions/","description":"\n                                            In a franchise that is often riddled with questionable leadership, Below Deck Sailing Yacht Captain Glenn is quickly becoming a fan-favorite.\n                                        ","category":{"array":["Reality TV","Below Deck Sailing Yacht","below deck"]},"title":"Below Deck Fans Praise Captain Glenn’s Leadership Style","content":"\n                                                                                                                    <p>After seasons of division over differing captain leadership styles, fans weighed in with an agreed-upon perspective: Captain Glenn Shephard from <a href=\"https://screenrant.com/tag/below-deck-sailing-yacht/\"><em><strong>Below Deck Sailing Yacht</strong></em></a> is leading the way with his top tier management style. <em>Sailing Yacht</em> is the third in a series of spin-offs, succeeded by the original<em> </em><a href=\"https://screenrant.com/tag/below-deck/\"><em>Below Deck</em></a>, coming alongside <a href=\"https://screenrant.com/tag/below-deck-mediterranean/\"><em>Below Deck Mediterranean</em></a><em>, </em><a href=\"https://screenrant.com/tag/below-deck-adventure/\"><em>Below Deck Adventure</em></a><em>, </em>and <a href=\"https://screenrant.com/tag/below-deck-down-under/\"><em>Below Deck Down Under</em></a><em>. </em>Each of these series has its own captain, yacht, and crew. Captain Glenn has been at the helm of <em>Sailing Yacht</em> since the series premiered<em> </em>in<em> </em>2020, a position he still maintains.</p>\n    \n                                                                                            "}
+{"pub_date":"Mon, 20 Feb 2023 23:30:14 GMT","creator":"Dashiel Reaves","enclosure_url":"https://static1.srcdn.com/wordpress/wp-content/uploads/2022/11/lobo-james-gunn-tease.jpg","link":"https://screenrant.com/dceased-lobo-anti-life-zombie-immunity-save-universe/","description":"\n                                            Lobo is one of the most ridiculous characters in the entire DC Comics Universe and it seems that now he's also their best hope for survival.\n                                        ","category":{"array":["Comics","DC Comics","lobo","Dceased"]},"title":"DC's Lobo Just Became the Universe's Most Important Hero","content":"\n                                                                                                                    <p><span class=\"article-alert\">Warning! Contains a preview for DCeased: War of the Undead Gods #6.</span><a href=\"https://screenrant.com/tag/lobo/\"><strong>Lobo</strong></a> is one of the most absurd and dangerous anti-heroes in all of <a href=\"https://screenrant.com/tag/dc-comics/\"><strong>DC Comics</strong></a>, having clashed time and time again with characters such as Superman, but in the world of <a href=\"https://screenrant.com/tag/dceased/\"><strong><em>DCeased</em></strong></a> it seems the main man is finally getting his chance to prove he could save the universe if he wants too.</p>\n    \n                                                                                            "}
+...
+{"pub_date":"Mon, 20 Feb 2023 18:37:59 GMT","creator":"Sarah Beth Waldrop","enclosure_url":"https://static1.srcdn.com/wordpress/wp-content/uploads/2023/02/tori-and-devin-1.jpg","link":"https://screenrant.com/the-challenge-fans-thrilled-about-devin-tori-win/","description":"\n                                            Fans are rejoicing after Tori and Devin's win on The Challenge: Ride or Dies. Find out why audiences are applauding the duo following the final.\n                                        ","category":{"array":["Reality TV","The Challenge","Are You the One?"]},"title":"Why The Challenge Fans Are Thrilled About Devin & Tori’s Win","content":"\n                                                                                                                    <p>Fans are overjoyed after Tori Deal and Devin Walker took home the ultimate prize on <em><strong><a href=\"https://screenrant.com/tag/the-challenge/\">The Challenge: Ride or Dies</a></strong></em>.<em><strong> </strong></em>Tori and Devin&#39;s relationship over the years has grown immensely since their first meeting on <em><a href=\"https://screenrant.com/tag/are-you-the-one/\">Are You The One: Second Chances</a> </em>back in 2017. On the show, they formed a rivalry that carried over into <em>The Challenge, </em>affecting them when they were forced to be partners on <em>The Challenge: Double Agents. </em>Despite their distaste for each other at the time, Tori and Devin both admitted that they worked extremely well together, which seemed to foreshadow what was to come.</p>\n    \n                                                                                            "}
+{"pub_date":"Mon, 20 Feb 2023 18:34:13 GMT","creator":"Gianna Nocera","enclosure_url":"https://static1.srcdn.com/wordpress/wp-content/uploads/2021/08/Jersey-Shore-Family-Vacation-Nikki-Hall.jpg","link":"https://screenrant.com/jersey-shore-family-vacation-nikki-hall-update/","description":"\n                                            Although she has not been in any recent episode of Jersey Shore: Family Vacation, Pauly D's girlfriend, Nikki Hall, has been keeping quite busy.\n                                        ","category":{"array":["Reality TV","Jersey Shore: Family Vacation","Jersey Shore","Double Shot At Love"]},"title":"Jersey Shore: What Nikki Hall Has Been Up To","content":"\n                                                                                                                    <p>With the new season of <a href=\"https://screenrant.com/tag/jersey-shore-family-vacation/\"><strong><em>Jersey Shore: Family Vacation</em></strong></a> underway, viewers have noticed that Pauly D&#39;s girlfriend, Nikki Hall, has been missing from recent episodes. Amid her absence, it has been vague as to what the <a href=\"https://screenrant.com/tag/jersey-shore/\"><em>Jersey Shore</em></a> girlfriend has been up to if she has not been filming for the hit spinoff series. Nikki first joined the cast in 2020 after she and Pauly got back together.</p>\n    \n                                                                                            "}
+{"pub_date":"Mon, 20 Feb 2023 18:31:16 GMT","creator":"Bruno Yonezawa","enclosure_url":"https://static1.srcdn.com/wordpress/wp-content/uploads/2023/02/diablo-4-open-beta-dates-lilith-key-art.jpg","link":"https://screenrant.com/diablo-4-open-beta-sign-up-dates-platforms/","description":"\n                                            Diablo 4 will have two open beta sessions before its release in June, and one of them will be made available for everyone. Here’s how to play.\n                                        ","category":{"array":["Gaming","Diablo 4","PC"]},"title":"Diablo 4 Open Beta Dates: How & Where To Sign Up","content":"\n                                                                                                                    <p><a href=\"https://screenrant.com/tag/diablo-4/\"><strong><em>Diablo 4</em></strong></a>&rsquo;s open beta dates have been revealed, allowing interested players to prepare themselves to test the highly awaited action RPG ahead of its release. Developer Blizzard&rsquo;s title was originally announced at BlizzCon 2019 and has since been in development leading up to this year&rsquo;s scheduled launch. The game will have two distinct testing periods, one of which is limited to a smaller group of players, and the other one is available for everyone.</p>\n    \n                                                                                            "}
+[2023-02-20 23:56:34,455] ERROR Error processing message, terminating consumer process:  (kafka.tools.ConsoleConsumer$)
+org.apache.kafka.common.errors.TimeoutException
+Processed a total of 100 messages
+
+Delete topic-screenrant-value subject ...
+curl --silent -X DELETE http://localhost:8081/subjects/topic-screenrant-value | jq .[]
+5
+
+List all current subjects ...
+curl --silent -X GET http://localhost:8081/subjects | jq .[]
+
+Delete topic topic-screenrant ...
+docker exec -it broker /bin/kafka-topics     --delete --topic      --bootstrap-server broker:29092
+topic-screenrant deleted ✅
+
+Delete connector ...
+curl --silent -X DELETE http://localhost:8083/connectors/filepulse-screenrant | jq .[]
+filepulse-screenrant connector deleted ✅
+Removing processed data from filepulse ...
+Processed data in filepulse deleted ✅
+```
+</p>
+</details>
+
+*Task 3 - Part 2:* Integration of a `SpoolDir TSV Source Connector` that enables to import the `IMDb dataset`.
+
+(**TBC**)
