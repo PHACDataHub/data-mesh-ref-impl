@@ -629,9 +629,9 @@ First, (setup Docker, test the setup, and then) start Kafka
 ./scripts/kafka/start_after_setup.sh
 ```
 
-Then run the test
+Setup the test:
 ```bash
-./scripts/movie-rec/test_filepulse_screenrant.sh
+./scripts/movie-rec/start.sh
 ```
 
 What does it do? Lets take a look at its content:
@@ -659,7 +659,15 @@ What does it do? Lets take a look at its content:
 
 # Create the FilePulse connector with the configuration shown above to read XML messages
 ./scripts/movie-rec/create_filepulse_connector.sh ${topic} ${connector} ${test_internal_ms_setup}
+```
 
+Run the test (can be repeated multiple times)
+```bash
+./scripts/movie-rec/run_multiple.sh
+```
+
+What does it do? Lets take a look at its content:
+```bash
 # Wait until the connector instance becomes available
 ./scripts/movie-rec/wait_for_connector.sh ${connector}
 
@@ -685,7 +693,15 @@ echo ''
 # Here messages are reread and reprocessed
 echo Reset consumer offset and consume again ✅
 ./scripts/movie-rec/consume_messages.sh ${topic} ${timeout_ms} ${consumer_group}
+```
 
+Stop the test
+```bash
+./scripts/movie-rec/run_multiple.sh
+```
+
+What does it do? Lets take a look at its content:
+```bash
 # Subject, topic, and connector instance are deleted to cleanup the cluster
 ./scripts/movie-rec/delete_subject.sh ${subject}
 ./scripts/movie-rec/delete_topic.sh ${topic}

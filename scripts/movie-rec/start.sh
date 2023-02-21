@@ -47,37 +47,3 @@ test_internal_ms_setup=1000
 
 # Create the FilePulse connector with the configuration shown above to read XML messages
 ./scripts/movie-rec/create_filepulse_connector.sh ${topic} ${connector} ${test_internal_ms_setup}
-
-# Wait until the connector instance becomes available
-./scripts/movie-rec/wait_for_connector.sh ${connector}
-
-# Wait until the schema registry subject becomes available
-./scripts/movie-rec/wait_for_subject.sh ${subject}
-
-# Wait until the topic becomes available
-./scripts/movie-rec/wait_for_topic.sh ${topic}
-
-# The FilePulse source connector instance will 
-# - automatically kick-in, 
-# - reading messages, 
-# - process them according to the "filters" instructions
-# - convert them from XML into AVRO messages according to the schema (now) stored in the schema registry
-# - produce these messages into the topic
-
-# Test consuming messages with in a number of seconds
-# The consumer_group variable is used to define a consumer group,
-# that will be used to reset the consumer offsets if messages need to be reread
-./scripts/movie-rec/consume_messages.sh ${topic} ${timeout_ms} ${consumer_group}
-echo ''
-
-# Here messages are reread and reprocessed
-echo Reset consumer offset and consume again ✅
-./scripts/movie-rec/consume_messages.sh ${topic} ${timeout_ms} ${consumer_group}
-
-# Subject, topic, and connector instance are deleted to cleanup the cluster
-./scripts/movie-rec/delete_subject.sh ${subject}
-./scripts/movie-rec/delete_topic.sh ${topic}
-./scripts/movie-rec/delete_connector.sh ${connector}
-
-# Downloaded RSS files are removed
-./scripts/movie-rec/remove_all_downloaded_rss.sh
