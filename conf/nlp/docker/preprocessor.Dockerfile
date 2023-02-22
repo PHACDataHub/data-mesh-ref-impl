@@ -1,9 +1,12 @@
 FROM  python:3.10
 
-COPY conf/nlp/preprocessor/requirements.txt requirements.txt
+COPY conf/nlp/python/preprocessor_requirements.txt requirements.txt
 RUN pip install -r requirements.txt
 
-COPY conf/nlp/preprocessor/screenrant-rss-value.avsc screenrant-rss-value.avsc
+ARG AVRO_FILES
+
+COPY $AVRO_FILES ./
+
 COPY src/nlp/preprocessor.py preprocessor.py
 
 ENTRYPOINT ["python"]

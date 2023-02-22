@@ -20,7 +20,9 @@ services:
   #   container_name: named-entity-recognizer
   #   build:
   #     context: ./
-  #     dockerfile: conf/nlp/named-entity-recognizer/Dockerfile
+  #     dockerfile: conf/nlp/docker/nlp_task.Dockerfile
+  #     args:
+  #       - INI_FILE=conf/movie-rec/ini/named-entity-recognizer.ini
   #   networks:
   #     - backend
   #   environment:
@@ -38,7 +40,9 @@ services:
   #   container_name: question-answer
   #   build:
   #     context: ./
-  #     dockerfile: conf/nlp/question-answer/Dockerfile
+  #     dockerfile: conf/nlp/docker/nlp_task.Dockerfile
+  #     args:
+  #       - INI_FILE=conf/movie-rec/ini/question-answer.ini
   #   networks:
   #     - backend
   #   environment:
@@ -56,7 +60,9 @@ services:
   #   container_name: sentiment-analyzer
   #   build:
   #     context: ./
-  #     dockerfile: conf/nlp/sentiment-analyzer/Dockerfile
+  #     dockerfile: conf/nlp/docker/nlp_task.Dockerfile
+  #     args:
+  #       - INI_FILE=conf/movie-rec/ini/sentiment-analyzer.ini
   #   networks:
   #     - backend
   #   environment:
@@ -74,7 +80,9 @@ services:
   #   container_name: summarizer
   #   build:
   #     context: ./
-  #     dockerfile: conf/nlp/summarizer/Dockerfile
+  #     dockerfile: conf/nlp/docker/nlp_task.Dockerfile
+  #     args:
+  #       - INI_FILE=conf/movie-rec/ini/summarizer.ini
   #   networks:
   #     - backend
   #   environment:
@@ -92,7 +100,9 @@ services:
   #   container_name: text-classifier
   #   build:
   #     context: ./
-  #     dockerfile: conf/nlp/text-classifier/Dockerfile
+  #     dockerfile: conf/nlp/docker/nlp_task.Dockerfile
+  #     args:
+  #       - INI_FILE=conf/movie-rec/ini/text-classifier.ini
   #   networks:
   #     - backend
   #   environment:
@@ -110,7 +120,9 @@ services:
     container_name: preprocessor
     build:
       context: ./
-      dockerfile: conf/nlp/preprocessor/Dockerfile
+      dockerfile: conf/nlp/docker/preprocessor.Dockerfile
+      args:
+        - AVRO_FILES=conf/movie-rec/avro/screenrant-rss-value.avsc
     networks:
       - backend
     environment:
