@@ -16,13 +16,10 @@ schema_registry_local_host=localhost
 schema_registry_port=8081
 
 entity=screenrant
-topic=topic-${entity}
-connector=filepulse-${entity}
+topic=${entity}-topic
+connector=${entity}-filepulse-connector
 subject=${topic}-value
-consumer_group=${entity}-consumer
-
-timeout_ms=5000
-test_internal_ms_setup=1000
+consumer_group=${entity}-consumer-group
 
 # Subject, topic, and connector instance are deleted to cleanup the cluster
 ./scripts/movie-rec/delete_subject.sh ${subject}

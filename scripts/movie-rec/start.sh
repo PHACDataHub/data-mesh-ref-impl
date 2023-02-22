@@ -16,10 +16,10 @@ schema_registry_local_host=localhost
 schema_registry_port=8081
 
 entity=screenrant
-topic=topic-${entity}
-connector=filepulse-${entity}
+topic=${entity}-topic
+connector=${entity}-filepulse-connector
 subject=${topic}-value
-consumer_group=${entity}-consumer
+consumer_group=${entity}-consumer-group
 
 timeout_ms=5000
 test_internal_ms_setup=1000
@@ -46,4 +46,4 @@ test_internal_ms_setup=1000
 ./scripts/movie-rec/list_subjects.sh
 
 # Create the FilePulse connector with the configuration shown above to read XML messages
-./scripts/movie-rec/create_filepulse_connector.sh ${topic} ${connector} ${test_internal_ms_setup}
+./scripts/movie-rec/create_filepulse_connector.sh ${topic} ${connector}

@@ -1,6 +1,6 @@
 # !/bin/bash
 
-valid_images="question-answer, summarizer, text-classifier"
+valid_images="question-answer, summarizer, text-classifier, sentiment-analyzer, named-entity-recognizer, preprocessor"
 
 if [ $# -eq 0 ] || [ -z "$(echo ${valid_images} | grep $1)" ]; then
     echo "Usage: ./scripts/nlp/build_image.sh <image_name>"

@@ -45,7 +45,3 @@ test_internal_ms_setup=1000
 # that will be used to reset the consumer offsets if messages need to be reread
 ./scripts/movie-rec/consume_messages.sh ${topic} ${timeout_ms} ${consumer_group}
 echo ''
-
-# Here messages are reread and reprocessed
-echo Reset consumer offset and consume again ✅
-./scripts/movie-rec/consume_messages.sh ${topic} ${timeout_ms} ${consumer_group}

@@ -1,5 +1,7 @@
 datasets
 evaluate
+pandas
+tabulate
 transformers
 transformers[sentencepiece]
 sacremoses
