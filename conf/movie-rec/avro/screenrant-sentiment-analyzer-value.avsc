@@ -27,6 +27,7 @@
             }, 
             "default": []
         },
+        {"name":"link", "type": "string", "isOptional": false},
         {
             "name":"news_label_list",
             "type": { 
@@ -42,6 +43,7 @@
             }, 
             "default": []
         },
+        {"name":"pub_date", "type": "string", "isOptional": false},
         {"name":"sentiment_score", "type":"float"},
         {"name":"timestamp_sa", "type": "int"},
         {"name":"title", "type": "string"}

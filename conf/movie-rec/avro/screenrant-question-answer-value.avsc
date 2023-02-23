@@ -27,6 +27,7 @@
             }, 
             "default": []
         },
+        {"name":"link", "type": "string", "isOptional": false},
         {
             "name":"news_label_list",
             "type": { 
@@ -42,6 +43,7 @@
             }, 
             "default": []
         },
+        {"name":"pub_date", "type": "string", "isOptional": false},
         {"name":"mentioned_movie", "type":"string"},
         {"name":"mentioned_score", "type":"float"},
         {"name":"timestamp_qa", "type": "int"},

@@ -1,7 +1,7 @@
 # Project specific
 
 ./data/health-analytics/csv
-./data/neo4j
+data/neo4j
 kafka-ce
 .obsidian
 cache/nlp

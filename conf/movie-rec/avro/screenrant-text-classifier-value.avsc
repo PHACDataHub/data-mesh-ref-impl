@@ -27,6 +27,7 @@
             }, 
             "default": []
         },
+        {"name":"link", "type": "string"},
         {
             "name":"news_label_list",
             "type": { 
@@ -42,7 +43,8 @@
             }, 
             "default": []
         },
-        {"name":"timestamp_pp", "type": "int"},
+        {"name":"pub_date", "type": "string"},
+        {"name":"timestamp_tc", "type": "int"},
         {"name":"title", "type": "string"}
     ]
 }

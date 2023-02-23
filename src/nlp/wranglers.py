@@ -19,6 +19,8 @@ def input_rss(key, val):
     rss_val['category'] = val['category']
     rss_val['creator'] = val['creator']
     rss_val['enclosure_url'] = val['enclosure_url']
+    rss_val['link'] = val['link']
+    rss_val['pub_date'] = val['pub_date']
 
     text = re.sub("\s*\n+\s*$", "", val['content'])
     text = re.sub("^\n+\s+", "", text)
@@ -35,7 +37,7 @@ def input_rss(key, val):
     rss_val['title'] = re.sub("^\n+\s+", "", text)
 
     rss_val['full_text'] = f"{rss_val['title']}. {', '.join(rss_val['category'])}. {rss_val['description']} {rss_val['content']}"
-    rss_val['timestamp_pp'] = int(time.time())
+    rss_val['timestamp_tc'] = int(time.time())
 
     rss_key = { 'link': val['link'], 'pub_date': val['pub_date'] }
 
