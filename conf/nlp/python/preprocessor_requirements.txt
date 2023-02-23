@@ -1,4 +1,0 @@
-bs4
-confluent_kafka
-fastavro
-requests

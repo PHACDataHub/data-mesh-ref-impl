@@ -1,7 +1,11 @@
+bs4
+confluent_kafka
 datasets
 evaluate
+fastavro
 pandas
 tabulate
 transformers
 transformers[sentencepiece]
+requests
 sacremoses

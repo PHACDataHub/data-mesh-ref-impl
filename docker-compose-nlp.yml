@@ -12,125 +12,110 @@ version: "3.8"
 ##############################################################################
 services:
 
-  # ####################
-  # # named-entity-recognizer
-  # ####################
-  # named-entity-recognizer:
-  #   image: named-entity-recognizer:latest
-  #   container_name: named-entity-recognizer
-  #   build:
-  #     context: ./
-  #     dockerfile: conf/nlp/docker/nlp_task.Dockerfile
-  #     args:
-  #       - INI_FILE=conf/movie-rec/ini/named-entity-recognizer.ini
-  #   networks:
-  #     - backend
-  #   environment:
-  #     - HF_DATASETS_CACHE=/cache/datasets
-  #     - TRANSFORMERS_CACHE=/cache/transformers
-  #   volumes:
-  #     - $PWD/cache/nlp/named-entity-recognizer/datasets:/cache/datasets
-  #     - $PWD/cache/nlp/named-entity-recognizer/transformers:/cache/transformers
-
-  # ####################
-  # # question-answer
-  # ####################
-  # question-answer:
-  #   image: question-answer:latest
-  #   container_name: question-answer
-  #   build:
-  #     context: ./
-  #     dockerfile: conf/nlp/docker/nlp_task.Dockerfile
-  #     args:
-  #       - INI_FILE=conf/movie-rec/ini/question-answer.ini
-  #   networks:
-  #     - backend
-  #   environment:
-  #     - HF_DATASETS_CACHE=/cache/datasets
-  #     - TRANSFORMERS_CACHE=/cache/transformers
-  #   volumes:
-  #     - $PWD/cache/nlp/question-answer/datasets:/cache/datasets
-  #     - $PWD/cache/nlp/question-answer/transformers:/cache/transformers
-
-  # ####################
-  # # sentiment-analyzer
-  # ####################
-  # sentiment-analyzer:
-  #   image: sentiment-analyzer:latest
-  #   container_name: sentiment-analyzer
-  #   build:
-  #     context: ./
-  #     dockerfile: conf/nlp/docker/nlp_task.Dockerfile
-  #     args:
-  #       - INI_FILE=conf/movie-rec/ini/sentiment-analyzer.ini
-  #   networks:
-  #     - backend
-  #   environment:
-  #     - HF_DATASETS_CACHE=/cache/datasets
-  #     - TRANSFORMERS_CACHE=/cache/transformers
-  #   volumes:
-  #     - $PWD/cache/nlp/sentiment-analyzer/datasets:/cache/datasets
-  #     - $PWD/cache/nlp/sentiment-analyzer/transformers:/cache/transformers
-
-  # ####################
-  # # summarizer
-  # ####################
-  # summarizer:
-  #   image: summarizer:latest
-  #   container_name: summarizer
-  #   build:
-  #     context: ./
-  #     dockerfile: conf/nlp/docker/nlp_task.Dockerfile
-  #     args:
-  #       - INI_FILE=conf/movie-rec/ini/summarizer.ini
-  #   networks:
-  #     - backend
-  #   environment:
-  #     - HF_DATASETS_CACHE=/cache/datasets
-  #     - TRANSFORMERS_CACHE=/cache/transformers
-  #   volumes:
-  #     - $PWD/cache/nlp/summarizer/datasets:/cache/datasets
-  #     - $PWD/cache/nlp/summarizer/transformers:/cache/transformers
-
-  # ####################
-  # # text-classifier
-  # ####################
-  # text-classifier:
-  #   image: text-classifier:latest
-  #   container_name: text-classifier
-  #   build:
-  #     context: ./
-  #     dockerfile: conf/nlp/docker/nlp_task.Dockerfile
-  #     args:
-  #       - INI_FILE=conf/movie-rec/ini/text-classifier.ini
-  #   networks:
-  #     - backend
-  #   environment:
-  #     - HF_DATASETS_CACHE=/cache/datasets
-  #     - TRANSFORMERS_CACHE=/cache/transformers
-  #   volumes:
-  #     - $PWD/cache/nlp/text-classifier/datasets:/cache/datasets
-  #     - $PWD/cache/nlp/text-classifier/transformers:/cache/transformers
-
   ####################
-  # preprocessor
+  # named-entity-recognizer
   ####################
-  preprocessor:
-    image: preprocessor:latest
-    container_name: preprocessor
+  named-entity-recognizer:
+    image: named-entity-recognizer:latest
+    container_name: named-entity-recognizer
     build:
       context: ./
-      dockerfile: conf/nlp/docker/preprocessor.Dockerfile
+      dockerfile: conf/nlp/docker/nlp_task.Dockerfile
       args:
-        - AVRO_FILES=conf/movie-rec/avro/screenrant-rss-value.avsc
+        - INI_FILE=conf/movie-rec/ini/named-entity-recognizer.ini
+        - AVRO_PATH=conf/movie-rec/avro
     networks:
       - backend
     environment:
       - HF_DATASETS_CACHE=/cache/datasets
       - TRANSFORMERS_CACHE=/cache/transformers
     volumes:
-      - $PWD/cache/nlp/preprocessor/datasets:/cache/datasets
-      - $PWD/cache/nlp/preprocessor/transformers:/cache/transformers
+      - $PWD/cache/nlp/named-entity-recognizer/datasets:/cache/datasets
+      - $PWD/cache/nlp/named-entity-recognizer/transformers:/cache/transformers
+
+  ####################
+  # question-answer
+  ####################
+  question-answer:
+    image: question-answer:latest
+    container_name: question-answer
+    build:
+      context: ./
+      dockerfile: conf/nlp/docker/nlp_task.Dockerfile
+      args:
+        - INI_FILE=conf/movie-rec/ini/question-answer.ini
+        - AVRO_PATH=conf/movie-rec/avro
+    networks:
+      - backend
+    environment:
+      - HF_DATASETS_CACHE=/cache/datasets
+      - TRANSFORMERS_CACHE=/cache/transformers
+    volumes:
+      - $PWD/cache/nlp/question-answer/datasets:/cache/datasets
+      - $PWD/cache/nlp/question-answer/transformers:/cache/transformers
+
+  ####################
+  # sentiment-analyzer
+  ####################
+  sentiment-analyzer:
+    image: sentiment-analyzer:latest
+    container_name: sentiment-analyzer
+    build:
+      context: ./
+      dockerfile: conf/nlp/docker/nlp_task.Dockerfile
+      args:
+        - INI_FILE=conf/movie-rec/ini/sentiment-analyzer.ini
+        - AVRO_PATH=conf/movie-rec/avro
+    networks:
+      - backend
+    environment:
+      - HF_DATASETS_CACHE=/cache/datasets
+      - TRANSFORMERS_CACHE=/cache/transformers
+    volumes:
+      - $PWD/cache/nlp/sentiment-analyzer/datasets:/cache/datasets
+      - $PWD/cache/nlp/sentiment-analyzer/transformers:/cache/transformers
+
+  ####################
+  # summarizer
+  ####################
+  summarizer:
+    image: summarizer:latest
+    container_name: summarizer
+    build:
+      context: ./
+      dockerfile: conf/nlp/docker/nlp_task.Dockerfile
+      args:
+        - INI_FILE=conf/movie-rec/ini/summarizer.ini
+        - AVRO_PATH=conf/movie-rec/avro
+    networks:
+      - backend
+    environment:
+      - HF_DATASETS_CACHE=/cache/datasets
+      - TRANSFORMERS_CACHE=/cache/transformers
+    volumes:
+      - $PWD/cache/nlp/summarizer/datasets:/cache/datasets
+      - $PWD/cache/nlp/summarizer/transformers:/cache/transformers
+
+  ####################
+  # text-classifier
+  ####################
+  text-classifier:
+    image: text-classifier:latest
+    container_name: text-classifier
+    build:
+      context: ./
+      dockerfile: conf/nlp/docker/nlp_task.Dockerfile
+      args:
+        - INI_FILE=conf/movie-rec/ini/text-classifier.ini
+        - AVRO_PATH=conf/movie-rec/avro
+    networks:
+      - backend
+    environment:
+      - HF_DATASETS_CACHE=/cache/datasets
+      - TRANSFORMERS_CACHE=/cache/transformers
+    volumes:
+      - $PWD/cache/nlp/text-classifier/datasets:/cache/datasets
+      - $PWD/cache/nlp/text-classifier/transformers:/cache/transformers
 
 ################################################################################
 #

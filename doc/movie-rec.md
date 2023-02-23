@@ -414,27 +414,116 @@ We create our `NLP tasks` as following:
 <summary>Click here for more details.</summary>
 <p>
 
-1. Test `Docker` images for our `NLP Tasks`
+1. The `NLP Task` docker are built for multiple tasks
+- Named Entity Recognition
+- Question Answering
+- Sentiment Analysis
+- Summarization
+- Text Classification (multi-class/-label)
 
-```bash
-docker compose -f docker-compose-nlp.yml up
-```
-```bash
-question-answer  |       score  start  end               answer
-question-answer  | 0  0.938275    141  160  Joker: Folie à Deux
-question-answer  | 
-summerizer       |  Todd Phillips took to Instagram to unveil the first look at Lady Gaga in the sequel Joker: Folie à Deux. All signs appear to point to the multi-hyphenate portraying iconic DC character Harley Quinn. The Joker sequel is set to release on October 4, 2024. 
-summerizer       | 
-text-classifier  |                                             sequence     labels    scores
-text-classifier  | 0  Who says Valentine's Day can't have some jokes...      movie  0.551902
-text-classifier  | 1  Who says Valentine's Day can't have some jokes...      sport  0.205438
-text-classifier  | 2  Who says Valentine's Day can't have some jokes...   business  0.103893
-text-classifier  | 3  Who says Valentine's Day can't have some jokes...     health  0.084764
-text-classifier  | 4  Who says Valentine's Day can't have some jokes...  education  0.027428
-text-classifier  | 5  Who says Valentine's Day can't have some jokes...   politics  0.026575
+All of them built by extending the `nvcr.io/nvidia/pytorch:23.01-py3` `Docker` image. Each is configured by an `ini` file, for example for `named-entity-recognizer` image
+
+```ini
+[pipeline]
+name=ner
+model=Jean-Baptiste/roberta-large-ner-english
+aggregation_strategy=simple
+kwargs=aggregation_strategy
+
+[consumer]
+topic=screenrant-text-classifier-topic
+bootstrap_servers=broker:29092
+schema_registry=http://schema-registry:8081
+avro_key_schema_file=screenrant-text-classifier-key.avsc
+avro_val_schema_file=screenrant-text-classifier-value.avsc
+consumer_group_id=named-entity-recognizer-cg
+auto_offset_reset=earliest
+
+[producer]
+topic=screenrant-named-entity-recognizer-topic
+bootstrap_servers=broker:29092
+schema_registry=http://schema-registry:8081
+avro_key_schema_file=screenrant-text-classifier-key.avsc
+avro_val_schema_file=screenrant-named-entity-recognizer-value.avsc
+target=full_text
+
+[wranglers]
+preprocess=input_text_classifier
+postprocess=output_named_entity_recognizer
 ```
 
-(**TBC**)
+As shown above, each of them reads messages from a topic, e.g. `screenrant-text-classifier-topic`, and writes to another `screenrant-named-entity-recognizer-topic`, thus *chaining* the processing of messages through multi-stages (each served by an NLP task).
+
+In each stage, the corresponding `NLP task` must handle messages with proper input and output formats, specified in `Avro` formats.
+
+For example `screenrant-text-classifier-key.avsc`:
+```json
+{
+    "type": "record",
+    "name": "screentrant_text_classifier_key",
+    "fields":[
+        {"name":"link", "type": "string", "isOptional": false},
+        {"name":"pub_date", "type": "string", "isOptional": false}
+    ]
+}
+```
+
+and `screenrant-text-classifier-value.avsc`:
+```json
+{
+    "type": "record",
+    "name": "screentrant_text_classifier_value",
+    "fields":[
+        {
+            "name":"category", 
+            "type": { "type": "array", "items": "string" }, 
+            "default": []
+        },
+        {"name":"content", "type": "string"},
+        {"name":"creator", "type": "string"},
+        {"name":"description", "type": "string"},
+        {"name":"enclosure_url", "type": "string"},
+        {"name":"full_text", "type": "string"},
+        {
+            "name":"href_list",
+            "type": { 
+                "type": "array", 
+                "items": { 
+                    "name":"href", 
+                    "type": "record", 
+                    "fields": [ 
+                        {"name":"content", "type": "string"},
+                        {"name":"url", "type": "string"}  
+                    ]
+                } 
+            }, 
+            "default": []
+        },
+        {
+            "name":"news_label_list",
+            "type": { 
+                "type": "array", 
+                "items": { 
+                    "name":"label", 
+                    "type": "record", 
+                    "fields": [ 
+                        {"name":"name", "type": "string"},
+                        {"name":"score", "type": "float"}  
+                    ]
+                } 
+            }, 
+            "default": []
+        },
+        {"name":"timestamp_pp", "type": "int"},
+        {"name":"title", "type": "string"}
+    ]
+}
+```
+
+All `NLP task` are equipped with (via `ini` file configuration)
+- an instance of `Kafka consumer` and `Kafka producer`,
+- a configurable [HuggingFace](https://huggingface.co) `NLP pipeline`
+- a pair of key/value `avro` schema files for messages in each of incoming and outgoing directions
 
 </p>
 </details>

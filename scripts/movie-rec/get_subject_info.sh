@@ -17,6 +17,11 @@ schema_id=$(curl --silent -X GET http://${schema_registry_local_host}:${schema_r
 echo schema_id=${schema_id}
 echo ''
 
+echo "Find details of the ${subject}..." 
+echo "curl --silent -X GET http://${schema_registry_local_host}:${schema_registry_port}/subjects/${subject}/versions/latest"
+curl --silent -X GET http://${schema_registry_local_host}:${schema_registry_port}/subjects/${subject}/versions/latest
+echo ''
+
 echo "List all versions of ${subject}..." 
 echo "curl --silent -X GET http://${schema_registry_local_host}:${schema_registry_port}/subjects/${subject}/versions | jq"
 curl --silent -X GET http://${schema_registry_local_host}:${schema_registry_port}/subjects/${subject}/versions | jq
