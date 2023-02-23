@@ -1,166 +1,25 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// A. Load cases, manufacturers and relate them 
+// title.akas.tsv.gz - Contains the following information for titles:
+// titleId (string) - a tconst, an alphanumeric unique identifier of the title
+// ordering (integer) – a number to uniquely identify rows for a given titleId
+// title (string) – the localized title
+// region (string) - the region for this version of the title
+// language (string) - the language of the title
+// types (array) - Enumerated set of attributes for this alternative title. One or more of the following: "alternative", "dvd", "festival", "tv", "video", "working", "original", "imdbDisplay". New values may be added in the future without warning
+// attributes (array) - Additional terms to describe this alternative title, not enumerated
+// isOriginalTitle (boolean) – 0: not original title; 1: original title
 
-LOAD CSV WITH HEADERS FROM "file:///csv/demographics.csv" AS row
-
-//Conditionally create Case nodes, set properties on first create
-MERGE (c:Case { primaryid: toInteger(row.primaryid) })
-    ON CREATE SET
-        c.eventDate= date(row.eventDate),
-        c.reportDate= date(row.reportDate),
-        c.age = toFloat(row.age),
-        c.ageUnit = row.ageUnit,
-        c.gender = row.sex,
-        c.reporterOccupation = row.reporterOccupation
-
-    //Conditionally create Manufacturer
-    MERGE (m:Manufacturer { manufacturerName: row.manufacturerName } )
-
-    //Relate case and manufacturer
-    MERGE (m)-[:REGISTERED]->(c)
-
-    //Conditionally create age group node and relate with case
-    MERGE (a:AgeGroup { ageGroup: row.ageGroup })
-
-    //Relate case with age group
-    MERGE (c)-[:FALLS_UNDER]->(a)
-
-    RETURN count (c);
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// B. Load other information related to the events 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// B.1 Load outcomes and link them with cases 
-
-LOAD CSV WITH HEADERS FROM "file:///csv/outcome.csv" AS row
-
-// Conditionally create outcome node
-MERGE (o:Outcome { code: row.code })
-    ON CREATE SET
-        o.outcome = row.outcome
-
-WITH o, row
-    
-    // Find the case to relate this outcome to
-    MATCH (c:Case {primaryid: toInteger(row.primaryid)})
-
-    // Relate
-    MERGE (c)-[:RESULTED_IN]->(o)
-
-    RETURN count(o);
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// B.2 Load reactions and link them with cases 
-
-LOAD CSV WITH HEADERS FROM "file:///csv/reaction.csv" AS row
-
-//Conditionally create reaction node
-MERGE (r:Reaction { description: row.description })
-
-WITH r, row
-
-    //Find the case to relate this reaction to
-    MATCH (c:Case {primaryid: toInteger(row.primaryid)})
-
-    //Relate
-    MERGE (c)-[:HAS_REACTION]->(r)
-
-    RETURN count(r);
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// B.3 Load report sources and link them with cases 
-
-LOAD CSV WITH HEADERS FROM "file:///csv/reportSources.csv" AS row
-
-// Conditionally create reportSource node
-MERGE (r:ReportSource { code: row.code })
-    ON CREATE SET
-        r.name = row.name
-
-WITH r, row
-
-    // Find the case to relate this report source to
-    MATCH (c:Case {primaryid: toInteger(row.primaryid) })
-
-WITH c, r
-
-    // Relate
-    MERGE (c)-[:REPORTED_BY]->(r)
-
-    RETURN count(r);
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// C. Load drugs and therapies
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// C.1 Load drugs with indications and link them with cases using relationships based on their roles for the cases
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-LOAD CSV WITH HEADERS FROM "file:///csv/drugs-indication.csv" AS row
-
-CALL { WITH row
-
-    //Conditionally create Drug node
-    MERGE (d:Drug { name: row.name })
+LOAD CSV WITH HEADERS FROM "file:///title.akas.tsv" AS row FIELDTERMINATOR '\t'
+CALL {
+    WITH row
+    MERGE (t:Title { titleId: row.titleId })
         ON CREATE SET
-            d.primarySubstabce = row.primarySubstabce
-
-    WITH d, row
-
-        //Find the case to relate this drug based on the suspect type
-        MATCH (c:Case {primaryid: toInteger(row.primaryid)})
-
-        FOREACH (_ IN CASE WHEN row.role = "Primary Suspect" THEN [1] ELSE [] END |
-            //Relate
-            MERGE (c)-[relate:IS_PRIMARY_SUSPECT { drugSequence: row.drugSequence, route: row.route, doseAmount: row.doseAmount, doseUnit: row.doseUnit, indication: row.indication  }]->(d)
-        )
-
-        FOREACH (_ IN CASE WHEN row.role = "Secondary Suspect" THEN [1] ELSE [] END |
-            //Relate
-            MERGE (c)-[relate:IS_SECONDARY_SUSPECT { drugSequence: row.drugSequence, route: row.route, doseAmount: row.doseAmount, doseUnit: row.doseUnit, indication: row.indication  }]->(d)
-        )
-
-        FOREACH (_ IN CASE WHEN row.role = "Concomitant" THEN [1] ELSE [] END |
-            //Relate
-            MERGE (c)-[relate:IS_CONCOMITANT { drugSequence: row.drugSequence, route: row.route, doseAmount: row.doseAmount, doseUnit: row.doseUnit, indication: row.indication  }]->(d)
-        )
-
-        FOREACH (_ IN CASE WHEN row.role = "Interacting" THEN [1] ELSE [] END |
-            //Relate
-            MERGE (c)-[relate:IS_INTERACTING { drugSequence: row.drugSequence, route: row.route, doseAmount: row.doseAmount, doseUnit: row.doseUnit, indication: row.indication  }]->(d)
-        )
-
-} IN TRANSACTIONS OF 5000 ROWS;
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// C.2 Load therapies and link them with cases and drugs 
-
-LOAD CSV WITH HEADERS FROM "file:///csv/therapy.csv" AS row
-
-//Conditionally create therapy node
-MERGE (t:Therapy { primaryid: toInteger(row.primaryid) })
-
-WITH t, row
-    
-    //Find the case to relate this therapy to
-    MATCH (c:Case {primaryid: toInteger(row.primaryid)})
-
-    //Relate case with therapy
-    MERGE (c)-[:RECEIVED]->(t)
-
-WITH c, t, row
-
-    //Find drugs prescribed in the therapy
-    MATCH (d:Drug { name: row.drugName })
-
-    //Relate therapy and drugs
-    MERGE (t)-[:PRESCRIBED { drugSequence: row.drugSequence, startYear: coalesce(row.startYear, 1900), endYear: coalesce(row.endYear, 2021) } ]->(d);
+            t.ordering = toInteger(row.ordering),
+            t.title = row.title,
+            t.region = row.region,
+            t.language = row.language,
+            t. types = row.types,
+            t.attributes = row.attributes,
+            t.isOriginalTitle = CASE row.ordering WHEN '1' THEN True ELSE False;
+} IN TRANSACTIONS OF 500 ROWS
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
