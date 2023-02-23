@@ -525,6 +525,31 @@ All `NLP task` are equipped with (via `ini` file configuration)
 - a configurable [HuggingFace](https://huggingface.co) `NLP pipeline`
 - a pair of key/value `avro` schema files for messages in each of incoming and outgoing directions
 
+Start `Kafka cluster` as usual, then create the *initial incoming and outgoing topics*:
+```bash
+./scripts/nlp/create_topics.sh
+```
+
+Start the `NLP cluster`
+```bash
+./scripts/nlp/start.sh
+```
+
+Feed the first batch of `ScreenRant` news by RSS feed:
+```bash
+./scripts/movie-rec/start.sh
+```
+
+Sometime later, feed another batch of `ScreenRant` news by RSS feed:
+```bash
+./scripts/movie-rec/download_current_rss.sh
+```
+
+Later, to stop the `NLP cluster`
+```bash
+./scripts/nlp/stop.sh
+```
+
 </p>
 </details>
 

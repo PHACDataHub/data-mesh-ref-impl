@@ -92,7 +92,7 @@ if __name__ == '__main__':
                 continue
 
             count += 1
-            print("Count #{}".format(count), flush=True)
+            print("Count #{} {} {}".format(count, msg.key(), msg.value()), flush=True)
             msg_key, msg_val = consumer.consume(msg)
 
             if msg_key is not None or msg_val is not None:

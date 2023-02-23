@@ -24,6 +24,8 @@ services:
       args:
         - INI_FILE=conf/movie-rec/ini/named-entity-recognizer.ini
         - AVRO_PATH=conf/movie-rec/avro
+    depends_on:
+      - text-classifier
     networks:
       - backend
     environment:
@@ -45,6 +47,8 @@ services:
       args:
         - INI_FILE=conf/movie-rec/ini/question-answer.ini
         - AVRO_PATH=conf/movie-rec/avro
+    depends_on:
+      - text-classifier
     networks:
       - backend
     environment:
@@ -66,6 +70,8 @@ services:
       args:
         - INI_FILE=conf/movie-rec/ini/sentiment-analyzer.ini
         - AVRO_PATH=conf/movie-rec/avro
+    depends_on:
+      - text-classifier
     networks:
       - backend
     environment:
@@ -87,6 +93,8 @@ services:
       args:
         - INI_FILE=conf/movie-rec/ini/summarizer.ini
         - AVRO_PATH=conf/movie-rec/avro
+    depends_on:
+      - text-classifier
     networks:
       - backend
     environment:
