@@ -988,6 +988,76 @@ Processed data in filepulse deleted ✅
 </p>
 </details>
 
-*Task 3 - Part 2:* Integration of a `SpoolDir TSV Source Connector` that enables to import the `IMDb dataset`.
+&nbsp;
 
-(**TBC**)
+*Task 3 - Part 2:* Integration of the `IMDb dataset`.
+
+The [IMDB Dataset](https://www.imdb.com/interfaces/) can easily be downloaded.
+
+Here we follow the instructions for [large dataset import](https://neo4j.com/docs/operations-manual/current/tools/neo4j-admin/neo4j-admin-import/) in Neo4j.
+
+<details>
+<summary>Click here for more details.</summary>
+<p>
+
+Prepare the `Neo4j` docker
+```bash
+./scripts/neo4j/start_first_time.sh
+```
+
+Then, run the import procedure
+```bash
+./scripts/neo4j/import_data.sh
+```
+
+This, infact, is a bit complicated process
+```bash
+#!/bin/bash
+
+echo 'Copying IMDb dataset ...'
+sudo cp *.tsv data/neo4j/import/.
+sudo cp conf/movie-rec/neo4j/*.header.tsv data/neo4j/import/.
+echo 'IMDb dataset copied ✅'
+
+echo 'Stop the current default database (neo4j)...'
+sudo cp conf/movie-rec/neo4j/neo4j_stop_database.cql data/neo4j/import/.
+docker exec -u neo4j --interactive --tty  neo4j cypher-shell -u neo4j -p phac2022 --file /import/neo4j_stop_database.cql
+docker exec -it neo4j bash -c 'rm -rf /data/transactions/neo4j'
+echo 'The current default database (neo4j) is stopped ✅'
+
+echo 'Perform low-level data import ...'
+docker exec -it neo4j bash -c 'bin/neo4j-admin database import full --delimiter=TAB --nodes Name=/import/name.basics.header.tsv,/import/name.basics.tsv --nodes Title=/import/title.basics.header.tsv,/import/title.basics.tsv --nodes Crew=/import/title.crew.header.tsv,/import/title.crew.tsv --nodes Rating=/import/title.ratings.header.tsv,/import/title.ratings.tsv --relationships CREW_IN=/import/title.principals.header.tsv,/import/title.principals.tsv --relationships PART_OF=/import/title.episode.header.tsv,/import/title.episode.tsv --skip-bad-relationships=true neo4j'
+echo 'Low-level data import completed ✅'
+
+echo 'Database is being restarted ...'
+./scripts/neo4j/stop.sh 
+./scripts/neo4j/start_again.sh 
+echo 'Database is restarted ✅'
+
+echo 'Restart the current default database (neo4j)...'
+sudo cp conf/movie-rec/neo4j/neo4j_start_database.cql data/neo4j/import/.
+docker exec -u neo4j --interactive --tty  neo4j cypher-shell -u neo4j -p phac2022 -d system --file /import/neo4j_start_database.cql
+echo 'The current default database (neo4j) is restarted ✅'
+
+echo 'Creating constraints and indexes ...'
+sudo cp conf/movie-rec/neo4j/neo4j_constraints.cql data/neo4j/import/.
+docker exec -u neo4j --interactive --tty  neo4j cypher-shell -u neo4j -p phac2022 --file /import/neo4j_constraints.cql
+echo 'Constraints and indexes are created ✅'
+
+echo 'Applying constraints and indexes ...'
+sudo cp conf/movie-rec/neo4j/neo4j_import.cql data/neo4j/import/.
+docker exec -u neo4j --interactive --tty  neo4j cypher-shell -u neo4j -p phac2022 --file /import/neo4j_import.cql
+echo 'Constraints and indexes are applied ✅'
+```
+
+After all done, we can create an instance of the `Neo4j Sink connector` to start consuming `ScreenRant RSS feeds` into `Neo4j`
+```bash
+./scripts/neo4j/movie-rec/setup_kafka_connector.sh 
+```
+
+Below is `The Matrix` movie, its principal cast and their `roles`.
+
+![The Matrix movie](../img/movie-rec/the-matrix-movie.png)
+
+</p>
+</details>

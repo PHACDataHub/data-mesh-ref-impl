@@ -1,34 +1,4 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// title.akas.tsv - Contains the following information for titles:
-// - titleId (string) - a tconst, an alphanumeric unique identifier of the title
-// - ordering (integer) – a number to uniquely identify rows for a given titleId
-// - title (string) – the localized title
-// - region (string) - the region for this version of the title
-// - language (string) - the language of the title
-// - types (array) - Enumerated set of attributes for this alternative title. One or more of the following: "alternative", "dvd", "festival", "tv", "video", "working", "original", "imdbDisplay". New values may be added in the future without warning
-// - attributes (array) - Additional terms to describe this alternative title, not enumerated
-// - isOriginalTitle (boolean) – 0: not original title; 1: original title
-//
-CALL apoc.periodic.iterate("
-    CALL apoc.load.csv('file:///title.akas.tsv', {sep:'TAB'})
-        YIELD lineNo, map, list
-    RETURN map AS row
-","
-    WITH row
-    MERGE (t:LocalTitle { titleId: row.titleId, ordering: toInteger(row.ordering) })
-        SET
-            t.title = row.title,
-            t.region = row.region,
-            t.language = row.language,
-            t.types = row.types,
-            t.attributes = row.attributes,
-            t.isOriginalTitle = CASE row.isOriginalTitle WHEN '1' THEN True ELSE False END;
-",
-    {batchSize:100, parallel:true}
-);
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // title.basics.tsv - Contains the following information for titles:
 // - tconst (string) - alphanumeric unique identifier of the title
 // - titleType (string) – the type/format of the title (e.g. movie, short, tvseries, tvepisode, video, etc)
@@ -41,67 +11,11 @@ CALL apoc.periodic.iterate("
 // - genres (string array) – includes up to three genres associated with the title
 //
 CALL apoc.periodic.iterate("
-    CALL apoc.load.csv('file:///title.basics.tsv', {sep:'TAB'})
-        YIELD lineNo, map, list
-    RETURN map AS row
+    MATCH (t:Title)
+    RETURN t
 ","
-    WITH row
-    MERGE (t:Title { titleId: row.tconst })
-        SET
-            t.titleType = row.titleType,
-            t.primaryTitle = row.primaryTitle,
-            t.originalTitle = row.originalTitle,
-            t.isAdult = CASE row.isAdult WHEN '1' THEN True ELSE False END,
-            t.startYear = toInteger(row.startYear),
-            t.endYear = toInteger(row.endYear),
-            t.runtimeMinutes = toInteger(row.runtimeMinutes),
-            t.genres = row.genres;
-            
-",
-    {batchSize:100, parallel:true}
-);
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// title.crew.tsv - Contains the director and writer information for all the titles in IMDb. Fields include:
-// - tconst (string) - alphanumeric unique identifier of the title
-// - directors (array of nconsts) - director(s) of the given title
-// - writers (array of nconsts) – writer(s) of the given title
-//
-CALL apoc.periodic.iterate("
-    CALL apoc.load.csv('file:///title.crew.tsv', {sep:'TAB'})
-        YIELD lineNo, map, list
-    RETURN map AS row
-","
-    WITH row
-    MERGE (t:Title { titleId: row.tconst })
-        SET
-            t.directors = row.directors,
-            t.writers = row.writers;
-            
-",
-    {batchSize:100, parallel:true}
-);
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// title.episode.tsv – Contains the tv episode information. Fields include:
-// - tconst (string) - alphanumeric identifier of episode
-// - parentTconst (string) - alphanumeric identifier of the parent TV Series
-// - seasonNumber (integer) – season number the episode belongs to
-// - episodeNumber (integer) – episode number of the tconst in the TV series
-//
-CALL apoc.periodic.iterate("
-    CALL apoc.load.csv('file:///title.episode.tsv', {sep:'TAB'})
-        YIELD lineNo, map, list
-    RETURN map AS row
-","
-    WITH row
-    MERGE (e:Epizode { titleId: row.parentTconst, tconst: row.tconst })
-        SET
-            e.seasonNumber = toInteger(row.seasonNumber),
-            e.episodeNumber = toInteger(row.episodeNumber);
-            
+    WITH t
+        SET t.tconst = t.tconst;
 ",
     {batchSize:100, parallel:true}
 );
@@ -114,16 +28,28 @@ CALL apoc.periodic.iterate("
 // - numVotes - number of votes the title has received
 //
 CALL apoc.periodic.iterate("
-    CALL apoc.load.csv('file:///title.ratings.tsv', {sep:'TAB'})
-        YIELD lineNo, map, list
-    RETURN map AS row
+    MATCH (r:Rating)
+    RETURN r
 ","
-    WITH row
-    MERGE (t:Title { titleId: row.tconst })
-        SET
-            t.numVotes = toFloatOrNull(row.averageRating),
-            t.numVotes = toIntegerOrNull(row.numVotes);
-            
+    WITH r
+        SET r.tconst = r.tconst;
+",
+    {batchSize:100, parallel:true}
+);
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// title.crew.tsv - Contains the director and writer information for all the titles in IMDb. Fields include:
+// - tconst (string) - alphanumeric unique identifier of the title
+// - directors (array of nconsts) - director(s) of the given title
+// - writers (array of nconsts) – writer(s) of the given title
+//
+CALL apoc.periodic.iterate("
+    MATCH (c:Crew)
+    RETURN c
+","
+    WITH c
+        SET c.tconst = c.tconst;
 ",
     {batchSize:100, parallel:true}
 );
@@ -139,43 +65,71 @@ CALL apoc.periodic.iterate("
 // - knownForTitles (array of tconsts) – titles the person is known for
 //
 CALL apoc.periodic.iterate("
-    CALL apoc.load.csv('file:///name.basics.tsv', {sep:'TAB'})
-        YIELD lineNo, map, list
-    RETURN map AS row
+    MATCH (p:Person)
+    RETURN p
 ","
-    WITH row
-    MERGE (p:Person { nconst: row.nconst })
-        SET
-            p.primaryName = row.primaryName,
-            p.birthYear = toIntegerOrNull(row.birthYear),
-            p.deathYear = toIntegerOrNull(row.deathYear),
-            p.primaryProfession = row.primaryProfession,
-            p.knownForTitles = row.knownForTitles;
+    WITH p
+        SET p.nconst = p.nconst;
 ",
     {batchSize:100, parallel:true}
 );
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// title.principals.tsv – Contains the principal cast/crew for titles
+// title.ratings.tsv – Contains the IMDb rating and votes information for titles
 // - tconst (string) - alphanumeric unique identifier of the title
-// - ordering (integer) – a number to uniquely identify rows for a given titleId
-// - nconst (string) - alphanumeric unique identifier of the name/person
-// - category (string) - the category of job that person was in
-// - job (string) - the specific job title if applicable, else '\N'
-// - characters (string) - the name of the character played if applicable, else '\N'
+// - averageRating – weighted average of all the individual user ratings
+// - numVotes - number of votes the title has received
 //
 CALL apoc.periodic.iterate("
-    CALL apoc.load.csv('file:///title.principals.tsv', {sep:'TAB'})
-        YIELD lineNo, map, list
-    RETURN map AS row
+    MATCH (r:Rating)
+    RETURN r
 ","
-    WITH row
-    MERGE (n:Role { titleId: row.tconst, ordering: toInteger(row.ordering), nconst: row.nconst })
+    WITH r
+    MERGE (t:Title {tconst: r.tconst})
         SET
-            n.category = row.category,
-            n.job = row.job,
-            n.characters = row.characters;
+            t.averageRating = r.averageRating,
+            t.numVotes = r.numVotes;
+",
+    {batchSize:100, parallel:true}
+);
+//
+CALL apoc.periodic.iterate("
+    MATCH (r:Rating)
+    RETURN r
+","
+    WITH r
+    DELETE r;
+",
+    {batchSize:100, parallel:true}
+);
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// title.crew.tsv - Contains the director and writer information for all the titles in IMDb. Fields include:
+// - tconst (string) - alphanumeric unique identifier of the title
+// - directors (array of nconsts) - director(s) of the given title
+// - writers (array of nconsts) – writer(s) of the given title
+//
+CALL apoc.periodic.iterate("
+    MATCH (c:Crew)
+    RETURN c
+","
+    WITH c
+    MERGE (t:Title {tconst: c.tconst})
+        SET
+            t.directors = c.directors,
+            t.writers = c.writers;
+",
+    {batchSize:100, parallel:true}
+);
+//
+CALL apoc.periodic.iterate("
+    MATCH (c:Crew)
+    RETURN c
+","
+    WITH c
+    DELETE c;
 ",
     {batchSize:100, parallel:true}
 );

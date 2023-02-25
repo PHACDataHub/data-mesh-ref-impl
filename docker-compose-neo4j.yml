@@ -40,6 +40,7 @@ services:
       retries: 20
     volumes:
       - $PWD/data/neo4j/import:/import
+      - $PWD/data/neo4j/data:/data
       - $PWD/data/neo4j_plugins:/plugins
 
   ####################
