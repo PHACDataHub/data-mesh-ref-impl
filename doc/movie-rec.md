@@ -92,6 +92,20 @@ The beauty of it is that *all these tasks are plug-and-play* and *they can scale
 
 &nbsp;
 
+The dashboards
+
+![All news](../img/movie-rec/all-news.png)
+
+![News about movies](../img/movie-rec/news-about-movie.png)
+
+![Recommendable movies](../img/movie-rec/recommedable-movies.png)
+
+![Recommendable movies & casts](../img/movie-rec/movies-casts.png)
+
+![Data Lineage by task](../img/movie-rec/data-lineage-by-task.png)
+
+![Data Lineage by time](../img/movie-rec/data-lineage-by-time.png)
+
 ### A. Natural Language Processing Tasks
 
 **Credit [NLP PLanet](https://www.nlplanet.org)**
@@ -1058,6 +1072,167 @@ After all done, we can create an instance of the `Neo4j Sink connector` to start
 Below is `The Matrix` movie, its principal cast and their `roles`.
 
 ![The Matrix movie](../img/movie-rec/the-matrix-movie.png)
+
+</p>
+</details>
+
+---
+
+&nbsp;
+
+**Task 4**: Graph database for movie data, tracking lineage, and data visualization
+  - Setup a `Neo4j` instance to accepts movie news processing status and information.
+  - Setup a `Neodash` instance to display `top recent movie recommendation` and `movie data lineage` (processing result throughout our data streams)
+
+Task 4, infact, is mostly done by the other tasks. Here we present the configuration of `Neodash` for:
+- selecting recommendable movies
+- and show data lineage
+
+<details>
+<summary>Click here for more details.</summary>
+<p>
+
+```Cypher
+MATCH (n:MovieNews) 
+    WHERE apoc.convert.fromJsonList(n.news_label_list)[0]['name'] = 'movie'
+WITH n, REDUCE (movie_title=n.mentioned_movie, e IN apoc.convert.fromJsonList(n.named_entities_json) | CASE (e.word CONTAINS n.mentioned_movie) WHEN true THEN e.word ELSE movie_title END) AS movie_title
+WITH n, TRIM(movie_title) AS movie_title
+    MATCH (m:Title {primaryTitle: movie_title})
+        WHERE m.averageRating IS NOT NULL
+WITH movie_title, COLLECT(m) AS mc
+WITH movie_title, REDUCE(m=HEAD(mc), e IN TAIL(mc) | CASE e.averageRating > m.averageRating WHEN true THEN e ELSE m END) AS m
+WITH movie_title, m
+	OPTIONAL MATCH (m)-[r:CREW_IN {category: 'director'}]-(p:Name)
+WITH movie_title, m, COLLECT(p.primaryName) AS directors
+	OPTIONAL MATCH (m)-[r:CREW_IN {category: 'producer'}]-(p:Name)
+WITH movie_title, m, directors, COLLECT(p.primaryName) AS producers
+	OPTIONAL MATCH (m)-[r:CREW_IN {category: 'writer'}]-(p:Name)
+WITH movie_title, m, directors, producers, COLLECT(p.primaryName) AS writers
+	OPTIONAL MATCH (m)-[r:CREW_IN]-(p:Name)
+    	WHERE r.category IN ['actor', 'actress']
+WITH movie_title, m, directors, producers, writers, COLLECT(p.primaryName) AS actors
+RETURN m.primaryTitle AS title, m.startYear AS year, CASE m.runtimeMinutes <> '\N' WHEN true THEN m.runtimeMinutes ELSE '-' END AS min, m.averageRating AS rating, m.numVotes AS votes, directors, producers, writers, actors ORDER BY rating DESC, votes DESC
+```
+
+| title                    |  year  |  min  |  rating |  votes  |  directors                                                                                 |  producers         |  writers                                                                             |  actors                                                                                                                              |
+|--------------------------|--------|-------|---------|---------|--------------------------------------------------------------------------------------------|--------------------|--------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------|
+| Scream                   | "2017" | "24"  | 9.7     | 25543   |  ["Masashi Koizuka";"Satonobu Kikuchi";"Yoshihide Ibata";"Takayuki Hirao";"Tetsurô Araki"] |  []                |  ["Hajime Isayama"]                                                                  |  ["Daisuke Ono";"Marina Inoue";"Yui Ishikawa";"Yûki Kaji"]                                                                           |
+| The Shawshank Redemption | "1994" | "142" | 9.3     | 2704905 |  ["Frank Darabont"]                                                                        |  ["Niki Marvin"]   |  ["Stephen King"]                                                                    |  ["William Sadler";"Bob Gunton";"Morgan Freeman";"Tim Robbins"]                                                                      |
+| Inception                | "2014" | "11"  | 9.2     | 164     |  []                                                                                        |  []                |  []                                                                                  |  ["Ali Zomorodian";"Shahrzad Nouri";"Danial Hajibarat";"Erfan Refahatnia"]                                                           |
+| Drive                    | "2021" |  "-"  | 8.8     | 1660    |  ["Steve Robin"]                                                                           |  []                |  ["Paul Haggis";"Leslie Greif";"Albert S. Ruddy";"Anna Fricke";"Christopher Canaan"] |  ["Keegan Allen";"Molly Hagan";"Lindsey Morgan";"Jared Padalecki"]                                                                   |
+| The Matrix               | "1999" | "136" | 8.7     | 1930269 |  ["Lilly Wachowski";"Lana Wachowski"]                                                      |  ["Joel Silver"]   |  []                                                                                  |  ["Hugo Weaving";"Carrie-Anne Moss";"Laurence Fishburne";"Keanu Reeves"]                                                             |
+| Titanic                  | "1998" | "50"  | 8.5     | 50      |  ["Edgar Wright"]                                                                          |  ["Janice Thomas"] |  []                                                                                  |  ["Helen Lederer";"Adrian Edmondson";"Jennifer Saunders";"Dawn French"]                                                              |
+| The Mummy                | "2019" |  "-"  | 8.4     | 15      |  []                                                                                        |  []                |  []                                                                                  |  ["Kunal Chhabhria";"Ashish Chanchlani"]                                                                                             |
+| Frozen 2                 | "2020" |  "-"  | 8       | 46      |  []                                                                                        |  []                |  []                                                                                  |  ["Doug Walker"]                                                                                                                     |
+| Avatar: The Way of Water | "2022" | "192" | 7.8     | 301942  |  ["James Cameron"]                                                                         |  ["Jon Landau"]    |  ["Shane Salerno";"Josh Friedman";"Amanda Silver";"Rick Jaffa"]                      |  ["Stephen Lang";"Sigourney Weaver";"Zoe Saldana";"Sam Worthington"]                                                                 |
+| Star Wars: The Bad Batch | "2021" |  "-"  | 7.8     | 38847   |  []                                                                                        |  []                |  ["Dave Filoni";"Jennifer Corbett"]                                                  |  ["Sam Riegel";"Liam O'Brien";"Rhea Perlman";"Noshir Dalal";"Michelle Ang";"Dee Bradley Baker";"Ming-Na Wen";"Ben Diskin"]           |
+| Deep Blue Sea            | "2002" | "24"  | 7.6     | 317     |  []                                                                                        |  []                |  ["Akira Toriyama"]                                                                  |  ["Steve Olson";"Stephanie Nadolny";"Mike McFarland";"Meredith McCoy";"Leda Davies";"Justin Cook";"Brice Armstrong";"Corby Proctor"] |
+| The Amazing Spider-Man 2 | "2018" |  "-"  | 7.2     | 15      |  []                                                                                        |  []                |  []                                                                                  |  ["Ryan George"]                                                                                                                     |
+
+```Cypher
+MATCH (n:MovieNews) 
+
+WITH n, 
+	datetime({epochMillis: (n.timestamp_sa - 1)*1000}) AS processing_time,
+	apoc.convert.fromJsonList(n.news_label_list)[0]['name'] AS classification_label,
+	ROUND((apoc.convert.fromJsonList(n.news_label_list)[0]['score'])*1000)/1000 AS classification_score
+	CALL apoc.create.vNode(
+		['News'], {name: n.title, time: n.pub_date}
+	) YIELD node AS news
+	CALL apoc.create.vNode(
+		['NLP_Task','Text_Classification'], 
+		{label: classification_label, score: classification_score, when: processing_time}
+	) YIELD node AS text_classification
+	CALL apoc.create.vRelationship(
+		news, 'Text_Classifying', {}, text_classification
+	) YIELD rel AS new_to_text_classification
+	
+WITH n, news, text_classification, new_to_text_classification,
+	datetime({epochMillis: n.timestamp_sa*1000}) AS processing_time
+	CALL apoc.create.vNode(
+		['NLP_Task','Sentiment_Analysis'],
+		{score: ROUND(n.sentiment_score*1000)/1000, when: processing_time}
+	) YIELD node AS sentiment_analysis
+	CALL apoc.create.vRelationship(
+		text_classification, 'Sentiment_Analysis', {}, sentiment_analysis
+	) YIELD rel AS text_classification_to_sentiment_analysis
+
+WITH n, news, text_classification, new_to_text_classification,
+	sentiment_analysis, text_classification_to_sentiment_analysis,
+	datetime({epochMillis: n.timestamp_qa*1000}) AS processing_time
+	CALL apoc.create.vNode(
+		['NLP_Task','Question_Answering'],
+		{movie: n.mentioned_movie, score: ROUND(n.mentioned_score*1000)/1000, when: processing_time}
+	) YIELD node AS question_answering
+	CALL apoc.create.vRelationship(
+		text_classification, 'Question_Answering', {}, question_answering
+	) YIELD rel AS text_classification_to_question_answering
+
+WITH n, news, text_classification, new_to_text_classification,
+	sentiment_analysis, text_classification_to_sentiment_analysis,
+	question_answering, text_classification_to_question_answering,
+	datetime({epochMillis: n.timestamp_ne*1000}) AS processing_time
+	CALL apoc.create.vNode(
+		['NLP_Task','Named_Entity_Recognizer'],
+		{named_entity: [e IN apoc.convert.fromJsonList(n.named_entities_json) | e.word], when: processing_time}
+	) YIELD node AS named_entity_recognition
+	CALL apoc.create.vRelationship(
+		text_classification, 'Named_Entity_Recognizing', {}, named_entity_recognition
+	) YIELD rel AS text_classification_to_named_entity_recognition
+
+WITH n, news, text_classification, new_to_text_classification,
+	sentiment_analysis, text_classification_to_sentiment_analysis,
+	question_answering, text_classification_to_question_answering,
+	named_entity_recognition, text_classification_to_named_entity_recognition,	
+	datetime({epochMillis: n.timestamp_sm*1000}) AS processing_time
+	CALL apoc.create.vNode(
+		['NLP_Task','Summarization'],
+		{summary_text: n.summary_text, when: processing_time}
+	) YIELD node AS summarization
+	CALL apoc.create.vRelationship(
+		text_classification, 'Summarizing', {}, summarization
+	) YIELD rel AS text_classification_to_summarization
+
+WITH n, news, text_classification, new_to_text_classification,
+	sentiment_analysis, text_classification_to_sentiment_analysis,
+	question_answering, text_classification_to_question_answering,
+	named_entity_recognition, text_classification_to_named_entity_recognition,	
+	summarization, text_classification_to_summarization,
+	apoc.convert.fromJsonList(n.news_label_list)[0]['name'] AS classification_label,
+	datetime({epochMillis: n.timestamp_nj}) AS processing_time
+	CALL apoc.create.vNode(
+		['Neo4j','Merge_Results'],
+		{label : classification_label, movie: n.mentioned_movie, sentiment: ROUND(n.sentiment_score*1000)/1000, 
+		named_entities: [e IN apoc.convert.fromJsonList(n.named_entities_json) | e.word], summary_text: n.summary_text, 
+		when: processing_time}
+	) YIELD node AS neo4j
+	CALL apoc.create.vRelationship(
+		text_classification, 'Merge', {}, neo4j
+	) YIELD rel AS text_classification_to_neo4j
+	CALL apoc.create.vRelationship(
+		sentiment_analysis, 'Merge', {}, neo4j
+	) YIELD rel AS sentiment_analysis_to_neo4j
+	CALL apoc.create.vRelationship(
+		question_answering, 'Merge', {}, neo4j
+	) YIELD rel AS question_answering_to_neo4j
+	CALL apoc.create.vRelationship(
+		named_entity_recognition, 'Merge', {}, neo4j
+	) YIELD rel AS named_entity_recognition_to_neo4j
+	CALL apoc.create.vRelationship(
+		summarization, 'Merge', {}, neo4j
+	) YIELD rel AS summarization_to_neo4j
+
+RETURN news, text_classification, new_to_text_classification,
+	sentiment_analysis, text_classification_to_sentiment_analysis,
+	question_answering, text_classification_to_question_answering,
+	named_entity_recognition, text_classification_to_named_entity_recognition,
+	summarization, text_classification_to_summarization,
+	neo4j, text_classification_to_neo4j, sentiment_analysis_to_neo4j,
+	question_answering_to_neo4j, named_entity_recognition_to_neo4j,
+	summarization_to_neo4j;
+```
+
+![Full Lineage](../img/movie-rec/full-lineage.png)
 
 </p>
 </details>

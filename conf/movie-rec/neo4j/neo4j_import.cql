@@ -88,8 +88,8 @@ CALL apoc.periodic.iterate("
     WITH r
     MERGE (t:Title {tconst: r.tconst})
         SET
-            t.averageRating = r.averageRating,
-            t.numVotes = r.numVotes;
+            t.averageRating = toFloatOrNull(r.averageRating),
+            t.numVotes = toIntegerOrNull(r.numVotes);
 ",
     {batchSize:100, parallel:true}
 );

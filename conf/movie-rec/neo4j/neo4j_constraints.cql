@@ -22,3 +22,7 @@ CREATE INDEX index_title_runtime_minutes IF NOT EXISTS FOR (n: `Title`) ON (n.`r
 CREATE INDEX index_person_primary_name IF NOT EXISTS FOR (n: `Person`) ON (n.`primaryName`);
 CREATE INDEX index_person_known_for_titles IF NOT EXISTS FOR (n: `Person`) ON (n.`knownForTitles`);
 CREATE INDEX index_person_primary_profession IF NOT EXISTS FOR (n: `Person`) ON (n.`primaryProfession`);
+
+// full_text
+CREATE FULLTEXT INDEX full_text_title_primary_title FOR (n:Title) ON EACH [n.primaryTitle, n.originalTitle];
+CREATE FULLTEXT INDEX full_text_person_primary_name FOR (n:Title) ON EACH [n.primaryName, n.knownForTitles];
