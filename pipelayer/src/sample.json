@@ -1,0 +1,692 @@
+{
+  "nodes": [
+    {
+      "id": "dndnode_0",
+      "type": "KCSource",
+      "position": {
+        "x": 118.24206264831923,
+        "y": 446.6075339133714
+      },
+      "data": {
+        "label": "",
+        "config": {
+          "name": "screenrant",
+          "connector.class": "io.streamthoughts.kafka.connect.filepulse.source.FilePulseSourceConnector",
+          "fs.listing.class": "io.streamthoughts.kafka.connect.filepulse.fs.LocalFSDirectoryListing",
+          "fs.listing.directory.path": "/data/filepulse/xml",
+          "fs.listing.filters": "io.streamthoughts.kafka.connect.filepulse.fs.filter.RegexFileListFilter",
+          "fs.listing.interval.ms": 10000,
+          "fs.cleanup.policy.class": "io.streamthoughts.kafka.connect.filepulse.fs.clean.LogCleanupPolicy ",
+          "file.filter.regex.pattern": ".*\\.xml$",
+          "offset.strategy": "name",
+          "reader.xpath.expression": "/rss/channel/item",
+          "reader.xpath.result.type": "NODESET",
+          "reader.xml.force.array.on.fields": "category",
+          "reader.xml.parser.validating.enabled": true,
+          "reader.xml.parser.namespace.aware.enabled": true,
+          "filters": "enclosure,content,pubDate,Exclude",
+          "filters.enclosure.type": "io.streamthoughts.kafka.connect.filepulse.filter.MoveFilter",
+          "filters.enclosure.source": "enclosure.url",
+          "filters.enclosure.target": "enclosure_url",
+          "filters.content.type": "io.streamthoughts.kafka.connect.filepulse.filter.RenameFilter",
+          "filters.content.field": "encoded",
+          "filters.content.target": "content",
+          "filters.pubDate.type": "io.streamthoughts.kafka.connect.filepulse.filter.RenameFilter",
+          "filters.pubDate.field": "pubDate",
+          "filters.pubDate.target": "pub_date",
+          "filters.Exclude.type": "io.streamthoughts.kafka.connect.filepulse.filter.ExcludeFilter",
+          "filters.Exclude.fields": "enclosure,guid",
+          "topic": "screenrant-topic",
+          "tasks.file.status.storage.bootstrap.servers": "broker:29092",
+          "tasks.file.status.storage.topic": "connect-file-pulse-status",
+          "tasks.reader.class": "io.streamthoughts.kafka.connect.filepulse.fs.reader.LocalXMLFileInputReader",
+          "tasks.max": 1,
+          "value.connect.schema": "{ \"name\": \"screentrant_rss_value\", \"type\":\"STRUCT\", \"fieldSchemas\": { \"link\":{\"type\":\"STRING\", \"isOptional\":false}, \"pub_date\":{\"type\":\"STRING\", \"isOptional\":false}, \"category\": {\"type\":\"ARRAY\", \"isOptional\":true, \"valueSchema\": {\"type\": \"STRING\"}}, \"content\":{\"type\":\"STRING\", \"isOptional\":false}, \"creator\":{\"type\":\"STRING\", \"isOptional\":false}, \"description\":{\"type\":\"STRING\", \"isOptional\":false}, \"enclosure_url\":{\"type\":\"STRING\", \"isOptional\":false}, \"title\":{\"type\":\"STRING\", \"isOptional\":false} } }"
+        }
+      },
+      "width": 201,
+      "height": 78,
+      "selected": false,
+      "positionAbsolute": {
+        "x": 118.24206264831923,
+        "y": 446.6075339133714
+      },
+      "dragging": false
+    },
+    {
+      "id": "dndnode_3",
+      "type": "KCCreateTopic",
+      "position": {
+        "x": 137.05815528716016,
+        "y": 589.644245189636
+      },
+      "data": {
+        "label": "",
+        "config": {
+          "topic": "screenrant-topic"
+        }
+      },
+      "width": 163,
+      "height": 78,
+      "selected": false,
+      "positionAbsolute": {
+        "x": 137.05815528716016,
+        "y": 589.644245189636
+      },
+      "dragging": false
+    },
+    {
+      "id": "dndnode_4",
+      "type": "PyTorchNLP",
+      "position": {
+        "x": 97.44749563642495,
+        "y": 738.9516088060617
+      },
+      "data": {
+        "label": "",
+        "config": {
+          "name": "text-classifier"
+        }
+      },
+      "width": 244,
+      "height": 78,
+      "selected": false,
+      "positionAbsolute": {
+        "x": 97.44749563642495,
+        "y": 738.9516088060617
+      },
+      "dragging": false
+    },
+    {
+      "id": "dndnode_5",
+      "type": "KCCreateTopic",
+      "position": {
+        "x": 95.09817057689918,
+        "y": 885.6822742249445
+      },
+      "data": {
+        "label": "",
+        "config": {
+          "topic": "screenrant-text-classifier-topic"
+        }
+      },
+      "width": 250,
+      "height": 78,
+      "selected": false,
+      "positionAbsolute": {
+        "x": 95.09817057689918,
+        "y": 885.6822742249445
+      },
+      "dragging": false
+    },
+    {
+      "id": "dndnode_6",
+      "type": "PyTorchNLP",
+      "position": {
+        "x": 457.9259960516233,
+        "y": 474.0808353707107
+      },
+      "data": {
+        "label": "",
+        "config": {
+          "name": "named-entity-recognition"
+        }
+      },
+      "width": 244,
+      "height": 78,
+      "selected": false,
+      "positionAbsolute": {
+        "x": 457.9259960516233,
+        "y": 474.0808353707107
+      },
+      "dragging": false
+    },
+    {
+      "id": "dndnode_7",
+      "type": "KCCreateTopic",
+      "position": {
+        "x": 777.2064500995714,
+        "y": 474.72822214307604
+      },
+      "data": {
+        "label": "",
+        "config": {
+          "topic": "screenrant-named-entity-recognizer-topic"
+        }
+      },
+      "width": 322,
+      "height": 78,
+      "selected": false,
+      "positionAbsolute": {
+        "x": 777.2064500995714,
+        "y": 474.72822214307604
+      },
+      "dragging": false
+    },
+    {
+      "id": "dndnode_8",
+      "type": "PyTorchNLP",
+      "position": {
+        "x": 456.48527738970563,
+        "y": 572.302919565717
+      },
+      "data": {
+        "label": "",
+        "config": {
+          "name": "question-answer"
+        }
+      },
+      "width": 244,
+      "height": 78,
+      "selected": false,
+      "positionAbsolute": {
+        "x": 456.48527738970563,
+        "y": 572.302919565717
+      },
+      "dragging": false
+    },
+    {
+      "id": "dndnode_9",
+      "type": "KCCreateTopic",
+      "position": {
+        "x": 778.1143264399511,
+        "y": 573.0893300168506
+      },
+      "data": {
+        "label": "",
+        "config": {
+          "topic": "screenrant-question-answer-topic"
+        }
+      },
+      "width": 271,
+      "height": 78,
+      "selected": false,
+      "dragging": false,
+      "positionAbsolute": {
+        "x": 778.1143264399511,
+        "y": 573.0893300168506
+      }
+    },
+    {
+      "id": "dndnode_10",
+      "type": "PyTorchNLP",
+      "position": {
+        "x": 456.7668983264399,
+        "y": 672.4368276654412
+      },
+      "data": {
+        "label": "",
+        "config": {
+          "name": "sentiment-analysis"
+        }
+      },
+      "width": 244,
+      "height": 78,
+      "selected": false,
+      "positionAbsolute": {
+        "x": 456.7668983264399,
+        "y": 672.4368276654412
+      },
+      "dragging": false
+    },
+    {
+      "id": "dndnode_11",
+      "type": "KCCreateTopic",
+      "position": {
+        "x": 779.207147338388,
+        "y": 673.6271011106004
+      },
+      "data": {
+        "label": "",
+        "config": {
+          "topic": "screenrant-sentiment-analyzer-topic"
+        }
+      },
+      "width": 287,
+      "height": 78,
+      "selected": false,
+      "dragging": false,
+      "positionAbsolute": {
+        "x": 779.207147338388,
+        "y": 673.6271011106004
+      }
+    },
+    {
+      "id": "dndnode_12",
+      "type": "PyTorchNLP",
+      "position": {
+        "x": 455.33506690410513,
+        "y": 773.7180201095282
+      },
+      "data": {
+        "label": "",
+        "config": {
+          "name": "summarizer"
+        }
+      },
+      "width": 244,
+      "height": 78,
+      "selected": false,
+      "positionAbsolute": {
+        "x": 455.33506690410513,
+        "y": 773.7180201095282
+      },
+      "dragging": false
+    },
+    {
+      "id": "dndnode_13",
+      "type": "KCCreateTopic",
+      "position": {
+        "x": 783.7077327550551,
+        "y": 775.0177739162071
+      },
+      "data": {
+        "label": "",
+        "config": {
+          "topic": "screenrant-summarizer-topic"
+        }
+      },
+      "width": 241,
+      "height": 78,
+      "selected": false,
+      "positionAbsolute": {
+        "x": 783.7077327550551,
+        "y": 775.0177739162071
+      },
+      "dragging": false
+    },
+    {
+      "id": "dndnode_14",
+      "type": "KCSink",
+      "position": {
+        "x": 1223.4844667185248,
+        "y": 444.541545673695
+      },
+      "data": {
+        "label": "",
+        "config": {
+          "connector.class": "streams.kafka.connect.sink.Neo4jSinkConnector",
+          "name": "neo4j"
+        }
+      },
+      "width": 184,
+      "height": 78,
+      "selected": false,
+      "positionAbsolute": {
+        "x": 1223.4844667185248,
+        "y": 444.541545673695
+      },
+      "dragging": false
+    },
+    {
+      "id": "dndnode_16",
+      "type": "Neo4JServer",
+      "position": {
+        "x": 1212.574595705616,
+        "y": 574.880311159163
+      },
+      "data": {
+        "label": "",
+        "config": {}
+      },
+      "width": 205,
+      "height": 74,
+      "selected": false,
+      "positionAbsolute": {
+        "x": 1212.574595705616,
+        "y": 574.880311159163
+      },
+      "dragging": false
+    },
+    {
+      "id": "dndnode_17",
+      "type": "NeoDashServer",
+      "position": {
+        "x": 1219.3415875450962,
+        "y": 706.836652029028
+      },
+      "data": {
+        "label": "",
+        "config": {}
+      },
+      "width": 191,
+      "height": 74,
+      "selected": false,
+      "positionAbsolute": {
+        "x": 1219.3415875450962,
+        "y": 706.836652029028
+      },
+      "dragging": false
+    },
+    {
+      "id": "dndnode_18",
+      "type": "RssFetch",
+      "position": {
+        "x": 140.00638914799532,
+        "y": 175.62779262982784
+      },
+      "data": {
+        "label": "",
+        "config": {
+          "name": "Screenrant RSS",
+          "url": "https://screenrant.com/feed/",
+          "interval": "21600"
+        }
+      },
+      "width": 155,
+      "height": 78,
+      "selected": false,
+      "positionAbsolute": {
+        "x": 140.00638914799532,
+        "y": 175.62779262982784
+      },
+      "dragging": false
+    },
+    {
+      "id": "dndnode_19",
+      "type": "FolderOnServer",
+      "position": {
+        "x": 73.46430272643948,
+        "y": 313.63717550038314
+      },
+      "data": {
+        "label": "",
+        "config": {
+          "path": "kafka-ce/connect/data/filepulse/xml/",
+          "server": "127.0.0.1",
+          "name": "kafka-ce/connect/data/filepulse/xml/"
+        }
+      },
+      "width": 291,
+      "height": 78,
+      "selected": true,
+      "positionAbsolute": {
+        "x": 73.46430272643948,
+        "y": 313.63717550038314
+      },
+      "dragging": false
+    }
+  ],
+  "edges": [
+    {
+      "source": "dndnode_0",
+      "sourceHandle": "b",
+      "target": "dndnode_3",
+      "targetHandle": "t",
+      "markerEnd": {
+        "type": "arrowclosed"
+      },
+      "type": "smoothstep",
+      "style": {
+        "strokeWidth": 2
+      },
+      "id": "reactflow__edge-dndnode_0r-dndnode_3t"
+    },
+    {
+      "source": "dndnode_3",
+      "sourceHandle": "b",
+      "target": "dndnode_4",
+      "targetHandle": "t",
+      "markerEnd": {
+        "type": "arrowclosed"
+      },
+      "type": "smoothstep",
+      "style": {
+        "strokeWidth": 2
+      },
+      "id": "reactflow__edge-dndnode_3b-dndnode_4t"
+    },
+    {
+      "source": "dndnode_4",
+      "sourceHandle": "b",
+      "target": "dndnode_5",
+      "targetHandle": "t",
+      "markerEnd": {
+        "type": "arrowclosed"
+      },
+      "type": "smoothstep",
+      "style": {
+        "strokeWidth": 2
+      },
+      "id": "reactflow__edge-dndnode_4r-dndnode_5l"
+    },
+    {
+      "source": "dndnode_5",
+      "sourceHandle": "r",
+      "target": "dndnode_6",
+      "targetHandle": "l",
+      "markerEnd": {
+        "type": "arrowclosed"
+      },
+      "type": "smoothstep",
+      "style": {
+        "strokeWidth": 2
+      },
+      "id": "reactflow__edge-dndnode_5b-dndnode_6t"
+    },
+    {
+      "source": "dndnode_6",
+      "sourceHandle": "r",
+      "target": "dndnode_7",
+      "targetHandle": "l",
+      "markerEnd": {
+        "type": "arrowclosed"
+      },
+      "type": "smoothstep",
+      "style": {
+        "strokeWidth": 2
+      },
+      "id": "reactflow__edge-dndnode_6r-dndnode_7l"
+    },
+    {
+      "source": "dndnode_5",
+      "sourceHandle": "r",
+      "target": "dndnode_8",
+      "targetHandle": "l",
+      "markerEnd": {
+        "type": "arrowclosed"
+      },
+      "type": "smoothstep",
+      "style": {
+        "strokeWidth": 2
+      },
+      "id": "reactflow__edge-dndnode_5r-dndnode_8l"
+    },
+    {
+      "source": "dndnode_8",
+      "sourceHandle": "r",
+      "target": "dndnode_9",
+      "targetHandle": "l",
+      "markerEnd": {
+        "type": "arrowclosed"
+      },
+      "type": "smoothstep",
+      "style": {
+        "strokeWidth": 2
+      },
+      "id": "reactflow__edge-dndnode_8b-dndnode_9t"
+    },
+    {
+      "source": "dndnode_5",
+      "sourceHandle": "r",
+      "target": "dndnode_10",
+      "targetHandle": "l",
+      "markerEnd": {
+        "type": "arrowclosed"
+      },
+      "type": "smoothstep",
+      "style": {
+        "strokeWidth": 2
+      },
+      "id": "reactflow__edge-dndnode_5r-dndnode_10l"
+    },
+    {
+      "source": "dndnode_10",
+      "sourceHandle": "r",
+      "target": "dndnode_11",
+      "targetHandle": "l",
+      "markerEnd": {
+        "type": "arrowclosed"
+      },
+      "type": "smoothstep",
+      "style": {
+        "strokeWidth": 2
+      },
+      "id": "reactflow__edge-dndnode_10r-dndnode_11t"
+    },
+    {
+      "source": "dndnode_5",
+      "sourceHandle": "r",
+      "target": "dndnode_12",
+      "targetHandle": "l",
+      "markerEnd": {
+        "type": "arrowclosed"
+      },
+      "type": "smoothstep",
+      "style": {
+        "strokeWidth": 2
+      },
+      "id": "reactflow__edge-dndnode_5r-dndnode_12l"
+    },
+    {
+      "source": "dndnode_12",
+      "sourceHandle": "r",
+      "target": "dndnode_13",
+      "targetHandle": "l",
+      "markerEnd": {
+        "type": "arrowclosed"
+      },
+      "type": "smoothstep",
+      "style": {
+        "strokeWidth": 2
+      },
+      "id": "reactflow__edge-dndnode_12r-dndnode_13l"
+    },
+    {
+      "source": "dndnode_7",
+      "sourceHandle": "r",
+      "target": "dndnode_14",
+      "targetHandle": "l",
+      "markerEnd": {
+        "type": "arrowclosed"
+      },
+      "type": "smoothstep",
+      "style": {
+        "strokeWidth": 2
+      },
+      "id": "reactflow__edge-dndnode_7r-dndnode_14l"
+    },
+    {
+      "source": "dndnode_9",
+      "sourceHandle": "r",
+      "target": "dndnode_14",
+      "targetHandle": "l",
+      "markerEnd": {
+        "type": "arrowclosed"
+      },
+      "type": "smoothstep",
+      "style": {
+        "strokeWidth": 2
+      },
+      "id": "reactflow__edge-dndnode_9r-dndnode_14l"
+    },
+    {
+      "source": "dndnode_11",
+      "sourceHandle": "r",
+      "target": "dndnode_14",
+      "targetHandle": "l",
+      "markerEnd": {
+        "type": "arrowclosed"
+      },
+      "type": "smoothstep",
+      "style": {
+        "strokeWidth": 2
+      },
+      "id": "reactflow__edge-dndnode_11r-dndnode_14l"
+    },
+    {
+      "source": "dndnode_13",
+      "sourceHandle": "r",
+      "target": "dndnode_14",
+      "targetHandle": "l",
+      "markerEnd": {
+        "type": "arrowclosed"
+      },
+      "type": "smoothstep",
+      "style": {
+        "strokeWidth": 2
+      },
+      "id": "reactflow__edge-dndnode_13r-dndnode_14l"
+    },
+    {
+      "source": "dndnode_5",
+      "sourceHandle": "r",
+      "target": "dndnode_14",
+      "targetHandle": "t",
+      "markerEnd": {
+        "type": "arrowclosed"
+      },
+      "type": "smoothstep",
+      "style": {
+        "strokeWidth": 2
+      },
+      "id": "reactflow__edge-dndnode_5r-dndnode_14t"
+    },
+    {
+      "source": "dndnode_14",
+      "sourceHandle": "b",
+      "target": "dndnode_16",
+      "targetHandle": "t",
+      "markerEnd": {
+        "type": "arrowclosed"
+      },
+      "type": "smoothstep",
+      "style": {
+        "strokeWidth": 2
+      },
+      "id": "reactflow__edge-dndnode_14b-dndnode_16t"
+    },
+    {
+      "source": "dndnode_16",
+      "sourceHandle": "b",
+      "target": "dndnode_17",
+      "targetHandle": "t",
+      "markerEnd": {
+        "type": "arrowclosed"
+      },
+      "type": "smoothstep",
+      "style": {
+        "strokeWidth": 2
+      },
+      "id": "reactflow__edge-dndnode_16b-dndnode_17t"
+    },
+    {
+      "source": "dndnode_18",
+      "sourceHandle": "b",
+      "target": "dndnode_19",
+      "targetHandle": "t",
+      "markerEnd": {
+        "type": "arrowclosed"
+      },
+      "type": "smoothstep",
+      "style": {
+        "strokeWidth": 2
+      },
+      "id": "reactflow__edge-dndnode_18b-dndnode_19t"
+    },
+    {
+      "source": "dndnode_19",
+      "sourceHandle": "b",
+      "target": "dndnode_0",
+      "targetHandle": "t",
+      "markerEnd": {
+        "type": "arrowclosed"
+      },
+      "type": "smoothstep",
+      "style": {
+        "strokeWidth": 2
+      },
+      "id": "reactflow__edge-dndnode_19b-dndnode_0t"
+    }
+  ]
+}
