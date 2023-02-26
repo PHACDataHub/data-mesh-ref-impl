@@ -142,6 +142,34 @@
           }
         }
       ]
+    },
+    {
+      "title": "Avatar: The Way of Water",
+      "reports": [
+        {
+          "title": "Processing in action - actual workflow",
+          "query": "MATCH (n:MovieNews {link: 'https://screenrant.com/avatar-way-water-box-office-fall-drop-details/'}) \n\nWITH n, \n\tdatetime({epochMillis: (n.timestamp_sa - 1)*1000}) AS processing_time,\n\tapoc.convert.fromJsonList(n.news_label_list)[0]['name'] AS classification_label,\n\tROUND((apoc.convert.fromJsonList(n.news_label_list)[0]['score'])*1000)/1000 AS classification_score\n\tCALL apoc.create.vNode(\n\t\t['News'], {name: n.title, time: n.pub_date}\n\t) YIELD node AS news\n\tCALL apoc.create.vNode(\n\t\t['NLP_Task','Text_Classification'], \n\t\t{label: classification_label, score: classification_score, when: processing_time}\n\t) YIELD node AS text_classification\n\tCALL apoc.create.vRelationship(\n\t\tnews, 'Text_Classifying', {}, text_classification\n\t) YIELD rel AS new_to_text_classification\n\t\nWITH n, news, text_classification, new_to_text_classification,\n\tdatetime({epochMillis: n.timestamp_sa*1000}) AS processing_time\n\tCALL apoc.create.vNode(\n\t\t['NLP_Task','Sentiment_Analysis'],\n\t\t{score: ROUND(n.sentiment_score*1000)/1000, when: processing_time}\n\t) YIELD node AS sentiment_analysis\n\tCALL apoc.create.vRelationship(\n\t\ttext_classification, 'Sentiment_Analysis', {}, sentiment_analysis\n\t) YIELD rel AS text_classification_to_sentiment_analysis\n\nWITH n, news, text_classification, new_to_text_classification,\n\tsentiment_analysis, text_classification_to_sentiment_analysis,\n\tdatetime({epochMillis: n.timestamp_qa*1000}) AS processing_time\n\tCALL apoc.create.vNode(\n\t\t['NLP_Task','Question_Answering'],\n\t\t{movie: n.mentioned_movie, score: ROUND(n.mentioned_score*1000)/1000, when: processing_time}\n\t) YIELD node AS question_answering\n\tCALL apoc.create.vRelationship(\n\t\ttext_classification, 'Question_Answering', {}, question_answering\n\t) YIELD rel AS text_classification_to_question_answering\n\nWITH n, news, text_classification, new_to_text_classification,\n\tsentiment_analysis, text_classification_to_sentiment_analysis,\n\tquestion_answering, text_classification_to_question_answering,\n\tdatetime({epochMillis: n.timestamp_ne*1000}) AS processing_time\n\tCALL apoc.create.vNode(\n\t\t['NLP_Task','Named_Entity_Recognizer'],\n\t\t{named_entity: [e IN apoc.convert.fromJsonList(n.named_entities_json) | e.word], when: processing_time}\n\t) YIELD node AS named_entity_recognition\n\tCALL apoc.create.vRelationship(\n\t\ttext_classification, 'Named_Entity_Recognizing', {}, named_entity_recognition\n\t) YIELD rel AS text_classification_to_named_entity_recognition\n\nWITH n, news, text_classification, new_to_text_classification,\n\tsentiment_analysis, text_classification_to_sentiment_analysis,\n\tquestion_answering, text_classification_to_question_answering,\n\tnamed_entity_recognition, text_classification_to_named_entity_recognition,\t\n\tdatetime({epochMillis: n.timestamp_sm*1000}) AS processing_time\n\tCALL apoc.create.vNode(\n\t\t['NLP_Task','Summarization'],\n\t\t{summary_text: n.summary_text, when: processing_time}\n\t) YIELD node AS summarization\n\tCALL apoc.create.vRelationship(\n\t\ttext_classification, 'Summarizing', {}, summarization\n\t) YIELD rel AS text_classification_to_summarization\n\nWITH n, news, text_classification, new_to_text_classification,\n\tsentiment_analysis, text_classification_to_sentiment_analysis,\n\tquestion_answering, text_classification_to_question_answering,\n\tnamed_entity_recognition, text_classification_to_named_entity_recognition,\t\n\tsummarization, text_classification_to_summarization,\n\tapoc.convert.fromJsonList(n.news_label_list)[0]['name'] AS classification_label,\n\tdatetime({epochMillis: n.timestamp_nj}) AS processing_time\n\tCALL apoc.create.vNode(\n\t\t['Neo4j','Merge_Results'],\n\t\t{label : classification_label, movie: n.mentioned_movie, sentiment: ROUND(n.sentiment_score*1000)/1000, \n\t\tnamed_entities: [e IN apoc.convert.fromJsonList(n.named_entities_json) | e.word], summary_text: n.summary_text, \n\t\twhen: processing_time}\n\t) YIELD node AS neo4j\n\tCALL apoc.create.vRelationship(\n\t\ttext_classification, 'Merge', {}, neo4j\n\t) YIELD rel AS text_classification_to_neo4j\n\tCALL apoc.create.vRelationship(\n\t\tsentiment_analysis, 'Merge', {}, neo4j\n\t) YIELD rel AS sentiment_analysis_to_neo4j\n\tCALL apoc.create.vRelationship(\n\t\tquestion_answering, 'Merge', {}, neo4j\n\t) YIELD rel AS question_answering_to_neo4j\n\tCALL apoc.create.vRelationship(\n\t\tnamed_entity_recognition, 'Merge', {}, neo4j\n\t) YIELD rel AS named_entity_recognition_to_neo4j\n\tCALL apoc.create.vRelationship(\n\t\tsummarization, 'Merge', {}, neo4j\n\t) YIELD rel AS summarization_to_neo4j\n\nRETURN news, text_classification, new_to_text_classification,\n\tsentiment_analysis, text_classification_to_sentiment_analysis,\n\tquestion_answering, text_classification_to_question_answering,\n\tnamed_entity_recognition, text_classification_to_named_entity_recognition,\n\tsummarization, text_classification_to_summarization,\n\tneo4j, text_classification_to_neo4j, sentiment_analysis_to_neo4j,\n\tquestion_answering_to_neo4j, named_entity_recognition_to_neo4j,\n\tsummarization_to_neo4j;\n",
+          "width": 10,
+          "height": 2,
+          "x": 0,
+          "y": 0,
+          "type": "graph",
+          "selection": {
+            "News": "name",
+            "NLP_Task": "label",
+            "Text_Classification": "label",
+            "Sentiment_Analysis": "(label)",
+            "Question_Answering": "(label)",
+            "Named_Entity_Recognizer": "(label)",
+            "Summarization": "(label)",
+            "Neo4j": "label",
+            "Merge_Results": "label"
+          },
+          "settings": {
+            "nodePositions": {}
+          }
+        }
+      ]
     }
   ],
   "parameters": {},
