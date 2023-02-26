@@ -106,6 +106,8 @@ The dashboards
 
 ![Data Lineage by time](../img/movie-rec/data-lineage-by-time.png)
 
+Here [a five-slide deck](../doc/DMRI%20-%20Example%20Case%203%20-%20Iteration%201.pptx) shortly explaining the case
+
 ### A. Natural Language Processing Tasks
 
 **Credit [NLP PLanet](https://www.nlplanet.org)**
