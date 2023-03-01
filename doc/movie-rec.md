@@ -1,6 +1,6 @@
 ## Movie Recommendation
 
-Brief Description:
+Brief description:
 - the integration of NLP containers (per task as shown), with pre-trained datasets, and datasets for fine-tuning,
 - some sort of descriptive configuration (in Confluent Cloud there is a Stream Designer, which is very convenient for orchestrating the workflow pipeline mesh),
 - some additional movie info databases (from sources highlighted in the diagram), perhaps some cloud storage for large binary data (to avoid long download time, shorten setup time)
