@@ -200,6 +200,29 @@ What will not be included in this iteration:
 
 ---
 
+**Task 1** - Creation of a `Pipelayer` [ReactFlow](https://reactflow.dev)-based tool that allow
+  + visual design of the data streams between the components of the `Kafka Cluster` and the `NLP Cluster`.
+  + providing configuration files for the components in order to connect to `Kafka` data streaming infrastructure as well as to customize the generic `NLP task`.
+  + keep the whole visual design and its configuration parameters in a `json` file for later purposes such as easy reloading, management, and monitoring
+
+`Pipelayer` follows the ideas of [Confluent Stream Designer](https://docs.confluent.io/cloud/current/stream-designer/index.html), but provide more extensive capabilities to design, manage, and monitore pithe data streams
+
+The graphical layout of the dataflows of this example case:
+![Pipelayer - movie rec](../img/movie-rec/pipelayer-movie-rec.png)
+
+How to configure a `Kafka` topic:
+![Pipelayer - Kafka topic](../img/movie-rec/pipelayer-kafka-topic.png)
+
+How to configure a `NLP task`:
+![Pipelayer - Kafka topic](../img/movie-rec/pipelayer-nlp-task.png)
+
+The whole configuration as `json`:
+![Pipelayer - Kafka topic](../img/movie-rec/pipelayer-json-config.png)
+
+&nbsp;
+
+---
+
 **Task 2** `NLP` task as `Docker` image
 
 *Task 2: Part 1:* Installing `NVIDIA driver`, `NVIDIA Container Toolkit`, and `Pytorch` docker.
