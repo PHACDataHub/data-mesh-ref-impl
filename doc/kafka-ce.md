@@ -418,7 +418,7 @@ Content-Type: application/json
 Content-Length: 639
 Server: Jetty(9.4.48.v20220622)
 
-{"name":"spooldir-counties","config":{"connector.class":"com.github.jcustenborder.kafka.connect.spooldir.SpoolDirCsvSourceConnector","topic":"topic-counties","input.path":"/data/unprocessed","finished.path":"/data/processed","error.path":"/data/error","input.file.pattern":"^counties-[0-9]+\\.csv","schema.generation.enabled":"true","schema.generation.key.fields":"county_fips","csv.first.row.as.header":"true","transforms":"castTypes","transforms.castTypes.type":"org.apache.kafka.connect.transforms.Cast$Value","transforms.castTypes.spec":"population:int32,lat:float32,lng:float32","name":"spooldir-counties"},"tasks":[],"type":"source"}
+{"name":"spooldir-counties","config":{"connector.class":"com.github.jcustenborder.kafka.connect.spooldir.SpoolDirCsvSourceConnector","topic":"topic-counties","input.path":"/data/spooldir/unprocessed","finished.path":"/data/spooldir/processed","error.path":"/data/spooldir/error","input.file.pattern":"^counties-[0-9]+\\.csv","schema.generation.enabled":"true","schema.generation.key.fields":"county_fips","csv.first.row.as.header":"true","transforms":"castTypes","transforms.castTypes.type":"org.apache.kafka.connect.transforms.Cast$Value","transforms.castTypes.spec":"population:int32,lat:float32,lng:float32","name":"spooldir-counties"},"tasks":[],"type":"source"}
 
 Wait for delivery ...
 

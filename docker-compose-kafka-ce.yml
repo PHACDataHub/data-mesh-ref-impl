@@ -238,6 +238,7 @@ services:
         confluent-hub install --no-prompt jcustenborder/kafka-connect-spooldir:2.0.65
         confluent-hub install --no-prompt neo4j/kafka-connect-neo4j:5.0.2
         confluent-hub install --no-prompt debezium/debezium-connector-mysql:1.9.7
+        confluent-hub install --no-prompt streamthoughts/kafka-connect-file-pulse:2.7.0
         #
         # -----------
         # Launch the Kafka Connect worker

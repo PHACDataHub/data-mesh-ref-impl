@@ -10,10 +10,13 @@ fi
 # Update the apt package index and install packages to allow apt to use a repository over HTTPS
 sudo apt-get update -y
 sudo apt-get install \
-    ca-certificates \
-    curl \
-    gnupg \
-    lsb-release -y
+  apt-transport-https \
+  ca-certificates \
+  curl \
+  gnupg \
+  gnupg-agent \
+  software-properties-common \
+  lsb-release -y
 
 # Add Docker’s official GPG key
 sudo mkdir -p /etc/apt/keyrings
@@ -44,7 +47,6 @@ curl -SL https://github.com/docker/compose/releases/download/${COMPOSE_VERSION}/
 
 # Apply executable permissions to the binary
 chmod +x $DOCKER_CONFIG/cli-plugins/docker-compose
-
 
 ### Manage Docker as a non-root user ###
 

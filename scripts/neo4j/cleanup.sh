@@ -11,3 +11,4 @@ docker compose -f docker-compose-neo4j.yml down
 echo "Containers shutdown ✅";
 
 sudo rm -rf data/neo4j
+sudo rm -rf data/neo4j_plugins

@@ -1,0 +1,1 @@
+STOP DATABASE neo4j;

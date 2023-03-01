@@ -39,7 +39,7 @@ echo ''
 echo 'Copying data into for spooldir ...'
 for item in counties
 do
-    cp data/kafka-ce/${item}.csv kafka-ce/connect/data/unprocessed/${item}-$RANDOM.csv;
+    cp data/kafka-ce/${item}.csv kafka-ce/connect/data/spooldir/unprocessed/${item}-$RANDOM.csv;
     echo data/kafka-ce/${item}.csv 'is copied.'
 done
 echo 'Folders for spooldir data created ✅'
@@ -58,9 +58,9 @@ do
         -d '{
             "connector.class":"com.github.jcustenborder.kafka.connect.spooldir.SpoolDirCsvSourceConnector",
             "topic":"'${topic_spooldir}'",
-            "input.path":"/data/unprocessed",
-            "finished.path":"/data/processed",
-            "error.path":"/data/error",
+            "input.path":"/data/spooldir/unprocessed",
+            "finished.path":"/data/spooldir/processed",
+            "error.path":"/data/spooldir/error",
             "input.file.pattern":"^'${item}'-[0-9]+\\.csv",
             "schema.generation.enabled":"true",
             "schema.generation.key.fields":"'${key_fields}'",
@@ -191,4 +191,6 @@ docker exec -it ${broker_container_name} /bin/kafka-topics \
     --bootstrap-server ${broker_internal_host}:${broker_internal_port} --list;
 echo ''
 
-rm -rf kafka-ce/connect/data/processed/counties-*.csv;
+echo "Removing processed data from spooldir ...";
+sudo rm -rf kafka-ce/connect/data/spooldir/processed/counties-*.csv;
+echo "Processed data in spooldir deleted ✅";

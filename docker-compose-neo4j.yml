@@ -13,7 +13,7 @@ services:
   # neo4j
   ####################
   neo4j:
-    image: neo4j:5.3.0-enterprise
+    image: neo4j:5.5.0-enterprise
     container_name: neo4j
     networks:
       - backend
@@ -27,12 +27,11 @@ services:
       - NEO4J_server_memory_pagecache_size=4G
       - NEO4J_server_memory_heap.initial__size=4G
       - NEO4J_server_memory_heap_max__size=8G
-      - NEO4J_PLUGINS=["apoc", "graph-data-science"]
       - NEO4J_apoc_export_file_enabled=true
       - NEO4J_apoc_import_file_enabled=true
       - NEO4J_apoc_import_file_use__neo4j__config=true
+      - NEO4JLABS_PLUGINS=["apoc", "graph-data-science"]
       - NEO4J_dbms_security_procedures_unrestricted=apoc.*,gds.*
-      - NEO4J_dbms_connector_bolt_advertised__address=7474
     restart: always
     healthcheck:
       test: [ "CMD", "/var/lib/neo4j/bin/cypher-shell", "-u", "${NEO4J_USERNAME}", "-p", "${NEO4J_PASSWORD}", "MATCH () RETURN count(*) as count" ]
@@ -41,6 +40,8 @@ services:
       retries: 20
     volumes:
       - $PWD/data/neo4j/import:/import
+      - $PWD/data/neo4j/data:/data
+      - $PWD/data/neo4j_plugins:/plugins
 
   ####################
   # neodash
@@ -63,4 +64,4 @@ services:
 networks:
   backend:
     name: backend
-    # external: true
+    external: true
