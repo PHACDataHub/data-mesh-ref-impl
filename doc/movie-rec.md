@@ -200,7 +200,7 @@ What will not be included in this iteration:
 
 ---
 
-[**Task 1**]](#pipelayer) - Creation of a `Pipelayer` [ReactFlow](https://reactflow.dev)-based tool that allow
+**[Task 1](#pipelayer)** - Creation of a `Pipelayer` [ReactFlow](https://reactflow.dev)-based tool that allow
   + visual design of the data streams between the components of the `Kafka Cluster` and the `NLP Cluster`.
   + providing configuration files for the components in order to connect to `Kafka` data streaming infrastructure as well as to customize the generic `NLP task`.
   + keep the whole visual design and its configuration parameters in a `json` file for later purposes such as easy reloading, management, and monitoring
