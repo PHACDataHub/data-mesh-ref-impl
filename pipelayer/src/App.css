@@ -1,0 +1,25 @@
+#app {
+  display: flex;
+}
+.col {
+  display: flex;
+  flex: 1 0 0;
+  flex-direction: column;
+}
+.col > header {
+  padding: 10px;
+  border-bottom: 1px solid #000;
+  font-size: 1rem;
+  background: #f6f6f6;
+}
+.row {
+  display: flex;
+  flex: 1 0 0;
+  flex-direction: row;
+}
+
+.reactflow-wrapper {
+  flex-grow: 1;
+  height: 100%;
+  min-width: 400px;
+}
