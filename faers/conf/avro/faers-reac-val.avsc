@@ -1,0 +1,11 @@
+{
+	"type": "record",
+	"namespace": "ca.gov.phac.cdsb.dmia.oan.dmri.faers",
+	"name": "faers_reac_val",
+	"fields": [
+		{"name": "primaryid", "type": "int" },
+		{"name": "caseid", "type": "int" },
+		{"name": "pt", "type": "string" },
+		{"name": "drug_rec_act", "type": "string" }
+	]
+}

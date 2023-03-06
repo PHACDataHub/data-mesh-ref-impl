@@ -5,9 +5,9 @@
 The cluster consists of:
 + an instance of `Kafka` community edition [`docker-compose.yml`](../docker-compose-kafka-ce.yml), which includes (`Docker` image) services as below:
     - `zookeper` ([`Apache Zookeeper`](https://zookeeper.apache.org))
-    - `broker`, `broker2`, and `broker3 ([`Apache Kafka`](https://kafka.apache.org/documentation.html))
+    - `broker`, `broker2`, and `broker3` ([`Apache Kafka`](https://kafka.apache.org/documentation.html))
     - `schema-registry` ([`Confluent Schema Registry`](https://github.com/confluentinc/schema-registry))
-    - `connect` ([`Apache Kafka Connect`](https://kafka.apache.org/documentation.html#connect))
+    - `connect`, `connect2`, and `connect3` ([`Apache Kafka Connect`](https://kafka.apache.org/documentation.html#connect))
     - `ksqldb-server` ([`Confluent ksqlDB`](https://ksqldb.io/))
     - `ksqldb-cli` ([`Confluent ksqlDB CLI`](https://docs.ksqldb.io/en/latest/operate-and-deploy/installation/cli-config/))
     - `rest-proxy` ([`Confluent Rest Proxy`](https://github.com/confluentinc/kafka-rest))
@@ -36,7 +36,7 @@ git clone https://github.com/PHACDataHub/data-mesh-ref-impl.git
 2. Start the cluster
 
 ```bash
-./scripts/start_after_setup.sh
+./scripts/start_first_time.sh
 ```
 
 </p>
@@ -71,3 +71,24 @@ git clone https://github.com/PHACDataHub/data-mesh-ref-impl.git
 </details>
 
 &nbsp;
+
+## FAERS datasets
+
+### A. Download
+
+The datasets reside at [`FDA Adverse Event Reporting System (FAERS) Quarterly Data Extract Files`](https://fis.fda.gov/extensions/FPD-QDE-FAERS/FPD-QDE-FAERS.html).
+
+To download a specific quarterly dataset
+
+```bash
+./scripts/download_faers_qdef.sh 2022 Q4
+```
+
+*Note*: don't forget to download the [`Geopolitical Entities, Names, and Codes (GENC)`](https://www.fda.gov/industry/structured-product-labeling-resources/geopolitical-entities-names-and-codes-genc)
+
+```bash
+./scripts/download_genc_terms.sh
+```
+
+### B. Define schema
+

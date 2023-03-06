@@ -24,7 +24,7 @@ echo ''
 ./scripts/delete_volumes.sh spooldir kafka-ce/connect/data/spooldir
 
 ./scripts/delete_volumes.sh ksqldb-cli kafka-ce/ksqldb-cli
-./scripts/delete_volumes.sh connect kafka-ce/connect
+./scripts/delete_volumes.sh connect kafka-ce/connect kafka-ce/connect2 kafka-ce/connect3
 ./scripts/delete_volumes.sh schema-registry kafka-ce/schema-registry
 ./scripts/delete_volumes.sh brokers kafka-ce/broker kafka-ce/broker2 kafka-ce/broker3
 ./scripts/delete_volumes.sh zookeeper kafka-ce/zk

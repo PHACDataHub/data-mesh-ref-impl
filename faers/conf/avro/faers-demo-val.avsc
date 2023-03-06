@@ -1,0 +1,32 @@
+{
+	"type": "record",
+	"namespace": "ca.gov.phac.cdsb.dmia.oan.dmri.faers",
+	"name": "faers_demo_val",
+	"fields": [
+		{"name": "primaryid", "type": "int" },
+		{"name": "caseid", "type": "int" },
+		{"name": "caseversion", "type": "int" },
+		{"name": "i_f_code", "type": "string" },
+		{"name": "event_dt", "type": "string" },
+		{"name": "mfr_dt", "type": "string" },
+		{"name": "init_fda_dt", "type": "string" },
+		{"name": "fda_dt", "type": "string" },
+		{"name": "rept_cod", "type": "string" },
+		{"name": "auth_num", "type": "string" },
+		{"name": "mfr_num", "type": "string" },
+		{"name": "mfr_sndr", "type": "string" },
+		{"name": "lit_ref", "type": "string" },
+		{"name": "age", "type": "string" },
+		{"name": "age_cod", "type": "string" },
+		{"name": "age_grp", "type": "string" },
+		{"name": "sex", "type": "string" },
+		{"name": "e_sub", "type": "string" },
+		{"name": "wt", "type": "string" },
+		{"name": "wt_cod", "type": "string" },
+		{"name": "rept_dt", "type": "string" },
+		{"name": "to_mfr", "type": "string" },
+		{"name": "occp_cod", "type": "string" },
+		{"name": "reporter_country", "type": "string" },
+		{"name": "occr_country", "type": "string" }
+	]
+}

@@ -1,0 +1,9 @@
+{
+	"type": "record",
+	"namespace": "ca.gov.phac.cdsb.dmia.oan.dmri.faers",
+	"name": "faers_drug_key",
+	"fields": [
+		{"name": "primaryid", "type": "int" },
+		{"name": "drug_seq", "type": "int" }
+	]
+}

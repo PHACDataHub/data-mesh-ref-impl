@@ -27,12 +27,15 @@ docker exec -it zookeeper cub sr-ready $schema_registry_host $schema_registry_po
 echo "${schema_registry_host}:${schema_registry_port} is ready ✅";
 echo ''
 
-connect_host=connect
-connect_port=${CONNECT_PORT}
-echo "Wait for ${connect_host}:${connect_port} ...";
-docker exec -it zookeeper cub connect-ready $connect_host $connect_port $timeout > /dev/null
-echo "${connect_host}:${connect_port} is ready ✅";
-echo ''
+for item in connect connect2 connect3
+do
+    connect_host=$item
+    connect_port=${CONNECT_PORT}
+    echo "Wait for ${connect_host}:${connect_port} ...";
+    docker exec -it zookeeper cub connect-ready $connect_host $connect_port $timeout > /dev/null
+    echo "${connect_host}:${connect_port} is ready ✅";
+    echo ''
+done
 
 ksqldb_server_host=ksqldb-server
 ksqldb_server_port=${KSQLDB_PORT}
