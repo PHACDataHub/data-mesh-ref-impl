@@ -1,0 +1,7 @@
+{
+	"name":"ca.gov.phac.cdsb.dmia.oan.dmri.faers.genc_key",
+	"type":"STRUCT",
+	"fieldSchemas":{
+		"genc_2_letter_code":{"type":"STRING", "isOptional":false}
+	}
+}

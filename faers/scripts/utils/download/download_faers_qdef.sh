@@ -11,6 +11,12 @@ quarter=$2
 
 zip_file=faers_ascii_${year}${quarter}.zip
 folder=data/faers/${year}${quarter}
+
+if [ -f ${folder}/${zip_file} ]; then
+    echo ${folder}/${zip_file} already downloaded.
+    exit 0
+fi
+
 url=https://fis.fda.gov/content/Exports/
 
 echo Downloading ${url}${zip_file} ...

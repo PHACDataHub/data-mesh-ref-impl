@@ -2,6 +2,11 @@
 
 entity=("genc" "https://evs.nci.nih.gov/ftp1/GENC/" "NCIt-GENC_Terminology.txt")
 
+if [ -f data/${entity[0]}/${entity[2]} ]; then
+    echo data/${entity[0]}/${entity[2]} already downloaded.
+    exit 0
+fi
+
 echo Downloading ${entity[1]}${entity[2]} ...
 mkdir -p data/${entity[0]};
 wget ${entity[1]}${entity[2]} --output-document data/${entity[0]}/${entity[2]}

@@ -1,0 +1,10 @@
+{
+	"name":"ca.gov.phac.cdsb.dmia.oan.dmri.faers.indi_val",
+	"type":"STRUCT",
+	"fieldSchemas":{
+		"primaryid":{"type":"INT64", "isOptional":false},
+		"caseid":{"type":"INT64", "isOptional":false},
+		"indi_drug_seq":{"type":"INT64", "isOptional":false},
+		"indi_pt":{"type":"STRING", "isOptional":true}
+	}
+}

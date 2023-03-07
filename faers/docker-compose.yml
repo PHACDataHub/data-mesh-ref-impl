@@ -246,7 +246,6 @@ services:
         sleep infinity
     volumes:
       - $PWD/kafka-ce/connect/data:/data
-      - $PWD/kafka-ce/connect/plugins:/usr/share/confluent-hub-components
     restart: always
 
   ####################
@@ -309,8 +308,7 @@ services:
         # Don't exit
         sleep infinity
     volumes:
-      - $PWD/kafka-ce/connect2/data:/data
-      - $PWD/kafka-ce/connect2/plugins:/usr/share/confluent-hub-components
+      - $PWD/kafka-ce/connect/data:/data
     restart: always
 
   ####################
@@ -373,8 +371,7 @@ services:
         # Don't exit
         sleep infinity
     volumes:
-      - $PWD/kafka-ce/connect3/data:/data
-      - $PWD/kafka-ce/connect3/plugins:/usr/share/confluent-hub-components
+      - $PWD/kafka-ce/connect/data:/data
     restart: always
 
   ####################

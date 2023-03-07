@@ -1,0 +1,9 @@
+{
+	"name":"ca.gov.phac.cdsb.dmia.oan.dmri.faers.rpsr_val",
+	"type":"STRUCT",
+	"fieldSchemas":{
+		"primaryid":{"type":"INT64", "isOptional":false},
+		"caseid":{"type":"INT64", "isOptional":false},
+		"rpsr_cod":{"type":"STRING", "isOptional":true}
+	}
+}

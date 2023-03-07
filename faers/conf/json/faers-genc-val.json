@@ -1,0 +1,14 @@
+{
+	"name":"ca.gov.phac.cdsb.dmia.oan.dmri.faers.genc_val",
+	"type":"STRUCT",
+	"fieldSchemas":{
+		"ncit_concept_code":{"type":"STRING", "isOptional":true},
+		"ncit_preferred_term":{"type":"STRING", "isOptional":true},
+		"genc_name":{"type":"STRING", "isOptional":true},
+		"genc_2_letter_code":{"type":"STRING", "isOptional":true},
+		"genc_3_letter_code":{"type":"STRING", "isOptional":true},
+		"genc_number":{"type":"STRING", "isOptional":true},
+		"ncit_subset_code":{"type":"STRING", "isOptional":true},
+		"ncit_subset_name":{"type":"STRING", "isOptional":true}
+	}
+}

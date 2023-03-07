@@ -12,6 +12,6 @@ fi
 
 echo "Restart all services ...";
 docker compose -f docker-compose.yml start
-./scripts/wait_for_kafka.sh
-./scripts/wait_for_it.sh neo4j 60
+./scripts/utils/waits/wait_for_kafka.sh
+./scripts/utils/waits/wait_for_it.sh neo4j 60
 echo "All services have restarted ✅";
