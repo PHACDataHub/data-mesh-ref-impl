@@ -164,7 +164,7 @@ To run it separately, use
 
 We can take a look at a case view as a graph of connected entities:
 
-![Case 58965853](../img/health-analytics/case-58965853.png)
+![Case 58965853](../img/case-58965853.png)
 
 ```Cypher
 MATCH (c:Case {primaryid: 58965853})
