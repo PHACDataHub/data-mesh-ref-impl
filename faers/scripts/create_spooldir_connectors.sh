@@ -19,17 +19,19 @@ connect_internal_host=connect
 connect_local_host=localhost
 connect_port=${CONNECT_PORT}
 
-./scripts/kafka/list_connect_plugins.sh
+./scripts/kafka/list_plugins.sh
 
 ./scripts/kafka/list_connectors.sh
 
-no_messages=10
-
-echo 'Copying FAERS data for spooldir connector ...'
+echo 'Copying GENC data for spooldir connector ...'
 src_file=data/genc/NCIt-GENC_Terminology.txt
 des_file=kafka-ce/connect/data/spooldir/unprocessed/GENC-$RANDOM.txt
 cp $src_file $des_file; 
 echo $src_file is copied as $des_file.
+echo 'GENC data for spooldir copied ✅'
+echo ''
+
+echo 'Copying FAERS data for spooldir connector ...'
 for item in DEMO DRUG INDI OUTC REAC RPSR THER
 do
     src_file=data/faers/${year}${quarter}/ASCII/${item}${year:(-2)}${quarter}.txt
@@ -37,7 +39,7 @@ do
     cp $src_file $des_file;
     echo $src_file is copied as $des_file.
 done
-echo 'Data for spooldir copied ✅'
+echo 'FAERS data for spooldir copied ✅'
 echo ''
 
 for item in DEMO DRUG INDI OUTC REAC RPSR THER GENC
@@ -56,7 +58,7 @@ do
         separator_char=9
     fi
 
-    data='{
+    config='{
         "connector.class":"com.github.jcustenborder.kafka.connect.spooldir.SpoolDirCsvSourceConnector",
         "topic":"'${topic}'",
         "input.path":"/data/spooldir/unprocessed",
@@ -71,7 +73,7 @@ do
 
     curl -i -X PUT -H "Accept:application/json" -H  "Content-Type:application/json" \
         http://${connect_local_host}:${connect_port}/connectors/${connector}/config \
-        -d "${data}"
+        -d "${config}"
     echo ''
     echo ''
 done
