@@ -162,7 +162,7 @@ To run it separately, use
 <img src="../img/model.svg" alt="The Data Model" width="80%"/>
 &nbsp;
 
-We can take a look at a case view as a graph of connected entities:
+We can take a look at a case (`primaryid` `58965853`) as a graph of connected entities:
 
 ![Case 58965853](../img/case-58965853.png)
 
@@ -348,7 +348,7 @@ RETURN a.ageGroup as ageGroupName, (ageGroupWiseReactions*100.00)/totalReactions
 ORDER BY perc DESC
 ```
 
-![Age Groups](../img/health-analytics/age-groups.png)
+![Age Groups](../img/age-groups.png)
 
 To save the dashboard for later use, select the `Save` button on the left menu and then save it into `Neo4j` instance (the dashboard now is a part of the `Neo4j` database.)
 
