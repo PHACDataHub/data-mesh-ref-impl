@@ -1,0 +1,30 @@
+{
+    "name": "Neo4jSinkConnector",
+    "config": {
+        "_comment": "Sink configuration for FAERS",
+        "connector.class": "streams.kafka.connect.sink.Neo4jSinkConnector",
+        "key.converter": "io.confluent.connect.avro.AvroConverter",
+        "key.converter.schema.registry.url": "http://schema-registry:8081",
+        "value.converter": "io.confluent.connect.avro.AvroConverter",
+        "value.converter.schema.registry.url": "http://schema-registry:8081",
+        "errors.retry.timeout": "-1",
+        "errors.retry.delay.max.ms": "1000",
+        "errors.tolerance": "all",
+        "errors.log.enable": true,
+        "errors.log.include.messages": true,
+        "neo4j.server.uri": "bolt://neo4j:7687",
+        "neo4j.authentication.basic.username": "neo4j",
+        "neo4j.authentication.basic.password": "phac2023",
+        "neo4j.encryption.enabled": false,
+        "neo4j.batch.parallelize": true,
+        "topics": "faers-demo,faers-drug,faers-genc,faers-indi,faers-outc,faers-reac,faers-rpsr,faers-ther",
+        "neo4j.topic.cypher.faers-demo": "CREATE (n:demo {primaryid: event.primaryid}) SET n = event",
+        "neo4j.topic.cypher.faers-drug": "CREATE (n:drug {primaryid: event.primaryid, drug_seq: event.drug_seq}) SET n = event",
+        "neo4j.topic.cypher.faers-genc": "CREATE (n:genc {ncit_concept_code: event.ncit_concept_code}) SET n = event",
+        "neo4j.topic.cypher.faers-indi": "CREATE (n:indi {primaryid: event.primaryid, drug_seq: event.indi_drug_seq}) SET n = event",
+        "neo4j.topic.cypher.faers-outc": "CREATE (n:outc {primaryid: event.primaryid}) SET n = event",
+        "neo4j.topic.cypher.faers-reac": "CREATE (n:reac {primaryid: event.primaryid}) SET n = event",
+        "neo4j.topic.cypher.faers-rpsr": "CREATE (n:rpsr {primaryid: event.primaryid}) SET n = event",
+        "neo4j.topic.cypher.faers-ther": "CREATE (n:ther {primaryid: event.primaryid, drug_seq: event.indi_drug_seq}) SET n = event"
+    }
+}

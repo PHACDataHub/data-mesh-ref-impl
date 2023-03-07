@@ -1,0 +1,14 @@
+{
+	"type": "record",
+	"namespace": "ca.gov.phac.cdsb.dmia.oan.dmri.faers",
+	"name": "faers_ther_val",
+	"fields": [
+		{"name": "primaryid", "type": "int" },
+		{"name": "caseid", "type": "int" },
+		{"name": "dsg_drug_seq", "type": "int" },
+		{"name": "start_dt", "type": "string" },
+		{"name": "end_dt", "type": "string" },
+		{"name": "dur", "type": "string" },
+		{"name": "dur_cod", "type": "string" }
+	]
+}

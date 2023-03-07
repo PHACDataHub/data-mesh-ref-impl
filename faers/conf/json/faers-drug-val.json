@@ -1,0 +1,26 @@
+{
+	"name":"ca.gov.phac.cdsb.dmia.oan.dmri.faers.drug_val",
+	"type":"STRUCT",
+	"fieldSchemas":{
+		"primaryid":{"type":"INT64", "isOptional":false},
+		"caseid":{"type":"INT64", "isOptional":false},
+		"drug_seq":{"type":"INT64", "isOptional":false},
+		"role_cod":{"type":"STRING", "isOptional":true},
+		"drugname":{"type":"STRING", "isOptional":true},
+		"prod_ai":{"type":"STRING", "isOptional":true},
+		"val_vbm":{"type":"STRING", "isOptional":true},
+		"route":{"type":"STRING", "isOptional":true},
+		"dose_vbm":{"type":"STRING", "isOptional":true},
+		"cum_dose_chr":{"type":"STRING", "isOptional":true},
+		"cum_dose_unit":{"type":"STRING", "isOptional":true},
+		"dechal":{"type":"STRING", "isOptional":true},
+		"rechal":{"type":"STRING", "isOptional":true},
+		"lot_num":{"type":"STRING", "isOptional":true},
+		"exp_dt":{"type":"STRING", "isOptional":true},
+		"nda_num":{"type":"STRING", "isOptional":true},
+		"dose_amt":{"type":"STRING", "isOptional":true},
+		"dose_unit":{"type":"STRING", "isOptional":true},
+		"dose_form":{"type":"STRING", "isOptional":true},
+		"dose_freq":{"type":"STRING", "isOptional":true}
+	}
+}

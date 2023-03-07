@@ -1,5 +1,8 @@
 # Project specific
 
+faers/data
+faers/kafka-ce
+faers/neo4j
 data/health-analytics/csv
 data/movie-rec/tsv
 data/neo4j

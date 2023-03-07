@@ -1,0 +1,7 @@
+{
+	"name":"ca.gov.phac.cdsb.dmia.oan.dmri.faers.demo_key",
+	"type":"STRUCT",
+	"fieldSchemas":{
+		"primaryid":{"type":"INT64", "isOptional":false}
+	}
+}

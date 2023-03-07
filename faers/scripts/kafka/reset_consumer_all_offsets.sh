@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [ -z "$1" ]; then
-    echo "Usage ./scripts/kafka/get_consumer_group_info.sh <consumer-group>";
+    echo "Usage ./scripts/kafka/reset_consumer_all_offsets.sh <consumer-group>";
     exit 1
 fi
 
@@ -13,12 +13,13 @@ broker_container_name=broker
 broker_internal_host=broker
 broker_internal_port=${BROKER_INTERNAL_PORT}
 
-echo "Get ${consumer_group} ...";
+echo "Reset all consumer offsets of filepulse-consumer group ...";
 echo "docker exec -it ${broker_container_name} /bin/kafka-consumer-groups \
     --bootstrap-server ${broker_internal_host}:${broker_internal_port} \
-    --describe --group ${consumer_group};
+    --group ${consumer_group} --reset-offsets --to-earliest --all-topics --execute;
 "
 docker exec -it ${broker_container_name} /bin/kafka-consumer-groups \
     --bootstrap-server ${broker_internal_host}:${broker_internal_port} \
-    --describe --group ${consumer_group};
+    --group ${consumer_group} --reset-offsets --to-earliest --all-topics --execute;
+echo "Consumer offsets reset ✅";
 echo ''

@@ -1,0 +1,31 @@
+{
+	"name":"ca.gov.phac.cdsb.dmia.oan.dmri.faers.demo_val",
+	"type":"STRUCT",
+	"fieldSchemas":{
+		"primaryid":{"type":"INT64", "isOptional":false},
+		"caseid":{"type":"INT64", "isOptional":false},
+		"caseversion":{"type":"INT64", "isOptional":false},
+		"i_f_code":{"type":"STRING", "isOptional":true},
+		"event_dt":{"type":"STRING", "isOptional":true},
+		"mfr_dt":{"type":"STRING", "isOptional":true},
+		"init_fda_dt":{"type":"STRING", "isOptional":true},
+		"fda_dt":{"type":"STRING", "isOptional":true},
+		"rept_cod":{"type":"STRING", "isOptional":true},
+		"auth_num":{"type":"STRING", "isOptional":true},
+		"mfr_num":{"type":"STRING", "isOptional":true},
+		"mfr_sndr":{"type":"STRING", "isOptional":true},
+		"lit_ref":{"type":"STRING", "isOptional":true},
+		"age":{"type":"STRING", "isOptional":true},
+		"age_cod":{"type":"STRING", "isOptional":true},
+		"age_grp":{"type":"STRING", "isOptional":true},
+		"sex":{"type":"STRING", "isOptional":true},
+		"e_sub":{"type":"STRING", "isOptional":true},
+		"wt":{"type":"STRING", "isOptional":true},
+		"wt_cod":{"type":"STRING", "isOptional":true},
+		"rept_dt":{"type":"STRING", "isOptional":true},
+		"to_mfr":{"type":"STRING", "isOptional":true},
+		"occp_cod":{"type":"STRING", "isOptional":true},
+		"reporter_country":{"type":"STRING", "isOptional":true},
+		"occr_country":{"type":"STRING", "isOptional":true}
+	}
+}

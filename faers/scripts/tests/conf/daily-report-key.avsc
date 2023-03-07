@@ -1,0 +1,9 @@
+{
+	"type": "record",
+	"namespace": "ca.gov.phac.cdsb.dmia.oan.dmri",
+	"name": "daily_report_key",
+	"fields": [
+		{"name": "date",  "type": "string" },
+		{"name": "fips", "type": "string" }
+	]
+}

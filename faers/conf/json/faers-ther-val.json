@@ -1,0 +1,13 @@
+{
+	"name":"ca.gov.phac.cdsb.dmia.oan.dmri.faers.ther_val",
+	"type":"STRUCT",
+	"fieldSchemas":{
+		"primaryid":{"type":"INT64", "isOptional":false},
+		"caseid":{"type":"INT64", "isOptional":false},
+		"dsg_drug_seq":{"type":"INT64", "isOptional":false},
+		"start_dt":{"type":"STRING", "isOptional":true},
+		"end_dt":{"type":"STRING", "isOptional":true},
+		"dur":{"type":"STRING", "isOptional":true},
+		"dur_cod":{"type":"STRING", "isOptional":true}
+	}
+}
