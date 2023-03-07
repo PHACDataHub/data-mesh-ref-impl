@@ -159,7 +159,7 @@ To run it separately, use
 | Indication    | -            | This is the medical term for drug indication that has the details like drug sequence, indication point. We have not used a separate Node label for this, instead we have covered required details as `Case` to `Drug` relationship properties. |
 | Demographics  | AgeGroup     | Demographics table in the FEARS data has age information that we turned into a separate node for Age Group reporting.                                                                                                                          |
 
-<img src="../img/health-analytics/model.svg" alt="The Data Model" width="80%"/>
+<img src="../img/model.svg" alt="The Data Model" width="80%"/>
 &nbsp;
 
 We can take a look at a case view as a graph of connected entities:
@@ -184,7 +184,7 @@ collect(distinct(outcome)) as outcomes
 <details>
 <summary>Your instance of [Neodash](https://neo4j.com/labs/neodash/) should already be running there.</summary>
 <p>
-<img src="../img/health-analytics/neodash-new-dashboard.png" alt="Neodash New Dashboard" width="640"/>
+<img src="../img/neodash-new-dashboard.png" alt="Neodash New Dashboard" width="640"/>
 
 Choose to create a new dashboard, then use with `neo4j` and `phac2022` as credential.
 
