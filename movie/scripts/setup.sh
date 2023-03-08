@@ -13,4 +13,3 @@
 ./scripts/utils/download/download_neo4j_plugins.sh neo4j
 
 ./scripts/utils/download/download_imdb_dataset.sh
-./scripts/utils/download/download_current_rss.sh

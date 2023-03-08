@@ -1,0 +1,2 @@
+*/30 * * * * date
+*/30 * * * * /download_current_rss.sh

@@ -72,5 +72,3 @@ echo ''
 ./scripts/kafka/list_connectors.sh
 ./scripts/kafka/list_topics.sh
 ./scripts/kafka/list_subjects.sh
-
-cp data/rss/screenrant-rss-*.xml kafka-ce/connect/data/filepulse/xml/.
