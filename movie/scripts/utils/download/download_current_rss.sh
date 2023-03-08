@@ -1,6 +1,10 @@
 #!/bin/bash
 
-folder=/data
+if [ -z "$1" ]; then
+    folder=/data
+else
+    folder=$1
+fi
 
 echo 'Downloading data into for filepulse folder ...'
 timestamp=$(date +%s%N)

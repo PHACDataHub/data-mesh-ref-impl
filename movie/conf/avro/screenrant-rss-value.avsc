@@ -8,7 +8,11 @@
             "default": []
         },
         {"name":"content", "type": "string"},
-        {"name":"creator", "type": "string"},
+        {
+            "name":"creator", 
+            "type": { "type": "array", "items": "string" }, 
+            "default": []
+        },
         {"name":"description", "type": "string"},
         {"name":"enclosure_url", "type": "string"},
         {"name":"link", "type": "string"},

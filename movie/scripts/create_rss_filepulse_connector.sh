@@ -32,7 +32,7 @@ config='{
     "offset.strategy":"name",
     "reader.xpath.expression":"/rss/channel/item",
     "reader.xpath.result.type":"NODESET",
-    "reader.xml.force.array.on.fields":"category",
+    "reader.xml.force.array.on.fields":"category,creator",
     "reader.xml.parser.validating.enabled":true,
     "reader.xml.parser.namespace.aware.enabled":true,
     "filters":"enclosure,content,pubDate,Exclude",
@@ -52,7 +52,7 @@ config='{
     "tasks.file.status.storage.topic":"connect-file-pulse-status",
     "tasks.reader.class":"io.streamthoughts.kafka.connect.filepulse.fs.reader.LocalXMLFileInputReader",
     "tasks.max": 1,
-    "value.connect.schema":"{ \"name\": \"screentrant_rss_value\", \"type\":\"STRUCT\", \"fieldSchemas\": { \"link\":{\"type\":\"STRING\", \"isOptional\":false}, \"pub_date\":{\"type\":\"STRING\", \"isOptional\":false}, \"category\": {\"type\":\"ARRAY\", \"isOptional\":true, \"valueSchema\": {\"type\": \"STRING\"}}, \"content\":{\"type\":\"STRING\", \"isOptional\":false}, \"creator\":{\"type\":\"STRING\", \"isOptional\":false}, \"description\":{\"type\":\"STRING\", \"isOptional\":false}, \"enclosure_url\":{\"type\":\"STRING\", \"isOptional\":false}, \"title\":{\"type\":\"STRING\", \"isOptional\":false} } }"
+    "value.connect.schema":"{ \"name\": \"screentrant_rss_value\", \"type\":\"STRUCT\", \"fieldSchemas\": { \"link\":{\"type\":\"STRING\", \"isOptional\":false}, \"pub_date\":{\"type\":\"STRING\", \"isOptional\":false}, \"category\": {\"type\":\"ARRAY\", \"isOptional\":true, \"valueSchema\": {\"type\": \"STRING\"}}, \"content\":{\"type\":\"STRING\", \"isOptional\":false}, \"creator\":{\"type\":\"ARRAY\", \"isOptional\":true, \"valueSchema\": {\"type\": \"STRING\"}}, \"description\":{\"type\":\"STRING\", \"isOptional\":false}, \"enclosure_url\":{\"type\":\"STRING\", \"isOptional\":false}, \"title\":{\"type\":\"STRING\", \"isOptional\":false} } }"
 }'
 
 curl -i -X PUT -H "Accept:application/json" -H  "Content-Type:application/json" \
