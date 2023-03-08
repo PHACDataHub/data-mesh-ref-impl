@@ -1,8 +1,0 @@
-{
-	"type": "record",
-	"namespace": "ca.gov.phac.cdsb.dmia.oan.dmri.faers",
-	"name": "genc_key",
-	"fields": [
-		{"name": "genc_2_letter_code", "type": "string" }
-	]
-}

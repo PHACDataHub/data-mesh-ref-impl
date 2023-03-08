@@ -1,0 +1,18 @@
+{
+    "type": "record",
+    "name": "screentrant_rss_value",
+    "fields":[
+        {
+            "name":"category", 
+            "type": { "type": "array", "items": "string" }, 
+            "default": []
+        },
+        {"name":"content", "type": "string"},
+        {"name":"creator", "type": "string"},
+        {"name":"description", "type": "string"},
+        {"name":"enclosure_url", "type": "string"},
+        {"name":"link", "type": "string"},
+        {"name":"pub_date", "type": "string"},
+        {"name":"title", "type": "string"}
+    ]
+}

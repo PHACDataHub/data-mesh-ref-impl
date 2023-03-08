@@ -20,27 +20,8 @@ connect_local_host=localhost
 connect_port=${CONNECT_PORT}
 
 ./scripts/kafka/list_plugins.sh
-
 ./scripts/kafka/list_connectors.sh
-
-echo 'Copying GENC data for spooldir connector ...'
-src_file=data/genc/NCIt-GENC_Terminology.txt
-des_file=kafka-ce/connect/data/spooldir/unprocessed/GENC-$RANDOM.txt
-cp $src_file $des_file; 
-echo $src_file is copied as $des_file.
-echo 'GENC data for spooldir copied ✅'
-echo ''
-
-echo 'Copying FAERS data for spooldir connector ...'
-for item in DEMO DRUG INDI OUTC REAC RPSR THER
-do
-    src_file=data/faers/${year}${quarter}/ASCII/${item}${year:(-2)}${quarter}.txt
-    des_file=kafka-ce/connect/data/spooldir/unprocessed/${item}-$RANDOM.txt
-    cp $src_file $des_file;
-    echo $src_file is copied as $des_file.
-done
-echo 'FAERS data for spooldir copied ✅'
-echo ''
+./scripts/kafka/list_subjects.sh
 
 for item in DEMO DRUG INDI OUTC REAC RPSR THER GENC
 do
@@ -79,7 +60,24 @@ do
 done
 
 ./scripts/kafka/list_connectors.sh
-
 ./scripts/kafka/list_topics.sh
-
 ./scripts/kafka/list_subjects.sh
+
+echo 'Copying GENC data for spooldir connector ...'
+src_file=data/genc/NCIt-GENC_Terminology.txt
+des_file=kafka-ce/connect/data/spooldir/unprocessed/GENC-$RANDOM.txt
+cp $src_file $des_file; 
+echo $src_file is copied as $des_file.
+echo 'GENC data for spooldir copied ✅'
+echo ''
+
+echo 'Copying FAERS data for spooldir connector ...'
+for item in DEMO DRUG INDI OUTC REAC RPSR THER
+do
+    src_file=data/faers/${year}${quarter}/ASCII/${item}${year:(-2)}${quarter}.txt
+    des_file=kafka-ce/connect/data/spooldir/unprocessed/${item}-$RANDOM.txt
+    cp $src_file $des_file;
+    echo $src_file is copied as $des_file.
+done
+echo 'FAERS data for spooldir copied ✅'
+echo ''

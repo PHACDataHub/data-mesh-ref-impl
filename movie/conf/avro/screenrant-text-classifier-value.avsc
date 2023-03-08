@@ -1,0 +1,50 @@
+{
+    "type": "record",
+    "name": "screentrant_text_classifier_value",
+    "fields":[
+        {
+            "name":"category", 
+            "type": { "type": "array", "items": "string" }, 
+            "default": []
+        },
+        {"name":"content", "type": "string"},
+        {"name":"creator", "type": "string"},
+        {"name":"description", "type": "string"},
+        {"name":"enclosure_url", "type": "string"},
+        {"name":"full_text", "type": "string"},
+        {
+            "name":"href_list",
+            "type": { 
+                "type": "array", 
+                "items": { 
+                    "name":"href", 
+                    "type": "record", 
+                    "fields": [ 
+                        {"name":"content", "type": "string"},
+                        {"name":"url", "type": "string"}  
+                    ]
+                } 
+            }, 
+            "default": []
+        },
+        {"name":"link", "type": "string"},
+        {
+            "name":"news_label_list",
+            "type": { 
+                "type": "array", 
+                "items": { 
+                    "name":"label", 
+                    "type": "record", 
+                    "fields": [ 
+                        {"name":"name", "type": "string"},
+                        {"name":"score", "type": "float"}  
+                    ]
+                } 
+            }, 
+            "default": []
+        },
+        {"name":"pub_date", "type": "string"},
+        {"name":"timestamp_tc", "type": "int"},
+        {"name":"title", "type": "string"}
+    ]
+}

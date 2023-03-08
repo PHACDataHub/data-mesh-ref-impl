@@ -1,8 +1,0 @@
-{
-	"type": "record",
-	"namespace": "ca.gov.phac.cdsb.dmia.oan.dmri.faers",
-	"name": "faers_rpsr_key",
-	"fields": [
-		{"name": "primaryid", "type": "int" }
-	]
-}
