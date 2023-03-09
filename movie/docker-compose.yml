@@ -236,7 +236,7 @@ services:
         confluent-hub install --no-prompt jcustenborder/kafka-connect-spooldir:${KAFKA_CONNECT_SPOOLDIR_VERSION}
         confluent-hub install --no-prompt neo4j/kafka-connect-neo4j:${KAFKA_CONNECT_NEO4J_VERSION}
         confluent-hub install --no-prompt streamthoughts/kafka-connect-file-pulse:${KAFKA_CONNECT_FILEPULSE_VERSION}
-        confluent-hub install --no-prompt debezium/debezium-connector-mysql:${DEBEZIUM_CONNECTOR_MYSQL_VERSION}
+        confluent-hub install --no-prompt debezium/debezium-connector-postgresql:${DEBEZIUM_POSTGRESQL_CDC_SOURCE_CONNECTOR_VERSION}
         #
         # -----------
         # Launch the Kafka Connect worker
@@ -299,7 +299,7 @@ services:
         confluent-hub install --no-prompt jcustenborder/kafka-connect-spooldir:${KAFKA_CONNECT_SPOOLDIR_VERSION}
         confluent-hub install --no-prompt neo4j/kafka-connect-neo4j:${KAFKA_CONNECT_NEO4J_VERSION}
         confluent-hub install --no-prompt streamthoughts/kafka-connect-file-pulse:${KAFKA_CONNECT_FILEPULSE_VERSION}
-        confluent-hub install --no-prompt debezium/debezium-connector-mysql:${DEBEZIUM_CONNECTOR_MYSQL_VERSION}
+        confluent-hub install --no-prompt debezium/debezium-connector-postgresql:${DEBEZIUM_POSTGRESQL_CDC_SOURCE_CONNECTOR_VERSION}
         #
         # -----------
         # Launch the Kafka Connect worker
@@ -362,7 +362,7 @@ services:
         confluent-hub install --no-prompt jcustenborder/kafka-connect-spooldir:${KAFKA_CONNECT_SPOOLDIR_VERSION}
         confluent-hub install --no-prompt neo4j/kafka-connect-neo4j:${KAFKA_CONNECT_NEO4J_VERSION}
         confluent-hub install --no-prompt streamthoughts/kafka-connect-file-pulse:${KAFKA_CONNECT_FILEPULSE_VERSION}
-        confluent-hub install --no-prompt debezium/debezium-connector-mysql:${DEBEZIUM_CONNECTOR_MYSQL_VERSION}
+        confluent-hub install --no-prompt debezium/debezium-connector-postgresql:${DEBEZIUM_POSTGRESQL_CDC_SOURCE_CONNECTOR_VERSION}
         #
         # -----------
         # Launch the Kafka Connect worker
@@ -757,7 +757,7 @@ services:
 #
 # Screent Rant RSS
 # ----------------
-# - rss-cron-job
+# - cronjob
 #
 ##############################################################################
 
@@ -771,14 +771,43 @@ services:
       context: ./
       dockerfile: conf/cron/Dockerfile
     init: true
-    # depends_on:
-    #   - connect
+    depends_on:
+      - connect
     networks:
       - backend
     volumes:
       - $PWD/kafka-ce/connect/data/filepulse/xml:/data
     restart: always
 
+
+##############################################################################
+#
+# PostgreSQL & End-user UI app
+# ----------------
+# - postgres
+#
+##############################################################################
+
+  ####################
+  # postgres
+  ####################
+  postgres:
+    # *-----------------------------*
+    # To connect to the DB: 
+    #   docker exec -it postgres bash -c 'psql -U $POSTGRES_USER $POSTGRES_DB'
+    # *-----------------------------*
+    image: postgres:12
+    container_name: postgres
+    depends_on:
+      - connect
+    networks:
+      - backend
+    ports:
+      - ${POSTGRES_PORT}:5432
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    restart: always
 
 ################################################################################
 #

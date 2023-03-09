@@ -18,7 +18,7 @@ def input_rss(key, val):
     
     rss_val['category'] = [BeautifulSoup(e, 'html.parser').get_text() for e in val['category']]
 
-    rss_val['creator'] = val['creator']
+    rss_val['creator'] = json.dumps(val['creator'], cls=NumpyFloatValuesEncoder)
     rss_val['enclosure_url'] = val['enclosure_url']
     rss_val['link'] = val['link']
     rss_val['pub_date'] = val['pub_date']
@@ -38,6 +38,9 @@ def input_rss(key, val):
     rss_val['title'] = re.sub("^\n+\s+", "", text)
 
     rss_val['full_text'] = f"{rss_val['title']}. {', '.join(rss_val['category'])}. {rss_val['description']} {rss_val['content']}"
+
+    rss_val['category'] = json.dumps(rss_val['category'], cls=NumpyFloatValuesEncoder)
+
     rss_val['timestamp_tc'] = int(time.time())
 
     rss_key = { 'link': val['link'], 'pub_date': val['pub_date'] }

@@ -2,14 +2,14 @@
 
 source .env
 
+broker_container_name=broker
+broker_internal_host=broker
+broker_internal_port=${BROKER_INTERNAL_PORT}
+
 connect_container=connect
 connect_internal_host=connect
 connect_local_host=localhost
 connect_port=${CONNECT_PORT}
-
-broker_container_name=broker
-broker_internal_host=broker
-broker_internal_port=${BROKER_INTERNAL_PORT}
 
 ./scripts/kafka/list_plugins.sh
 ./scripts/kafka/list_connectors.sh

@@ -2,27 +2,19 @@
     "type":"record",
     "name": "screentrant_sentiment_analyzer_value",
     "fields":[
-        {
-            "name":"category", 
-            "type": { "type": "array", "items": "string" }, 
-            "default": []
-        },
-        {"name":"content", "type": "string"},
-        {
-            "name":"creator", 
-            "type": { "type": "array", "items": "string" }, 
-            "default": []
-        },
-        {"name":"description", "type": "string"},
-        {"name":"enclosure_url", "type": "string"},
-        {"name":"full_text", "type": "string"},
-        {"name":"href_list", "type": "string"},
+        {"name":"category", "type": "string", "isOptional": true},
+        {"name":"content", "type": "string", "isOptional": true},
+        {"name":"creator", "type": "string", "isOptional": true},
+        {"name":"description", "type": "string", "isOptional": true},
+        {"name":"enclosure_url", "type": "string", "isOptional": true},
+        {"name":"full_text", "type": "string", "isOptional": true},
+        {"name":"href_list", "type": "string", "isOptional": true},
         {"name":"link", "type": "string"},
-        {"name":"classified_labels", "type": "string"},
+        {"name":"classified_labels", "type": "string", "isOptional": true},
         {"name":"pub_date", "type": "string"},
-        {"name":"timestamp_tc", "type": "int"},
-        {"name":"title", "type": "string"},
-        {"name":"sentiment_score", "type":"float"},
-        {"name":"timestamp_sa", "type": "int"}
+        {"name":"timestamp_tc", "type": "int", "isOptional": true},
+        {"name":"title", "type": "string", "isOptional": true},
+        {"name":"sentiment_score", "type":"float", "isOptional": true},
+        {"name":"timestamp_sa", "type": "int", "isOptional": true}
     ]
 }

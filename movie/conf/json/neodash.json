@@ -2,10 +2,12 @@
   "title": "Movie Recommendations",
   "version": "2.2",
   "settings": {
-    "pagenumber": 3,
+    "pagenumber": 0,
     "editable": true,
     "fullscreenEnabled": false,
-    "parameters": {}
+    "parameters": {
+      "neodash_recommendable_movie_limit": "20"
+    }
   },
   "pages": [
     {
@@ -13,7 +15,7 @@
       "reports": [
         {
           "title": "List of current recommendable movies",
-          "query": "MATCH (n:MovieNews)\nWITH n, apoc.convert.fromJsonList(n.classified_labels)[0] AS class\n    WHERE class['name'] = 'movie' AND class['score'] > 0.5 AND 'Movies' IN n.category\nWITH n, apoc.coll.union([e IN apoc.convert.fromJsonList(n.named_entities) | e['word']], []) AS named_entities\nWITH n, apoc.coll.subtract(apoc.coll.union([apoc.convert.fromJsonMap(n.question_answer)['answer']] + n.category, named_entities), ['Movies']) AS named_entities\nWITH n, named_entities\n    MATCH (t:Title)\n        WHERE t.primaryTitle IN named_entities AND NOT(t.titleType IN [\"tvEpisode\", \"tvSeries\", \"tvMiniSeries\"])\nWITH n, t, named_entities\n    MATCH (t)-[:CREW_IN]-(p:Person)\nWITH DISTINCT(t) AS t, n, named_entities, COLLECT(p.primaryName) AS persons\n    WHERE SIZE(apoc.coll.intersection(named_entities, persons)) > 0\nWITH DISTINCT(t) AS t\n    OPTIONAL MATCH (t)-[:CREW_IN {category: \"director\"}]-(p:Person)\nWITH t, COLLECT(p.primaryName) AS directors\nWITH t, directors\n    OPTIONAL MATCH (t)-[r:CREW_IN]-(p:Person)\n\t\tWHERE r.category IN ['actor', 'actress']\nWITH t, directors, COLLECT(p.primaryName) AS crews\nWITH t.primaryTitle AS primaryTitle, t.startYear As startYear, directors, crews,\n    CASE WHEN t.averageRating IS NULL THEN 0 ELSE t.averageRating END AS averageRating  ORDER BY averageRating DESC\nRETURN primaryTitle, startYear, averageRating, directors, crews",
+          "query": "MATCH (n:MovieNews)\nWITH n, apoc.convert.fromJsonList(n.classified_labels)[0] AS class, apoc.convert.fromJsonList(n.category) AS categories\n    WHERE class['name'] = 'movie' AND 'Movies' IN categories\nWITH n, categories, apoc.coll.union([e IN apoc.convert.fromJsonList(n.named_entities) | e['word']], []) AS named_entities\nWITH n, categories, apoc.coll.subtract(apoc.coll.union([apoc.convert.fromJsonMap(n.question_answer)['answer']] + categories, named_entities), ['Movies']) AS named_entities\nWITH n, named_entities\n    MATCH (t:Title)\n        WHERE t.primaryTitle IN named_entities AND NOT(t.titleType IN [\"tvEpisode\", \"tvSeries\", \"tvMiniSeries\", \"videoGame\", \"video\"])\nWITH n, t, named_entities\n    MATCH (t)-[:CREW_IN]-(p:Person)\nWITH DISTINCT(t) AS t, named_entities, COLLECT(DISTINCT(p.primaryName)) AS persons\n    WHERE SIZE(apoc.coll.intersection(named_entities, persons)) > 0\nWITH t\n    OPTIONAL MATCH (t)-[:CREW_IN {category: \"director\"}]-(d:Person)\n    OPTIONAL MATCH (t)-[r:CREW_IN]-(a:Person)\n\t\tWHERE r.category IN ['actor', 'actress']\nWITH DISTINCT(t) AS t, COLLECT(DISTINCT(d.primaryName)) AS directors, COLLECT(DISTINCT(a.primaryName)) AS crews\nWITH t.primaryTitle AS title, t.titleType AS type, t.startYear As startYear, directors, crews,\n    CASE WHEN t.averageRating IS NULL THEN '-' ELSE t.averageRating END AS rating \n\tORDER BY rating DESC LIMIT TOINTEGER($neodash_recommendable_movie_limit)\nRETURN title, type, startYear, rating, directors, crews",
           "width": 12,
           "height": 5,
           "x": 0,
@@ -23,9 +25,24 @@
           "settings": {
             "nodePositions": {},
             "allowDownload": true,
-            "columnWidths": "[20,5,5,20,40]"
+            "columnWidths": "[20,5,5,5,20,40]"
           },
-          "refreshRate": 10
+          "refreshRate": 60
+        },
+        {
+          "title": "",
+          "query": "RETURN true",
+          "width": 3,
+          "height": 1,
+          "x": 0,
+          "y": 5,
+          "type": "select",
+          "selection": {},
+          "settings": {
+            "type": "Free Text",
+            "entityType": "recommendable movie limit",
+            "parameterName": "neodash_recommendable_movie_limit"
+          }
         }
       ]
     },

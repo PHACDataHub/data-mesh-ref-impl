@@ -8,3 +8,4 @@ fi
 ./scripts/import_imdb_dataset.sh 
 ./scripts/create_rss_filepulse_connector.sh
 ./scripts/create_neo4j_connector.sh
+./scripts/create_postges_sink_connectors.sh
