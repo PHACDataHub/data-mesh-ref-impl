@@ -16,40 +16,13 @@
         {"name":"description", "type": "string"},
         {"name":"enclosure_url", "type": "string"},
         {"name":"full_text", "type": "string"},
-        {
-            "name":"href_list",
-            "type": { 
-                "type": "array", 
-                "items": { 
-                    "name":"href", 
-                    "type":"record", 
-                    "fields": [ 
-                        {"name":"content", "type": "string"},
-                        {"name":"url", "type": "string"}  
-                    ]
-                } 
-            }, 
-            "default": []
-        },
-        {"name":"link", "type": "string", "isOptional": false},
-        {
-            "name":"news_label_list",
-            "type": { 
-                "type": "array", 
-                "items": { 
-                    "name":"label", 
-                    "type":"record", 
-                    "fields": [ 
-                        {"name":"name", "type": "string"},
-                        {"name":"score", "type": "float"}  
-                    ]
-                } 
-            }, 
-            "default": []
-        },
-        {"name":"pub_date", "type": "string", "isOptional": false},
-        {"name":"named_entities_json", "type":"string"},
-        {"name":"timestamp_ne", "type": "int"},
-        {"name":"title", "type": "string"}
+        {"name":"href_list", "type": "string"},
+        {"name":"link", "type": "string"},
+        {"name":"classified_labels", "type": "string"},
+        {"name":"pub_date", "type": "string"},
+        {"name":"timestamp_tc", "type": "int"},
+        {"name":"title", "type": "string"},
+        {"name":"named_entities", "type":"string"},
+        {"name":"timestamp_ne", "type": "int"}
     ]
 }

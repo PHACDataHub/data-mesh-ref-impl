@@ -18,4 +18,6 @@ if [ -z "$avro_path" ]; then
     avro_path=conf/avro
 fi
 
+# Temporary fix for 401 error
+docker pull nvcr.io/nvidia/pytorch:23.01-py3
 docker build -t $1:latest --build-arg INI_FILE=$ini_path/$1.ini --build-arg AVRO_PATH=${avro_path} -f conf/nlp/Dockerfile .

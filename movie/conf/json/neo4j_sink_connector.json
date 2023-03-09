@@ -17,10 +17,10 @@
         "neo4j.authentication.basic.password": "phac2023",
         "neo4j.encryption.enabled": false,
         "topics": "screenrant-named-entity-recognizer-topic,screenrant-question-answer-topic,screenrant-sentiment-analyzer-topic,screenrant-summarizer-topic,screenrant-text-classifier-topic",
-        "neo4j.topic.cypher.screenrant-named-entity-recognizer-topic": "MERGE (n:MovieNews {link:event.link, pub_date:event.pub_date}) SET n.named_entities_json=event.named_entities_json, n.timestamp_ne=event.timestamp_ne",
+        "neo4j.topic.cypher.screenrant-named-entity-recognizer-topic": "MERGE (n:MovieNews {link:event.link, pub_date:event.pub_date}) SET n.named_entities=event.named_entities, n.timestamp_ne=event.timestamp_ne",
         "neo4j.topic.cypher.screenrant-question-answer-topic": "MERGE (n:MovieNews {link:event.link, pub_date:event.pub_date}) SET n.mentioned_movie=event.mentioned_movie, n.mentioned_score=event.mentioned_score, n.timestamp_qa=event.timestamp_qa",
         "neo4j.topic.cypher.screenrant-sentiment-analyzer-topic": "MERGE (n:MovieNews {link:event.link, pub_date:event.pub_date}) SET n.sentiment_score=event.sentiment_score, n.timestamp_sa=event.timestamp_sa",
         "neo4j.topic.cypher.screenrant-summarizer-topic": "MERGE (n:MovieNews {link:event.link, pub_date:event.pub_date}) SET n.summary_text=event.summary_text, n.timestamp_sm=event.timestamp_sm",
-        "neo4j.topic.cypher.screenrant-text-classifier-topic": "MERGE (n:MovieNews {link:event.link, pub_date:event.pub_date}) SET n.category=event.category, n.content=event.content, n.creator=event.creator, n.description=event.description, n.enclosure_url=event.enclosure_url, n.href_list=apoc.convert.toJson(event.href_list), n.news_label_list=apoc.convert.toJson(event.news_label_list), n.timestamp_tc=event.timestamp_pp, n.title=event.title, n.timestamp_nj=datetime().epochMillis"
+        "neo4j.topic.cypher.screenrant-text-classifier-topic": "MERGE (n:MovieNews {link:event.link, pub_date:event.pub_date}) SET n.category=event.category, n.content=event.content, n.creator=event.creator, n.description=event.description, n.enclosure_url=event.enclosure_url, n.href_list=event.href_list, n.classified_labels=event.classified_labels, n.timestamp_tc=event.timestamp_pp, n.title=event.title, n.timestamp_nj=datetime().epochMillis"
     }
 }
