@@ -662,8 +662,8 @@ services:
 # Neo4j & NeoDash
 # ---------------
 # - neo4j
-# - neodash
-#
+# - neodash (editor)
+# - neodash-viewer
 ##############################################################################
 
   ####################
@@ -711,10 +711,11 @@ services:
     restart: always
   
   ####################
-  # NeoDash
+  # neodash
   ####################
   neodash: 
     image: nielsdejong/neodash:${NEODASH_VERSION}
+    hostname: neodash
     container_name: neodash
     depends_on:
       - neo4j
@@ -722,6 +723,33 @@ services:
       - backend
     ports:
       - ${NEODASH_PORT}:5005
+    environment:
+      - ssoEnabled=false
+      - ssoDiscoveryUrl=
+      - standalone=true
+      - standaloneProtocol=bolt
+      - standaloneHost=${PUBLIC_IP}
+      - standalonePort=7687
+      - standaloneDatabase=neo4j
+      # - standaloneUsername=${NEO4J_USERNAME}
+      # - standalonePassword=${NEO4J_PASSWORD}
+      - standaloneDashboardName=Movie Recommendations
+      - standaloneDashboardDatabase=neo4j
+    restart: always
+
+  ####################
+  # neodash-designer
+  ####################
+  neodash-designer: 
+    image: nielsdejong/neodash:${NEODASH_VERSION}
+    hostname: neodash-designer
+    container_name: neodash-designer
+    depends_on:
+      - neo4j
+    networks:
+      - backend
+    ports:
+      - ${NEODASH_DESIGNER_PORT}:5005
     restart: always
 
 

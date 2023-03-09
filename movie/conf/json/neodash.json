@@ -2,14 +2,14 @@
   "title": "Movie Recommendations",
   "version": "2.2",
   "settings": {
-    "pagenumber": 0,
-    "editable": false,
+    "pagenumber": 3,
+    "editable": true,
     "fullscreenEnabled": false,
     "parameters": {}
   },
   "pages": [
     {
-      "title": "Recommendable movies",
+      "title": "Movie time!",
       "reports": [
         {
           "title": "List of current recommendable movies",
@@ -71,7 +71,7 @@
       "title": "Movies & Casts",
       "reports": [
         {
-          "title": "Recommendable movies and their casts",
+          "title": "Recommended movies and their casts",
           "query": "MATCH (n:MovieNews)\nWITH n, apoc.convert.fromJsonList(n.classified_labels)[0] AS class\n    WHERE class['name'] = 'movie' AND class['score'] > 0.5 AND 'Movies' IN n.category\nWITH n, apoc.coll.union([e IN apoc.convert.fromJsonList(n.named_entities) | e['word']], []) AS named_entities\nWITH n, apoc.coll.subtract(apoc.coll.union([apoc.convert.fromJsonMap(n.question_answer)['answer']] + n.category, named_entities), ['Movies']) AS named_entities\nWITH n, named_entities\n    MATCH (t:Title)\n        WHERE t.primaryTitle IN named_entities AND NOT(t.titleType IN [\"tvEpisode\", \"tvSeries\", \"tvMiniSeries\"])\nWITH n, t, named_entities\n    MATCH (t)-[:CREW_IN]-(p:Person)\nWITH DISTINCT(t) AS t, n, named_entities, COLLECT(p.primaryName) AS persons\n    WHERE SIZE(apoc.coll.intersection(named_entities, persons)) > 0\nWITH DISTINCT(t) AS t\n\tOPTIONAL MATCH (t)-[r:CREW_IN]-(p)\nRETURN t, r, p",
           "width": 12,
           "height": 5,
