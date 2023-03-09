@@ -1,9 +1,9 @@
 {
-  "title": "Healthcare Analytics Sandbox: Load and Analyze FDA Adverse Event Reporting System Data With Neo4j",
+  "title": "Healthcare Analytics",
   "version": "2.2",
   "settings": {
-    "pagenumber": 3,
-    "editable": false,
+    "pagenumber": 0,
+    "editable": true,
     "fullscreenEnabled": true,
     "parameters": {
       "neodash_case_primaryid": 58965853,

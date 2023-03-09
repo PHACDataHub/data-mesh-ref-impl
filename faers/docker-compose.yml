@@ -544,22 +544,52 @@ services:
       timeout: 10s
       retries: 20
     volumes:
-      - $PWD/neo4j/import:/var/lib/neo4j/import 
-      - $PWD/neo4j/data:/var/lib/neo4j/data
-      - $PWD/neo4j/logs:/var/lib/neo4j/logs
-      - $PWD/neo4j/plugins:/var/lib/neo4j/plugins
+      - $PWD/neo4j/import:/import 
+      - $PWD/neo4j/data:/data
+      - $PWD/neo4j/logs:/logs
+      - $PWD/neo4j/plugins:/plugins
     restart: always
   
   ####################
-  # NeoDash
+  # neodash
   ####################
   neodash: 
     image: nielsdejong/neodash:${NEODASH_VERSION}
+    hostname: neodash
     container_name: neodash
+    depends_on:
+      - neo4j
     networks:
       - backend
     ports:
       - ${NEODASH_PORT}:5005
+    environment:
+      - ssoEnabled=false
+      - ssoDiscoveryUrl=
+      - standalone=true
+      - standaloneProtocol=bolt
+      - standaloneHost=${PUBLIC_IP}
+      - standalonePort=7687
+      - standaloneDatabase=neo4j
+      # - standaloneUsername=${NEO4J_USERNAME}
+      # - standalonePassword=${NEO4J_PASSWORD}
+      - standaloneDashboardName=Healthcare Analytics
+      - standaloneDashboardDatabase=neo4j
+    restart: always
+
+  ####################
+  # neodash-designer
+  ####################
+  neodash-designer: 
+    image: nielsdejong/neodash:${NEODASH_VERSION}
+    hostname: neodash-designer
+    container_name: neodash-designer
+    depends_on:
+      - neo4j
+    networks:
+      - backend
+    ports:
+      - ${NEODASH_DESIGNER_PORT}:5005
     restart: always
 
 ################################################################################
