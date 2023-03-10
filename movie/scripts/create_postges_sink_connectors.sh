@@ -29,13 +29,13 @@ connector=postgres-sink
 ./scripts/kafka/list_connectors.sh
 ./scripts/kafka/list_subjects.sh
 
-echo "Create database screenrant ...";
-docker exec -it postgres psql -U postgres -d postgres -c 'CREATE DATABASE screenrant;' 
-echo "Database screenrant created ✅";
-echo ''
-
 echo "Create table rss ...";
 docker exec -it postgres psql -U postgres -d postgres -c 'CREATE TABLE rss(category VARCHAR, classified_labels VARCHAR, content VARCHAR, creator VARCHAR, description VARCHAR, enclosure_url VARCHAR, full_text VARCHAR, href_list VARCHAR, link VARCHAR, named_entities VARCHAR, question_answer VARCHAR, pub_date VARCHAR, sentiment_score VARCHAR, summary_text VARCHAR, timestamp_ne INT, timestamp_qa INT, timestamp_sa INT, timestamp_sm INT, timestamp_tc INT, title VARCHAR, PRIMARY KEY(link, pub_date));' 
+echo "Table rss created ✅";
+echo ''
+
+echo "Create table decision ...";
+docker exec -it postgres psql -U postgres -d postgres -c 'CREATE TABLE decision(id SERIAL PRIMARY KEY, link VARCHAR, pub_date VARCHAR, is_movie BOOLEAN);' 
 echo "Table rss created ✅";
 echo ''
 

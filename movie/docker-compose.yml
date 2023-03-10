@@ -782,9 +782,10 @@ services:
 
 ##############################################################################
 #
-# PostgreSQL & End-user UI app
+# Human Assistant
 # ----------------
 # - postgres
+# - grafana
 #
 ##############################################################################
 
@@ -807,6 +808,20 @@ services:
     environment:
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    restart: always
+
+  ####################
+  # grafana
+  ####################
+  grafana: 
+    image: grafana/grafana-enterprise:9.3.1-ubuntu
+    container_name: grafana
+    depends_on:
+      - postgres
+    networks:
+      - backend
+    ports:
+      - 3000:3000
     restart: always
 
 ################################################################################
