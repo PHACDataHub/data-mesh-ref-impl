@@ -213,6 +213,8 @@ For details on columns in each of the files, see [ASC_NTS.pdf](./ASC_NTS.pdf).
 | 100746869  | 10074686 | 9           | F        | 20090714 | 20221222 | 20140414    | 20221230 | EXP              | CA-ROCHE-1383185       | ROCHE                                                                                                                                                                                                                                                | 52       | YR       | M   | Y       | 20221230 | HP  | CA       | CA       |        |         |        |          |                  |              |
 | 100832487  | 10083248 | 7           | F        | 20120201 | 20221108 | 20140417    | 20221116 | EXP              | CA-ROCHE-1385175       | ROCHE                                                                                                                                                                                                                                                | 46       | YR       | M   | Y       | 20221116 | CN  | CA       | CA       |        |         |        |          |                  |              |
 
+&nbsp;
+
 **DRUG22Q4.TXT**  - drug/biologic information for as many medications as were reported for the event (1 or more per event) (header and first 9 lines)
 
 | primaryid  | caseid   | drug_seq | role_cod | drugname                 | prod_ai                  | val_vbm | route         | dose_vbm                   | cum_dose_chr | cum_dose_unit | dechal | rechal | lot_num | exp_dt             | nda_num | dose_amt | dose_unit | dose_form | dose_freq |
@@ -226,6 +228,8 @@ For details on columns in each of the files, see [ASC_NTS.pdf](./ASC_NTS.pdf).
 | 1002130537 | 10021305 | 3        | SS       | SANDOSTATIN              | OCTREOTIDE ACETATE       | 1       | D             | 19667                      |              |               |        |        |         |                    |         |          |           |           |           |
 | 1002130537 | 10021305 | 4        | SS       | SANDOSTATIN LAR DEPOT    | OCTREOTIDE ACETATE       | 1       | Intramuscular | 30 mg, QMO (every 4 weeks) | 19667        | 30            | MG     | /MONTH |         |                    |         |          |           |           |           |
 | 1002130537 | 10021305 | 5        | SS       | SANDOSTATIN LAR DEPOT    | OCTREOTIDE ACETATE       | 1       | Intramuscular | 30 mg, QMO (every 4 weeks) | 19667        | 30            | MG     | /MONTH |         |                    |         |          |           |           |           |
+
+&nbsp;
 
 **REAC22Q4.TXT**  - all "Medical Dictionary for Regulatory Activities" ([MedDRA](http://www.meddra.org)) terms coded for the adverse event (1 or more) (header and first 9 lines)
 
@@ -241,6 +245,8 @@ For details on columns in each of the files, see [ASC_NTS.pdf](./ASC_NTS.pdf).
 | 1002130537 | 10021305 | White blood cell count increased |              |
 | 1002130537 | 10021305 | Dyspnoea                         |              |
 
+&nbsp;
+
 **OUTC22Q4.TXT**  - patient outcomes for the event (0 or more) (header and first 9 lines)
 
 | primaryid  | caseid   | outc_cod |
@@ -254,6 +260,8 @@ For details on columns in each of the files, see [ASC_NTS.pdf](./ASC_NTS.pdf).
 | 100260594  | 10026059 | OT       |
 | 100518358  | 10051835 | OT       |
 | 100614443  | 10061444 | OT       |
+
+&nbsp;
 
 **RPSR22Q4.TXT**  - report sources for the event (0 or more) (header and first 9 lines)
 
@@ -269,6 +277,8 @@ For details on columns in each of the files, see [ASC_NTS.pdf](./ASC_NTS.pdf).
 | 214032641 | 21403264 | CSM      |
 | 214033011 | 21403301 | FGN      |
 
+&nbsp;
+
 **THER22Q4.TXT**  - contains drug therapy start dates and end dates for the reported drugs (0 or more per drug per event) (header and first 9 lines)
 
 | primaryid  | caseid   | dsg_drug_seq | start_dt | end_dt   | dur | dur_cod |
@@ -282,6 +292,8 @@ For details on columns in each of the files, see [ASC_NTS.pdf](./ASC_NTS.pdf).
 | 100234223  | 10023422 | 3            | 199908   | 2004     | 5   | YR      |
 | 100234223  | 10023422 | 4            | 20000217 | 20040222 | 4   | YR      |
 | 100234223  | 10023422 | 5            | 2004     | 2009     | 5   | YR      |
+
+&nbsp;
 
 **INDI22Q4.TXT**  - all "Medical Dictionary for Regulatory Activities" (MedDRA) terms coded for the indications for use (diagnoses) for the reported  drugs (0 or more per drug per event) (header and first 9 lines)
 
