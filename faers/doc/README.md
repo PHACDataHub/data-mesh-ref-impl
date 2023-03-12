@@ -1,6 +1,24 @@
 [Back](../README.md)
 
-## Healthcare Analytics Sandbox: Load and Analyze FDA Adverse Event Reporting System Data With Neo4j
+# Load, analyze, and make FDA Adverse Event Reporting System Data accessible
+
+## A. Purposes
+As an example case of the Data Mesh Reference Implementation, it is to show:
+1. Demonstrate a setup of a `Kafka Even Sourcing Architecture` as *scalable cluster using only open source components*. The cluster is integrated with `Neo4j` graph database and `NeoDash` for dashboards.
+2. Demonstrate ingestion of data in `csv` file format, transformation into *streams of ordered events*, and then seemlesly consumted by `Neo4j`.
+3. Demonstrate how datapoints are handled automatically everywhere throughout the process based on *metadata at source*.
+4. Demonstrate how *different systems* - such as `Neo4j` or `PowerBI` - *connecting to the streaming infrastructure* in order to consume streams of events, analyze them, and present outcomes in dashboards of choice.
+5. Demonstrate how a complex setup of the whole cluster can be *containerized* supporting *setup-on-demand, scale-on-demand, and real-time monitoring*.
+
+## B. Objectives
+As an exercise on the `Healthcare` domain, the example case is to show how to:
+1. Perform data ingestion a quarterly dataset from the `FDA Adverse Event Reporting System Data` into a `Kafka - Neo4j cluster` and make them available on `Google Cloud Platform`.
+2. Connect `Neo4j` graph database to the cluster, consume data, perform analysis on the dataset. The outcomes then are presented in `NeoDash` cloud dashboards, which are accessible from anywhere.
+3. Connect a desktop-based instance of `PowerBI` to the cluster, consume data, perform analysis on the dataset, and then show the outcomes on local dashboards.
+
+<details>
+<summary>Credit: The original case</summary>
+<p>
 
 **Credit: The original case was described in a [Medium article](https://medium.com/neo4j/healthcare-analytics-sandbox-load-and-analyze-fda-adverse-event-reporting-system-data-with-neo4j-29b7b71a6ef4). Here you can find its [Neo4j blog](https://neo4j.com/developer-blog/healthcare-analytics-sandbox-load-and-analyze-fda-adverse-event-reporting-system-data-with-neo4j/), [GitHub repo](https://github.com/neo4j-graph-examples/healthcare-analytics), and [YouTube video](https://youtu.be/5DZfOLspVDM).**
 
@@ -8,52 +26,46 @@ If you know what is [Neo4j Browser Guide](https://neo4j.com/developer/neo4j-brow
 - Read the article (and the blog if needed);
 - Watch the video;
 - Then click on this link to create a [Neo4j Sandbox](https://sandbox.neo4j.com/?usecase=healthcare-analytics) in a very short amount of time and go though the guide, as shown below.
-![Start screen](../img/health-analytics/neo4j-browser-guide.png)
+![Start screen](../img/neo4j-browser-guide.png)
 
----
-In below, we provide a bit different approach to discuss the case so it is (a bit more difficult comparing to a sandbox) repeatable, easier to follow, some more steps are shown, some hidden features revealed, and more explanations added. Most of the text written here are from the original article.
+[Neo4j Life Sciences and Healthcare Network](https://neo4j.com/developer/life-sciences-and-healthcare/) describes use cases in Life Sciences and Healthcare. If you work in biology, biochemistry, pharmaceuticals, healthcare and other life sciences, you know that you work with highly-connected information. Unfortunately, many scientists still use relational databases and spreadsheets as their daily tools.
+Here we want to present you with an alternative. Managing, storing and querying connected information is natural to a graph database like `Neo4j`. Learn how your research and practitioner colleagues utilized `Neo4j` to draw new insights or just be more efficient in their daily work.
 
-## A. Health care analytics
+</p>
+</details>
 
-Health care analytics is the analysis activities that can be undertaken as a result of data collected from four areas within healthcare:
+## C. Health care analytics, FDA FAERS, and the quarterly dataset
 
-* claims and cost data, 
-* pharmaceutical and research and development (R&D) data, 
-* clinical data (collected from electronic medical records (EHRs)),
-* and patient behavior and sentiment data (patient behaviors and preferences, (retail purchases e.g. data captured in running stores). 
+### C.1. Health care analytics
 
-Health care analytics is a growing industry, expected to grow to even more with time.
+Health care analytics is the analysis activities that can be undertaken as a result of data collected from four areas within healthcare: claims and cost data, pharmaceutical and research and development (R&D) data, clinical data (collected from electronic medical records (EHRs)), and patient behavior and sentiment data (patient behaviors and preferences, (retail purchases e.g. data captured in running stores). Health care analytics is a growing industry, expected to grow to even more with time. Health care analytics allows for the examination of patterns in various healthcare data to determine how clinical care can be improved while limiting excessive spending. This can help improve the overall patient care offered in healthcare facilities. -- [Wikipedia](https://en.wikipedia.org/wiki/Health_care_analytics).
 
-Health care analytics allows for the examination of patterns in various healthcare data to determine how clinical care can be improved while limiting excessive spending. 
-This can help improve the overall patient care offered in healthcare facilities.
+Healthcare organizations can *"realize new opportunities and efficiencies by leveraging the connections within their existing data: be it in a connected genome, or a provider network, or patient treatments,"* -- Emil Eifrem, CEO of `Neo4j`.
 
-Healthcare organizations can _"realize new opportunities and efficiencies by leveraging the connections within their existing data: be it in a connected genome, or a provider network, or patient treatments,"_ said Emil Eifrem, CEO of Neo4j, in one of his statements statement summarizing the graph database company's traction in the healthcare space. 
-There are many companies in the market who are leveraging the potential of Neo4j Graph Database to unleash the hidden potential of the healthcare data. 
+### C.2 FDA Adverse Event Reporting System (FAERS or AERS)
 
-The connected data capabilities of a graph database can help us achieve what is either impossible or complicated with the traditional relational databases, other NoSQL databases or even big data solutions like Pig and Hive.
+The FDA Adverse Event Reporting System (FAERS) is a database that contains adverse event reports, medication error reports and product quality complaints resulting in adverse events that were submitted to FDA. The database is designed to support the FDA's post-marketing safety surveillance program for drug and therapeutic biologic products. The informatic structure of the FAERS database adheres to the international safety reporting guidance issued by the International Conference on Harmonisation ([ICH E2B](https://www.fda.gov/drugs/guidances-drugs/international-council-harmonisation-efficacy)). Adverse events and medication errors are coded using terms in the Medical Dictionary for Regulatory Activities ([MedDRA](https://www.meddra.org)) -- [FDA FAERS](https://www.fda.gov/drugs/surveillance/questions-and-answers-fdas-adverse-event-reporting-system-faers).
 
-&nbsp;
 
-## B. The Example
+<details>
+<summary>For more details ...</summary>
+<p>
 
-This demonstration guide covers a similar case of healthcare data analysis with Neo4j. 
+FAERS is a useful tool for FDA for activities such as looking for new safety concerns that might be related to a marketed product, evaluating a manufacturer's compliance to reporting regulations and responding to outside requests for information. The reports in FAERS are evaluated by clinical reviewers, in the Center for Drug Evaluation and Research (CDER) and the Center for Biologics Evaluation and Research (CBER), to monitor the safety of products after they are approved by FDA.
 
-We are performing data ingestion and analytics of the FDA Adverse Event Reporting System Data. 
-The FDA Adverse Event Reporting System (FAERS or AERS) is a computerized information database designed to support the U.S. Food and Drug Administration's (FDA) post marketing safety surveillance program for all approved drug and therapeutic biologic products. 
+If a potential safety concern is identified in FAERS, further evaluation is performed. Further evaluation might include conducting studies using other large databases, such as those available in the [Sentinel System](https://www.fda.gov/sentinel-initiative-transforming-how-we-monitor-product-safety). Based on an evaluation of the potential safety concern, FDA may take regulatory action(s) to improve product safety and protect the public health, such as updating a product’s labeling information, restricting the use of the drug, communicating new safety information to the public, or, in rare cases, removing a product from the market.   
 
-The FDA uses FAERS to monitor for new adverse events and medication errors that might occur with these products. 
-It is a system that measures occasional harms from medications to ascertain whether the risk–benefit ratio is high enough to justify continued use of any drug and to identify correctable and preventable problems in health care delivery (such as need for retraining to prevent prescribing errors).
+Healthcare professionals, consumers, and manufacturers submit reports to FAERS. FDA receives voluntary reports directly from healthcare professionals (such as physicians, pharmacists, nurses and others) and consumers (such as patients, family members, lawyers and others). Healthcare professionals and consumers may also report to the products’ manufacturers. If a manufacturer receives a report from a healthcare professional or consumer, it is required to send the report to FDA as specified by regulations.
 
-Reporting of adverse events from the point of care is voluntary in the United States. 
-The FDA receives some adverse event and medication error reports directly from health care professionals (such as physicians, pharmacists, nurses, and others) and consumers (such as patients, family members, lawyers, and others). 
-Health professionals and consumers may also report these events to the products’ manufacturers.
-If a manufacturer receives an adverse event report, they are required to send the report to the FDA as specified by regulations. 
+</p>
+</details>
 
-We downloaded the `2022 Q4` dataset from the [FDA FAERS](https://www.fda.gov/drugs/questions-and-answers-fdas-adverse-event-reporting-system-faers/fda-adverse-event-reporting-system-faers-public-dashboard). We performed data ingestion to prepare the FAERS graph and run a few example analytics queries to see interesting output.
+### C.3. The quarterly dataset
 
-&nbsp;
 
-## Prepare Kafka + Neo4j Cluster
+The `2022 Q4` dataset from the [FDA FAERS Latest Quarterly Data Files](https://www.fda.gov/drugs/questions-and-answers-fdas-adverse-event-reporting-system-faers/fda-adverse-event-reporting-system-faers-latest-quarterly-data-files) is downloaded. Data ingestion is then performed to prepare the FAERS graph and run a few example analytics queries to see interesting output.
+
+## D. The Kafka + Neo4j Cluster
 
 The cluster consists of:
 + an instance of `Kafka` community edition [`docker-compose.yml`](../docker-compose-kafka-ce.yml), which includes (`Docker` image) services as below:
