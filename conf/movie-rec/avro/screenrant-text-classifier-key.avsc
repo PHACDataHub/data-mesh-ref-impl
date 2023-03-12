@@ -1,8 +1,0 @@
-{
-    "type": "record",
-    "name": "screentrant_text_classifier_key",
-    "fields":[
-        {"name":"link", "type": "string", "isOptional": false},
-        {"name":"pub_date", "type": "string", "isOptional": false}
-    ]
-}

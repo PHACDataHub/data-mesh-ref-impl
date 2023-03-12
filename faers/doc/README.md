@@ -3,6 +3,7 @@
 # Load, analyze, and make FDA Adverse Event Reporting System Data accessible
 
 ## A. Purposes
+
 As an example case of the Data Mesh Reference Implementation, it is to show:
 1. Demonstrate a setup of a `Kafka Even Sourcing Architecture` as *scalable cluster using only open source components*. The cluster is integrated with `Neo4j` graph database and `NeoDash` for dashboards.
 2. Demonstrate ingestion of data in `csv` file format, transformation into *streams of ordered events*, and then seemlesly consumted by `Neo4j`.
@@ -13,6 +14,7 @@ As an example case of the Data Mesh Reference Implementation, it is to show:
 &nbsp;
 
 ## B. Objectives
+
 As an exercise on the `Healthcare` domain, the example case is to show how to:
 1. Perform data ingestion a quarterly dataset from the `FDA Adverse Event Reporting System Data` into a `Kafka - Neo4j cluster` and make them available on `Google Cloud Platform`.
 2. Connect `Neo4j` graph database to the cluster, consume data, perform analysis on the dataset. The outcomes then are presented in `NeoDash` cloud dashboards, which are accessible from anywhere.
