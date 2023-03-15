@@ -109,12 +109,18 @@ git clone https://github.com/PHACDataHub/data-mesh-ref-impl.git
 
 **Important:** 
 - the [`.env`](../.env) environment has to be setup with correct IPs for the virtual machine `VM_IP` (local IP if physical machine) and its public interface `PUBLIC_IP`.
-- port forwarding need to be configured if remote access is desired for monitoring `Kafka` (8008), `Neo4j` (7473/7474), `NeoDash` (5005), for dashboard designer with `NeoDash` (5006).
+- port forwarding need to be configured if remote access is desired for monitoring `Kafka` (8080), `Neo4j` (7473/7474), `NeoDash` (5005), for dashboard designer with `NeoDash` (5006).
 
 2. Install `Docker` and `Docker Compose`:
 
 ```bash
 ./scripts/docker/setup.sh
+```
+
+Don't for get to install `unzip` and `jq`:
+
+```bash
+sudo apt install unzip
 ```
 
 3. Prepare folders for data, logs, and data files:
