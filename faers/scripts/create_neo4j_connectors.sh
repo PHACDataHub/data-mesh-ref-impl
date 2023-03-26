@@ -4,10 +4,10 @@ source .env
 
 connect_container=connect
 connect_internal_host=connect
-connect_local_host=localhost
+connect_host=${CONNECT_HOST}
 connect_port=${CONNECT_PORT}
 
-curl -X POST http://${connect_local_host}:${connect_port}/connectors \
+curl -X POST http://${connect_lhost}:${connect_port}/connectors \
   -H 'Content-Type:application/json' \
   -H 'Accept:application/json' \
   -d @conf/neo4j/sink_connector.json

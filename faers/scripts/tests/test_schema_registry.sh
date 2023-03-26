@@ -15,7 +15,7 @@ broker_internal_port=${BROKER_INTERNAL_PORT}
 
 schema_registry_container=schema-registry
 schema_registry_internal_host=schema-registry
-schema_registry_local_host=localhost
+schema_registry_host=${SCHEMA_REGISTRY_HOST}
 schema_registry_port=${SCHEMA_REGISTRY_PORT}
 
 echo "Check if avro is one of supported schema types ...";
@@ -48,8 +48,8 @@ cp $data_dir/$data_file kafka-ce/schema-registry/data/.
 
 ./scripts/kafka/create_topic.sh ${topic}
 
-key_schema_id=$(curl --silent -X GET http://${schema_registry_local_host}:${schema_registry_port}/subjects/daily-report-key/versions/latest | jq .id)
-value_schema_id=$(curl --silent -X GET http://${schema_registry_local_host}:${schema_registry_port}/subjects/daily-report-value/versions/latest | jq .id)
+key_schema_id=$(curl --silent -X GET http://${schema_registry_host}:${schema_registry_port}/subjects/daily-report-key/versions/latest | jq .id)
+value_schema_id=$(curl --silent -X GET http://${schema_registry_host}:${schema_registry_port}/subjects/daily-report-value/versions/latest | jq .id)
 
 echo "Produce ${no_messages} messages ..." 
 docker exec ${schema_registry_container} bash -c \

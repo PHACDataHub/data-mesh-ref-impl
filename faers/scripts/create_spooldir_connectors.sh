@@ -16,7 +16,7 @@ source .env
 
 connect_container=connect
 connect_internal_host=connect
-connect_local_host=localhost
+connect_host=${CONNECT_HOST}
 connect_port=${CONNECT_PORT}
 
 ./scripts/kafka/list_plugins.sh
@@ -53,7 +53,7 @@ do
     }'
 
     curl -i -X PUT -H "Accept:application/json" -H  "Content-Type:application/json" \
-        http://${connect_local_host}:${connect_port}/connectors/${connector}/config \
+        http://${connect_lhost}:${connect_port}/connectors/${connector}/config \
         -d "${config}"
     echo ''
     echo ''
