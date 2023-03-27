@@ -576,7 +576,6 @@ services:
       - standalone=true
       - standaloneProtocol=bolt
       - standaloneHost=${PUBLIC_IP}
-      # - standaloneHost=neo4j
       - standalonePort=7687
       - standaloneDatabase=neo4j
       # - standaloneUsername=${NEO4J_USERNAME}

@@ -10,11 +10,10 @@ connector=$1
 source .env
 
 connect_container=connect
-connect_internal_host=connect
-connect_local_host=localhost
+connect_host=${CONNECT_HOST}
 connect_port=${CONNECT_PORT}
 
 echo "About connector ${connector}..." 
-echo "curl --silent -X GET http://${connect_local_host}:${connect_port}/connectors/${connector} | jq .[]"
-curl --silent -X GET http://${connect_local_host}:${connect_port}/connectors/${connector} | jq .[]
+echo "curl --silent -X GET http://${connect_host}:${connect_port}/connectors/${connector} | jq .[]"
+curl --silent -X GET http://${connect_host}:${connect_port}/connectors/${connector} | jq .[]
 echo

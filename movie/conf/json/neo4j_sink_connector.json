@@ -14,7 +14,7 @@
         "errors.log.include.messages": true,
         "neo4j.server.uri": "bolt://neo4j:7687",
         "neo4j.authentication.basic.username": "neo4j",
-        "neo4j.authentication.basic.password": "phac2023",
+        "neo4j.authentication.basic.password": "phac@2023",
         "neo4j.encryption.enabled": false,
         "topics": "screenrant-named-entity-recognizer-topic,screenrant-question-answer-topic,screenrant-sentiment-analyzer-topic,screenrant-summarizer-topic,screenrant-text-classifier-topic",
         "neo4j.topic.cypher.screenrant-named-entity-recognizer-topic": "MERGE (n:MovieNews {link:event.link, pub_date:event.pub_date}) SET n.named_entities=event.named_entities, n.timestamp_ne=event.timestamp_ne",

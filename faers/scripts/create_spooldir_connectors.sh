@@ -15,7 +15,6 @@ fi
 source .env
 
 connect_container=connect
-connect_internal_host=connect
 connect_host=${CONNECT_HOST}
 connect_port=${CONNECT_PORT}
 

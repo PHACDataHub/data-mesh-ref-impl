@@ -7,14 +7,8 @@ broker_internal_host=broker
 broker_internal_port=${BROKER_INTERNAL_PORT}
 
 connect_container=connect
-connect_internal_host=connect
-connect_local_host=localhost
+connect_host=${CONNECT_HOST}
 connect_port=${CONNECT_PORT}
-
-schema_registry_container=schema-registry
-schema_registry_internal_host=schema-registry
-schema_registry_local_host=localhost
-schema_registry_port=${SCHEMA_REGISTRY_PORT}
 
 postgres_host=postgres
 postgres_port=${POSTGRES_PORT}
@@ -30,7 +24,7 @@ connector=postgres-source
 ./scripts/kafka/list_subjects.sh
 
 echo "Creating posrgres source connector ...";
-curl -X PUT http://${connect_local_host}:${connect_port}/connectors/${connector}/config \
+curl -X PUT http://${connect_host}:${connect_port}/connectors/${connector}/config \
     -H "Content-Type: application/json" \
     -d '{
         "connector.class": "io.confluent.connect.jdbc.JdbcSourceConnector",
