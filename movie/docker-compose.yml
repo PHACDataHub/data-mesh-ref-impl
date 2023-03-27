@@ -176,6 +176,7 @@ services:
     hostname: schema-registry
     container_name: schema-registry
     depends_on:
+      - zookeeper
       - broker
     networks:
       - backend
@@ -241,8 +242,8 @@ services:
         confluent-hub install --no-prompt confluentinc/kafka-connect-jdbc:${KAFKA_CONNECT_JDBC_VERSION}
         confluent-hub install --no-prompt jcustenborder/kafka-connect-spooldir:${KAFKA_CONNECT_SPOOLDIR_VERSION}
         confluent-hub install --no-prompt neo4j/kafka-connect-neo4j:${KAFKA_CONNECT_NEO4J_VERSION}
-        confluent-hub install --no-prompt streamthoughts/kafka-connect-file-pulse:${KAFKA_CONNECT_FILEPULSE_VERSION}
         confluent-hub install --no-prompt debezium/debezium-connector-postgresql:${DEBEZIUM_POSTGRESQL_CDC_SOURCE_CONNECTOR_VERSION}
+        confluent-hub install --no-prompt /downloads/streamthoughts-kafka-connect-file-pulse-${KAFKA_CONNECT_FILEPULSE_VERSION}.zip
         #
         # -----------
         # Launch the Kafka Connect worker
@@ -251,6 +252,7 @@ services:
         # Don't exit
         sleep infinity
     volumes:
+      - $PWD/kafka-ce/connect/plugins:/downloads
       - $PWD/kafka-ce/connect/data:/data
     restart: always
 
@@ -265,6 +267,7 @@ services:
       - zookeeper
       - broker
       - schema-registry
+      - connect
     networks:
       - backend
     ports:
@@ -304,8 +307,8 @@ services:
         confluent-hub install --no-prompt confluentinc/kafka-connect-jdbc:${KAFKA_CONNECT_JDBC_VERSION}
         confluent-hub install --no-prompt jcustenborder/kafka-connect-spooldir:${KAFKA_CONNECT_SPOOLDIR_VERSION}
         confluent-hub install --no-prompt neo4j/kafka-connect-neo4j:${KAFKA_CONNECT_NEO4J_VERSION}
-        confluent-hub install --no-prompt streamthoughts/kafka-connect-file-pulse:${KAFKA_CONNECT_FILEPULSE_VERSION}
         confluent-hub install --no-prompt debezium/debezium-connector-postgresql:${DEBEZIUM_POSTGRESQL_CDC_SOURCE_CONNECTOR_VERSION}
+        confluent-hub install --no-prompt /downloads/streamthoughts-kafka-connect-file-pulse-${KAFKA_CONNECT_FILEPULSE_VERSION}.zip
         #
         # -----------
         # Launch the Kafka Connect worker
@@ -314,6 +317,7 @@ services:
         # Don't exit
         sleep infinity
     volumes:
+      - $PWD/kafka-ce/connect/plugins:/downloads
       - $PWD/kafka-ce/connect/data:/data
     restart: always
 
@@ -328,6 +332,7 @@ services:
       - zookeeper
       - broker
       - schema-registry
+      - connect
     networks:
       - backend
     ports:
@@ -367,8 +372,8 @@ services:
         confluent-hub install --no-prompt confluentinc/kafka-connect-jdbc:${KAFKA_CONNECT_JDBC_VERSION}
         confluent-hub install --no-prompt jcustenborder/kafka-connect-spooldir:${KAFKA_CONNECT_SPOOLDIR_VERSION}
         confluent-hub install --no-prompt neo4j/kafka-connect-neo4j:${KAFKA_CONNECT_NEO4J_VERSION}
-        confluent-hub install --no-prompt streamthoughts/kafka-connect-file-pulse:${KAFKA_CONNECT_FILEPULSE_VERSION}
         confluent-hub install --no-prompt debezium/debezium-connector-postgresql:${DEBEZIUM_POSTGRESQL_CDC_SOURCE_CONNECTOR_VERSION}
+        confluent-hub install --no-prompt /downloads/streamthoughts-kafka-connect-file-pulse-${KAFKA_CONNECT_FILEPULSE_VERSION}.zip
         #
         # -----------
         # Launch the Kafka Connect worker
@@ -377,6 +382,7 @@ services:
         # Don't exit
         sleep infinity
     volumes:
+      - $PWD/kafka-ce/connect/plugins:/downloads
       - $PWD/kafka-ce/connect/data:/data
     restart: always
 
@@ -512,7 +518,8 @@ services:
     image: confluentinc/cp-kafka:${KAFKA_VERSION}
     container_name: init-kafka
     depends_on:
-      - broker
+      - schema-registry
+      - connect
     networks:
       - backend
     entrypoint: [ '/bin/sh', '-c' ]
@@ -584,7 +591,7 @@ services:
         - INI_FILE=conf/ini/question-answer.ini
         - AVRO_PATH=conf/avro
     depends_on:
-      - connect
+      - init-kafka
       - text-classifier
     networks:
       - backend
@@ -609,7 +616,7 @@ services:
         - INI_FILE=conf/ini/sentiment-analyzer.ini
         - AVRO_PATH=conf/avro
     depends_on:
-      - connect
+      - init-kafka
       - text-classifier
     networks:
       - backend
@@ -634,7 +641,7 @@ services:
         - INI_FILE=conf/ini/summarizer.ini
         - AVRO_PATH=conf/avro
     depends_on:
-      - connect
+      - init-kafka
       - text-classifier
     networks:
       - backend
@@ -659,7 +666,7 @@ services:
         - INI_FILE=conf/ini/text-classifier.ini
         - AVRO_PATH=conf/avro
     depends_on:
-      - connect
+      - init-kafka
     networks:
       - backend
     environment:

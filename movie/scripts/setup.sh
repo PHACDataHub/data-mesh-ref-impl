@@ -7,6 +7,7 @@
 ./scripts/utils/docker/create_volumes.sh schema-registry kafka-ce/schema-registry/data
 ./scripts/utils/docker/create_volumes.sh connect kafka-ce/connect/data kafka-ce/connect/plugins
 ./scripts/utils/docker/create_volumes.sh ksqldb-cli kafka-ce/ksqldb-cli/src kafka-ce/ksqldb-cli/test
+./scripts/utils/download/download_connect_plugins.sh
 
 ./scripts/utils/docker/create_volumes.sh spooldir kafka-ce/connect/data/spooldir/error kafka-ce/connect/data/spooldir/processed kafka-ce/connect/data/spooldir/unprocessed
 ./scripts/utils/docker/create_volumes.sh filepulse kafka-ce/connect/data/filepulse/xml

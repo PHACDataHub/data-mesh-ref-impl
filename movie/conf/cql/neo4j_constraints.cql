@@ -16,6 +16,7 @@ CREATE INDEX index_movie_news_pub_date IF NOT EXISTS FOR (n: `MovieNews`) ON (n.
 CREATE INDEX index_movie_news_title IF NOT EXISTS FOR (n: `MovieNews`) ON (n.`title`);
 CREATE INDEX index_title_primary_title IF NOT EXISTS FOR (n: `Title`) ON (n.`primaryTitle`);
 CREATE INDEX index_title_original_title IF NOT EXISTS FOR (n: `Title`) ON (n.`originalTitle`);
+CREATE INDEX index_title_title_type IF NOT EXISTS FOR (n: `Title`) ON (n.`titleType`);
 CREATE INDEX index_title_genres IF NOT EXISTS FOR (n: `Title`) ON (n.`genres`);
 CREATE INDEX index_rating_average_rating IF NOT EXISTS FOR (n: `Rating`) ON (n.`averageRating`);
 CREATE INDEX index_rating_num_votes IF NOT EXISTS FOR (n: `Rating`) ON (n.`numVotes`);

@@ -27,10 +27,10 @@ echo 'The current default database (neo4j) is restarted ✅'
 
 echo 'Creating constraints and indexes ...'
 sudo cp conf/cql/neo4j_constraints.cql neo4j/import/.
-docker exec -u neo4j --interactive --tty  neo4j cypher-shell -u neo4j -p phac2023 --file /import/neo4j_constraints.cql
+docker exec -u neo4j --interactive --tty  neo4j cypher-shell -u neo4j -p phac@2023 --file /import/neo4j_constraints.cql
 echo 'Constraints and indexes are created ✅'
 
 echo 'Applying constraints and indexes ...'
 sudo cp conf/cql/neo4j_import.cql neo4j/import/.
-docker exec -u neo4j --interactive --tty  neo4j cypher-shell -u neo4j -p phac2023 --file /import/neo4j_import.cql
+docker exec -u neo4j --interactive --tty  neo4j cypher-shell -u neo4j -p phac@2023 --file /import/neo4j_import.cql
 echo 'Constraints and indexes are applied ✅'
