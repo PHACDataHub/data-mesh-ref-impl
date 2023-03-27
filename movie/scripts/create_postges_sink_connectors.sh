@@ -30,7 +30,7 @@ echo ''
 
 echo "Create table decision ...";
 docker exec -it postgres psql -U postgres -d postgres -c 'CREATE TABLE decision(id SERIAL PRIMARY KEY, link VARCHAR, pub_date VARCHAR, is_movie BOOLEAN);' 
-echo "Table rss created ✅";
+echo "Table decision created ✅";
 echo ''
 
 echo "Creating posrgres sink connector ...";
