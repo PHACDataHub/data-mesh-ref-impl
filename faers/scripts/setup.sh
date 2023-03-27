@@ -1,5 +1,7 @@
 #!/bin/bash
 
+./scripts/prepare_dot_env.sh create
+
 ./scripts/utils/docker/create_volumes.sh zookeeper kafka-ce/zk/data kafka-ce/zk/txn-logs
 ./scripts/utils/docker/create_volumes.sh brokers kafka-ce/broker/data kafka-ce/broker2/data kafka-ce/broker3/data
 ./scripts/utils/docker/create_volumes.sh schema-registry kafka-ce/schema-registry/data

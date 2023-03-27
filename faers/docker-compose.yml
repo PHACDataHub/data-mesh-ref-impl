@@ -184,7 +184,7 @@ services:
     environment:
       SCHEMA_REGISTRY_HOST_NAME: schema-registry
       SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: 'broker:${BROKER_INTERNAL_PORT}'
-      SCHEMA_REGISTRY_LISTENERS: http://${SCHEMA_REGISTRY_HOST}:${SCHEMA_REGISTRY_PORT}
+      SCHEMA_REGISTRY_LISTENERS: http://0.0.0.0:${SCHEMA_REGISTRY_PORT}
       SCHEMA_REGISTRY_LOG4J_ROOT_LOGLEVEL: WARN
       SCHEMA_REGISTRY_TOOLS_LOG4J_LOGLEVEL: ERROR
     volumes:
@@ -395,7 +395,7 @@ services:
       KSQL_CONFIG_DIR: /etc/ksql
       KSQL_BOOTSTRAP_SERVERS: broker:${BROKER_INTERNAL_PORT}
       KSQL_HOST_NAME: ksqldb-server
-      KSQL_LISTENERS: http://${KSQLDB_HOST}:${KSQLDB_PORT}
+      KSQL_LISTENERS: http://0.0.0.0:${KSQLDB_PORT}
       KSQL_CACHE_MAX_BYTES_BUFFERING: 0
       KSQL_KSQL_SCHEMA_REGISTRY_URL: http://schema-registry:${SCHEMA_REGISTRY_PORT}
       KSQL_PRODUCER_INTERCEPTOR_CLASSES: io.confluent.monitoring.clients.interceptor.MonitoringProducerInterceptor
@@ -445,7 +445,7 @@ services:
     environment:
       KAFKA_REST_HOST_NAME: rest-proxy
       KAFKA_REST_BOOTSTRAP_SERVERS: 'broker:${BROKER_INTERNAL_PORT}'
-      KAFKA_REST_LISTENERS: http://${REST_PROXY_HOST}:${REST_PROXY_PORT}
+      KAFKA_REST_LISTENERS: http://0.0.0.0:${REST_PROXY_PORT}
       KAFKA_REST_SCHEMA_REGISTRY_URL: http://schema-registry:${SCHEMA_REGISTRY_PORT}
       KAFKA_REST_LOG4J_ROOT_LOGLEVEL: WARN
       KAFKA_REST_TOOLS_LOG4J_LOGLEVEL: ERROR
@@ -496,8 +496,10 @@ services:
       KAFKA_CLUSTERS_0_KAFKACONNECT_0_NAME: connect
       KAFKA_CLUSTERS_0_KAFKACONNECT_0_ADDRESS: http://connect:${CONNECT_PORT}
       KAFKA_CLUSTERS_0_KSQLDBSERVER: http://ksqldb:${KSQLDB_PORT}
-      KAFKA_CLUSTERS_0_READONLY: true
-
+      KAFKA_CLUSTERS_0_READONLY: ${KAFKA_UI_READONLY}
+      AUTH_TYPE: ${KAFKA_UI_AUTH_TYPE}
+      SPRING_SECURITY_USER_NAME: ${KAFKA_UI_SPRING_SECURITY_USER_NAME}
+      SPRING_SECURITY_USER_PASSWORD: ${KAFKA_UI_SPRING_SECURITY_USER_PASSWORD}      
     restart: always
 
 ##############################################################################
@@ -573,8 +575,8 @@ services:
       - ssoDiscoveryUrl=
       - standalone=true
       - standaloneProtocol=bolt
-      # - standaloneHost=${PUBLIC_IP}
-      - standaloneHost=neo4j
+      - standaloneHost=${PUBLIC_IP}
+      # - standaloneHost=neo4j
       - standalonePort=7687
       - standaloneDatabase=neo4j
       # - standaloneUsername=${NEO4J_USERNAME}

@@ -344,7 +344,7 @@ Several connectors are created to import messages for topics.
 For each topic, a message represents a row in the corresponding `csv` file.
 
 ```bash
-`wc -l `find data/faers/2022Q4/ASCII -name '*.txt'`
+wc -l `find data/faers/2022Q4/ASCII -name '*.txt'`
 ```
 ```
    726768 data/faers/2022Q4/ASCII/THER22Q4.txt

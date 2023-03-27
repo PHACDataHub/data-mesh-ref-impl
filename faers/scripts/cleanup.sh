@@ -29,4 +29,6 @@ echo ''
 ./scripts/utils/docker/delete_volumes.sh brokers kafka-ce/broker kafka-ce/broker2 kafka-ce/broker3
 ./scripts/utils/docker/delete_volumes.sh zookeeper kafka-ce/zk
 
+./scripts/prepare_dot_env.sh reset
+
 docker volume rm $(docker volume ls -qf dangling=true)

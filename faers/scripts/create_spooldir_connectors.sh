@@ -53,7 +53,7 @@ do
     }'
 
     curl -i -X PUT -H "Accept:application/json" -H  "Content-Type:application/json" \
-        http://${connect_lhost}:${connect_port}/connectors/${connector}/config \
+        http://${connect_host}:${connect_port}/connectors/${connector}/config \
         -d "${config}"
     echo ''
     echo ''
