@@ -19,7 +19,7 @@ As an example case of the Data Mesh Reference Implementation, it is to show:
 ## B. Objectives
 
 As an exercise on the machine-learning domain, the example case is to show how to:
-1. Continuously ingest from [`Screen Rant`](https://screenrant.com) its [RSS feed](https://screenrant.com/feed/). Extract news items from the feed, transform, and produce them as events in `Kafka`.
+1. Continuously ingest `RSS feeds` from `12` web sources, such as [RSS feed](https://screenrant.com/feed/) of [`Screen Rant`](https://screenrant.com). Extract news items from the feed, transform, and produce them as events in `Kafka`.
 2. Import the large dataset from [`IMDb`](https://www.imdb.com).
 3. Execute a number of `Natural Language Processing` (NLP) tasks on the messages (see the example below).
 4. Perform `unsupervised` recommendation by matching outcomes of NLP tasks to `IMDb` movies, select from those a number of top-rated movies for recommendation.
@@ -147,9 +147,22 @@ Exported configuration as `json`:
 
 ## E. Real-time Screen Rant RSS feed
 
-Integration of an instance of `FilePulse Source Connector` for `XML files` that enables capture of daily news from  [`ScreenRant`](https://screenrant.com).
+Integration of an instance of `FilePulse Source Connector` for `XML files` that enables capture of daily news from `12` web sources, selected from [Top 100 Movie RSS Feeds](https://blog.feedspot.com/movie_rss_feeds/):
 
-[`Screenrant`](https://screenrant.com) Screen Rant - headquartered in  Ogden, Utah, US - is arguably the most visited, non-corporate-owned movie and TV news site online. We cover the hot topics that movie and TV fans are looking for. Our readers are influencers in the movie and TV category: people others come to for recommendations on what to watch on TV and go see at the movies.  
+1. [Little White Lies](https://lwlies.com)
+2. [Screen Rant](https://screenrant.com)
+3. [CommingSoon.net](https://www.comingsoon.net)
+4. [Collider](https://collider.com)
+5. [ScreenCrush](https://screencrush.com)
+6. [JoBlo.com](https://www.joblo.com)
+7. [Box Office Worldwide](https://boxofficeworldwide.com)
+8. [The Hollywood Reporter](https://www.hollywoodreporter.com)
+9. [/Film](https://feeds.feedburner.com)
+10. [Film Daily](https://filmdaily.co)
+11. [Dark Horizons](https://www.darkhorizons.com)
+12. [FirstShowing.net](https://www.firstshowing.net)
+
+One of these, [`Screenrant`](https://screenrant.com) Screen Rant - headquartered in Ogden, Utah, US - is arguably one of the most visited, non-corporate-owned movie and TV news sites online. We cover the hot topics that movie and TV fans are looking for. Our readers are influencers in the movie and TV category: people others come to for recommendations on what to watch on TV and go see at the movies.  
 
 Its (bi-)hourly feed [Screen Rant RSS Feed](https://screenrant.com/feed/) followed by 2M+ `Facebookers`, 246K+ `Twitters`. The feed contains approx. 100 latest news called `item` in `XML format`, with an example as below:
 ```xml
@@ -211,13 +224,84 @@ In addition `description` and `content` tags can be used to extract:
 - URL links to `tags` on [`Screenrant`](https://screenrant.com), which is a nice way to resolve `tags` to this `movie news`.
 - Emphasis by HTML `<em>` tags to elevate content to higher relevancy.
 
+<img src="../img/Data Mesh - EX3 - ScreenRant - IMDb.png" alt="Data Mesh - EX3 - ScreenRant & IMDb" width="80%"/>
+
 <details>
 <summary>Click here for more details.</summary>
 <p>
 
-We use the [`FilePulse Source Connector`](https://streamthoughts.github.io/kafka-connect-file-pulse/)
+1. A containerized `crontab` is created to run the [`download_current_rss.sh`](../scripts/utils/download/download_current_rss.sh):
 
-1. First, we define a [`value schema`](../conf/movie-rec/screenrant-value.avsc) for the news `item` based on [this](https://streamthoughts.github.io/kafka-connect-file-pulse/docs/developer-guide/configuration/#defining-connect-record-schema):
+```bash
+*/30 * * * * /download_current_rss.sh boxofficeworldwide https://boxofficeworldwide.com/feed/
+*/30 * * * * /download_current_rss.sh collider https://collider.com/feed/
+*/30 * * * * /download_current_rss.sh comingsoon https://www.comingsoon.net/feed
+*/30 * * * * /download_current_rss.sh darkhorizons https://www.darkhorizons.com/feed/
+*/30 * * * * /download_current_rss.sh feedburner https://feeds.feedburner.com/slashfilm
+*/30 * * * * /download_current_rss.sh filmdaily https://filmdaily.co/feed/
+*/30 * * * * /download_current_rss.sh firstshowing https://www.firstshowing.net/feed/
+*/30 * * * * /download_current_rss.sh hollywoodreporter https://www.hollywoodreporter.com/topic/movies/feed/
+*/30 * * * * /download_current_rss.sh joblo https://www.joblo.com/feed/
+*/30 * * * * /download_current_rss.sh lwlies https://lwlies.com/feed/
+*/30 * * * * /download_current_rss.sh screenrush https://screencrush.com/feed/
+*/5 * * * * /download_current_rss.sh screenrant https://screenrant.com/feed/
+```
+Note that except `Screen Rant`, every other feed is captured every `30` minutes.
+
+All  feeds are downloaded into a mounted volume of the `cronjob` (Docker) service
+
+```docker
+  ####################
+  # cronjob
+  ####################
+  cronjob: 
+    ...
+    volumes:
+      - $PWD/kafka-ce/connect/data/filepulse/xml:/data
+    ...
+```
+
+Note that all file names are formatted as `<entity>-rss-<timestamp>.xml`, here an example listing:
+
+```bash
+total 5680
+drwxr-xrwx@ 32 nghia  staff    1024 12 Apr 18:00 .
+drwxr-xrwx@  3 nghia  staff      96 12 Apr 13:52 ..
+-rw-r--r--@  1 nghia  staff   30053 12 Apr 17:02 boxofficeworldwide-rss-1681333338.xml
+-rw-r--r--@  1 nghia  staff   30053 12 Apr 18:00 boxofficeworldwide-rss-1681336800.xml
+-rw-r--r--@  1 nghia  staff  269751 12 Apr 17:05 collider-rss-1681333501.xml
+-rw-r--r--@  1 nghia  staff  268747 12 Apr 18:00 collider-rss-1681336800.xml
+-rw-r--r--@  1 nghia  staff  102603 12 Apr 17:10 comingsoon-rss-1681333800.xml
+-rw-r--r--@  1 nghia  staff  101457 12 Apr 18:00 comingsoon-rss-1681336800.xml
+-rw-r--r--@  1 nghia  staff  121827 12 Apr 17:27 darkhorizons-rss-1681334819.xml
+-rw-r--r--@  1 nghia  staff  121096 12 Apr 18:00 darkhorizons-rss-1681336800.xml
+-rw-r--r--@  1 nghia  staff   66248 12 Apr 17:27 feedburner-rss-1681334819.xml
+-rw-r--r--@  1 nghia  staff   72638 12 Apr 18:00 feedburner-rss-1681336800.xml
+-rw-r--r--@  1 nghia  staff   49696 12 Apr 17:27 filmdaily-rss-1681334819.xml
+-rw-r--r--@  1 nghia  staff   50066 12 Apr 18:00 filmdaily-rss-1681336800.xml
+-rw-r--r--@  1 nghia  staff   79085 12 Apr 16:30 firstshowing-rss-1681331400.xml
+-rw-r--r--@  1 nghia  staff   79071 12 Apr 17:36 firstshowing-rss-1681335413.xml
+-rw-r--r--@  1 nghia  staff   79071 12 Apr 18:00 firstshowing-rss-1681336800.xml
+-rw-r--r--@  1 nghia  staff   11446 12 Apr 16:35 hollywoodreporter-rss-1681331700.xml
+-rw-r--r--@  1 nghia  staff   11446 12 Apr 17:36 hollywoodreporter-rss-1681335413.xml
+-rw-r--r--@  1 nghia  staff   11446 12 Apr 18:00 hollywoodreporter-rss-1681336800.xml
+-rw-r--r--@  1 nghia  staff   60122 12 Apr 16:40 joblo-rss-1681332000.xml
+-rw-r--r--@  1 nghia  staff   58813 12 Apr 17:40 joblo-rss-1681335600.xml
+-rw-r--r--@  1 nghia  staff   58813 12 Apr 18:00 joblo-rss-1681336800.xml
+-rw-r--r--@  1 nghia  staff   74705 12 Apr 17:02 lwlies-rss-1681333338.xml
+-rw-r--r--@  1 nghia  staff   74705 12 Apr 17:45 lwlies-rss-1681335900.xml
+-rw-r--r--@  1 nghia  staff   74705 12 Apr 18:00 lwlies-rss-1681336800.xml
+-rw-r--r--@  1 nghia  staff  248496 12 Apr 17:02 screenrant-rss-1681333338.xml
+-rw-r--r--@  1 nghia  staff  249174 12 Apr 17:55 screenrant-rss-1681336500.xml
+-rw-r--r--@  1 nghia  staff  249369 12 Apr 18:00 screenrant-rss-1681336800.xml
+-rw-r--r--@  1 nghia  staff   45642 12 Apr 17:02 screenrush-rss-1681333338.xml
+-rw-r--r--@  1 nghia  staff   45642 12 Apr 17:50 screenrush-rss-1681336200.xml
+-rw-r--r--@  1 nghia  staff   45642 12 Apr 18:00 screenrush-rss-1681336800.xml
+```
+
+2. We use the [`FilePulse Source Connector`](https://streamthoughts.github.io/kafka-connect-file-pulse/) to read the `XML files` and ingest them into `Kafka` as follow.
+
+First, we define an `in-line` generic `value schema` for all `XML <item>` tags in the feeds based on [this specification](https://streamthoughts.github.io/kafka-connect-file-pulse/docs/developer-guide/configuration/#defining-connect-record-schema):
 
 ```json
 {
@@ -226,17 +310,16 @@ We use the [`FilePulse Source Connector`](https://streamthoughts.github.io/kafka
 	"fieldSchemas": {
 		"link":{"type":"STRING", "isOptional":false},
 		"pub_date":{"type":"STRING", "isOptional":false},
-		"category": {"type":"ARRAY", "isOptional":true, "valueSchema": {"type": "STRING"}},
+		"category":{"type":"ARRAY", "isOptional":true, "valueSchema": {"type": "STRING"}},
 		"content":{"type":"STRING", "isOptional":false},
-		"creator":{"type":"STRING", "isOptional":false},
+		"creator":{"type":"ARRAY", "isOptional":true, "valueSchema": {"type": "STRING"}},
 		"description":{"type":"STRING", "isOptional":false},
-		"enclosure_url":{"type":"STRING", "isOptional":false},
 		"title":{"type":"STRING", "isOptional":false}
 	}
 }
 ```
 
-2. The `Source Connector` is [defined in-line](../scripts/movie-rec/create_filepulse_connector.sh) as follow
+3. Then, the `Source Connector` is [defined in-line](../scripts/movie-rec/create_filepulse_connector.sh) as follow
 
 ```bash
 curl -i -X PUT -H "Accept:application/json" -H  "Content-Type:application/json" \
@@ -252,13 +335,10 @@ curl -i -X PUT -H "Accept:application/json" -H  "Content-Type:application/json" 
     "offset.strategy":"name",
     "reader.xpath.expression":"/rss/channel/item",
     "reader.xpath.result.type":"NODESET",
-    "reader.xml.force.array.on.fields":"category",
+    "reader.xml.force.array.on.fields":"category,creator",
     "reader.xml.parser.validating.enabled":true,
     "reader.xml.parser.namespace.aware.enabled":true,
-    "filters":"enclosure,content,pubDate,Exclude",
-    "filters.enclosure.type":"io.streamthoughts.kafka.connect.filepulse.filter.MoveFilter",
-    "filters.enclosure.source":"enclosure.url",
-    "filters.enclosure.target":"enclosure_url",
+    "filters":"content,pubDate,Exclude",
     "filters.content.type":"io.streamthoughts.kafka.connect.filepulse.filter.RenameFilter",
     "filters.content.field":"encoded",
     "filters.content.target":"content",
@@ -266,17 +346,15 @@ curl -i -X PUT -H "Accept:application/json" -H  "Content-Type:application/json" 
     "filters.pubDate.field":"pubDate",
     "filters.pubDate.target":"pub_date",
     "filters.Exclude.type":"io.streamthoughts.kafka.connect.filepulse.filter.ExcludeFilter",
-    "filters.Exclude.fields":"enclosure,guid",
+    "filters.Exclude.fields":"comments,commentRss,enclosure,guid,post-id,thumbnail",
     "topic":"'${topic}'",
     "tasks.file.status.storage.bootstrap.servers":"'${broker_internal_host}':'${broker_internal_port}'",
     "tasks.file.status.storage.topic":"connect-file-pulse-status",
     "tasks.reader.class":"io.streamthoughts.kafka.connect.filepulse.fs.reader.LocalXMLFileInputReader",
     "tasks.max": 1,
-    "value.connect.schema":"{ \"name\": \"screentrant_value\", \"type\":\"STRUCT\", \"fieldSchemas\": { \"link\":{\"type\":\"STRING\", \"isOptional\":false}, \"pub_date\":{\"type\":\"STRING\", \"isOptional\":false}, \"category\": {\"type\":\"ARRAY\", \"isOptional\":true, \"valueSchema\": {\"type\": \"STRING\"}}, \"content\":{\"type\":\"STRING\", \"isOptional\":false}, \"creator\":{\"type\":\"STRING\", \"isOptional\":false}, \"description\":{\"type\":\"STRING\", \"isOptional\":false}, \"enclosure_url\":{\"type\":\"STRING\", \"isOptional\":false}, \"title\":{\"type\":\"STRING\", \"isOptional\":false} } }"
+    "value.connect.schema":"{ \"name\": \"screentrant_value\", \"type\":\"STRUCT\", \"fieldSchemas\": { \"link\":{\"type\":\"STRING\", \"isOptional\":false}, \"pub_date\":{\"type\":\"STRING\", \"isOptional\":false}, \"category\": {\"type\":\"ARRAY\", \"isOptional\":true, \"valueSchema\": {\"type\": \"STRING\"}}, \"content\":{\"type\":\"STRING\", \"isOptional\":false}, \"creator\": {\"type\":\"ARRAY\", \"isOptional\":true, \"valueSchema\": {\"type\": \"STRING\"}}, \"description\":{\"type\":\"STRING\", \"isOptional\":false}, \"enclosure_url\":{\"type\":\"STRING\", \"isOptional\":false}, \"title\":{\"type\":\"STRING\", \"isOptional\":false} } }"
   }'
 ```
-
-The filter `filters.enclosure` uses a `MoveFilter` to move the `url` inside the tag `<enclosure>` into the (converted) `json` field `enclosure_url`, there is no need for `XML` attribute `size` `type` (although we might need if we want to propulate a website with those images, abeit the dimensions can be detected as well (?)).
 
 It is worth to mention that to extract a single `RSS` feed containing `100` `items` of movie news into 100 `Kafka` messages, an `XPath` to identify the items need to be defined in the configuration
 ```json
@@ -293,7 +371,7 @@ Note that the `FilePulse` library convert `XML` tags with names in form `<part1>
 
 And finally, the created `value.connect.schema`, which is to be sent to `Kafka Connect`, defined in just above, is `double-quote escaped`, `tabs removed`, and `linefeeds removed`, in order to convert into a `escaped` string that can be used in the configuration:
 ```json
-"value.connect.schema":"{ \"name\": \"screentrant_value\", \"type\":\"STRUCT\", \"fieldSchemas\": { \"link\":{\"type\":\"STRING\", \"isOptional\":false}, \"pub_date\":{\"type\":\"STRING\", \"isOptional\":false}, \"category\": {\"type\":\"ARRAY\", \"isOptional\":true, \"valueSchema\": {\"type\": \"STRING\"}}, \"content\":{\"type\":\"STRING\", \"isOptional\":false}, \"creator\":{\"type\":\"STRING\", \"isOptional\":false}, \"description\":{\"type\":\"STRING\", \"isOptional\":false}, \"enclosure_url\":{\"type\":\"STRING\", \"isOptional\":false}, \"title\":{\"type\":\"STRING\", \"isOptional\":false} } }"
+"value.connect.schema":"{ \"name\": \"screentrant_value\", \"type\":\"STRUCT\", \"fieldSchemas\": { \"link\":{\"type\":\"STRING\", \"isOptional\":false}, \"pub_date\":{\"type\":\"STRING\", \"isOptional\":false}, \"category\": {\"type\":\"ARRAY\", \"isOptional\":true, \"valueSchema\": {\"type\": \"STRING\"}}, \"content\":{\"type\":\"STRING\", \"isOptional\":false}, \"creator\": {\"type\":\"ARRAY\", \"isOptional\":true, \"valueSchema\": {\"type\": \"STRING\"}}, \"description\":{\"type\":\"STRING\", \"isOptional\":false}, \"enclosure_url\":{\"type\":\"STRING\", \"isOptional\":false}, \"title\":{\"type\":\"STRING\", \"isOptional\":false} } }"
 ```
 
 The [Developer Guide](https://streamthoughts.github.io/kafka-connect-file-pulse/docs/developer-guide/) is amazingly details, although it is not written for beginners. It is worth to study the connector by the following articles (for file-based or anything that can be turned into an XML file)
@@ -325,8 +403,6 @@ thus, they have to be downloaded and placed into `$PWD/kafka-ce/connect/data`, w
 
 </p>
 </details>
-
-<img src="../img/Data Mesh - EX3 - ScreenRant - IMDb.png" alt="Data Mesh - EX3 - ScreenRant & IMDb" width="80%"/>
 
 &nbsp;
 

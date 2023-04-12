@@ -1,5 +1,11 @@
 #!/bin/bash
 
+if [[ $(uname -s) == 'Darwin' ]]; then
+    platform=mac
+else
+    platform=linux
+fi
+
 folder=data/imdb
 mkdir -p ${folder};
 
@@ -14,7 +20,12 @@ do
     echo Downloading ${url} ...
     wget ${url} --output-document ${file_name}
     gzip -d ${file_name}
-    sed -i 's/"/\\"/g' ${item}.tsv
+    if [[ "$platform" == 'linux' ]]; then
+        sed -i 's/"/\\"/g' ${item}.tsv
+    else
+        sed -e 's/"/\\"/g' ${item}.tsv > ${item}.tsv.1
+        mv ${item}.tsv.1 ${item}.tsv
+    fi
     mv ${item}.tsv ${folder}/.
     ls -la ${folder}/${item}.tsv
 done
