@@ -1,0 +1,26 @@
+{
+    "type": "record",
+    "name": "processed_rss_value",
+    "fields":[
+        {"name":"category", "type": ["null", "string"], "isOptional": true},
+        {"name":"content", "type": ["null", "string"], "isOptional": true},
+        {"name":"creator", "type": ["null", "string"], "isOptional": true},
+        {"name":"description", "type": ["null", "string"], "isOptional": true},
+        {"name":"full_text", "type": ["null", "string"], "isOptional": true},
+        {"name":"href_list", "type": ["null", "string"], "isOptional": true},
+        {"name":"link", "type": "string", "isOptional": false},
+        {"name":"pub_date", "type": "string", "isOptional": false},
+        {"name":"title", "type": ["null", "string"], "isOptional": true},
+        {"name":"timestamp_kp", "type": ["null", "int"], "isOptional": true},
+        {"name":"classified_labels", "type": ["null", "string"], "isOptional": true},
+        {"name":"timestamp_tc", "type": ["null", "int"], "isOptional": true},
+        {"name":"named_entities", "type": ["null", "string"], "isOptional": true},
+        {"name":"timestamp_ne", "type": ["null", "int"], "isOptional": true},
+        {"name":"question_answer", "type": ["null", "string"], "isOptional": true},
+        {"name":"timestamp_qa", "type": ["null", "int"], "isOptional": true},
+        {"name":"sentiment_score", "type": ["null", "float"], "isOptional": true},
+        {"name":"timestamp_sa", "type": ["null", "int"], "isOptional": true},
+        {"name":"summary_text", "type": ["null", "string"], "isOptional": true},
+        {"name":"timestamp_sm", "type": ["null", "int"], "isOptional": true}
+    ]
+}

@@ -1,0 +1,25 @@
+{
+    "type": "record",
+    "name": "rss_value",
+    "fields":[
+        {"name":"link", "type": "string", "isOptional": false},
+        {"name":"pub_date", "type": "string", "isOptional": false},
+        {
+            "name":"category", 
+            "type": { "type": "array", "items": "string" }, 
+            "default": []
+        },
+        {"name":"content", "type": ["null", "string"], "isOptional": true},
+        {
+            "name":"creator", 
+            "type": { "type": "array", "items": "string" }, 
+            "default": []
+        },
+        {
+            "name":"description", 
+            "type": { "type": "array", "items": "string" }, 
+            "default": []
+        },
+        {"name":"title", "type": ["null", "string"], "isOptional": true}
+    ]
+}

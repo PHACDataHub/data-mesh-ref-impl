@@ -212,7 +212,6 @@ services:
       CONNECT_REST_PORT: 8083
       CONNECT_REST_ADVERTISED_HOST_NAME: connect
       CONNECT_GROUP_ID: connect-distributed-group
-      CONNECT_GROUP_ID: compose-connect-group
       CONNECT_CONFIG_STORAGE_TOPIC: _kafka-connect-configs
       CONNECT_OFFSET_STORAGE_TOPIC: _kafka-connect-offsets
       CONNECT_STATUS_STORAGE_TOPIC: _kafka-connect-status
@@ -243,7 +242,7 @@ services:
         confluent-hub install --no-prompt jcustenborder/kafka-connect-spooldir:${KAFKA_CONNECT_SPOOLDIR_VERSION}
         confluent-hub install --no-prompt neo4j/kafka-connect-neo4j:${KAFKA_CONNECT_NEO4J_VERSION}
         confluent-hub install --no-prompt debezium/debezium-connector-postgresql:${DEBEZIUM_POSTGRESQL_CDC_SOURCE_CONNECTOR_VERSION}
-        confluent-hub install --no-prompt /downloads/streamthoughts-kafka-connect-file-pulse-${KAFKA_CONNECT_FILEPULSE_VERSION}.zip
+        confluent-hub install --no-prompt streamthoughts/kafka-connect-file-pulse:${KAFKA_CONNECT_FILEPULSE_VERSION}
         #
         # -----------
         # Launch the Kafka Connect worker
@@ -252,7 +251,7 @@ services:
         # Don't exit
         sleep infinity
     volumes:
-      - $PWD/kafka-ce/connect/plugins:/downloads
+      - $PWD/kafka-ce/connect/plugins:/usr/share/confluent-hub-components
       - $PWD/kafka-ce/connect/data:/data
     restart: always
 
@@ -277,7 +276,6 @@ services:
       CONNECT_REST_PORT: 8083
       CONNECT_REST_ADVERTISED_HOST_NAME: connect2
       CONNECT_GROUP_ID: connect-distributed-group
-      CONNECT_GROUP_ID: compose-connect-group
       CONNECT_CONFIG_STORAGE_TOPIC: _kafka-connect-configs
       CONNECT_OFFSET_STORAGE_TOPIC: _kafka-connect-offsets
       CONNECT_STATUS_STORAGE_TOPIC: _kafka-connect-status
@@ -308,7 +306,7 @@ services:
         confluent-hub install --no-prompt jcustenborder/kafka-connect-spooldir:${KAFKA_CONNECT_SPOOLDIR_VERSION}
         confluent-hub install --no-prompt neo4j/kafka-connect-neo4j:${KAFKA_CONNECT_NEO4J_VERSION}
         confluent-hub install --no-prompt debezium/debezium-connector-postgresql:${DEBEZIUM_POSTGRESQL_CDC_SOURCE_CONNECTOR_VERSION}
-        confluent-hub install --no-prompt /downloads/streamthoughts-kafka-connect-file-pulse-${KAFKA_CONNECT_FILEPULSE_VERSION}.zip
+        confluent-hub install --no-prompt streamthoughts/kafka-connect-file-pulse:${KAFKA_CONNECT_FILEPULSE_VERSION}
         #
         # -----------
         # Launch the Kafka Connect worker
@@ -317,7 +315,7 @@ services:
         # Don't exit
         sleep infinity
     volumes:
-      - $PWD/kafka-ce/connect/plugins:/downloads
+      - $PWD/kafka-ce/connect/plugins:/usr/share/confluent-hub-components
       - $PWD/kafka-ce/connect/data:/data
     restart: always
 
@@ -342,7 +340,6 @@ services:
       CONNECT_REST_PORT: 8083
       CONNECT_REST_ADVERTISED_HOST_NAME: connect3
       CONNECT_GROUP_ID: connect-distributed-group
-      CONNECT_GROUP_ID: compose-connect-group
       CONNECT_CONFIG_STORAGE_TOPIC: _kafka-connect-configs
       CONNECT_OFFSET_STORAGE_TOPIC: _kafka-connect-offsets
       CONNECT_STATUS_STORAGE_TOPIC: _kafka-connect-status
@@ -373,7 +370,7 @@ services:
         confluent-hub install --no-prompt jcustenborder/kafka-connect-spooldir:${KAFKA_CONNECT_SPOOLDIR_VERSION}
         confluent-hub install --no-prompt neo4j/kafka-connect-neo4j:${KAFKA_CONNECT_NEO4J_VERSION}
         confluent-hub install --no-prompt debezium/debezium-connector-postgresql:${DEBEZIUM_POSTGRESQL_CDC_SOURCE_CONNECTOR_VERSION}
-        confluent-hub install --no-prompt /downloads/streamthoughts-kafka-connect-file-pulse-${KAFKA_CONNECT_FILEPULSE_VERSION}.zip
+        confluent-hub install --no-prompt streamthoughts/kafka-connect-file-pulse:${KAFKA_CONNECT_FILEPULSE_VERSION}
         #
         # -----------
         # Launch the Kafka Connect worker
@@ -382,7 +379,7 @@ services:
         # Don't exit
         sleep infinity
     volumes:
-      - $PWD/kafka-ce/connect/plugins:/downloads
+      - $PWD/kafka-ce/connect/plugins:/usr/share/confluent-hub-components
       - $PWD/kafka-ce/connect/data:/data
     restart: always
 
@@ -394,6 +391,7 @@ services:
     hostname: ksqldb-server
     container_name: ksqldb-server
     depends_on:
+      - zookeeper
       - broker
       - connect
     networks:
@@ -425,6 +423,7 @@ services:
     hostname: ksqldb-cli
     container_name: ksqldb-cli
     depends_on:
+      - zookeeper
       - broker
       - connect
       - ksqldb-server
@@ -445,8 +444,10 @@ services:
     hostname: rest-proxy
     container_name: rest-proxy
     depends_on:
+      - zookeeper
       - broker
       - schema-registry
+      - connect
     networks:
       - backend
     ports:
@@ -468,8 +469,12 @@ services:
     hostname: kafkacat
     container_name: kafkacat
     links:
+      - zookeeper
       - broker
       - schema-registry
+      - connect
+      - ksqldb-server
+      - rest-proxy
     networks:
       - backend
     entrypoint: 
@@ -494,6 +499,7 @@ services:
     networks:
       - backend
     depends_on:
+      - zookeeper
       - broker
       - schema-registry
       - connect
@@ -518,26 +524,27 @@ services:
     image: confluentinc/cp-kafka:${KAFKA_VERSION}
     container_name: init-kafka
     depends_on:
-      - schema-registry
-      - connect
+      - zookeeper
+      - broker
     networks:
       - backend
     entrypoint: [ '/bin/sh', '-c' ]
     command: |
       "
       # blocks until kafka is reachable
-      kafka-topics --bootstrap-server broker:29092 --list
+      kafka-topics --bootstrap-server broker:${BROKER_INTERNAL_PORT} --list
 
       echo -e 'Creating kafka topics'
-      kafka-topics --bootstrap-server broker:29092 --create --if-not-exists --topic ${KAFKA_DEFAULT_TOPIC_1} --replication-factor ${REPLICATION_FACTOR} --partitions ${REPLICATION_FACTOR}
-      kafka-topics --bootstrap-server broker:29092 --create --if-not-exists --topic ${KAFKA_DEFAULT_TOPIC_2} --replication-factor ${REPLICATION_FACTOR} --partitions ${REPLICATION_FACTOR}
-      kafka-topics --bootstrap-server broker:29092 --create --if-not-exists --topic ${KAFKA_DEFAULT_TOPIC_3} --replication-factor ${REPLICATION_FACTOR} --partitions ${REPLICATION_FACTOR}
-      kafka-topics --bootstrap-server broker:29092 --create --if-not-exists --topic ${KAFKA_DEFAULT_TOPIC_4} --replication-factor ${REPLICATION_FACTOR} --partitions ${REPLICATION_FACTOR}
-      kafka-topics --bootstrap-server broker:29092 --create --if-not-exists --topic ${KAFKA_DEFAULT_TOPIC_5} --replication-factor ${REPLICATION_FACTOR} --partitions ${REPLICATION_FACTOR}
-      kafka-topics --bootstrap-server broker:29092 --create --if-not-exists --topic ${KAFKA_DEFAULT_TOPIC_6} --replication-factor ${REPLICATION_FACTOR} --partitions ${REPLICATION_FACTOR}
+      kafka-topics --bootstrap-server broker:${BROKER_INTERNAL_PORT} --create --if-not-exists --topic ${KAFKA_DEFAULT_TOPIC_1} --replication-factor ${REPLICATION_FACTOR} --partitions ${REPLICATION_FACTOR}
+      kafka-topics --bootstrap-server broker:${BROKER_INTERNAL_PORT} --create --if-not-exists --topic ${KAFKA_DEFAULT_TOPIC_2} --replication-factor ${REPLICATION_FACTOR} --partitions ${REPLICATION_FACTOR}
+      kafka-topics --bootstrap-server broker:${BROKER_INTERNAL_PORT} --create --if-not-exists --topic ${KAFKA_DEFAULT_TOPIC_3} --replication-factor ${REPLICATION_FACTOR} --partitions ${REPLICATION_FACTOR}
+      kafka-topics --bootstrap-server broker:${BROKER_INTERNAL_PORT} --create --if-not-exists --topic ${KAFKA_DEFAULT_TOPIC_4} --replication-factor ${REPLICATION_FACTOR} --partitions ${REPLICATION_FACTOR}
+      kafka-topics --bootstrap-server broker:${BROKER_INTERNAL_PORT} --create --if-not-exists --topic ${KAFKA_DEFAULT_TOPIC_5} --replication-factor ${REPLICATION_FACTOR} --partitions ${REPLICATION_FACTOR}
+      kafka-topics --bootstrap-server broker:${BROKER_INTERNAL_PORT} --create --if-not-exists --topic ${KAFKA_DEFAULT_TOPIC_6} --replication-factor ${REPLICATION_FACTOR} --partitions ${REPLICATION_FACTOR}
+      kafka-topics --bootstrap-server broker:${BROKER_INTERNAL_PORT} --create --if-not-exists --topic ${KAFKA_DEFAULT_TOPIC_7} --replication-factor ${REPLICATION_FACTOR} --partitions ${REPLICATION_FACTOR}
 
       echo -e 'Successfully created the following topics:'
-      kafka-topics --bootstrap-server broker:29092 --list
+      kafka-topics --bootstrap-server broker:${BROKER_INTERNAL_PORT} --list
       "
       
 
@@ -554,6 +561,26 @@ services:
 ##############################################################################
 
   ####################
+  # kafka-processor
+  ####################
+  kafka-processor:
+    image: kafka-processor:latest
+    container_name: kafka-processor
+    build:
+      context: ./
+      dockerfile: conf/kafka/Dockerfile
+      args:
+        - INI_FILE=conf/ini/kafka-processor.ini
+        - AVRO_PATH=conf/avro
+    depends_on:
+      - broker
+      - schema-registry
+      - connect
+    networks:
+      - backend
+    restart: always
+
+  ####################
   # named-entity-recognizer
   ####################
   named-entity-recognizer:
@@ -566,8 +593,7 @@ services:
         - INI_FILE=conf/ini/named-entity-recognizer.ini
         - AVRO_PATH=conf/avro
     depends_on:
-      - connect
-      - text-classifier
+      - kafka-processor
     networks:
       - backend
     environment:
@@ -591,8 +617,7 @@ services:
         - INI_FILE=conf/ini/question-answer.ini
         - AVRO_PATH=conf/avro
     depends_on:
-      - init-kafka
-      - text-classifier
+      - kafka-processor
     networks:
       - backend
     environment:
@@ -641,8 +666,7 @@ services:
         - INI_FILE=conf/ini/summarizer.ini
         - AVRO_PATH=conf/avro
     depends_on:
-      - init-kafka
-      - text-classifier
+      - kafka-processor
     networks:
       - backend
     environment:
@@ -666,7 +690,7 @@ services:
         - INI_FILE=conf/ini/text-classifier.ini
         - AVRO_PATH=conf/avro
     depends_on:
-      - init-kafka
+      - kafka-processor
     networks:
       - backend
     environment:
@@ -776,7 +800,7 @@ services:
 
 ##############################################################################
 #
-# Screent Rant RSS
+# RSS downloader
 # ----------------
 # - cronjob
 #
@@ -792,8 +816,8 @@ services:
       context: ./
       dockerfile: conf/cron/Dockerfile
     init: true
-    depends_on:
-      - connect
+    # depends_on:
+    #   - connect
     networks:
       - backend
     volumes:
