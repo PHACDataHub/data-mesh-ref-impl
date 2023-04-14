@@ -48,12 +48,21 @@ class NLPTask(object):
         else:
             self.processor = pipeline(config['pipeline']['name'], model=config['pipeline']['model'])
 
-    def process(self, target, display=True):
+    def process(self, val, target_name, display=True):
+        target = val[target_name]
         processor_kwargs = get_kwargs(self.config, section='processor')
         if (config['pipeline']['name'] == 'question-answering'):
             outputs = [self.processor(context=target, **processor_kwargs)]
         elif (config['pipeline']['name'] == 'zero-shot-classification'):
             outputs = self.processor(target, **processor_kwargs)
+        elif (config['pipeline']['name'] == 'sentiment-analysis'):
+            if len(target) <= int(config['producer']['content_limit']):
+                outputs = self.processor(target)
+            else:
+                for alternative_name in config['producer']['alternative_targets'].split(','):
+                    if alternative_name in val and val[alternative_name] and len(val[alternative_name]) <= int(config['producer']['content_limit']):
+                        outputs = self.processor(val[alternative_name])
+                        break
         else:
             outputs = self.processor(target)
         
@@ -64,7 +73,7 @@ class NLPTask(object):
 
 
 if __name__ == '__main__':
-    config = get_config('nlp_task.ini')
+    config = get_config('nlp-task.ini')
     
     consumer = AvroConsumer(config['consumer'])
     producer = AvroProducer(config['producer'])
@@ -92,19 +101,22 @@ if __name__ == '__main__':
                 continue
 
             count += 1
-            print("Count #{} {} {}".format(count, msg.key(), msg.value()), flush=True)
+            print("--> [#{}] [{}] {}".format(count, msg.key(), msg.value()), flush=True)
             msg_key, msg_val = consumer.consume(msg)
 
             if msg_key is not None or msg_val is not None:
             
                 if pre_wrangler:
                     msg_key, msg_val = pre_wrangler(msg_key, msg_val)
+                    print("->- [#{}] [{}] {}".format(count, msg_key, msg_val), flush=True)
 
-                outputs = nlp_task.process(msg_val[target])
+                outputs = nlp_task.process(msg_val, target)
+                print("-<- [#{}] [{}] {}".format(count, msg_key, outputs), flush=True)
 
                 if post_wrangler:
                     msg_key, msg_val = post_wrangler(outputs, msg_key, msg_val)
 
+                print("<-- [#{}] [{}] {}".format(count, msg_key, msg_val), flush=True)
                 producer.produce(msg_key, msg_val)
 
             else:
