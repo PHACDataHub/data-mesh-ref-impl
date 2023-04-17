@@ -16,7 +16,7 @@ postgres_user=${POSTGRES_USER}
 postgres_pass=${POSTGRES_PASSWORD}
 composite_keys=link,pub_date
 
-topic=screenrant-named-entity-recognizer-topic,screenrant-question-answer-topic,screenrant-sentiment-analyzer-topic,screenrant-summarizer-topic
+topic=summarizer-topic
 connector=postgres-sink
 
 ./scripts/kafka/list_plugins.sh
@@ -24,7 +24,7 @@ connector=postgres-sink
 ./scripts/kafka/list_subjects.sh
 
 echo "Create table rss ...";
-docker exec -it postgres psql -U postgres -d postgres -c 'CREATE TABLE rss(category VARCHAR, classified_labels VARCHAR, content VARCHAR, creator VARCHAR, description VARCHAR, enclosure_url VARCHAR, full_text VARCHAR, href_list VARCHAR, link VARCHAR, named_entities VARCHAR, question_answer VARCHAR, pub_date VARCHAR, sentiment_score VARCHAR, summary_text VARCHAR, timestamp_ne INT, timestamp_qa INT, timestamp_sa INT, timestamp_sm INT, timestamp_tc INT, title VARCHAR, PRIMARY KEY(link, pub_date));' 
+docker exec -it postgres psql -U postgres -d postgres -c 'CREATE TABLE rss(category VARCHAR, classified_labels VARCHAR, content VARCHAR, creator VARCHAR, description VARCHAR, full_text VARCHAR, href_list VARCHAR, link VARCHAR, named_entities VARCHAR, question_answer VARCHAR, pub_date VARCHAR, sentiment_score VARCHAR, summary_text VARCHAR, timestamp_kp INT, timestamp_ne INT, timestamp_qa INT, timestamp_sa INT, timestamp_sm INT, timestamp_tc INT, title VARCHAR, PRIMARY KEY(link, pub_date));' 
 echo "Table rss created ✅";
 echo ''
 

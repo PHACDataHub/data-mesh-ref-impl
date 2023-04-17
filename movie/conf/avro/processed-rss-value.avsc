@@ -14,12 +14,12 @@
         {"name":"timestamp_kp", "type": ["null", "int"], "isOptional": true},
         {"name":"classified_labels", "type": ["null", "string"], "isOptional": true},
         {"name":"timestamp_tc", "type": ["null", "int"], "isOptional": true},
-        {"name":"named_entities", "type": ["null", "string"], "isOptional": true},
-        {"name":"timestamp_ne", "type": ["null", "int"], "isOptional": true},
         {"name":"question_answer", "type": ["null", "string"], "isOptional": true},
         {"name":"timestamp_qa", "type": ["null", "int"], "isOptional": true},
         {"name":"sentiment_score", "type": ["null", "float"], "isOptional": true},
         {"name":"timestamp_sa", "type": ["null", "int"], "isOptional": true},
+        {"name":"named_entities", "type": ["null", "string"], "isOptional": true},
+        {"name":"timestamp_ne", "type": ["null", "int"], "isOptional": true},
         {"name":"summary_text", "type": ["null", "string"], "isOptional": true},
         {"name":"timestamp_sm", "type": ["null", "int"], "isOptional": true}
     ]
