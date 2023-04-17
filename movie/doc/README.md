@@ -108,7 +108,7 @@ score  start  end               answer
 
 &nbsp;
 
-## C. Architecture Overview
+## C. Architecture & Workflow
 
 <img src="../img/Data Mesh - EX3 - Architecture Overview.png" alt="Data Mesh - EX3 - Architecture Overview" width="80%"/>
 

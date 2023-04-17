@@ -16,7 +16,7 @@ docker exec -it neo4j bash -c 'rm -rf /data/transactions/neo4j'
 echo 'The current default database (neo4j) is stopped ✅'
 
 echo 'Perform low-level data import ...'
-docker exec -it neo4j bash -c 'bin/neo4j-admin database import full --delimiter=TAB --nodes Person=/import/name.basics.header.tsv,/import/name.basics.tsv --nodes Title=/import/title.basics.header.tsv,/import/title.basics.tsv --nodes Crew=/import/title.crew.header.tsv,/import/title.crew.tsv --nodes Rating=/import/title.ratings.header.tsv,/import/title.ratings.tsv --relationships CREW_IN=/import/title.principals.header.tsv,/import/title.principals.tsv --relationships PART_OF=/import/title.episode.header.tsv,/import/title.episode.tsv --skip-bad-relationships=true neo4j'
+docker exec -it neo4j bash -c 'bin/neo4j-admin database import full --overwrite-destination --delimiter=TAB --nodes Person=/import/name.basics.header.tsv,/import/name.basics.tsv --nodes Title=/import/title.basics.header.tsv,/import/title.basics.tsv --nodes Crew=/import/title.crew.header.tsv,/import/title.crew.tsv --nodes Rating=/import/title.ratings.header.tsv,/import/title.ratings.tsv --relationships CREW_IN=/import/title.principals.header.tsv,/import/title.principals.tsv --relationships PART_OF=/import/title.episode.header.tsv,/import/title.episode.tsv --skip-bad-relationships=true neo4j'
 echo 'Low-level data import completed ✅'
 
 echo 'Restart the current default database (neo4j)...'
