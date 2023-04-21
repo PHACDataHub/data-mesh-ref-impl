@@ -1,9 +1,19 @@
 #!/bin/bash
 
+# Check if Docker Engine is already installed
 if [ -x "$(command -v docker)" ]; then
-    echo "Docker already installed."
-    exit 0
+    echo "Docker already installed ❌"
+    exit 1
 fi
+
+# Check if Docker Compose CLI Plugin version is given as argument
+if [ -z "$1" ]; then
+    echo "Please specify docker compose CLI plugin version ❌"
+    echo "For example: install.sh v2.17.2"
+    exit 1
+fi
+
+COMPOSE_VERSION=$1
 
 ### Set up the repository ###
 
@@ -38,8 +48,6 @@ sudo apt-get update -y
 # Install Docker Engine and containerd
 sudo apt-get install docker-ce docker-ce-cli containerd.io -y
 
-COMPOSE_VERSION=v2.14.0
-
 # Download and install the Compose CLI plugin
 DOCKER_CONFIG=${DOCKER_CONFIG:-$HOME/.docker}
 mkdir -p $DOCKER_CONFIG/cli-plugins
@@ -56,7 +64,7 @@ chmod +x $DOCKER_CONFIG/cli-plugins/docker-compose
 # Add your user to the docker group.
 sudo usermod -aG docker $USER
 
-# Activate the changes to groups
+# Activate the changes to groups without logout (not recommended)
 # newgrp docker
 
 echo 'Logout and relogin ✅'
