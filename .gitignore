@@ -1,5 +1,6 @@
 # Project specific
 
+secrets
 faers/data
 faers/kafka-ce
 faers/neo4j

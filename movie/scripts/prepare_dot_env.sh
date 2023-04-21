@@ -5,6 +5,8 @@ if [ -z "$1" ]; then
     exit 1
 fi
 
+cp conf/.env .env
+
 if [[ $(uname -s) == 'Darwin' ]]; then
     platform=mac
 else
@@ -14,6 +16,7 @@ fi
 if [ "$1" = "create" ]; then
     CURRENT_UID=$(id -u)
     CURRENT_GID=$(id -g)
+    HOSTNAME=$(hostname -f)
 
     PUBLIC_IP=$(curl --silent ifconfig.me)
     if [[ "$platform" == 'linux' ]]; then
@@ -22,12 +25,14 @@ if [ "$1" = "create" ]; then
         sed -i s/CURRENT_GID=.*/CURRENT_GID=${CURRENT_GID}/g .env
         sed -i s/VM_IP=.*/VM_IP=${VM_IP}/g .env
         sed -i s/PUBLIC_IP=.*/PUBLIC_IP=${PUBLIC_IP}/g .env
+        sed -i s/HOSTNAME=.*/HOSTNAME=${HOSTNAME}/g .env
     else
         VM_IP=$(ip route get 8.8.8.8 | ggrep -oP 'src \K[^ ]+')
         sed -e s/CURRENT_UID=.*/CURRENT_UID=${CURRENT_UID}/g .env > .env.1
         sed -e s/CURRENT_GID=.*/CURRENT_GID=${CURRENT_GID}/g .env.1 > .env.2
         sed -e s/VM_IP=.*/VM_IP=${VM_IP}/g .env.2 > .env.3
-        sed -e s/PUBLIC_IP=.*/PUBLIC_IP=${PUBLIC_IP}/g .env.3 > .env
+        sed -e s/PUBLIC_IP=.*/PUBLIC_IP=${PUBLIC_IP}/g .env.3 > .env.4
+        sed -e s/HOSTNAME=.*/HOSTNAME=${HOSTNAME}/g .env.4 > .env
         rm .env.*
     fi    
 else
@@ -36,11 +41,13 @@ else
         sed -i s/CURRENT_GID=.*/CURRENT_GID=/g .env
         sed -i s/VM_IP=.*/VM_IP=/g .env
         sed -i s/PUBLIC_IP=.*/PUBLIC_IP=/g .env
+        sed -i s/HOSTNAME=.*/HOSTNAME=/g .env
     else
         sed -e s/CURRENT_UID=.*/CURRENT_UID=/g .env > .env.1
         sed -e s/CURRENT_GID=.*/CURRENT_GID=/g .env.1 > .env.2
         sed -e s/VM_IP=.*/VM_IP=/g .env.2 > .env.3
-        sed -e s/PUBLIC_IP=.*/PUBLIC_IP=/g .env.3 > .env
+        sed -e s/PUBLIC_IP=.*/PUBLIC_IP=/g .env.3 > .env.4
+        sed -e s/HOSTNAME=.*/HOSTNAME=/g .env.4 > .env
         rm .env.*
     fi
 fi
