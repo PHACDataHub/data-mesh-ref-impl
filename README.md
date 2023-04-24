@@ -5,3 +5,4 @@ Here is the [**project management site (GitHub project).**](https://github.com/o
 **List of current standalone example cases:**
 1. [Load, analyze, and make FDA Adverse Event Reporting System Data accessible](./faers/doc/README.md).
 2. [Plug-n-Play Natural Language Processing cluster for Movie Recommdation](./movie/doc/README.md).
+3. [Imaginative US Vaccination Data Management](./usvdm/doc/README.md).
