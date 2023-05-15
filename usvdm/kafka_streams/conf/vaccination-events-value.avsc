@@ -1,0 +1,9 @@
+{
+	"type": "record",
+	"namespace": "ca.gov.phac.cdsb.dmia.oan.dmri",
+	"name": "vaccination_event_value",
+	"fields": [
+		{"name": "datetime",  "type": "string" },
+		{"name": "location",  "type": "string" }
+	]
+}
