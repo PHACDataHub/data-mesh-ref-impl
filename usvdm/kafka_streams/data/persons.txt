@@ -1,0 +1,3 @@
+{ "pid": "06ecb949" }|{ "name": "Alice", "blood_type": "A+", "birthday": "1970-03-02", "address": "12 Oak Street, Ottawa, ON, K1H 0A0" }
+{ "pid": "8c535c71" }|{ "name": "Bob", "blood_type": "O-", "birthday": "2012-12-23", "address": "PO Box 873, Quebec, QC, G1R 3Z2" }
+{ "pid": "ed7c0aa8" }|{ "name": "Charlie", "blood_type": "AB-", "birthday": "2021-10-04", "address": "3757 Anchor Way RR2, Pender Island, BC, V0N 2M2" }

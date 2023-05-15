@@ -1,0 +1,8 @@
+{
+	"type": "record",
+	"namespace": "ca.gov.phac.cdsb.dmia.oan.dmri",
+	"name": "adverse_effect_value",
+	"fields": [
+		{"name": "datetime",  "type": "string" }
+	]
+}
