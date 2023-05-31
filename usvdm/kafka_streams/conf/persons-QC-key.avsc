@@ -1,0 +1,8 @@
+{
+	"type": "record",
+	"namespace": "ca.gov.phac.cdsb.dmia.oan.dmri",
+	"name": "person_qc_key",
+	"fields": [
+		{"name": "pid",  "type": "string" }
+	]
+}

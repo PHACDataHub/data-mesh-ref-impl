@@ -1,0 +1,11 @@
+{
+	"type": "record",
+	"namespace": "ca.gov.phac.cdsb.dmia.oan.dmri",
+	"name": "person_on_value",
+	"fields": [
+		{"name": "name",  "type": "string" },
+		{"name": "blood_type", "type": "string" },
+		{"name": "birthday", "type": "string" },
+		{"name": "address", "type": "string" }
+	]
+}

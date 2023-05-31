@@ -1,0 +1,6 @@
+{ "vid": "Y", "pid": "8c535c71" }|{ "datetime": "2023-05-02 13:30:00", "location": "Quebec" }
+{ "vid": "X", "pid": "8c535c71" }|{ "datetime": "2023-06-01 12:30:00", "location": "Quebec" }
+{ "vid": "Z", "pid": "8c535c71" }|{ "datetime": "2023-07-12 14:30:00", "location": "Quebec" }
+{ "vid": "Z", "pid": "06ecb949" }|{ "datetime": "2023-07-21 15:00:00", "location": "Montreal" }
+{ "vid": "W", "pid": "8c535c71" }|{ "datetime": "2023-07-21 17:30:00", "location": "Quebec" }
+{ "vid": "Z", "pid": "06ecb949" }|{ "datetime": "2023-07-22 08:00:00", "location": "Montreal" }

@@ -7,11 +7,8 @@ cd ../kafka_cluster
 source .env
 
 topic=$1
-
-conf_dir=${curr_dir}/conf
-data_dir=${curr_dir}/data
-data_file=${topic}.txt
-no_messages=$(cat $data_dir/$data_file | wc -l | tr -d ' ')
+no_messages=$2
+consumer_group=$3
 
 broker_container_name=broker
 broker_internal_host=broker
@@ -25,7 +22,7 @@ schema_registry_port=${SCHEMA_REGISTRY_PORT}
 echo "Consume ${no_messages} messages from ${topic} ..." 
 docker exec -it ${schema_registry_container} kafka-avro-console-consumer  \
     --bootstrap-server ${broker_internal_host}:${broker_internal_port} \
-    --topic ${topic} --from-beginning --max-messages ${no_messages} \
+    --topic ${topic} --group ${consumer_group} --from-beginning --max-messages ${no_messages} \
     --property schema.registry.url=http://${schema_registry_internal_host}:${schema_registry_port}
 echo ''
 

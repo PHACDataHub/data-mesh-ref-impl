@@ -2,8 +2,6 @@
 
 curr_dir=$(pwd)
 
-sudo apt install -y jq wget
-
 cd ../kafka_cluster
 
 ./setup.sh
@@ -11,7 +9,7 @@ cd ../kafka_cluster
 
 cd ${curr_dir}
 
-for item in persons vaccines vaccination-events adverse-effects
+for item in vaccines persons-BC persons-ON persons-QC vaccination-events-BC vaccination-events-ON vaccination-events-QC adverse-effects-BC adverse-effects-ON adverse-effects-QC
 do
     ./create_topic.sh $item
     ./produce_messages.sh $item

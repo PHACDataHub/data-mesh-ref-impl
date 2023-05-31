@@ -29,7 +29,7 @@ echo ''
 
 ./scripts/create_subject.sh ${topic}-key ${conf_dir}/${topic}-key.avsc
 
-./scripts/create_subject.sh ${topic}-value ${conf_dir}/${topic}-value.avsc
+./scripts/create_subject.sh ${topic}-value ${conf_dir}/${topic}-val.avsc
 
 ./scripts/list_subjects.sh
 

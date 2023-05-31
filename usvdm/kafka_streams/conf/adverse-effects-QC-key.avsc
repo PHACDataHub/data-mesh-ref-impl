@@ -1,8 +1,9 @@
 {
 	"type": "record",
 	"namespace": "ca.gov.phac.cdsb.dmia.oan.dmri",
-	"name": "person_key",
+	"name": "adverse_effect_qc_key",
 	"fields": [
+		{"name": "vid",  "type": "string" },
 		{"name": "pid",  "type": "string" }
 	]
 }

@@ -1,7 +1,7 @@
 {
 	"type": "record",
 	"namespace": "ca.gov.phac.cdsb.dmia.oan.dmri",
-	"name": "vaccination_event_key",
+	"name": "vaccination_event_on_key",
 	"fields": [
 		{"name": "vid",  "type": "string" },
 		{"name": "pid",  "type": "string" }

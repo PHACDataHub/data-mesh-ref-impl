@@ -1,7 +1,7 @@
 {
 	"type": "record",
 	"namespace": "ca.gov.phac.cdsb.dmia.oan.dmri",
-	"name": "person_value",
+	"name": "person_bc_value",
 	"fields": [
 		{"name": "name",  "type": "string" },
 		{"name": "blood_type", "type": "string" },
