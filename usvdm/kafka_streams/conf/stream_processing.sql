@@ -357,7 +357,7 @@ INNER JOIN unique_vaccination_events_stream u
     WHERE a.ROWKEY->pid = u.ROWKEY->pid
 EMIT CHANGES;
 
--- SELECT * FROM enriched_vaccination_events_stream  EMIT CHANGES LIMIT 4;
+-- SELECT * FROM enriched_adverse_effects_stream  EMIT CHANGES LIMIT 4;
 -- SET 'auto.offset.reset' = 'earliest';
 
 CREATE STREAM enriched_adverse_effects_stream_with_vaccine WITH (

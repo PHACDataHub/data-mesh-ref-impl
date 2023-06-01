@@ -1,29 +1,59 @@
-# Kafka Streams with ksqlDB
+# An imaginative vaccination story
 
-## A. Overview
+*Disclaimer:*
+- *This story is for the exercise how to use design patterns of in-stream processing blended with some best practices in Data Mesh federated computational governance to show how unbounded streams of data events can be processed, aggregated, filtered, transformed, and reused across jurisdictions and bringing data-as-products together.*
+- *This story does not aim to solve any problems in vaccination data management, nor to shed any light on what Data Mesh principles are, or why at-source data collection with proper data governance policy supported by event sourcing infrastructure can save the day.*
+- *This story focuses on data on the move, with many copies, incomplete, related to things that also move, ephemeral, and never at rest.*
 
-[ksqlDB](https://ksqldb.io/) is the database purpose-built for stream processing applications.
-- Real-time: Build applications that respond immediately to events. Craft materialized views over streams. Receive real-time push updates, or pull current state on demand.
-- Kafka-native: Seamlessly leverage Apache Kafka® infrastructure to deploy stream-processing workloads and bring powerful new capabilities to applications.
-- What, not how: Use a familiar, lightweight syntax to pack a powerful punch. Capture, process, and serve queries using only SQL. No other languages or services are required.
+## B. The story
 
-Detailed documentation can be found [here](https://docs.ksqldb.io/en/latest/).
+### B.1. The vaccines
 
-Here's its code [GitHub repository](https://github.com/confluentinc/ksql).
+In the beginning (of this story), there are seven types of vaccines:
 
-&nbsp;
+| vid | name              | unit_of_sale |  unit_of_use |
+|:---:|-------------------|:------------:|:------------:|
+|  T  | ActHIB            | 49281-545-03 | 49281-547-58 |
+|  U  | IMOVAX RABIES     | 49281-250-51 | 49281-249-01 |
+|  V  | IPOL vial         | 49281-860-10 | 49281-860-78 |
+|  X  | Menveo            | 58160-955-09 | 58160-958-01 |
+|  Y  | Typhim Vi syringe | 49281-790-51 | 49281-790-88 |
+|  Z  | Vivotif           | 46028-208-01 | 46028-219-11 |
+|  W  | BIOTHRAX          | 49281-790-20 | 49281-790-38 |
 
-## B. Example data
+The `vid` - vaccine identifier is just an obscured string for identification. It can be just the identification of a vaccine lot from the manufacturer or something similar. Knowing the identifier itself would not mean to know the actuall vaccine or the lot or any other information.
 
-In this reference implementation we use an example of vaccination dataflow.
+### B.2. The actors
 
-Three persons, Alice, Bob, and Charlie got vaccinated during the months of May, June, and July.
+Alice lives in Ottawa. Her personal information record is kept by her family doctor.
 
 | pid      | name    | blood_type | birthday   | address                                         |
 |----------|---------|------------|------------|-------------------------------------------------|
 | 06ecb949 | Alice   | A+         | 1970-03-02 | 12 Oak Street, Ottawa, ON, K1H 0A0              |
+
+Bob lives somewhere in Quebec, he uses a PO. Box for correspondence.
+
+| pid      | name    | blood_type | birthday   | address                                         |
+|----------|---------|------------|------------|-------------------------------------------------|
 | 8c535c71 | Bob     | O-         | 2012-12-23 | PO Box 873, Quebec, QC, G1R 3Z2                 |
-| ed7c0aa8 | Charlie | AB-        | 2021-10-04 | 3757 Anchor Way RR2, Pender Island, BC, V0N 2M2 |
+
+Charlie lives in a rural area of British Columbia,
+
+| pid      | name    | blood_type | birthday   | address                                         |
+|----------|---------|------------|------------|-------------------------------------------------|
+| ed7c0aa8 | Charlie | AB-        | 2021-10-04 | 3757 Anchor Way RR2
+
+Note that these information records are kept by their health providers, or in a patient information system, or in a person record system, ... Any of these can just be a simple electronic database, a sophisticated HL7-compliant HIS, an EHR management system, or anything similar.
+
+All of them closely guard these records and do not expose to any other than their own users. To the outside world, they provide a [hash](https://en.wikipedia.org/wiki/Hash_function) to *sort-of* identify their records. To have more information how these hashes can be generated, visit [Online Toools](https://emn178.github.io/online-tools/crc32.html) for the `CRC32` hash. Other more hash algorithms avail ble there. For a more generic purpose, such as personal info hash, a `SHA512` can be a good choice.
+
+Thus, this `pid`, as will be seen in below sections, will be the hash that used to `anonymized` a person. It *uniquely* represents a person. it is *impossible to reverse-engineer* the personal information to generate the hash. And there are many ways to increase security level by adding some random `seed` or others. The `pid` will be used with in a jurisdiction, where the personal record is keep, to identify the personal record with ease. Outside of the jurisdiction, it is only an identifier of someone belongs to the said jurisdiction and that's all. This way the collection fo `pid` together with the identifier of the jurisdiction form a unique way to identify an person without revealing the person's information. The collection of (`pid`, jurisdiction identifier) forms a `Master Person Index` (a practice well known in some countries with extensive practive in personal information protection.)
+
+### B.2. The vaccination events
+
+Three persons, Alice, Bob, and Charlie got vaccinated during the months of May, June, and July.
+
+
 
 Below is the [list of people](./data/persons.txt) with AVRO key and value parts.
 
@@ -35,15 +65,6 @@ Below is the [list of people](./data/persons.txt) with AVRO key and value parts.
 
 There are seven types of vaccines.
 
-| vid | name              | unit_of_sale |  unit_of_use |
-|:---:|-------------------|:------------:|:------------:|
-|  T  | ActHIB            | 49281-545-03 | 49281-547-58 |
-|  U  | IMOVAX RABIES     | 49281-250-51 | 49281-249-01 |
-|  V  | IPOL vial         | 49281-860-10 | 49281-860-78 |
-|  X  | Menveo            | 58160-955-09 | 58160-958-01 |
-|  Y  | Typhim Vi syringe | 49281-790-51 | 49281-790-88 |
-|  Z  | Vivotif           | 46028-208-01 | 46028-219-11 |
-|  W  | BIOTHRAX          | 49281-790-20 | 49281-790-38 |
 
 
 Below is the [list of vaccines](./data/vaccines.txt) with AVRO key and value parts.
@@ -127,6 +148,20 @@ Below is the [adverse effects](./data/adverse-effects.txt) with key and value pa
 ```
 
 &nbsp;
+
+## A. Overview
+
+[ksqlDB](https://ksqldb.io/) is the database purpose-built for stream processing applications.
+- Real-time: Build applications that respond immediately to events. Craft materialized views over streams. Receive real-time push updates, or pull current state on demand.
+- Kafka-native: Seamlessly leverage Apache Kafka® infrastructure to deploy stream-processing workloads and bring powerful new capabilities to applications.
+- What, not how: Use a familiar, lightweight syntax to pack a powerful punch. Capture, process, and serve queries using only SQL. No other languages or services are required.
+
+Detailed documentation can be found [here](https://docs.ksqldb.io/en/latest/).
+
+Here's its code [GitHub repository](https://github.com/confluentinc/ksql).
+
+&nbsp;
+
 
 ## C. Objectives
 
