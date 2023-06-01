@@ -184,9 +184,9 @@ No reports from Ontario,
 three from Quebec, one from Bob's vaccination, two from Alice's,
 
 ```json
-{ "vid": "X", "pid": "a74d8d56" }|{ "datetime": "2023-06-01 12:30:00" }
-{ "vid": "Z", "pid": "07dc617f" }|{ "datetime": "2023-07-21 15:00:00" }
-{ "vid": "Z", "pid": "07dc617f" }|{ "datetime": "2023-07-21 17:45:00" }
+{ "vid": "X", "pid": "a74d8d56" } { "datetime": "2023-06-01 12:30:00" }
+{ "vid": "Z", "pid": "07dc617f" } { "datetime": "2023-07-21 15:00:00" }
+{ "vid": "Z", "pid": "07dc617f" } { "datetime": "2023-07-21 17:45:00" }
 ```
 
 two from British Columbia, all from Charlie's.
