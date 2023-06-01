@@ -210,7 +210,11 @@ Here the aggregated view,
 
 ## C. Objectives
 
-The diagram below describes three timelines of vaccinations, one per person. The data points for vaccination events and adverse effects are indicated with square around vaccine identifier (letter). On the right, there are some objectives:
+The diagram below describes three timelines of vaccinations, one per person. The data points for vaccination events and adverse effects are indicated with square around vaccine identifier (letter). 
+
+![Vaccination Event Streams](./img/vaccination_event_stream.jpeg)
+
+On the right, there are some objectives:
 1. At PT-level:
     - to enrich personal vaccination records with vaccine information provided by Federal agencies such as vaccine standards, or vaccine lot information by manufacturers and supply chains.
     - to keep personal vaccination records up-to-date, with vaccination events happening outside of the jurisdiction.
@@ -226,7 +230,6 @@ The diagram below describes three timelines of vaccinations, one per person. The
 3. For citizens:
     - With proper authentication and authorization mechanism, access to vaccination records can be made with ease.
 
-![Vaccination Event Streams](./img/vaccination_event_stream.jpeg)
 
 ## D. In-stream event processing by ksqlDB
 
