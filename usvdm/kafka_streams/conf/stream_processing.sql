@@ -171,10 +171,10 @@ HAVING COUNT(*) = 1;
 -- PRINT 'unique-vaccination-events-QC' FROM BEGINNING LIMIT 5;
 -- SET 'auto.offset.reset' = 'earliest';
 
-SELECT * FROM unique_vaccination_events_table_BC EMIT CHANGES LIMIT 4;
-SELECT * FROM unique_vaccination_events_table_ON EMIT CHANGES LIMIT 4;
-SELECT * FROM unique_vaccination_events_table_QC EMIT CHANGES LIMIT 5;
-SET 'auto.offset.reset' = 'earliest';
+-- SELECT * FROM unique_vaccination_events_table_BC EMIT CHANGES LIMIT 4;
+-- SELECT * FROM unique_vaccination_events_table_ON EMIT CHANGES LIMIT 4;
+-- SELECT * FROM unique_vaccination_events_table_QC EMIT CHANGES LIMIT 5;
+-- SET 'auto.offset.reset' = 'earliest';
 
 CREATE STREAM unique_vaccination_events_stream_BC WITH (
     KAFKA_TOPIC='unique-vaccination-events-BC', KEY_FORMAT = 'AVRO', VALUE_FORMAT='AVRO',
@@ -251,10 +251,10 @@ HAVING COUNT(*) = 1;
 -- PRINT 'unique-adverse-effects-QC' FROM BEGINNING LIMIT 2;
 -- SET 'auto.offset.reset' = 'earliest';
 
-SELECT * FROM unique_adverse_effects_table_BC EMIT CHANGES LIMIT 2;
-SELECT * FROM unique_adverse_effects_table_ON EMIT CHANGES LIMIT 0;
-SELECT * FROM unique_adverse_effects_table_QC EMIT CHANGES LIMIT 2;
-SET 'auto.offset.reset' = 'earliest';
+-- SELECT * FROM unique_adverse_effects_table_BC EMIT CHANGES LIMIT 2;
+-- SELECT * FROM unique_adverse_effects_table_ON EMIT CHANGES LIMIT 0;
+-- SELECT * FROM unique_adverse_effects_table_QC EMIT CHANGES LIMIT 2;
+-- SET 'auto.offset.reset' = 'earliest';
 
 CREATE STREAM unique_adverse_effects_stream_BC WITH (
     KAFKA_TOPIC='unique-adverse-effects-BC', KEY_FORMAT = 'AVRO', VALUE_FORMAT='AVRO',

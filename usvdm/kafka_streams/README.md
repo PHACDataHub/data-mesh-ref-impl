@@ -1116,7 +1116,7 @@ Then you copy the instructions from [streams_processing.sql](./conf/stream_proce
 ./run.sh
 ```
 
-In the sections below, the second way is demonstrated. The instructions are discussed in detailed illustrated by outputs from execution of them. Let get the `ksql` command line ready
+In the sections below, the second way is demonstrated. The instructions are discussed in detailed illustrated by outputs from execution of them. Let get the `ksql` command line ready:
 
 ```bash
 docker exec -it ksqldb-cli ksql http://ksqldb-server:8088
@@ -1153,7 +1153,7 @@ First, the vaccine information published in `vaccines` topic is converted into s
 ![E1](./img/kafka_stream_processing.e1.jpeg)
 
 ```sql
-CREATE STREAM vaccines_stream WITH (KAFKA_TOPIC='vaccines', KEY_FORMAT='AVRO', VALUE_FORMAT='AVRO', PARTITIONS=1);
+ksql> CREATE STREAM vaccines_stream WITH (KAFKA_TOPIC='vaccines', KEY_FORMAT='AVRO', VALUE_FORMAT='AVRO', PARTITIONS=1);
 ```
 
 We can look into the stream to see what data is there. Since it is stream processing, so tt will take an amount of time for the query to `timeout`. Just be patient when executing these queries. 
@@ -1245,7 +1245,7 @@ Unlike above, where there are no duplicates in vaccine info or `anonymized` pati
 In the `SQL` commands below, note that aggregation of records are done based on a `sliding window session` of `2 days`. **Thus, vaccination events with the same `vid`, `pid`, and happened at the same `location` with in `2 days` are considered as the same.**
 
 ```sql
-CREATE TABLE unique_vaccination_events_table_BC WITH (
+ksql> CREATE TABLE unique_vaccination_events_table_BC WITH (
     KAFKA_TOPIC='unique-vaccination-events-BC', KEY_FORMAT = 'AVRO', VALUE_FORMAT='AVRO',
     TIMESTAMP='datetime', TIMESTAMP_FORMAT='yyyy-MM-dd HH:mm:ss', PARTITIONS=1
 ) AS SELECT 
@@ -1351,7 +1351,7 @@ CREATE STREAM adverse_effects_stream_QC WITH (
 Then deduplicate them.
 
 ```sql
-CREATE TABLE unique_adverse_effects_table_BC WITH (
+ksql> CREATE TABLE unique_adverse_effects_table_BC WITH (
     KAFKA_TOPIC='unique-adverse-effects-BC', KEY_FORMAT = 'AVRO', VALUE_FORMAT='AVRO',
     TIMESTAMP='datetime', TIMESTAMP_FORMAT='yyyy-MM-dd HH:mm:ss', PARTITIONS=1
 ) AS SELECT 
@@ -1428,7 +1428,7 @@ After deduplication, we aggregate the provincial streams into a single (federal)
 ![E5](./img/kafka_stream_processing.e5.jpeg)
 
 ```sql
-CREATE STREAM unique_vaccination_events_stream_BC WITH (
+ksql> CREATE STREAM unique_vaccination_events_stream_BC WITH (
     KAFKA_TOPIC='unique-vaccination-events-BC', KEY_FORMAT = 'AVRO', VALUE_FORMAT='AVRO',
     TIMESTAMP='datetime', TIMESTAMP_FORMAT='yyyy-MM-dd HH:mm:ss', PARTITIONS=1
 );
@@ -1484,7 +1484,7 @@ Similar with the adverse effects
 ![E6](./img/kafka_stream_processing.e6.jpeg)
 
 ```sql
-CREATE STREAM unique_adverse_effects_stream_BC WITH (
+ksql> CREATE STREAM unique_adverse_effects_stream_BC WITH (
     KAFKA_TOPIC='unique-adverse-effects-BC', KEY_FORMAT = 'AVRO', VALUE_FORMAT='AVRO',
     TIMESTAMP='datetime', TIMESTAMP_FORMAT='yyyy-MM-dd HH:mm:ss', PARTITIONS=1
 );
@@ -1523,7 +1523,7 @@ ksql>
 ![E7](./img/kafka_stream_processing.e7.jpeg)
 
 ```sql
-CREATE STREAM enriched_vaccination_events_stream WITH (
+ksql> CREATE STREAM enriched_vaccination_events_stream WITH (
     KAFKA_TOPIC='enriched-vaccination-events', KEY_FORMAT='AVRO', VALUE_FORMAT='AVRO', 
     TIMESTAMP='datetime', TIMESTAMP_FORMAT='yyyy-MM-dd HH:mm:ss', PARTITIONS=1
 ) AS SELECT
@@ -1593,7 +1593,7 @@ ksql>
 ![E8](./img/kafka_stream_processing.e8.jpeg)
 
 ```sql
-CREATE STREAM enriched_adverse_effects_stream WITH (
+ksql> CREATE STREAM enriched_adverse_effects_stream WITH (
     KAFKA_TOPIC='enriched-adverse-effects', KEY_FORMAT='AVRO', VALUE_FORMAT='AVRO', 
     TIMESTAMP='datetime', TIMESTAMP_FORMAT='yyyy-MM-dd HH:mm:ss', PARTITIONS=1
 ) AS SELECT
@@ -1657,7 +1657,7 @@ ksql>
 ![E9](./img/kafka_stream_processing.e9.jpeg)
 
 ```sql
-CREATE STREAM enriched_vaccination_events_stream_BC WITH (
+ksql> CREATE STREAM enriched_vaccination_events_stream_BC WITH (
     KAFKA_TOPIC='enriched-vaccination-events-BC', KEY_FORMAT='AVRO', VALUE_FORMAT='AVRO', 
     TIMESTAMP='datetime', TIMESTAMP_FORMAT='yyyy-MM-dd HH:mm:ss', PARTITIONS=1
 ) AS SELECT
@@ -1775,7 +1775,7 @@ ksql>
 Which then can be used to add/update vaccination records within each province where they have complete personal records.
 
 ```sql
-CREATE STREAM enriched_vaccination_records_stream_BC WITH (
+ksql> CREATE STREAM enriched_vaccination_records_stream_BC WITH (
     KAFKA_TOPIC='enriched-vaccination-records-BC', KEY_FORMAT='AVRO', VALUE_FORMAT='AVRO', 
     TIMESTAMP='datetime', TIMESTAMP_FORMAT='yyyy-MM-dd HH:mm:ss', PARTITIONS=1
 ) AS SELECT
@@ -1926,7 +1926,7 @@ ksql>
 ![E10](./img/kafka_stream_processing.e10.jpeg)
 
 ```sql
-CREATE STREAM enriched_adverse_effects_stream_BC WITH (
+ksql> CREATE STREAM enriched_adverse_effects_stream_BC WITH (
     KAFKA_TOPIC='enriched-adverse-effects-BC', KEY_FORMAT='AVRO', VALUE_FORMAT='AVRO', 
     TIMESTAMP='datetime', TIMESTAMP_FORMAT='yyyy-MM-dd HH:mm:ss', PARTITIONS=1
 ) AS SELECT
@@ -2021,7 +2021,7 @@ ksql>
 Which then can be used to add/update adverse effect reports within each province where they have complete personal records.
 
 ```sql
-CREATE STREAM enriched_adverse_effects_report_stream_BC WITH (
+ksql> CREATE STREAM enriched_adverse_effects_report_stream_BC WITH (
     KAFKA_TOPIC='enriched-adverse-effects-report-BC', KEY_FORMAT='AVRO', VALUE_FORMAT='AVRO', 
     TIMESTAMP='datetime', TIMESTAMP_FORMAT='yyyy-MM-dd HH:mm:ss', PARTITIONS=1
 ) AS SELECT
@@ -2129,7 +2129,56 @@ Successfully changed local property 'auto.offset.reset' from 'earliest' to 'earl
 ksql>
 ```
 
-## F. Cleanup
+## F. Consuming the output messages
+
+Vaccination records for British Columbia,
+
+```json
+{"U_ROWKEY":{"io.confluent.ksql.avro_schemas.KsqlDataSourceSchema_U_ROWKEY":{"PID":{"string":"35d8d75c"},"VID":{"string":"Z"},"LOCATION":{"string":"Pender Island"}}},"NAME":{"string":"Charlie"},"BLOOD_TYPE":{"string":"AB-"},"BIRTHDAY":{"string":"2021-10-04"},"ADDRESS":{"string":"3757 Anchor Way RR2, Pender Island, BC, V0N 2M2"},"DATETIME":{"string":"2023-05-02 08:45:00"},"LOCATION":{"string":"Pender Island"},"VACCINE_ID":{"string":"Z"},"VACCINE_NAME":{"string":"Vivotif"},"VACCINE_UNIT_OF_SALE":{"string":"46028-208-01"},"VACCINE_UNIT_OF_USE":{"string":"46028-219-11"}}
+{"U_ROWKEY":{"io.confluent.ksql.avro_schemas.KsqlDataSourceSchema_U_ROWKEY":{"PID":{"string":"35d8d75c"},"VID":{"string":"T"},"LOCATION":{"string":"Pender Island"}}},"NAME":{"string":"Charlie"},"BLOOD_TYPE":{"string":"AB-"},"BIRTHDAY":{"string":"2021-10-04"},"ADDRESS":{"string":"3757 Anchor Way RR2, Pender Island, BC, V0N 2M2"},"DATETIME":{"string":"2023-05-04 09:45:00"},"LOCATION":{"string":"Pender Island"},"VACCINE_ID":{"string":"T"},"VACCINE_NAME":{"string":"ActHIB"},"VACCINE_UNIT_OF_SALE":{"string":"49281-545-03"},"VACCINE_UNIT_OF_USE":{"string":"49281-547-58"}}
+{"U_ROWKEY":{"io.confluent.ksql.avro_schemas.KsqlDataSourceSchema_U_ROWKEY":{"PID":{"string":"35d8d75c"},"VID":{"string":"U"},"LOCATION":{"string":"Pender Island"}}},"NAME":{"string":"Charlie"},"BLOOD_TYPE":{"string":"AB-"},"BIRTHDAY":{"string":"2021-10-04"},"ADDRESS":{"string":"3757 Anchor Way RR2, Pender Island, BC, V0N 2M2"},"DATETIME":{"string":"2023-06-16 11:45:00"},"LOCATION":{"string":"Pender Island"},"VACCINE_ID":{"string":"U"},"VACCINE_NAME":{"string":"IMOVAX RABIES"},"VACCINE_UNIT_OF_SALE":{"string":"49281-250-51"},"VACCINE_UNIT_OF_USE":{"string":"49281-249-01"}}
+{"U_ROWKEY":{"io.confluent.ksql.avro_schemas.KsqlDataSourceSchema_U_ROWKEY":{"PID":{"string":"35d8d75c"},"VID":{"string":"V"},"LOCATION":{"string":"Pender Island"}}},"NAME":{"string":"Charlie"},"BLOOD_TYPE":{"string":"AB-"},"BIRTHDAY":{"string":"2021-10-04"},"ADDRESS":{"string":"3757 Anchor Way RR2, Pender Island, BC, V0N 2M2"},"DATETIME":{"string":"2023-07-21 17:45:00"},"LOCATION":{"string":"Pender Island"},"VACCINE_ID":{"string":"V"},"VACCINE_NAME":{"string":"IPOL vial"},"VACCINE_UNIT_OF_SALE":{"string":"49281-860-10"},"VACCINE_UNIT_OF_USE":{"string":"49281-860-78"}}
+```
+
+Vaccination records for Ontario,
+
+```json
+{"U_ROWKEY":{"io.confluent.ksql.avro_schemas.KsqlDataSourceSchema_U_ROWKEY":{"PID":{"string":"07dc617f"},"VID":{"string":"X"},"LOCATION":{"string":"Ottawa"}}},"NAME":{"string":"Alice"},"BLOOD_TYPE":{"string":"A+"},"BIRTHDAY":{"string":"1970-03-02"},"ADDRESS":{"string":"12 Oak Street, Ottawa, ON, K1H 0A0"},"DATETIME":{"string":"2023-05-01 10:00:00"},"LOCATION":{"string":"Ottawa"},"VACCINE_ID":{"string":"X"},"VACCINE_NAME":{"string":"Menveo"},"VACCINE_UNIT_OF_SALE":{"string":"58160-955-09"},"VACCINE_UNIT_OF_USE":{"string":"58160-958-01"}}
+{"U_ROWKEY":{"io.confluent.ksql.avro_schemas.KsqlDataSourceSchema_U_ROWKEY":{"PID":{"string":"07dc617f"},"VID":{"string":"Y"},"LOCATION":{"string":"Ottawa"}}},"NAME":{"string":"Alice"},"BLOOD_TYPE":{"string":"A+"},"BIRTHDAY":{"string":"1970-03-02"},"ADDRESS":{"string":"12 Oak Street, Ottawa, ON, K1H 0A0"},"DATETIME":{"string":"2023-05-05 10:00:00"},"LOCATION":{"string":"Ottawa"},"VACCINE_ID":{"string":"Y"},"VACCINE_NAME":{"string":"Typhim Vi syringe"},"VACCINE_UNIT_OF_SALE":{"string":"49281-790-51"},"VACCINE_UNIT_OF_USE":{"string":"49281-790-88"}}
+{"U_ROWKEY":{"io.confluent.ksql.avro_schemas.KsqlDataSourceSchema_U_ROWKEY":{"PID":{"string":"07dc617f"},"VID":{"string":"X"},"LOCATION":{"string":"Ottawa"}}},"NAME":{"string":"Alice"},"BLOOD_TYPE":{"string":"A+"},"BIRTHDAY":{"string":"1970-03-02"},"ADDRESS":{"string":"12 Oak Street, Ottawa, ON, K1H 0A0"},"DATETIME":{"string":"2023-06-02 10:00:00"},"LOCATION":{"string":"Ottawa"},"VACCINE_ID":{"string":"X"},"VACCINE_NAME":{"string":"Menveo"},"VACCINE_UNIT_OF_SALE":{"string":"58160-955-09"},"VACCINE_UNIT_OF_USE":{"string":"58160-958-01"}}
+{"U_ROWKEY":{"io.confluent.ksql.avro_schemas.KsqlDataSourceSchema_U_ROWKEY":{"PID":{"string":"07dc617f"},"VID":{"string":"X"},"LOCATION":{"string":"Ottawa"}}},"NAME":{"string":"Alice"},"BLOOD_TYPE":{"string":"A+"},"BIRTHDAY":{"string":"1970-03-02"},"ADDRESS":{"string":"12 Oak Street, Ottawa, ON, K1H 0A0"},"DATETIME":{"string":"2023-07-10 13:00:00"},"LOCATION":{"string":"Ottawa"},"VACCINE_ID":{"string":"X"},"VACCINE_NAME":{"string":"Menveo"},"VACCINE_UNIT_OF_SALE":{"string":"58160-955-09"},"VACCINE_UNIT_OF_USE":{"string":"58160-958-01"}}
+{"U_ROWKEY":{"io.confluent.ksql.avro_schemas.KsqlDataSourceSchema_U_ROWKEY":{"PID":{"string":"07dc617f"},"VID":{"string":"Z"},"LOCATION":{"string":"Montreal"}}},"NAME":{"string":"Alice"},"BLOOD_TYPE":{"string":"A+"},"BIRTHDAY":{"string":"1970-03-02"},"ADDRESS":{"string":"12 Oak Street, Ottawa, ON, K1H 0A0"},"DATETIME":{"string":"2023-07-21 15:00:00"},"LOCATION":{"string":"Montreal"},"VACCINE_ID":{"string":"Z"},"VACCINE_NAME":{"string":"Vivotif"},"VACCINE_UNIT_OF_SALE":{"string":"46028-208-01"},"VACCINE_UNIT_OF_USE":{"string":"46028-219-11"}}
+```
+
+Vaccination records for Quebec,
+
+```json
+{"U_ROWKEY":{"io.confluent.ksql.avro_schemas.KsqlDataSourceSchema_U_ROWKEY":{"PID":{"string":"a74d8d56"},"VID":{"string":"Y"},"LOCATION":{"string":"Quebec"}}},"NAME":{"string":"Bob"},"BLOOD_TYPE":{"string":"O-"},"BIRTHDAY":{"string":"2012-12-23"},"ADDRESS":{"string":"PO Box 873, Quebec, QC, G1R 3Z2"},"DATETIME":{"string":"2023-05-02 13:30:00"},"LOCATION":{"string":"Quebec"},"VACCINE_ID":{"string":"Y"},"VACCINE_NAME":{"string":"Typhim Vi syringe"},"VACCINE_UNIT_OF_SALE":{"string":"49281-790-51"},"VACCINE_UNIT_OF_USE":{"string":"49281-790-88"}}
+{"U_ROWKEY":{"io.confluent.ksql.avro_schemas.KsqlDataSourceSchema_U_ROWKEY":{"PID":{"string":"a74d8d56"},"VID":{"string":"X"},"LOCATION":{"string":"Quebec"}}},"NAME":{"string":"Bob"},"BLOOD_TYPE":{"string":"O-"},"BIRTHDAY":{"string":"2012-12-23"},"ADDRESS":{"string":"PO Box 873, Quebec, QC, G1R 3Z2"},"DATETIME":{"string":"2023-06-01 12:30:00"},"LOCATION":{"string":"Quebec"},"VACCINE_ID":{"string":"X"},"VACCINE_NAME":{"string":"Menveo"},"VACCINE_UNIT_OF_SALE":{"string":"58160-955-09"},"VACCINE_UNIT_OF_USE":{"string":"58160-958-01"}}
+{"U_ROWKEY":{"io.confluent.ksql.avro_schemas.KsqlDataSourceSchema_U_ROWKEY":{"PID":{"string":"a74d8d56"},"VID":{"string":"Z"},"LOCATION":{"string":"Quebec"}}},"NAME":{"string":"Bob"},"BLOOD_TYPE":{"string":"O-"},"BIRTHDAY":{"string":"2012-12-23"},"ADDRESS":{"string":"PO Box 873, Quebec, QC, G1R 3Z2"},"DATETIME":{"string":"2023-07-12 14:30:00"},"LOCATION":{"string":"Quebec"},"VACCINE_ID":{"string":"Z"},"VACCINE_NAME":{"string":"Vivotif"},"VACCINE_UNIT_OF_SALE":{"string":"46028-208-01"},"VACCINE_UNIT_OF_USE":{"string":"46028-219-11"}}
+{"U_ROWKEY":{"io.confluent.ksql.avro_schemas.KsqlDataSourceSchema_U_ROWKEY":{"PID":{"string":"a74d8d56"},"VID":{"string":"W"},"LOCATION":{"string":"Quebec"}}},"NAME":{"string":"Bob"},"BLOOD_TYPE":{"string":"O-"},"BIRTHDAY":{"string":"2012-12-23"},"ADDRESS":{"string":"PO Box 873, Quebec, QC, G1R 3Z2"},"DATETIME":{"string":"2023-07-21 17:30:00"},"LOCATION":{"string":"Quebec"},"VACCINE_ID":{"string":"W"},"VACCINE_NAME":{"string":"BIOTHRAX"},"VACCINE_UNIT_OF_SALE":{"string":"49281-790-20"},"VACCINE_UNIT_OF_USE":{"string":"49281-790-38"}}
+```
+
+Adverse effects for British Columbia,
+
+```json
+{"A_ROWKEY":{"io.confluent.ksql.avro_schemas.KsqlDataSourceSchema_A_ROWKEY":{"PID":{"string":"35d8d75c"},"VID":{"string":"Z"}}},"NAME":{"string":"Charlie"},"BLOOD_TYPE":{"string":"AB-"},"BIRTHDAY":{"string":"2021-10-04"},"ADDRESS":{"string":"3757 Anchor Way RR2, Pender Island, BC, V0N 2M2"},"DATETIME":{"string":"2023-05-02 08:45:00"},"LOCATION":{"string":"Pender Island"},"VACCINE_ID":{"string":"Z"},"VACCINE_NAME":{"string":"Vivotif"},"VACCINE_UNIT_OF_SALE":{"string":"46028-208-01"},"VACCINE_UNIT_OF_USE":{"string":"46028-219-11"}}
+{"A_ROWKEY":{"io.confluent.ksql.avro_schemas.KsqlDataSourceSchema_A_ROWKEY":{"PID":{"string":"35d8d75c"},"VID":{"string":"V"}}},"NAME":{"string":"Charlie"},"BLOOD_TYPE":{"string":"AB-"},"BIRTHDAY":{"string":"2021-10-04"},"ADDRESS":{"string":"3757 Anchor Way RR2, Pender Island, BC, V0N 2M2"},"DATETIME":{"string":"2023-07-21 17:45:00"},"LOCATION":{"string":"Pender Island"},"VACCINE_ID":{"string":"V"},"VACCINE_NAME":{"string":"IPOL vial"},"VACCINE_UNIT_OF_SALE":{"string":"49281-860-10"},"VACCINE_UNIT_OF_USE":{"string":"49281-860-78"}}
+```
+
+Adverse effects for Ontario,
+
+```json
+{"A_ROWKEY":{"io.confluent.ksql.avro_schemas.KsqlDataSourceSchema_A_ROWKEY":{"PID":{"string":"07dc617f"},"VID":{"string":"Z"}}},"NAME":{"string":"Alice"},"BLOOD_TYPE":{"string":"A+"},"BIRTHDAY":{"string":"1970-03-02"},"ADDRESS":{"string":"12 Oak Street, Ottawa, ON, K1H 0A0"},"DATETIME":{"string":"2023-07-21 15:00:00"},"LOCATION":{"string":"Montreal"},"VACCINE_ID":{"string":"Z"},"VACCINE_NAME":{"string":"Vivotif"},"VACCINE_UNIT_OF_SALE":{"string":"46028-208-01"},"VACCINE_UNIT_OF_USE":{"string":"46028-219-11"}}
+```
+
+Adverse effects for Ontario,
+
+```json
+{"A_ROWKEY":{"io.confluent.ksql.avro_schemas.KsqlDataSourceSchema_A_ROWKEY":{"PID":{"string":"a74d8d56"},"VID":{"string":"X"}}},"NAME":{"string":"Bob"},"BLOOD_TYPE":{"string":"O-"},"BIRTHDAY":{"string":"2012-12-23"},"ADDRESS":{"string":"PO Box 873, Quebec, QC, G1R 3Z2"},"DATETIME":{"string":"2023-06-01 12:30:00"},"LOCATION":{"string":"Quebec"},"VACCINE_ID":{"string":"X"},"VACCINE_NAME":{"string":"Menveo"},"VACCINE_UNIT_OF_SALE":{"string":"58160-955-09"},"VACCINE_UNIT_OF_USE":{"string":"58160-958-01"}}
+```
+
+## G. Remove the pipeline and free up resources
 
 ```bash
 ./cleanup.sh
