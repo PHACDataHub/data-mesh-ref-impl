@@ -2131,7 +2131,13 @@ ksql>
 
 ## F. Consuming the output messages
 
-Vaccination records for British Columbia,
+If you use the third way for this exercise, after complete the bash script:
+
+```bash
+./run.sh
+```
+
+Then you can see vaccination records for British Columbia,
 
 ```json
 {"U_ROWKEY":{"io.confluent.ksql.avro_schemas.KsqlDataSourceSchema_U_ROWKEY":{"PID":{"string":"35d8d75c"},"VID":{"string":"Z"},"LOCATION":{"string":"Pender Island"}}},"NAME":{"string":"Charlie"},"BLOOD_TYPE":{"string":"AB-"},"BIRTHDAY":{"string":"2021-10-04"},"ADDRESS":{"string":"3757 Anchor Way RR2, Pender Island, BC, V0N 2M2"},"DATETIME":{"string":"2023-05-02 08:45:00"},"LOCATION":{"string":"Pender Island"},"VACCINE_ID":{"string":"Z"},"VACCINE_NAME":{"string":"Vivotif"},"VACCINE_UNIT_OF_SALE":{"string":"46028-208-01"},"VACCINE_UNIT_OF_USE":{"string":"46028-219-11"}}
@@ -2140,7 +2146,7 @@ Vaccination records for British Columbia,
 {"U_ROWKEY":{"io.confluent.ksql.avro_schemas.KsqlDataSourceSchema_U_ROWKEY":{"PID":{"string":"35d8d75c"},"VID":{"string":"V"},"LOCATION":{"string":"Pender Island"}}},"NAME":{"string":"Charlie"},"BLOOD_TYPE":{"string":"AB-"},"BIRTHDAY":{"string":"2021-10-04"},"ADDRESS":{"string":"3757 Anchor Way RR2, Pender Island, BC, V0N 2M2"},"DATETIME":{"string":"2023-07-21 17:45:00"},"LOCATION":{"string":"Pender Island"},"VACCINE_ID":{"string":"V"},"VACCINE_NAME":{"string":"IPOL vial"},"VACCINE_UNIT_OF_SALE":{"string":"49281-860-10"},"VACCINE_UNIT_OF_USE":{"string":"49281-860-78"}}
 ```
 
-Vaccination records for Ontario,
+vaccination records for Ontario,
 
 ```json
 {"U_ROWKEY":{"io.confluent.ksql.avro_schemas.KsqlDataSourceSchema_U_ROWKEY":{"PID":{"string":"07dc617f"},"VID":{"string":"X"},"LOCATION":{"string":"Ottawa"}}},"NAME":{"string":"Alice"},"BLOOD_TYPE":{"string":"A+"},"BIRTHDAY":{"string":"1970-03-02"},"ADDRESS":{"string":"12 Oak Street, Ottawa, ON, K1H 0A0"},"DATETIME":{"string":"2023-05-01 10:00:00"},"LOCATION":{"string":"Ottawa"},"VACCINE_ID":{"string":"X"},"VACCINE_NAME":{"string":"Menveo"},"VACCINE_UNIT_OF_SALE":{"string":"58160-955-09"},"VACCINE_UNIT_OF_USE":{"string":"58160-958-01"}}
@@ -2150,7 +2156,7 @@ Vaccination records for Ontario,
 {"U_ROWKEY":{"io.confluent.ksql.avro_schemas.KsqlDataSourceSchema_U_ROWKEY":{"PID":{"string":"07dc617f"},"VID":{"string":"Z"},"LOCATION":{"string":"Montreal"}}},"NAME":{"string":"Alice"},"BLOOD_TYPE":{"string":"A+"},"BIRTHDAY":{"string":"1970-03-02"},"ADDRESS":{"string":"12 Oak Street, Ottawa, ON, K1H 0A0"},"DATETIME":{"string":"2023-07-21 15:00:00"},"LOCATION":{"string":"Montreal"},"VACCINE_ID":{"string":"Z"},"VACCINE_NAME":{"string":"Vivotif"},"VACCINE_UNIT_OF_SALE":{"string":"46028-208-01"},"VACCINE_UNIT_OF_USE":{"string":"46028-219-11"}}
 ```
 
-Vaccination records for Quebec,
+vaccination records for Quebec,
 
 ```json
 {"U_ROWKEY":{"io.confluent.ksql.avro_schemas.KsqlDataSourceSchema_U_ROWKEY":{"PID":{"string":"a74d8d56"},"VID":{"string":"Y"},"LOCATION":{"string":"Quebec"}}},"NAME":{"string":"Bob"},"BLOOD_TYPE":{"string":"O-"},"BIRTHDAY":{"string":"2012-12-23"},"ADDRESS":{"string":"PO Box 873, Quebec, QC, G1R 3Z2"},"DATETIME":{"string":"2023-05-02 13:30:00"},"LOCATION":{"string":"Quebec"},"VACCINE_ID":{"string":"Y"},"VACCINE_NAME":{"string":"Typhim Vi syringe"},"VACCINE_UNIT_OF_SALE":{"string":"49281-790-51"},"VACCINE_UNIT_OF_USE":{"string":"49281-790-88"}}
@@ -2159,20 +2165,20 @@ Vaccination records for Quebec,
 {"U_ROWKEY":{"io.confluent.ksql.avro_schemas.KsqlDataSourceSchema_U_ROWKEY":{"PID":{"string":"a74d8d56"},"VID":{"string":"W"},"LOCATION":{"string":"Quebec"}}},"NAME":{"string":"Bob"},"BLOOD_TYPE":{"string":"O-"},"BIRTHDAY":{"string":"2012-12-23"},"ADDRESS":{"string":"PO Box 873, Quebec, QC, G1R 3Z2"},"DATETIME":{"string":"2023-07-21 17:30:00"},"LOCATION":{"string":"Quebec"},"VACCINE_ID":{"string":"W"},"VACCINE_NAME":{"string":"BIOTHRAX"},"VACCINE_UNIT_OF_SALE":{"string":"49281-790-20"},"VACCINE_UNIT_OF_USE":{"string":"49281-790-38"}}
 ```
 
-Adverse effects for British Columbia,
+adverse effects for British Columbia,
 
 ```json
 {"A_ROWKEY":{"io.confluent.ksql.avro_schemas.KsqlDataSourceSchema_A_ROWKEY":{"PID":{"string":"35d8d75c"},"VID":{"string":"Z"}}},"NAME":{"string":"Charlie"},"BLOOD_TYPE":{"string":"AB-"},"BIRTHDAY":{"string":"2021-10-04"},"ADDRESS":{"string":"3757 Anchor Way RR2, Pender Island, BC, V0N 2M2"},"DATETIME":{"string":"2023-05-02 08:45:00"},"LOCATION":{"string":"Pender Island"},"VACCINE_ID":{"string":"Z"},"VACCINE_NAME":{"string":"Vivotif"},"VACCINE_UNIT_OF_SALE":{"string":"46028-208-01"},"VACCINE_UNIT_OF_USE":{"string":"46028-219-11"}}
 {"A_ROWKEY":{"io.confluent.ksql.avro_schemas.KsqlDataSourceSchema_A_ROWKEY":{"PID":{"string":"35d8d75c"},"VID":{"string":"V"}}},"NAME":{"string":"Charlie"},"BLOOD_TYPE":{"string":"AB-"},"BIRTHDAY":{"string":"2021-10-04"},"ADDRESS":{"string":"3757 Anchor Way RR2, Pender Island, BC, V0N 2M2"},"DATETIME":{"string":"2023-07-21 17:45:00"},"LOCATION":{"string":"Pender Island"},"VACCINE_ID":{"string":"V"},"VACCINE_NAME":{"string":"IPOL vial"},"VACCINE_UNIT_OF_SALE":{"string":"49281-860-10"},"VACCINE_UNIT_OF_USE":{"string":"49281-860-78"}}
 ```
 
-Adverse effects for Ontario,
+adverse effects for Ontario, and
 
 ```json
 {"A_ROWKEY":{"io.confluent.ksql.avro_schemas.KsqlDataSourceSchema_A_ROWKEY":{"PID":{"string":"07dc617f"},"VID":{"string":"Z"}}},"NAME":{"string":"Alice"},"BLOOD_TYPE":{"string":"A+"},"BIRTHDAY":{"string":"1970-03-02"},"ADDRESS":{"string":"12 Oak Street, Ottawa, ON, K1H 0A0"},"DATETIME":{"string":"2023-07-21 15:00:00"},"LOCATION":{"string":"Montreal"},"VACCINE_ID":{"string":"Z"},"VACCINE_NAME":{"string":"Vivotif"},"VACCINE_UNIT_OF_SALE":{"string":"46028-208-01"},"VACCINE_UNIT_OF_USE":{"string":"46028-219-11"}}
 ```
 
-Adverse effects for Ontario,
+adverse effects for Ontario.
 
 ```json
 {"A_ROWKEY":{"io.confluent.ksql.avro_schemas.KsqlDataSourceSchema_A_ROWKEY":{"PID":{"string":"a74d8d56"},"VID":{"string":"X"}}},"NAME":{"string":"Bob"},"BLOOD_TYPE":{"string":"O-"},"BIRTHDAY":{"string":"2012-12-23"},"ADDRESS":{"string":"PO Box 873, Quebec, QC, G1R 3Z2"},"DATETIME":{"string":"2023-06-01 12:30:00"},"LOCATION":{"string":"Quebec"},"VACCINE_ID":{"string":"X"},"VACCINE_NAME":{"string":"Menveo"},"VACCINE_UNIT_OF_SALE":{"string":"58160-955-09"},"VACCINE_UNIT_OF_USE":{"string":"58160-958-01"}}
