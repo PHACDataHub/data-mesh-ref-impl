@@ -21,9 +21,9 @@ In the beginning (of this story), there are seven types of vaccines:
 |  Z  | Vivotif           | 46028-208-01 | 46028-219-11 |
 |  W  | BIOTHRAX          | 49281-790-20 | 49281-790-38 |
 
-The `vid` - vaccine identifier is an obscured string for identification for a vaccine lot from the manufacturer. The record can contain additional vaccine information from some vaccine standards. Note that for the simplicity of the exercise, the assumption here is a vaccine record can provide adequate information about an administered dose. 
+The `vid` - vaccine identifier is an obscured string for identification for a vaccine from the manufacturer. The record can contain additional vaccine information from some standards. Note that for the simplicity of the exercise, the assumption here is a vaccine record can provide adequate information about an administered dose. 
 
-It is important to emphasize that knowing the identifier itself would not mean to know the actual vaccine or the lot or any other information about the administered dose.
+It is important to emphasize that knowing the identifier itself would not identify the actual vaccine lot or any other information about the administered dose.
 
 ### B.2. The actors
 
@@ -43,7 +43,7 @@ Charlie lives in a rural area of British Columbia,
 
 | name    | blood_type | birthday   | address                                         |
 |---------|------------|------------|-------------------------------------------------|
-| Charlie | AB-        | 2021-10-04 | 3757 Anchor Way RR2                             |
+| Charlie | AB-        | 2021-10-04 | 3757 Anchor Way RR2, Pender Island, BC, V0N 2M2 |
 
 
 Note that these information records are kept by their health providers, or in a patient information system, or in a person record system, ... Any of these can just be a simple electronic database, a sophisticated HL7-compliant HIS, an EHR management system, or anything similar. All of them closely guard these records and do not expose to any other than their own users.
@@ -53,7 +53,7 @@ In order for quick identification of patients, and to `anonymized` users records
 - It is *impossible to reverse-engineer* the record from the generated the hash.
 - It is *impossible to guess* the record by trying records with partially different content.
 
-To have more information how these hash codes can be generated, visit [Online Toools](https://emn178.github.io/online-tools/crc32.html) for the `CRC32` hash. Other hash algorithms are also available. `SHA512` can be a good choice for personal info hash. Here are records and their the generated hash codes by the `CRC32` tool, try it out.
+To have more information how these hash codes can be generated, visit [Online Tools](https://emn178.github.io/online-tools/crc32.html) for the `CRC32` hash. Other hash algorithms are also available, for example `SHA512` can be a good hash for sensitive info. Here are records and their the generated hash codes by the `CRC32` tool.
 
 |                            personal record                           | hash (CRC32) |
 |:--------------------------------------------------------------------:|:------------:|
@@ -61,9 +61,9 @@ To have more information how these hash codes can be generated, visit [Online To
 | { "name": "Bob", "blood_type": "O-", "birthday": "2012-12-23" }      |   a74d8d56   |
 | { "name": "Charlie", "blood_type": "AB-", "birthday": "2021-10-04" } |   35d8d75c   |
 
-By adding some random `seeds` the security level can be increase. There are other methods as well.
+*Note that by adding some random `seeds` the security level can be increased. There are other methods as well.*
 
-The `pid` will be used with in a jurisdiction, where the personal record is keep, to identify the personal record with ease. Outside of the jurisdiction, it is only an identifier of someone belongs to the said jurisdiction and that's all. This way the collection fo `pid` together with the identifier of the jurisdiction form a unique way to identify an person without revealing the person's information. 
+The `pid` will be used with in a jurisdiction, where the personal record is keep, to identify the personal record with ease.
 
 Thus, in Ontario, a `pid` hash is generated and added to Alice's record in their vault of personal records
 
@@ -81,24 +81,27 @@ and for Charlie:
 
 | pid      | name    | blood_type | birthday   | address                                         |
 |----------|---------|------------|------------|-------------------------------------------------|
-| 35d8d75c | Charlie | AB-        | 2021-10-04 | 3757 Anchor Way RR2
+| 35d8d75c | Charlie | AB-        | 2021-10-04 | 3757 Anchor Way RR2, Pender Island, BC, V0N 2M2 |
 
-
-The three provinces British Columbia, Ontario, and Quebec, sent a list of `pid` to the Federal. The collection of (`pid`, jurisdiction identifier) forms a `Master Person Index` (a practice well known in some countries with extensive practice in personal information protection.) This way personal records are anonymized (and protected). 
-
+Outside of the jurisdiction, it is only an identifier of someone belongs to the said jurisdiction. This way the collection fo `pid` together with the identifier of the jurisdiction form a unique way to identify an person without revealing the person's information. 
+ 
 |    pid   | province |
 |:--------:|:--------:|
 | 07dc617f |    ON    |
 | a74d8d56 |    QC    |
 | 35d8d75c |    BC    |
 
+The three provinces British Columbia, Ontario, and Quebec, sent a list of `pid` to the Federal. The collection of (`pid`, jurisdiction identifier) forms a `Master Person Index` (a practice well known in some countries with extensive practice in personal information protection.) This way personal records are anonymized (and protected). 
+
 This way, for Alice, Ontario is the one and only that can identify (and use) her personal record based on the `pid`.
 
-Note that the exercise's data can be extended to include multiple actors for a jurisdiction. It is constructed as above in order to easily follow the narrative, observing data, comparison of changes.
+*Note that the exercise's data can be extended to include multiple actors for a jurisdiction.*
 
 ### B.2. The vaccination events
 
-Alice, Bob, and Charlie got vaccinated during the months of May, June, and July.
+Alice, Bob, and Charlie got vaccinated during the months of May, June, and July. The diagram below describes three timelines of vaccinations, one per person. The data points for vaccination events and adverse effects are indicated with square around vaccine identifier (letter). 
+
+![Vaccination Event Streams](./img/vaccination_event_stream.jpeg)
 
 Below is an information record - called `vaccination event` - consists of:
 - the administration of a dose `BIOTHRAX` (prevention of disease caused by Bacillus anthracis in persons between 18 and 65), identified by `vid` `X`,
@@ -128,7 +131,7 @@ Here's Ontario's stream, all of the records here belong to Alice (`07dc617f`).
 { "vid": "X", "pid": "07dc617f" } { "datetime": "2023-07-10 13:00:00", "location": "Ottawa" }
 ```
 
-here's Quebec's stream, most of the records here belong to Bob (`a74d8d56`). However two records indicate two events for Alice, when she was in Montreal (once is a duplicate of the other, see below.)
+here's Quebec's stream, most of the records here belong to Bob (`a74d8d56`). However *two records indicate two events for Alice, when she was in Montreal* (once is a duplicate of the other, see below.)
 
 ```json
 { "vid": "Y", "pid": "a74d8d56" } { "datetime": "2023-05-02 13:30:00", "location": "Quebec" }
@@ -181,7 +184,7 @@ In addition, four vaccinations resulted in the patients having adverse effects, 
 
 No reports from Ontario, 
 
-three from Quebec, one from Bob's vaccination, two from Alice's,
+three from Quebec, one from Bob's vaccination, two from Alice's (one of them is a duplicate of the other)
 
 ```json
 { "vid": "X", "pid": "a74d8d56" } { "datetime": "2023-06-01 12:30:00" }
@@ -210,11 +213,10 @@ Here the aggregated view,
 
 ## C. Objectives
 
-The diagram below describes three timelines of vaccinations, one per person. The data points for vaccination events and adverse effects are indicated with square around vaccine identifier (letter). 
+On the right of the diagrams, there are some summaries for vaccination records and monthly adverse effects per vaccines, they are part of the objectives.
 
 ![Vaccination Event Streams](./img/vaccination_event_stream.jpeg)
 
-On the right, there are some objectives:
 1. At PT-level:
     - to enrich personal vaccination records with vaccine information provided by Federal agencies such as vaccine standards, or vaccine lot information by manufacturers and supply chains.
     - to keep personal vaccination records up-to-date, with vaccination events happening outside of the jurisdiction.
@@ -230,6 +232,7 @@ On the right, there are some objectives:
 3. For citizens:
     - With proper authentication and authorization mechanism, access to vaccination records can be made with ease.
 
+&nbsp;
 
 ## D. In-stream event processing by ksqlDB
 
@@ -1146,6 +1149,8 @@ ksql>
 
 More on [`CREATE STREAM` syntax](https://docs.ksqldb.io/en/latest/developer-guide/ksqldb-reference/create-stream/).
 
+&nbsp;
+
 ### E.1. Create vaccine info stream 
 
 First, the vaccine information published in `vaccines` topic is converted into stream for stream processing purpose.
@@ -1185,6 +1190,8 @@ Successfully changed local property 'auto.offset.reset' from 'earliest' to 'earl
 ksql>
 ```
 
+&nbsp;
+
 ### E.2. Aggregate streams of person info coming from the provinces
 
 In order to build the `Master Person Index`, here called as `persons` stream, we first convert the `anonymized` persons records provided by the provinces (arrived as unbounded streams of messages into separate `Kafka` topics) into streams, then create a` `persons` stream and inserting all records into it.
@@ -1218,6 +1225,8 @@ ksql> SET 'auto.offset.reset' = 'earliest';
 Successfully changed local property 'auto.offset.reset' from 'earliest' to 'earliest'.
 ksql>
 ```
+
+&nbsp;
 
 ### E.3. Create streams of vaccination events from the provinces and deduplicate the events
 
@@ -1327,6 +1336,8 @@ Successfully changed local property 'auto.offset.reset' from 'earliest' to 'earl
 ksql>
 ```
 
+&nbsp;
+
 ### E.4. Create streams of adverse effects from the provinces and deduplicate the events
 
 The very same is done for the adverse effects by creating streams.
@@ -1421,6 +1432,8 @@ Successfully changed local property 'auto.offset.reset' from 'earliest' to 'earl
 ksql>
 ```
 
+&nbsp;
+
 ### E.5. Aggregate deduplicated provincial vaccination events into single stream
 
 After deduplication, we aggregate the provincial streams into a single (federal) stream
@@ -1477,6 +1490,8 @@ ksql> SET 'auto.offset.reset' = 'earliest';
 Successfully changed local property 'auto.offset.reset' from 'earliest' to 'earliest'.
 ```
 
+&nbsp;
+
 ### E.6. Aggregate deduplicated provincial adverse effects into single stream
 
 Similar with the adverse effects
@@ -1517,6 +1532,8 @@ ksql> SET 'auto.offset.reset' = 'earliest';
 Successfully changed local property 'auto.offset.reset' from 'earliest' to 'earliest'.
 ksql>
 ```
+
+&nbsp;
 
 ### E.7. Enrich vaccination events with vaccine info
 
@@ -1588,6 +1605,8 @@ Successfully changed local property 'auto.offset.reset' from 'earliest' to 'earl
 ksql>
 ```
 
+&nbsp;
+
 ### E.8. Merge adverse effects with (original) vaccination events and then enrich them with vaccine info
 
 ![E8](./img/kafka_stream_processing.e8.jpeg)
@@ -1651,6 +1670,8 @@ ksql> SET 'auto.offset.reset' = 'earliest';
 Successfully changed local property 'auto.offset.reset' from 'earliest' to 'earliest'.
 ksql>
 ```
+
+&nbsp;
 
 ### E.9. Filter enriched vaccination events for each province and complete them with locally stored personal information
 
@@ -1921,6 +1942,8 @@ Successfully changed local property 'auto.offset.reset' from 'earliest' to 'earl
 ksql>
 ```
 
+&nbsp;
+
 ### E.10. Filter enriched adverse effects for each province and complete them with locally stored personal information
 
 ![E10](./img/kafka_stream_processing.e10.jpeg)
@@ -2129,6 +2152,8 @@ Successfully changed local property 'auto.offset.reset' from 'earliest' to 'earl
 ksql>
 ```
 
+&nbsp;
+
 ## F. Consuming the output messages
 
 If you use the third way for this exercise, after complete the bash script:
@@ -2183,6 +2208,8 @@ adverse effects for Ontario.
 ```json
 {"A_ROWKEY":{"io.confluent.ksql.avro_schemas.KsqlDataSourceSchema_A_ROWKEY":{"PID":{"string":"a74d8d56"},"VID":{"string":"X"}}},"NAME":{"string":"Bob"},"BLOOD_TYPE":{"string":"O-"},"BIRTHDAY":{"string":"2012-12-23"},"ADDRESS":{"string":"PO Box 873, Quebec, QC, G1R 3Z2"},"DATETIME":{"string":"2023-06-01 12:30:00"},"LOCATION":{"string":"Quebec"},"VACCINE_ID":{"string":"X"},"VACCINE_NAME":{"string":"Menveo"},"VACCINE_UNIT_OF_SALE":{"string":"58160-955-09"},"VACCINE_UNIT_OF_USE":{"string":"58160-958-01"}}
 ```
+
+&nbsp;
 
 ## G. Remove the pipeline and free up resources
 
