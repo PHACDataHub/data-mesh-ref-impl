@@ -2,7 +2,7 @@
 
 *Disclaimer:*
 - *This story is for the exercise how to use design patterns of in-stream processing blended with some best practices in Data Mesh federated computational governance to show how unbounded streams of data events can be processed, aggregated, filtered, transformed, and reused across jurisdictions and bringing data-as-products together.*
-- *This story does not aim to solve any problems of vaccination data management caused by incorrectly designed business process, malpractices of IT technologies, or misconception in applications. It would neither shed any light on what Data Mesh principles are, nor reveal why at-source data collection with proper data governance policy supported by event sourcing infrastructure can save the day.*
+- *This story does not aim to solve any problems of data management caused by incorrectly designed business process, malpractices of IT technologies, or misconception in applications. It would neither shed any light on what Data Mesh principles are, nor reveal why at-source data collection with proper data governance policy supported by event sourcing infrastructure can save the day.*
 - *This story focuses on data on the move, with many copies, incomplete, related to things that also move, ephemeral, and never at rest.*
 
 ## B. The story
