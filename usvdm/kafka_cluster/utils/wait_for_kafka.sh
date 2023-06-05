@@ -11,8 +11,7 @@ docker exec -it zookeeper cub zk-ready $zookeeper $timeout > /dev/null
 echo "${zookeeper} is ready ✅";
 echo ''
 
-# for item in broker:${BROKER_INTERNAL_PORT} broker2:${BROKER2_INTERNAL_PORT} broker3:${BROKER3_INTERNAL_PORT}
-for item in broker:${BROKER_INTERNAL_PORT}
+for item in broker:${BROKER_INTERNAL_PORT} broker2:${BROKER2_INTERNAL_PORT} broker3:${BROKER3_INTERNAL_PORT}
 do
     broker=$item
     echo "Wait for ${broker} ...";
@@ -28,8 +27,7 @@ docker exec -it zookeeper cub sr-ready $schema_registry_host $schema_registry_po
 echo "${schema_registry_host}:${schema_registry_port} is ready ✅";
 echo ''
 
-# for item in connect connect2 connect3
-for item in connect
+for item in connect connect2 connect3
 do
     connect_host=$item
     connect_port=${CONNECT_PORT}

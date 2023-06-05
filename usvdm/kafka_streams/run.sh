@@ -1,9 +1,11 @@
 #!/bin/bash
 
-./create_stream_processing.sh
+for item in vaccines persons-BC persons-ON persons-QC vaccination-events-BC vaccination-events-ON vaccination-events-QC adverse-effects-BC adverse-effects-ON adverse-effects-QC
+do
+    ./produce_messages.sh $item
+done
 
-echo Wait for 10 seconds
-sleep 10
+./create_stream_processing.sh
 
 consumer_group=console-consumer
 

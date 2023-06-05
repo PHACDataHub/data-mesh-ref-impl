@@ -3,6 +3,7 @@
 	"namespace": "ca.gov.phac.cdsb.dmia.oan.dmri",
 	"name": "vaccination_event_qc_value",
 	"fields": [
+		{"name": "vid",  "type": "string" },
 		{"name": "datetime",  "type": "string" },
 		{"name": "location",  "type": "string" }
 	]
