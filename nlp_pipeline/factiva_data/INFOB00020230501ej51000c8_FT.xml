@@ -1,0 +1,292 @@
+<?xml version="1.0"?>
+<DistDoc action="add" dist="dist_id" distdocver="05.2" an="INFOB00020230501ej51000c8" doctype="article">
+  <SelectData>
+    <FolderName id="301125448" rl="100">InfectiousDiseaseHuman_S</FolderName>
+  </SelectData>
+  <SelectDedupData>
+    <DupList cnt="5" dedupThreshold="VIRTUALLYIDENTICAL" id="301125448">
+            INFOB00020230501ej510003x,INFOB00020230501ej5100049,INFOB00020230501ej510006n,INFOB00020230501ej510009g,INFOB00020230501ej510009n</DupList>
+  </SelectDedupData>
+  <ReplyItem lang="es">
+    <BaseLang value="es" fid="la"/>
+    <IPDocId fid="id">INFOB00020230501ej51000c8</IPDocId>
+    <AccessionNo value="INFOB00020230501ej51000c8" fid="an"/>
+    <Num value="1320" fid="wc"/>
+    <Date value="20230501" fid="pd"/>
+    <SrcCode value="infob" fid="sc"/>
+    <SrcName fid="sn">Infobae</SrcName>
+    <TruncRules>
+      <XS value="29"/>
+    </TruncRules>
+    <Title fid="hl">
+      <SectionName fid="se"/>
+      <ColumnName fid="clm"/>
+      <Headline fid="hd">
+        <Para lang="es">Pel&#xED;culas para ver esta noche en Disney+ Ecuador</Para>
+      </Headline>
+    </Title>
+    <Snippet>
+      <Para>Con estas historias, Disney+ busca mantenerse en el gusto de los usuarios</Para>
+      <Para>El avance de la tecnolog&#xED;a del nuevo milenio, sumado a la pandemia de coronavirus
+                que azot&#xF3; a nivel internacional, orill&#xF3; a los ciudadanos a buscar nuevas formas de
+                ...</Para>
+    </Snippet>
+    <Byline fid="by">Newsroom Infobae </Byline>
+    <Credit fid="cr"/>
+    <Copyright fid="cy">Todos Los Derechos Reservados &#xA9; 2023 Infobae </Copyright>
+    <CodeSets>
+      <CSet fid="re">
+        <Code value="ecu"/>
+        <Code value="dvpcoz"/>
+        <Code value="lamz"/>
+        <Code value="samz"/>
+      </CSet>
+      <CSet fid="ns">
+        <Code value="gmovie"/>
+        <Code value="gcat"/>
+        <Code value="gent"/>
+      </CSet>
+    </CodeSets>
+  </ReplyItem>
+  <MetadataPT>
+    <DocData>
+      <DocType value="article" fid="fmt"/>
+      <IPDocId fid="id">INFOB00020230501ej51000c8</IPDocId>
+      <AccessionNo value="INFOB00020230501ej51000c8" fid="an"/>
+      <Num value="1320" fid="wc"/>
+      <Num value="6171" fid="cc"/>
+      <Date value="20230501" fid="pd"/>
+      <Date value="20230501" fid="upd"/>
+      <Date value="20230501" fid="md"/>
+      <Time value="063022" fid="upt"/>
+      <Time value="063022" fid="mt"/>
+      <BaseLang value="es" fid="la"/>
+      <Editor value="" fid="rve"/>
+      <RevisionNo value="0" fid="rvn"/>
+    </DocData>
+    <PubData>
+      <Restrictor fid="rst">
+        <Code value="FSPNORMAWSMQ"/>
+        <Code value="FSPNORMAWS0500"/>
+        <Code value="INFOB"/>
+        <Code value="fspFileId392781461"/>
+        <Code value="FUT"/>
+        <Code value="CLNTALL"/>
+        <Code value="ES"/>
+        <Code value="TINT"/>
+        <Code value="TLAM"/>
+        <Code value="TNWP"/>
+        <Code value="TNWPN"/>
+        <Code value="TSCH"/>
+        <Code value="TTRK"/>
+        <Code value="TYAS"/>
+        <Code value="TYLC"/>
+        <Code value="INFOB"/>
+        <Code value="MPCV1M23M0B1"/>
+        <Code value="MPCEnvPROD"/>
+        <Code value="MPCDocHash6BA86B6D83AC6073"/>
+        <Code value="FSP2YESCOOC"/>
+        <Code value="FSP2YESCOCOMOC"/>
+        <Code value="FSPCATEGORIZER"/>
+        <Code value="FSPCATNS"/>
+        <Code value="FSP2YESNS"/>
+        <Code value="FSPRBC"/>
+        <Code value="FSPRBCRE"/>
+        <Code value="FSP2YESRE"/>
+        <Code value="FSP2NOCO"/>
+        <Code value="FSP2NOIN"/>
+        <Code value="FSP2NOPEOC"/>
+        <Code value="FSPRBC773363"/>
+        <Code value="MPCCL"/>
+        <Code value="MPCJP"/>
+        <Code value="MPCKW"/>
+        <Code value="MPCKP"/>
+        <Code value="MPCESRE"/>
+        <Code value="MPCESIN"/>
+        <Code value="MPCESNS"/>
+        <Code value="FSP2AC"/>
+        <Code value="FSP2ACRBCARES"/>
+        <Code value="FSP2ACRBCSTD"/>
+      </Restrictor>
+      <IPId value="INBAE" fid="ip"/>
+      <PublisherN fid="pub">Miami Post Corp</PublisherN>
+      <AttribCode value="INFOB" fid="atr"/>
+      <SrcCode value="INFOB" fid="sc"/>
+      <SrcName fid="sn">Infobae</SrcName>
+    </PubData>
+    <CodeSets>
+      <CSet fid="re">
+        <Code value="ecu">
+          <CodeD index="no" lang="en">Ecuador</CodeD>
+          <CodeI org="rbc" action="add">
+            <CodeA name="db" value="prbc---00004614-20230501-003549"/>
+            <CodeA name="rule" value="773363"/>
+          </CodeI>
+          <CodeI org="validation" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="status" value="active"/>
+          </CodeI>
+          <CodeI org="hierarchy" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="nodelevel" value="1"/>
+          </CodeI>
+        </Code>
+        <Code value="dvpcoz">
+          <CodeD index="no" lang="en">Developing Economies</CodeD>
+          <CodeI org="expansion" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="root" value="re:ecu"/>
+          </CodeI>
+          <CodeI org="validation" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="status" value="active"/>
+          </CodeI>
+          <CodeI org="hierarchy" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="nodelevel" value="0"/>
+          </CodeI>
+        </Code>
+        <Code value="lamz">
+          <CodeD index="no" lang="en">Latin America</CodeD>
+          <CodeI org="expansion" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="root" value="re:ecu"/>
+          </CodeI>
+          <CodeI org="validation" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="status" value="active"/>
+          </CodeI>
+          <CodeI org="hierarchy" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="nodelevel" value="0"/>
+          </CodeI>
+        </Code>
+        <Code value="samz">
+          <CodeD index="no" lang="en">South America</CodeD>
+          <CodeI org="expansion" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="root" value="re:ecu"/>
+          </CodeI>
+          <CodeI org="validation" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="status" value="active"/>
+          </CodeI>
+          <CodeI org="hierarchy" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="nodelevel" value="0"/>
+          </CodeI>
+        </Code>
+      </CSet>
+      <CSet fid="ns">
+        <Code value="gmovie">
+          <CodeD index="no" lang="en">Movies</CodeD>
+          <CodeI org="categoriser" action="add">
+            <CodeA name="db" value="es-SpanishNS_es_20230420182305"/>
+            <CodeA name="es_score" value="84"/>
+          </CodeI>
+          <CodeI org="validation" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="status" value="active"/>
+          </CodeI>
+          <CodeI org="hierarchy" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="nodelevel" value="2"/>
+          </CodeI>
+        </Code>
+        <Code value="gcat">
+          <CodeD index="no" lang="en">Political/General News</CodeD>
+          <CodeI org="expansion" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="root" value="ns:gmovie"/>
+          </CodeI>
+          <CodeI org="validation" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="status" value="active"/>
+          </CodeI>
+          <CodeI org="hierarchy" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="nodelevel" value="0"/>
+          </CodeI>
+        </Code>
+        <Code value="gent">
+          <CodeD index="no" lang="en">Arts/Entertainment</CodeD>
+          <CodeI org="expansion" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="root" value="ns:gmovie"/>
+          </CodeI>
+          <CodeI org="validation" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="status" value="active"/>
+          </CodeI>
+          <CodeI org="hierarchy" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="nodelevel" value="1"/>
+          </CodeI>
+        </Code>
+      </CSet>
+    </CodeSets>
+  </MetadataPT>
+  <ArchiveDoc xml:space="preserve">
+        <Article markup="pp0" lang="es" index="field">
+            <HandL fid="hlp">
+                <Title fid="hl">
+                    <SectionName fid="se" index="field"/>
+                    <ColumnName fid="clm" index="field"/>
+                    <Headline fid="hd">
+                        <Para lang="es">Pel&#xED;culas para ver esta noche en Disney+ Ecuador</Para>
+                    </Headline>
+                </Title>
+                <LeadPara fid="lp">
+                    <Para>Con estas historias, Disney+ busca mantenerse en el gusto de los usuarios</Para>
+                    <Para>El avance de la tecnolog&#xED;a del nuevo milenio, sumado a la pandemia de coronavirus que azot&#xF3; a nivel internacional, orill&#xF3; a los ciudadanos a buscar nuevas formas de disfrutar del cine desde la comodidad del hogar.</Para>
+                </LeadPara>
+            </HandL>
+            <TailParas fid="td">
+                <Para>A ra&#xED;z de ello, han nacido diversas plataformas de streaming, como es el caso de Disney+, que ha logrado sacar provecho con su amplio cat&#xE1;logo de producciones y se ha posicionado en el gusto de los usuarios.</Para>
+                <Para>De ese cat&#xE1;logo destacan estas 10 pel&#xED;culas, que han ganado fama y se han convertido en el tema de conversaci&#xF3;n en los &#xFA;ltimos d&#xED;as.</Para>
+                <Para>Aqu&#xED; el listado de las m&#xE1;s vistas de Disney+ Ecuador:</Para>
+                <Para>1. Peter Pan &amp; Wendy</Para>
+                <Para>Wendy Darling, una ni&#xF1;a que no quiere ir al internado, conoce a Peter Pan, un ni&#xF1;o que se niega a crecer. Junto a sus hermanos y a Campanilla, un hada diminuta, viajar&#xE1; con Peter hasta el m&#xE1;gico mundo de Nunca Jam&#xE1;s. All&#xED; conocer&#xE1; a un malvado pirata, el Capit&#xE1;n Garfio y se embarcar&#xE1; en una apasionante aventura que cambiar&#xE1; su vida para siempre.</Para>
+                <Para>2. Red</Para>
+                <Para>Mei Lee, una ni&#xF1;a de 13 a&#xF1;os un poco rara pero segura de s&#xED; misma, se debate entre ser la hija obediente que su madre quiere que sea y el caos propio de la adolescencia. Ming, su protectora y ligeramente exigente madre, no se separa nunca de ella lo que es una situaci&#xF3;n poco deseable para una adolescente. Y por si los cambios en su vida y en su cuerpo no fueran suficientes, cada vez que se emociona demasiado (lo que le ocurre pr&#xE1;cticamente todo el tiempo), se convierte en un panda rojo gigante.</Para>
+                <Para>3. Vaiana</Para>
+                <Para>Una gran aventura acerca de una en&#xE9;rgica adolescente que se embarca en una misi&#xF3;n audaz para salvar a su pueblo de una antigua y misteriosa amenaza, en un viaje de autodescubrimiento. La acompa&#xF1;ar&#xE1; el arrogante semidi&#xF3;s Maui, quien la guiar&#xE1; en su traves&#xED;a por el oc&#xE9;ano en un viaje lleno de acci&#xF3;n, plagado de temibles criaturas e imposibles desaf&#xED;os para restaurar el orden perdido.</Para>
+                <Para>4. Coco</Para>
+                <Para>Miguel es un joven con el sue&#xF1;o de convertirse en leyenda de la m&#xFA;sica a pesar de la prohibici&#xF3;n de su familia. Su pasi&#xF3;n le llevar&#xE1; a adentrarse en la "Tierra de los Muertos" para conocer su verdadero legado familiar.</Para>
+                <Para>5. Encanto</Para>
+                <Para>"Encanto" relata la historia de los Madrigal, una familia extraordinaria que vive en una casa m&#xE1;gica de un pueblo vibrante en las monta&#xF1;as de Colombia escondidas en un &#x201C;Encanto&#x201D;. La magia del Encanto ha bendecido a cada ni&#xF1;o de la familia con un don &#xFA;nico, desde la superfuerza hasta el poder de sanar. A todos, excepto Mirabel, quien desea ser tan especial como el resto de su familia. Pero cuando la magia que rodea al Encanto est&#xE1; en peligro, Mirabel decide que ella, la &#xFA;nica Madrigal sin ning&#xFA;n tipo de don &#xFA;nico, puede ser la &#xFA;nica esperanza de su excepcional familia.</Para>
+                <Para>6. Cars</Para>
+                <Para>El aspirante a campe&#xF3;n de carreras Rayo McQueen est&#xE1; sobre la v&#xED;a r&#xE1;pida al &#xE9;xito, la fama y todo lo que &#xE9;l hab&#xED;a so&#xF1;ado, hasta que por error toma un desv&#xED;o inesperado en la polvorienta y solitaria Ruta 66. Su actitud arrogante se desvanece cuando llega a una peque&#xF1;a comunidad olvidada que le ense&#xF1;a las cosas importantes de la vida que hab&#xED;a olvidado.</Para>
+                <Para>7. Luca</Para>
+                <Para>Ambientada en un precioso pueblo costero de la Riviera italiana, narra la historia sobre el paso a la edad adulta de un chico que vive un verano inolvidable lleno de helados, pasta e infinitos paseos en scooter. Luca comparte estas aventuras con su nuevo mejor amigo, pero toda la diversi&#xF3;n se ve amenazada por un secreto muy profundo: &#xE9;l es un monstruo marino de un mundo que yace bajo la superficie del agua.</Para>
+                <Para>8. Ratatouille</Para>
+                <Para>Remy es una simp&#xE1;tica rata que sue&#xF1;a con convertirse en un gran chef franc&#xE9;s a pesar de la oposici&#xF3;n de su familia y del problema evidente que supone ser una rata en una profesi&#xF3;n que detesta a los roedores. El destino lleva entonces a Remy a las alcantarillas de Par&#xED;s, pero su situaci&#xF3;n no podr&#xED;a ser mejor, ya que se encuentra justo debajo de un restaurante que se ha hecho famoso gracias a Auguste Gusteau, una estrella de la cuisine. A pesar del peligro que representa ser un visitante poco com&#xFA;n (y desde luego nada deseado) en los fogones de un exquisito restaurante franc&#xE9;s, la pasi&#xF3;n de Remy por la cocina pone patas arriba el mundo culinario parisino en una trepidante y emocionante aventura.</Para>
+                <Para>9. Frozen 2</Para>
+                <Para>&#xBF;Por qu&#xE9; naci&#xF3; Elsa con poderes m&#xE1;gicos? La respuesta le est&#xE1; llamando y amenaza su reino. Junto con Anna, Kristoff, Olaf y Sven emprender&#xE1; un viaje peligroso e inolvidable. En 'Frozen: El Reino del Hielo', Elsa tem&#xED;a que sus poderes fueran demasiado para el mundo. En 'Frozen 2', desear&#xE1; que sean suficientes.</Para>
+                <Para>10. Guardianes de la galaxia</Para>
+                <Para>El temerario aventurero Peter Quill es objeto de un implacable cazarrecompensas despu&#xE9;s de robar una misteriosa esfera codiciada por Ronan, un poderoso villano cuya ambici&#xF3;n amenaza todo el universo. Para poder escapar del incansable Ronan, Quill se ve obligado a pactar una complicada tregua con un cuarteto de disparatados inadaptados: Rocket, un mapache armado con un rifle, Groot, un humanoide con forma de &#xE1;rbol, la letal y enigm&#xE1;tica Gamora y el vengativo Drax the Destroyer. Pero cuando Quill descubre el verdadero poder de la esfera, deber&#xE1; hacer todo lo posible para derrotar a sus extravagantes rivales en un intento desesperado de salvar el destino de la galaxia.</Para>
+                <Para>*Algunos t&#xED;tulos pueden repetirse en el ranking debido a que son diferentes episodios o temporadas, asimismo, podr&#xED;an no traer descripci&#xF3;n porque la plataforma no las proporciona.</Para><Para>Disney desbanca a Netflix</Para>
+                <Para>
+                    <ELink type="webpage" ref="https://www.infobae.com/new-resizer/pvk8QvMFrWpBq75r4zPnpH9ehbQ=/cloudfront-us-east-1.images.arcpublishing.com/infobae/RU7VVB4MEJGPNOHTRQH42MP4AU.jpg">Con su plataforma que ofrece pel&#xED;culas y series originales, Disney+ busca hacerle competencia a Netflix. (Infobae Archivo)</ELink>
+                </Para>
+                <Para>Disney+ es una plataforma de streaming que es propiedad de The Walt Disney Company y que ofrece a sus suscriptores un cat&#xE1;logo amplio de pel&#xED;culas, series, documentales, entre otros productos multimedia que han sido lanzados bajo los estudios Disney, Pixar, Marvel, Star, National Geographic, entre otros.</Para>
+                <Para>El servicio fue lanzado de manera oficial el 12 de noviembre de 2019 en Estados Unidos y Canad&#xE1;, para posteriormente expandirse a los Pa&#xED;ses Bajos y Espa&#xF1;a. Fue hasta finales de 2020 que la plataforma finalmente lleg&#xF3; a Latinoam&#xE9;rica y el Caribe, a excepci&#xF3;n de Cuba.</Para><Para>De acuerdo con el &#xFA;ltimo corte realizado el 10 de agosto de 2022, el servicio de streaming cuenta con alrededor de 221,1 millones de usuarios a nivel mundial, sobrepasando por primera vez al mayor rival: Netflix, que se ha quedado en 220,67 millones de usuarios.</Para>
+                <Para>El total de usuarios que contabiliza Disney+ (152 millones) hace referencia tambi&#xE9;n a su servicio Hulu (46,2 millones) y ESPN (22,8 millones). En contraste, Netflix perdi&#xF3; 200 mil suscriptores en su &#xFA;ltimo balance y se prev&#xE9; que baje dos millones m&#xE1;s.</Para><Para>Sin embargo, su reinado en el mundo del streaming podr&#xED;a no durar mucho debido al anuncio sobre sus nuevos planes de pago, ya que la compa&#xF1;&#xED;a contempla un nuevo paquete premium por el que se deber&#xE1; pagar m&#xE1;s tras la llegada de una nueva modalidad que contempla publicidad.</Para>
+                <Para>Como antecedente, a finales de 2015 Disney lanz&#xF3; su servicio DisneyLife en Reino Unido, pero a ra&#xED;z del lanzamiento de Disney+ el servicio fue suspendido.</Para><Para>En el momento de su lanzamiento se habl&#xF3; de que la plataforma busca albergar 500 pel&#xED;culas y 7.000 episodios de programas o series de televisi&#xF3;n; adem&#xE1;s, se contemplaba el lanzamiento de cuatro pel&#xED;culas originales y cinco programas de televisi&#xF3;n, lo cual se vio con el lanzamiento de la serie The Mandalorian, que cost&#xF3; cerca de 100 millones de d&#xF3;lares.</Para>
+                <Para>
+                    <ELink type="webpage" ref="https://www.infobae.com/new-resizer/mA7uyITxALykmDAQzfF32HkROlM=/cloudfront-us-east-1.images.arcpublishing.com/infobae/7IOM7IPYL5E7LJEFKL4SAMX22I.jpg">En un mundo tan vertiginoso, elegir qu&#xE9; ver se ha vuelto una tarea tit&#xE1;nica. (Infobae)</ELink>
+                </Para>
+            </TailParas>
+            <Byline fid="by" index="field">Newsroom Infobae </Byline>
+            <Credit fid="cr" index="field"/>
+            <Contact fid="ct" index="field"/>
+            <Notes fid="rf" index="field"/>
+            <Art fid="art" index="field"/>
+            <Copyright fid="cy" index="field">Todos Los Derechos Reservados &#xA9; 2023 Infobae </Copyright>
+        </Article>
+    </ArchiveDoc>
+  <AdocTOC adoctype="article">
+    <Item size="0" ref="distdoc:archive/ArchiveDoc::Article" type="arttext"/>
+    <Item size="0" ref="distdoc:archive/InvertText" type="invtext"/>
+  </AdocTOC>
+</DistDoc>

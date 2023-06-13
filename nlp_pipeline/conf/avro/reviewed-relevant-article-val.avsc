@@ -1,0 +1,99 @@
+{
+	"type": "record",
+	"name": "KsqlDataSourceSchema",
+	"namespace": "io.confluent.ksql.avro_schemas",
+	"fields": [
+		{
+			"name": "FOLDER",
+			"type": [
+				"null",
+				"string"
+			],
+			"default": null
+		},
+		{
+			"name": "HEADLINE",
+			"type": [
+				"null",
+				"string"
+			],
+			"default": null
+		},
+		{
+			"name": "LEAD_PARA",
+			"type": [
+				"null",
+				{
+					"type": "array",
+					"items": [
+						"null",
+						"string"
+					]
+				}
+			],
+			"default": null
+		},
+		{
+			"name": "TAIL_PARA",
+			"type": [
+				"null",
+				{
+					"type": "array",
+					"items": [
+						"null",
+						"string"
+					]
+				}
+			],
+			"default": null
+		},
+		{
+			"name": "LANG_ID",
+			"type": [
+				"null",
+				"string"
+			],
+			"default": null
+		},
+		{
+			"name": "LANG_NAME",
+			"type": [
+				"null",
+				"string"
+			],
+			"default": null
+		},
+		{
+			"name": "LABELS",
+			"type": [
+				"null",
+				"string"
+			],
+			"default": null
+		},
+		{
+			"name": "BIO_NER",
+			"type": [
+				"null",
+				"string"
+			],
+			"default": null
+		},
+		{
+			"name": "NER",
+			"type": [
+				"null",
+				"string"
+			],
+			"default": null
+		},
+		{
+			"name": "SUMMARY_TEXT",
+			"type": [
+				"null",
+				"string"
+			],
+			"default": null
+		}
+	]
+}

@@ -1,0 +1,10 @@
+{
+	"type": "record",
+	"name": "unique_article_key",
+	"fields": [
+		{
+			"name": "doc_id",
+			"type": "string"
+		}
+	]
+}

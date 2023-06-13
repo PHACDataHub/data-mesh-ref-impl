@@ -1,0 +1,363 @@
+<?xml version="1.0"?>
+<DistDoc action="add" dist="dist_id" distdocver="05.2" an="CADONL0020230501ej510005p" doctype="article">
+  <SelectData>
+    <FolderName id="301125449" rl="100">Influenza_S</FolderName>
+  </SelectData>
+  <SelectDedupData>
+    <DupList cnt="0" dedupThreshold="VIRTUALLYIDENTICAL" id="301125449"/>
+  </SelectDedupData>
+  <ReplyItem lang="es">
+    <BaseLang value="es" fid="la"/>
+    <IPDocId fid="id">CADONL0020230501ej510005p</IPDocId>
+    <AccessionNo value="CADONL0020230501ej510005p" fid="an"/>
+    <Num value="802" fid="wc"/>
+    <Date value="20230501" fid="pd"/>
+    <SrcCode value="cadonl" fid="sc"/>
+    <SrcName fid="sn">Diario de C&#xE1;diz Online</SrcName>
+    <TruncRules>
+      <XS value="30"/>
+      <S value="54"/>
+    </TruncRules>
+    <Title fid="hl">
+      <SectionName fid="se">Salud y Bienestar</SectionName>
+      <ColumnName fid="clm"/>
+      <Headline fid="hd">
+        <Para lang="es">Un mill&#xF3;n y medio de espa&#xF1;oles malviven con un asma no diagnosticado</Para>
+      </Headline>
+    </Title>
+    <Snippet>
+      <Para>El asma es la enfermedad cr&#xF3;nica m&#xE1;s frecuente en la infancia</Para>
+      <Para>La tormenta perfecta: la gripe y la neumon&#xED;a bacteriana juntas aumentan m&#xE1;s de
+                tres veces la probabilidad de muerte</Para>
+    </Snippet>
+    <Byline fid="by">Bego&#xF1;a Fern&#xE1;ndez/EFE </Byline>
+    <Credit fid="cr"/>
+    <Copyright fid="cy">&#xA9; Joly Digital </Copyright>
+    <CodeSets>
+      <CSet fid="re">
+        <Code value="spain"/>
+        <Code value="eecz"/>
+        <Code value="eurz"/>
+        <Code value="medz"/>
+        <Code value="weurz"/>
+      </CSet>
+      <CSet fid="ns">
+        <Code value="ghea"/>
+        <Code value="gastma"/>
+        <Code value="gmed"/>
+        <Code value="gcat"/>
+        <Code value="gcold"/>
+      </CSet>
+    </CodeSets>
+  </ReplyItem>
+  <MetadataPT>
+    <DocData>
+      <DocType value="article" fid="fmt"/>
+      <IPDocId fid="id">CADONL0020230501ej510005p</IPDocId>
+      <AccessionNo value="CADONL0020230501ej510005p" fid="an"/>
+      <Num value="802" fid="wc"/>
+      <Num value="4010" fid="cc"/>
+      <Date value="20230501" fid="pd"/>
+      <Date value="20230501" fid="upd"/>
+      <Date value="20230501" fid="md"/>
+      <Time value="081551" fid="upt"/>
+      <Time value="081551" fid="mt"/>
+      <BaseLang value="es" fid="la"/>
+      <Editor value="" fid="rve"/>
+      <RevisionNo value="0" fid="rvn"/>
+    </DocData>
+    <PubData>
+      <Restrictor fid="rst">
+        <Code value="FSPNORMAWSMQ"/>
+        <Code value="FSPNORMAWS0500"/>
+        <Code value="CADONL"/>
+        <Code value="fspFileId392805342"/>
+        <Code value="FUT"/>
+        <Code value="ANDAL"/>
+        <Code value="CLNTALL"/>
+        <Code value="ES"/>
+        <Code value="EUR"/>
+        <Code value="MEDZ"/>
+        <Code value="SPAIN"/>
+        <Code value="TEUN"/>
+        <Code value="TNWP"/>
+        <Code value="TNWPR"/>
+        <Code value="TSCH"/>
+        <Code value="TTRK"/>
+        <Code value="TYAS"/>
+        <Code value="TYLD"/>
+        <Code value="WEURZ"/>
+        <Code value="CADONL"/>
+        <Code value="MPCV1M23M0B1"/>
+        <Code value="MPCEnvPROD"/>
+        <Code value="MPCDocHash255F2014AB458411"/>
+        <Code value="FSP2YESCOOC"/>
+        <Code value="FSP2YESCOCOMOC"/>
+        <Code value="FSPCATEGORIZER"/>
+        <Code value="FSPCATNS"/>
+        <Code value="FSP2YESNS"/>
+        <Code value="FSPRBC"/>
+        <Code value="FSPRBCNS"/>
+        <Code value="FSPCATRE"/>
+        <Code value="FSP2YESRE"/>
+        <Code value="FSP2NOCO"/>
+        <Code value="FSP2NOIN"/>
+        <Code value="FSP2NOPEOC"/>
+        <Code value="FSPRBC591410"/>
+        <Code value="FSPRBC790244"/>
+        <Code value="MPCCL"/>
+        <Code value="MPCJP"/>
+        <Code value="MPCKW"/>
+        <Code value="MPCKP"/>
+        <Code value="MPCESRE"/>
+        <Code value="MPCESIN"/>
+        <Code value="MPCESNS"/>
+        <Code value="FSP2AC"/>
+        <Code value="FSP2ACRBCARES"/>
+        <Code value="FSP2ACRBCSTD"/>
+      </Restrictor>
+      <IPId value="JOLY" fid="ip"/>
+      <PublisherN fid="pub">Grupo Joly</PublisherN>
+      <AttribCode value="CADONL" fid="atr"/>
+      <SrcCode value="CADONL" fid="sc"/>
+      <SrcName fid="sn">Diario de C&#xE1;diz Online</SrcName>
+      <Logo img="cadonlLogo.gif" link="" src="http://logos.factiva.com"/>
+    </PubData>
+    <CodeSets>
+      <CSet fid="re">
+        <Code value="spain">
+          <CodeD index="no" lang="en">Spain</CodeD>
+          <CodeI org="categoriser" action="add">
+            <CodeA name="db" value="es-SpanishRE_es_20230426182443"/>
+            <CodeA name="es_score" value="136"/>
+          </CodeI>
+          <CodeI org="validation" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="status" value="active"/>
+          </CodeI>
+          <CodeI org="hierarchy" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="nodelevel" value="1"/>
+            <CodeA name="nodelevel" value="2"/>
+          </CodeI>
+        </Code>
+        <Code value="eecz">
+          <CodeD index="no" lang="en">European Union Countries</CodeD>
+          <CodeI org="expansion" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="root" value="re:spain"/>
+          </CodeI>
+          <CodeI org="validation" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="status" value="active"/>
+          </CodeI>
+          <CodeI org="hierarchy" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="nodelevel" value="1"/>
+          </CodeI>
+        </Code>
+        <Code value="eurz">
+          <CodeD index="no" lang="en">Europe</CodeD>
+          <CodeI org="expansion" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="root" value="re:spain"/>
+          </CodeI>
+          <CodeI org="validation" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="status" value="active"/>
+          </CodeI>
+          <CodeI org="hierarchy" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="nodelevel" value="0"/>
+          </CodeI>
+        </Code>
+        <Code value="medz">
+          <CodeD index="no" lang="en">Mediterranean Countries</CodeD>
+          <CodeI org="expansion" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="root" value="re:spain"/>
+          </CodeI>
+          <CodeI org="validation" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="status" value="active"/>
+          </CodeI>
+          <CodeI org="hierarchy" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="nodelevel" value="0"/>
+          </CodeI>
+        </Code>
+        <Code value="weurz">
+          <CodeD index="no" lang="en">Western Europe</CodeD>
+          <CodeI org="expansion" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="root" value="re:spain"/>
+          </CodeI>
+          <CodeI org="validation" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="status" value="active"/>
+          </CodeI>
+          <CodeI org="hierarchy" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="nodelevel" value="1"/>
+          </CodeI>
+        </Code>
+      </CSet>
+      <CSet fid="ns">
+        <Code value="ghea">
+          <CodeD index="no" lang="en">Health</CodeD>
+          <CodeI org="categoriser" action="add">
+            <CodeA name="db" value="es-SpanishNS_es_20230420182305"/>
+            <CodeA name="es_score" value="384"/>
+          </CodeI>
+          <CodeI org="expansion" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="root" value="ns:gastma"/>
+            <CodeA name="root" value="ns:gmed"/>
+          </CodeI>
+          <CodeI org="validation" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="status" value="active"/>
+          </CodeI>
+          <CodeI org="hierarchy" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="nodelevel" value="1"/>
+          </CodeI>
+        </Code>
+        <Code value="gastma">
+          <CodeD index="no" lang="en">Asthma</CodeD>
+          <CodeI org="categoriser" action="add">
+            <CodeA name="db" value="es-SpanishNS_es_20230420182305"/>
+            <CodeA name="es_score" value="314"/>
+          </CodeI>
+          <CodeI org="rbc" action="add">
+            <CodeA name="db" value="prbc---00004614-20230501-003549"/>
+            <CodeA name="rule" value="591410"/>
+          </CodeI>
+          <CodeI org="validation" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="status" value="active"/>
+          </CodeI>
+          <CodeI org="hierarchy" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="nodelevel" value="4"/>
+          </CodeI>
+        </Code>
+        <Code value="gmed">
+          <CodeD index="no" lang="en">Medical Conditions</CodeD>
+          <CodeI org="categoriser" action="add">
+            <CodeA name="db" value="es-SpanishNS_es_20230420182305"/>
+            <CodeA name="es_score" value="210"/>
+          </CodeI>
+          <CodeI org="rbc" action="add">
+            <CodeA name="db" value="prbc---00004614-20230501-003549"/>
+            <CodeA name="rule" value="790244"/>
+          </CodeI>
+          <CodeI org="expansion" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="root" value="ns:gastma"/>
+          </CodeI>
+          <CodeI org="validation" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="status" value="active"/>
+          </CodeI>
+          <CodeI org="hierarchy" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="nodelevel" value="2"/>
+          </CodeI>
+        </Code>
+        <Code value="gcat">
+          <CodeD index="no" lang="en">Political/General News</CodeD>
+          <CodeI org="expansion" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="root" value="ns:gastma"/>
+            <CodeA name="root" value="ns:ghea"/>
+            <CodeA name="root" value="ns:gmed"/>
+          </CodeI>
+          <CodeI org="validation" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="status" value="active"/>
+          </CodeI>
+          <CodeI org="hierarchy" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="nodelevel" value="0"/>
+          </CodeI>
+        </Code>
+        <Code value="gcold">
+          <CodeD index="no" lang="en">Respiratory Tract Diseases</CodeD>
+          <CodeI org="expansion" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="root" value="ns:gastma"/>
+          </CodeI>
+          <CodeI org="validation" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="status" value="active"/>
+          </CodeI>
+          <CodeI org="hierarchy" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="nodelevel" value="3"/>
+          </CodeI>
+        </Code>
+      </CSet>
+    </CodeSets>
+    <DescTPC fid="de">
+      <DescField fid="ipd">Salud y Bienestar </DescField>
+      <DescField fid="ipcns">Cristina Benito ilustrando paciente inhalador </DescField>
+    </DescTPC>
+  </MetadataPT>
+  <ArchiveDoc xml:space="preserve">
+    <Article markup="pp0" lang="es" index="field">
+      <HandL fid="hlp">
+        <Title fid="hl">
+          <SectionName fid="se" index="field">Salud y Bienestar</SectionName>
+          <ColumnName fid="clm" index="field"/>
+          <Headline fid="hd">
+            <Para lang="es">Un mill&#xF3;n y medio de espa&#xF1;oles malviven con un asma no diagnosticado</Para>
+          </Headline>
+        </Title>
+        <LeadPara fid="lp">
+          <Para>El asma es la enfermedad cr&#xF3;nica m&#xE1;s frecuente en la infancia</Para>
+          <Para>
+            <ELink type="webpage" ref="https://www.diariodesevilla.es/salud/investigacion-tecnologia/tormenta-perfecta-neumonia-bacteriana-gripe-aumenta-tres-veces-muerte_0_1788721460.html">La tormenta perfecta: la gripe y la neumon&#xED;a bacteriana juntas aumentan m&#xE1;s de tres veces la probabilidad de muerte</ELink>
+          </Para>
+        </LeadPara>
+      </HandL>
+      <TailParas fid="td">
+        <Para>
+          <ELink type="webpage" ref="https://www.diariodesevilla.es/salud/investigacion-tecnologia/Golpe-calor-sintomas-que-hacer_0_1787821919.html">Golpe de calor: cu&#xE1;les son sus s&#xED;ntomas y qu&#xE9; hacer en esos casos</ELink>
+        </Para>
+        <Para>El asma es una enfermedad en aumento. Los neum&#xF3;logos calculan que en Espa&#xF1;a, te&#xF3;ricamente, hay tres millones de asm&#xE1;ticos, pero de ellos el 50% no est&#xE1; diagnosticado y malvive con s&#xED;ntomas que progresivamente son m&#xE1;s graves y crisis por infecciones o factores ambientales que acortan la cantidad y calidad de vida.</Para>
+        <Para>En una entrevista con EFE en la v&#xED;spera del D&#xED;a Mundial del Asma, el jefe del servicio de Neumolog&#xED;a del hospital universitario de La Princesa, Julio Ancochea, explica que el asma es la enfermedad cr&#xF3;nica m&#xE1;s frecuente en la infancia, con tasas del 10% e incluso m&#xE1;s altas en la adolescencia, "pero con un diagn&#xF3;stico a tiempo el ni&#xF1;o puede llevar una vida normal, no tiene que estar estigmatizado y quedarse en el rinc&#xF3;n del patio viendo como los dem&#xE1;s juegan al f&#xFA;tbol".</Para>
+        <Para>Ancochea comenta que a sus alumnos en el Hospital Universitario La Princesa les pone el s&#xED;mil del iceberg. "Nosotros solo vemos la parte que sobresale que son los s&#xED;ntomas: la tos, la disnea, las sibilancias, los ruidos tor&#xE1;cicos... pero lo importante es tratar la base, la que no se ve del iceberg, para que no se produzcan los s&#xED;ntomas y tener controlada la enfermedad".</Para>
+        <Para>Incluso con asma grave se puede llevar una vida plena</Para>
+        <Para>Aunque el asma no se cura, con un tratamiento &#xF3;ptimo se puede llevar una vida absolutamente normal, incluso ese 5% que padece las variantes m&#xE1;s severas y que no responde a dosis altas de corticoides inhalados combinados con broncodilatadores de acci&#xF3;n prolongada.</Para>
+        <Para>Para ellos, dice, la investigaci&#xF3;n ha desarrollado nuevos f&#xE1;rmacos: "Cada vez conocemos mejor las c&#xE9;lulas implicadas en esa inflamaci&#xF3;n de las v&#xED;as respiratorias y por eso se dispone de medicamentos selectivos, anticuerpos monoclonales dirigidos espec&#xED;ficamente a la clave de la inflamaci&#xF3;n".</Para>
+        <Para>El asma se puede diagnosticar con herramientas sencillas como una espirometr&#xED;a, y aunque es una enfermedad compleja y heterog&#xE9;nea tiene un com&#xFA;n denominador que es la inflamaci&#xF3;n.</Para>
+        <Para>Por ello la importancia de campa&#xF1;as de visibilizaci&#xF3;n de la enfermedad o de jornadas como el d&#xED;a mundial para que aquellas personas que tengan sospecha de asma acudan al neum&#xF3;logo y pidan ayuda, de no hacerlo la enfermedad progresar&#xE1; con crisis cada vez m&#xE1;s agudas que pueden ser mortales.</Para>
+        <Para>El urbanismo y el cambio clim&#xE1;tico aumentan la enfermedad</Para>
+        <Para>En los &#xFA;ltimos a&#xF1;os se ha detectado un aumento de casos de asma, que los neum&#xF3;logos achacan al urbanismo creciente, a la contaminaci&#xF3;n y al cambio clim&#xE1;tico.</Para>
+        <Para>En el caso de Madrid, Ancochea comenta que los altos niveles de contaminaci&#xF3;n y la falta de lluvia hace que haya mucha concentraci&#xF3;n de part&#xED;culas medioambientales, que pueden desencadenar s&#xED;ntomas asm&#xE1;ticos.</Para>
+        <Para>La presidenta de la Asociaci&#xF3;n Asma Madrid, Concepci&#xF3;n Grau, tambi&#xE9;n observa un aumento de casos en la poblaci&#xF3;n infantil que se da en toda Espa&#xF1;a pero con m&#xE1;s prevalencia en las grandes urbes.</Para>
+        <Para>Y es precisamente en ese entorno cuando la combinaci&#xF3;n de contaminaci&#xF3;n y polen se convierte en un "bombazo" para los asm&#xE1;ticos.</Para>
+        <Para>Grau insiste en que es asma se controla con autocuidados, tratamiento y controles en las consultas de alergolog&#xED;a y neumolog&#xED;a, pero para ello hay que detectarlo a tiempo.</Para>
+        <Para>Desde la Federaci&#xF3;n Espa&#xF1;ola de Asociaciones de Pacientes Al&#xE9;rgicos y con Enfermedades Respiratorias (Fenaer), su presidente, Mariano Pastor, advierte de que un ataque de asma puede ser mortal (1.000 personas fallecen en Espa&#xF1;a al a&#xF1;o por una crisis) por lo que insta a promover la concienciaci&#xF3;n sobre el asma grave y su afectaci&#xF3;n en la calidad de vida del paciente.</Para>
+        <Para>Esta semana, el Hospital Universitario La Princesa, en Madrid, ha puesto en marcha una original experiencia inmersiva, que se replicar&#xE1; en centros sanitarios de toda Espa&#xF1;a.</Para>
+        <Para>Se trata de una iniciativa de Fenaer y los laboratoios Sanofi. Una espirometr&#xED;a mide el &#xF3;xido n&#xED;trico que exhala el paciente y que se traduce en una escala musical y visual personalizada del estado de sus v&#xED;as respiratorias.</Para>
+        <Para>Gracias a unos auriculares y una pantalla, el voluntario conoce los resultados de las pruebas. Las representaciones gr&#xE1;ficas y los sonidos ir&#xE1;n del azul y m&#xFA;sica suave para una persona sana, al color rojo y ruido estridente de un asm&#xE1;tico.</Para>
+        <Para>Es la primera vez que una enfermedad respiratoria cr&#xF3;nica, como es el asma grave, se visualiza a trav&#xE9;s de la m&#xFA;sica, con un sonido envolvente que permite al paciente "escuchar y ver" la inflamaci&#xF3;n de sus v&#xED;as a&#xE9;reas. Proyectos inspiradores con la intenci&#xF3;n de sacar al asma del infradiagn&#xF3;stico.</Para>
+        <Para>
+          <ELink type="webpage" ref="http://www.diariodecadiz.es/2021/04/27/sevilla/Cristina-Benito-ilustrando-paciente-inhalador_1568853566_137706066_1920x1080.jpg">La doctora Cristina Benito ilustrando a paciente sobre como utilizar inhalador.</ELink>
+        </Para>
+      </TailParas>
+      <Byline fid="by" index="field">Bego&#xF1;a Fern&#xE1;ndez/EFE </Byline>
+      <Credit fid="cr" index="field"/>
+      <Contact fid="ct" index="field"/>
+      <Notes fid="rf" index="field"/>
+      <Art fid="art" index="field"/>
+      <Copyright fid="cy" index="field">&#xA9; Joly Digital </Copyright>
+    </Article>
+  </ArchiveDoc>
+  <AdocTOC adoctype="article">
+    <Item size="0" ref="distdoc:archive/ArchiveDoc::Article" type="arttext"/>
+    <Item size="0" ref="distdoc:archive/InvertText" type="invtext"/>
+  </AdocTOC>
+</DistDoc>

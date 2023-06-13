@@ -1,0 +1,348 @@
+<?xml version="1.0"?>
+<DistDoc action="add" dist="dist_id" distdocver="05.2" an="FOXKTV0020230501ej4u0000m" doctype="article">
+  <SelectData>
+    <FolderName id="302930289" rl="100">Covid</FolderName>
+  </SelectData>
+  <SelectDedupData>
+    <DupList cnt="0" dedupThreshold="OFF" id="302930289"/>
+  </SelectDedupData>
+  <ReplyItem lang="en">
+    <BaseLang value="en" fid="la"/>
+    <IPDocId fid="id">F8F00408C5B322115B94D5E104E1717D
+            135ad38f8451c0941492af9a5ccb3f511a92c9f20230430FOXKTV</IPDocId>
+    <AccessionNo value="FOXKTV0020230501ej4u0000m" fid="an"/>
+    <Num value="533" fid="wc"/>
+    <Date value="20230430" fid="pd"/>
+    <SrcCode value="foxktv" fid="sc"/>
+    <SrcName fid="sn">FOX - 2 KTVI</SrcName>
+    <TruncRules>
+      <XS value="21"/>
+      <S value="57"/>
+      <M value="75"/>
+    </TruncRules>
+    <Title fid="hl">
+      <SectionName fid="se">National</SectionName>
+      <ColumnName fid="clm"/>
+      <Headline fid="hd">
+        <Para lang="en">Health officials warn irritating symptom may be returning with
+                    latest COVID strain</Para>
+      </Headline>
+    </Title>
+    <Snippet>
+      <Para>(KTLA) - A new coronavirus subvariant is starting to spread in the U.S. and,
+                according to health experts, it could be causing an annoying symptom to return.</Para>
+    </Snippet>
+    <Byline fid="by">Will Conybeare </Byline>
+    <Credit fid="cr"/>
+    <Copyright fid="cy">Copyright 2023, KTVI. All rights reserved. Distributed by NewsBank, inc. </Copyright>
+    <CodeSets>
+      <CSet fid="co">
+        <Code value="uscdcp"/>
+      </CSet>
+      <CSet fid="re">
+        <Code value="usa"/>
+        <Code value="namz"/>
+      </CSet>
+      <CSet fid="ns">
+        <Code value="gsars"/>
+        <Code value="gout"/>
+        <Code value="gcat"/>
+        <Code value="gcold"/>
+        <Code value="ghea"/>
+        <Code value="gmed"/>
+        <Code value="gspox"/>
+      </CSet>
+    </CodeSets>
+  </ReplyItem>
+  <MetadataPT>
+    <DocData>
+      <DocType value="article" fid="fmt"/>
+      <IPDocId fid="id">F8F00408C5B322115B94D5E104E1717D
+                135ad38f8451c0941492af9a5ccb3f511a92c9f20230430FOXKTV</IPDocId>
+      <AccessionNo value="FOXKTV0020230501ej4u0000m" fid="an"/>
+      <Num value="533" fid="wc"/>
+      <Num value="2676" fid="cc"/>
+      <Date value="20230430" fid="pd"/>
+      <Date value="20230501" fid="upd"/>
+      <Date value="20230501" fid="md"/>
+      <Time value="082522" fid="upt"/>
+      <Time value="082522" fid="mt"/>
+      <BaseLang value="en" fid="la"/>
+      <Editor value="" fid="rve"/>
+      <RevisionNo value="0" fid="rvn"/>
+    </DocData>
+    <PubData>
+      <Restrictor fid="rst">
+        <Code value="FSPNORMAWSMQ"/>
+        <Code value="FSPNORMAWS0500"/>
+        <Code value="FOXKTV"/>
+        <Code value="fspFileId392807575"/>
+        <Code value="FUT"/>
+        <Code value="CLNTBLK"/>
+        <Code value="EN"/>
+        <Code value="NAMZ"/>
+        <Code value="SFFOXN"/>
+        <Code value="TBAS"/>
+        <Code value="TFCDLIC"/>
+        <Code value="TNWE"/>
+        <Code value="TSCH"/>
+        <Code value="TSTD"/>
+        <Code value="TTPB"/>
+        <Code value="TTPT"/>
+        <Code value="TTRK"/>
+        <Code value="TYAS"/>
+        <Code value="TYLD"/>
+        <Code value="USA"/>
+        <Code value="USMO"/>
+        <Code value="MPCV1M23M0B1"/>
+        <Code value="MPCEnvPROD"/>
+        <Code value="MPCDocHash4E239A24E4C4F7BC"/>
+        <Code value="FSP2YESCOOC"/>
+        <Code value="FSP2YESCOORGOC"/>
+        <Code value="FSPRBC"/>
+        <Code value="FSPRBCCO"/>
+        <Code value="FSPRBCORG"/>
+        <Code value="FSP2YESCO"/>
+        <Code value="FSP2YESCOORG"/>
+        <Code value="FSPCATEGORIZER"/>
+        <Code value="FSPCATNS"/>
+        <Code value="FSPRBCNS"/>
+        <Code value="FSP2YESNS"/>
+        <Code value="FSPCATRE"/>
+        <Code value="FSPRBCRE"/>
+        <Code value="FSP2YESRE"/>
+        <Code value="FSP2NOIN"/>
+        <Code value="FSP2NOPEOC"/>
+        <Code value="FSPRBC504003"/>
+        <Code value="FSPRBC698691"/>
+        <Code value="FSPRBC800211"/>
+        <Code value="FSPRBC845758"/>
+        <Code value="MPCCL"/>
+        <Code value="MPCJP"/>
+        <Code value="MPCKW"/>
+        <Code value="MPCKP"/>
+        <Code value="MPCESRE"/>
+        <Code value="MPCESIN"/>
+        <Code value="MPCESNS"/>
+        <Code value="FSP2AC"/>
+        <Code value="FSP2ACRBCARES"/>
+        <Code value="FSP2ACRBCSTD"/>
+      </Restrictor>
+      <IPId value="NWSBK" fid="ip"/>
+      <PublisherN fid="pub">Tribune Media [Tribune Broadcasting Co.]</PublisherN>
+      <AttribCode value="FOXKTV" fid="atr"/>
+      <SrcCode value="FOXKTV" fid="sc"/>
+      <SrcName fid="sn">FOX - 2 KTVI</SrcName>
+    </PubData>
+    <CodeSets>
+      <CSet fid="co">
+        <Code value="uscdcp">
+          <CodeD index="no" lang="en">Centers for Disease Control and Prevention</CodeD>
+          <CodeI org="rbc" action="add">
+            <CodeA name="db" value="prbc---00004614-20230501-003549"/>
+            <CodeA name="rule" value="504003"/>
+            <CodeA name="rule" value="698691"/>
+          </CodeI>
+          <CodeI org="validation" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="status" value="active"/>
+          </CodeI>
+        </Code>
+      </CSet>
+      <CSet fid="re">
+        <Code value="usa">
+          <CodeD index="no" lang="en">United States</CodeD>
+          <CodeI org="categoriser" action="add">
+            <CodeA name="db" value="es-EnglishRE_en_20230425180959"/>
+            <CodeA name="es_score" value="130"/>
+          </CodeI>
+          <CodeI org="rbc" action="add">
+            <CodeA name="db" value="prbc---00004614-20230501-003549"/>
+            <CodeA name="rule" value="504003"/>
+            <CodeA name="rule" value="845758"/>
+          </CodeI>
+          <CodeI org="validation" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="status" value="active"/>
+          </CodeI>
+          <CodeI org="hierarchy" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="nodelevel" value="1"/>
+          </CodeI>
+        </Code>
+        <Code value="namz">
+          <CodeD index="no" lang="en">North America</CodeD>
+          <CodeI org="expansion" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="root" value="re:usa"/>
+          </CodeI>
+          <CodeI org="validation" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="status" value="active"/>
+          </CodeI>
+          <CodeI org="hierarchy" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="nodelevel" value="0"/>
+          </CodeI>
+        </Code>
+      </CSet>
+      <CSet fid="ns">
+        <Code value="gsars">
+          <CodeD index="no" lang="en">Novel Coronaviruses</CodeD>
+          <CodeI org="categoriser" action="add">
+            <CodeA name="db" value="es-EnglishNS_en_20230426181044"/>
+            <CodeA name="es_score" value="290"/>
+          </CodeI>
+          <CodeI org="rbc" action="add">
+            <CodeA name="db" value="prbc---00004614-20230501-003549"/>
+            <CodeA name="rule" value="800211"/>
+          </CodeI>
+          <CodeI org="validation" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="status" value="active"/>
+          </CodeI>
+          <CodeI org="hierarchy" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="nodelevel" value="4"/>
+          </CodeI>
+        </Code>
+        <Code value="gout">
+          <CodeD index="no" lang="en">Outbreaks/Epidemics</CodeD>
+          <CodeI org="categoriser" action="add">
+            <CodeA name="db" value="es-EnglishNS_en_20230426181044"/>
+            <CodeA name="es_score" value="210"/>
+          </CodeI>
+          <CodeI org="validation" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="status" value="active"/>
+          </CodeI>
+          <CodeI org="hierarchy" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="nodelevel" value="4"/>
+          </CodeI>
+        </Code>
+        <Code value="gcat">
+          <CodeD index="no" lang="en">Political/General News</CodeD>
+          <CodeI org="expansion" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="root" value="ns:gout"/>
+            <CodeA name="root" value="ns:gsars"/>
+          </CodeI>
+          <CodeI org="validation" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="status" value="active"/>
+          </CodeI>
+          <CodeI org="hierarchy" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="nodelevel" value="0"/>
+          </CodeI>
+        </Code>
+        <Code value="gcold">
+          <CodeD index="no" lang="en">Respiratory Tract Diseases</CodeD>
+          <CodeI org="expansion" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="root" value="ns:gsars"/>
+          </CodeI>
+          <CodeI org="validation" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="status" value="active"/>
+          </CodeI>
+          <CodeI org="hierarchy" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="nodelevel" value="3"/>
+          </CodeI>
+        </Code>
+        <Code value="ghea">
+          <CodeD index="no" lang="en">Health</CodeD>
+          <CodeI org="expansion" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="root" value="ns:gout"/>
+            <CodeA name="root" value="ns:gsars"/>
+          </CodeI>
+          <CodeI org="validation" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="status" value="active"/>
+          </CodeI>
+          <CodeI org="hierarchy" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="nodelevel" value="1"/>
+          </CodeI>
+        </Code>
+        <Code value="gmed">
+          <CodeD index="no" lang="en">Medical Conditions</CodeD>
+          <CodeI org="expansion" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="root" value="ns:gout"/>
+            <CodeA name="root" value="ns:gsars"/>
+          </CodeI>
+          <CodeI org="validation" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="status" value="active"/>
+          </CodeI>
+          <CodeI org="hierarchy" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="nodelevel" value="2"/>
+          </CodeI>
+        </Code>
+        <Code value="gspox">
+          <CodeD index="no" lang="en">Infectious Diseases</CodeD>
+          <CodeI org="expansion" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="root" value="ns:gout"/>
+            <CodeA name="root" value="ns:gsars"/>
+          </CodeI>
+          <CodeI org="validation" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="status" value="active"/>
+          </CodeI>
+          <CodeI org="hierarchy" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="nodelevel" value="3"/>
+          </CodeI>
+        </Code>
+      </CSet>
+    </CodeSets>
+  </MetadataPT>
+  <ArchiveDoc xml:space="preserve">
+    <Article markup="pp0" lang="en" index="field">
+      <HandL fid="hlp">
+        <Title fid="hl">
+          <SectionName fid="se" index="field">National</SectionName>
+          <ColumnName fid="clm" index="field"/>
+          <Headline fid="hd">
+            <Para lang="en">Health officials warn irritating symptom may be returning with latest COVID strain</Para>
+          </Headline>
+        </Title>
+        <LeadPara fid="lp">
+          <Para>(KTLA) - A new coronavirus subvariant is starting to spread in the U.S. and, according to health experts, it could be causing an annoying symptom to return.</Para>
+          <Para>According to the Centers for Disease Control and Prevention, roughly 10% of all COVID cases reported last week were determined to be from the omicron-related XBB.1.16 subvariant, being referred to by some as Arcturus.</Para>
+        </LeadPara>
+      </HandL>
+      <TailParas fid="td">
+        <Para>After first being reported in January, the World Health Organization declared XBB.1.16 a variant of interest in mid-April, The Hill reports.</Para>
+        <Para>The Los Angeles County Department of Public Health is warning residents that this omicron sub-strain of COVID-19 may come with an irritating symptom: conjunctivitis</Para>
+        <Para>Commonly known as pink eye, health officials also reported that pink eye could be linked to COVID early in the pandemic. Then again last year, experts warned there could be a connection between the then-new omicron variant and itchy, irritated eyes.</Para>
+        <Para>Now, some health officials are reporting an increase in conjunctivitis cases nationwide.</Para>
+        <Para>That includes Los Angeles County, where the health department has warned that pink eye may be the newest possible symptom of COVID.</Para>
+        <Para>"Observational data suggests that people infected with XBB.1.16 may be more likely to experience conjunctivitis as a symptom of their COVID infection, along with more traditional COVID symptoms, such as fever, cough and shortness of breath," the LA County Health Department said in a statement. "Historically, conjunctivitis was reported in 1 to 3% of COVID-19 cases."</Para>
+        <Para>Conjunctivitis occurs when the lining that covers your eyelid and eyeball, the conjunctiva, becomes inflamed, optometrist Dr. Melanie Dombrowski tells Nexstar's WGHP. Symptoms include eyes becoming pink or red, increased tear production, discharge from the eyes, and itching, irritation, or burning, according to the CDC.</Para>
+        <Para>Pink eye is common with respiratory infections like the cold and flu.</Para>
+        <Para>However, with the limited data available, the department said it is "too early to know with certainty" if XBB.1.16 is truly associated with higher rates of conjunctivitis.</Para>
+        <Para>"Residents should be aware that itchy, watery or red eyes may be a sign of a COVID-19 infection and these symptoms should not be simply dismissed as a result of pollen or seasonal allergies, especially if someone more vulnerable to severe illness could be exposed," the Health Department said. "The fact that we are seeing new strains, with possibly new and different symptoms, tells us that COVID continues to evolve and the way we think about our protections should reflect what we know."</Para>
+        <Para>You should talk to your doctor if you have pink eye as well as pain in the eyes, sensitivity to light, blurred vision, intense redness, symptoms that aren't improving or get worse, or a weakened immune system, according to the CDC.</Para>
+        <Para>Older adults and individuals with underlying health conditions are encouraged to take extra precautions to avoid infection, which includes staying up to date on vaccinations, frequent hand washing, and staying home when feeling sick.</Para>
+        <Para>Though officials say Arcturus may be more effective at escaping immune response than other subvariants, it doesn't appear any more severe.</Para>
+      </TailParas>
+      <Byline fid="by" index="field">Will Conybeare </Byline>
+      <Credit fid="cr" index="field"/>
+      <Contact fid="ct" index="field"/>
+      <Notes fid="rf" index="field"/>
+      <Art fid="art" index="field"/>
+      <Copyright fid="cy" index="field">Copyright 2023, KTVI. All rights reserved. Distributed by NewsBank, inc. </Copyright>
+    </Article>
+  </ArchiveDoc>
+  <AdocTOC adoctype="article">
+    <Item size="0" ref="distdoc:archive/ArchiveDoc::Article" type="arttext"/>
+    <Item size="0" ref="distdoc:archive/InvertText" type="invtext"/>
+  </AdocTOC>
+</DistDoc>

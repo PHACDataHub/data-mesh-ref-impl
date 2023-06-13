@@ -1,0 +1,461 @@
+<?xml version="1.0"?>
+<DistDoc action="add" dist="dist_id" distdocver="05.2" an="AAP0000020230501ej51006hd" doctype="article">
+  <SelectData>
+    <FolderName id="302071787" rl="100">Products_2</FolderName>
+  </SelectData>
+  <SelectDedupData>
+    <DupList cnt="0" dedupThreshold="OFF" id="302071787"/>
+  </SelectDedupData>
+  <ReplyItem lang="en">
+    <BaseLang value="en" fid="la"/>
+    <IPDocId fid="id">AAP0000020230501ej51006hd</IPDocId>
+    <AccessionNo value="AAP0000020230501ej51006hd" fid="an"/>
+    <Num value="721" fid="wc"/>
+    <Date value="20230501" fid="pd"/>
+    <SrcCode value="aap" fid="sc"/>
+    <SrcName fid="sn">Australian Associated Press - General News</SrcName>
+    <TruncRules>
+      <XS value="29"/>
+    </TruncRules>
+    <Title fid="hl">
+      <SectionName fid="se"/>
+      <ColumnName fid="clm"/>
+      <Headline fid="hd">
+        <Para lang="en">Aust drug may stop brain cell death after trauma births</Para>
+      </Headline>
+    </Title>
+    <Snippet>
+      <Para>Corrects 6th paragraph - scope and status of clinical trials - based on updated
+                advice from the company</Para>
+      <Para>Katelyn Catanzariti</Para>
+      <Para>SYDNEY, May 1 AAP - Six-year-old Franklin Taylor is a curious, intelligent boy who
+                loves reading about outer space and...</Para>
+    </Snippet>
+    <Byline fid="by"/>
+    <Credit fid="cr"/>
+    <Copyright fid="cy">(c) 2023 Australian Associated Press Pty Ltd. All Rights Reserved </Copyright>
+    <CodeSets>
+      <CSet fid="co">
+        <Code value="lyzior"/>
+      </CSet>
+      <CSet fid="in">
+        <Code value="i257"/>
+        <Code value="i951"/>
+        <Code value="i2569"/>
+      </CSet>
+      <CSet fid="re">
+        <Code value="sydney"/>
+        <Code value="nswals"/>
+        <Code value="apacz"/>
+        <Code value="ausnz"/>
+        <Code value="austr"/>
+      </CSet>
+      <CSet fid="ns">
+        <Code value="ctrial"/>
+        <Code value="c22"/>
+        <Code value="c23"/>
+        <Code value="ccat"/>
+        <Code value="cexpro"/>
+        <Code value="ncat"/>
+        <Code value="nfact"/>
+        <Code value="nfcpin"/>
+      </CSet>
+    </CodeSets>
+  </ReplyItem>
+  <MetadataPT>
+    <DocData>
+      <DocType value="article" fid="fmt"/>
+      <IPDocId fid="id">AAP0000020230501ej51006hd</IPDocId>
+      <AccessionNo value="AAP0000020230501ej51006hd" fid="an"/>
+      <Num value="721" fid="wc"/>
+      <Num value="3322" fid="cc"/>
+      <Date value="20230501" fid="pd"/>
+      <Date value="20230501" fid="upd"/>
+      <Date value="20230501" fid="md"/>
+      <Time value="080355" fid="upt"/>
+      <Time value="080355" fid="mt"/>
+      <BaseLang value="en" fid="la"/>
+      <Editor value="" fid="rve"/>
+      <RevisionNo value="0" fid="rvn"/>
+    </DocData>
+    <PubData>
+      <Restrictor fid="rst">
+        <Code value="FSPNORMAWS0500"/>
+        <Code value="AAP"/>
+        <Code value="fspFileId392802911"/>
+        <Code value="FUT"/>
+        <Code value="AUSNZ"/>
+        <Code value="AUSTR"/>
+        <Code value="CLNTALL"/>
+        <Code value="EN"/>
+        <Code value="SFAAP"/>
+        <Code value="TBLT"/>
+        <Code value="TCUWIR"/>
+        <Code value="TGPW"/>
+        <Code value="TNWR"/>
+        <Code value="TRRSLN"/>
+        <Code value="TSCH"/>
+        <Code value="TTRK"/>
+        <Code value="TWIR"/>
+        <Code value="TWWW"/>
+        <Code value="TYAS"/>
+        <Code value="TYLA"/>
+        <Code value="MPCV1M23M0B1"/>
+        <Code value="MPCEnvPROD"/>
+        <Code value="MPCDocHash30F6E13D77DE0DF2"/>
+        <Code value="FSPTHINGFINDER"/>
+        <Code value="FSP2YESCO"/>
+        <Code value="FSP2YESCOCOM"/>
+        <Code value="FSP2YESCOOC"/>
+        <Code value="FSP2YESCOCOMOC"/>
+        <Code value="FSP2YESCOORGOC"/>
+        <Code value="FSPRBC"/>
+        <Code value="FSPRBCIN"/>
+        <Code value="FSP2YESIN"/>
+        <Code value="FSPRBCNS"/>
+        <Code value="FSP2YESNS"/>
+        <Code value="FSPCATEGORIZER"/>
+        <Code value="FSPCATRE"/>
+        <Code value="FSP2YESRE"/>
+        <Code value="FSP2NOPEOC"/>
+        <Code value="FSPRBC648020"/>
+        <Code value="FSPRBC648039"/>
+        <Code value="FSPRBC800069"/>
+        <Code value="MPCCL"/>
+        <Code value="MPCJP"/>
+        <Code value="MPCKW"/>
+        <Code value="MPCKP"/>
+        <Code value="MPCESRE"/>
+        <Code value="MPCESIN"/>
+        <Code value="MPCESNS"/>
+        <Code value="FSP2AC"/>
+        <Code value="FSP2ACRBCTERA"/>
+        <Code value="FSP2ACRBCPRTY"/>
+      </Restrictor>
+      <IPId value="AAPIN" fid="ip"/>
+      <PublisherN fid="pub">Australian Associated Press Pty Ltd</PublisherN>
+      <AttribCode value="AAP" fid="atr"/>
+      <SrcCode value="AAP" fid="sc"/>
+      <SrcName fid="sn">Australian Associated Press - General News</SrcName>
+      <Logo img="aapLogo.gif" link="" src="http://logos.factiva.com"/>
+    </PubData>
+    <CodeSets>
+      <CSet fid="co">
+        <Code value="lyzior">
+          <CodeD index="no" lang="en">Argenica Therapeutics Ltd.</CodeD>
+          <CodeI org="thingfinder" action="add">
+            <CodeA name="db" value="ptf--aboutCo-00001170-20230430-154622.dictionary"/>
+          </CodeI>
+          <CodeI org="validation" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="status" value="active"/>
+          </CodeI>
+        </Code>
+      </CSet>
+      <CSet fid="in">
+        <Code value="i257">
+          <CodeD index="no" lang="en">Pharmaceuticals</CodeD>
+          <CodeI org="rbc" action="add">
+            <CodeA name="db" value="prbc---00004614-20230501-003549"/>
+            <CodeA name="rule" value="648020"/>
+          </CodeI>
+          <CodeI org="validation" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="status" value="active"/>
+          </CodeI>
+          <CodeI org="hierarchy" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="nodelevel" value="1"/>
+          </CodeI>
+        </Code>
+        <Code value="i951">
+          <CodeD index="no" lang="en">Healthcare/Life Sciences</CodeD>
+          <CodeI org="expansion" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="root" value="in:i2569"/>
+          </CodeI>
+          <CodeI org="validation" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="status" value="active"/>
+          </CodeI>
+          <CodeI org="hierarchy" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="nodelevel" value="0"/>
+          </CodeI>
+        </Code>
+        <Code value="i2569">
+          <CodeD index="no" lang="en">Biotechnology Services</CodeD>
+          <CodeI org="expansion" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="root" value="co:lyzior"/>
+          </CodeI>
+          <CodeI org="validation" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="status" value="active"/>
+          </CodeI>
+          <CodeI org="hierarchy" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="nodelevel" value="1"/>
+          </CodeI>
+        </Code>
+      </CSet>
+      <CSet fid="re">
+        <Code value="sydney">
+          <CodeD index="no" lang="en">Sydney</CodeD>
+          <CodeI org="categoriser" action="add">
+            <CodeA name="db" value="es-EnglishRE_en_20230425180959"/>
+            <CodeA name="es_score" value="120"/>
+          </CodeI>
+          <CodeI org="validation" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="status" value="active"/>
+          </CodeI>
+          <CodeI org="hierarchy" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="nodelevel" value="3"/>
+            <CodeA name="nodelevel" value="4"/>
+          </CodeI>
+        </Code>
+        <Code value="nswals">
+          <CodeD index="no" lang="en">New South Wales</CodeD>
+          <CodeI org="categoriser" action="add">
+            <CodeA name="db" value="es-EnglishRE_en_20230425180959"/>
+            <CodeA name="es_score" value="80"/>
+          </CodeI>
+          <CodeI org="expansion" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="root" value="re:sydney"/>
+          </CodeI>
+          <CodeI org="validation" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="status" value="active"/>
+          </CodeI>
+          <CodeI org="hierarchy" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="nodelevel" value="2"/>
+            <CodeA name="nodelevel" value="3"/>
+          </CodeI>
+        </Code>
+        <Code value="apacz">
+          <CodeD index="no" lang="en">Asia Pacific</CodeD>
+          <CodeI org="expansion" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="root" value="re:nswals"/>
+            <CodeA name="root" value="re:sydney"/>
+          </CodeI>
+          <CodeI org="validation" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="status" value="active"/>
+          </CodeI>
+          <CodeI org="hierarchy" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="nodelevel" value="0"/>
+          </CodeI>
+        </Code>
+        <Code value="ausnz">
+          <CodeD index="no" lang="en">Australia/Oceania</CodeD>
+          <CodeI org="expansion" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="root" value="re:nswals"/>
+            <CodeA name="root" value="re:sydney"/>
+          </CodeI>
+          <CodeI org="validation" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="status" value="active"/>
+          </CodeI>
+          <CodeI org="hierarchy" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="nodelevel" value="0"/>
+            <CodeA name="nodelevel" value="1"/>
+          </CodeI>
+        </Code>
+        <Code value="austr">
+          <CodeD index="no" lang="en">Australia</CodeD>
+          <CodeI org="expansion" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="root" value="re:nswals"/>
+            <CodeA name="root" value="re:sydney"/>
+          </CodeI>
+          <CodeI org="validation" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="status" value="active"/>
+          </CodeI>
+          <CodeI org="hierarchy" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="nodelevel" value="1"/>
+            <CodeA name="nodelevel" value="2"/>
+          </CodeI>
+        </Code>
+      </CSet>
+      <CSet fid="ns">
+        <Code value="ctrial">
+          <CodeD index="no" lang="en">New Product/Service Testing</CodeD>
+          <CodeI org="rbc" action="add">
+            <CodeA name="db" value="prbc---00004614-20230501-003549"/>
+            <CodeA name="rule" value="648039"/>
+            <CodeA name="rule" value="800069"/>
+          </CodeI>
+          <CodeI org="validation" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="status" value="active"/>
+          </CodeI>
+          <CodeI org="hierarchy" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="nodelevel" value="2"/>
+            <CodeA name="nodelevel" value="3"/>
+          </CodeI>
+        </Code>
+        <Code value="c22">
+          <CodeD index="no" lang="en">New Products/Services</CodeD>
+          <CodeI org="expansion" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="root" value="ns:ctrial"/>
+          </CodeI>
+          <CodeI org="validation" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="status" value="active"/>
+          </CodeI>
+          <CodeI org="hierarchy" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="nodelevel" value="2"/>
+          </CodeI>
+        </Code>
+        <Code value="c23">
+          <CodeD index="no" lang="en">Research/Development</CodeD>
+          <CodeI org="expansion" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="root" value="ns:ctrial"/>
+          </CodeI>
+          <CodeI org="validation" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="status" value="active"/>
+          </CodeI>
+          <CodeI org="hierarchy" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="nodelevel" value="1"/>
+          </CodeI>
+        </Code>
+        <Code value="ccat">
+          <CodeD index="no" lang="en">Corporate/Industrial News</CodeD>
+          <CodeI org="expansion" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="root" value="ns:ctrial"/>
+          </CodeI>
+          <CodeI org="validation" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="status" value="active"/>
+          </CodeI>
+          <CodeI org="hierarchy" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="nodelevel" value="0"/>
+          </CodeI>
+        </Code>
+        <Code value="cexpro">
+          <CodeD index="no" lang="en">Products/Services</CodeD>
+          <CodeI org="expansion" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="root" value="ns:ctrial"/>
+          </CodeI>
+          <CodeI org="validation" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="status" value="active"/>
+          </CodeI>
+          <CodeI org="hierarchy" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="nodelevel" value="1"/>
+          </CodeI>
+        </Code>
+        <Code value="ncat">
+          <CodeD index="no" lang="en">Content Types</CodeD>
+          <CodeI org="expansion" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="root" value="ns:ctrial"/>
+          </CodeI>
+          <CodeI org="validation" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="status" value="active"/>
+          </CodeI>
+        </Code>
+        <Code value="nfact">
+          <CodeD index="no" lang="en">Factiva Filters</CodeD>
+          <CodeI org="expansion" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="root" value="ns:ctrial"/>
+          </CodeI>
+          <CodeI org="validation" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="status" value="active"/>
+          </CodeI>
+        </Code>
+        <Code value="nfcpin">
+          <CodeD index="no" lang="en">C&amp;E Industry News Filter</CodeD>
+          <CodeI org="expansion" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="root" value="ns:ctrial"/>
+          </CodeI>
+          <CodeI org="validation" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="status" value="active"/>
+          </CodeI>
+        </Code>
+      </CSet>
+    </CodeSets>
+    <DescTPC fid="de">
+      <DescField fid="ipcns">Brain </DescField>
+    </DescTPC>
+  </MetadataPT>
+  <ArchiveDoc xml:space="preserve">
+    <Article markup="pp0" lang="en" index="field">
+      <HandL fid="hlp">
+        <Title fid="hl">
+          <SectionName fid="se" index="field"/>
+          <ColumnName fid="clm" index="field"/>
+          <Headline fid="hd">
+            <Para lang="en">Aust drug may stop brain cell death after trauma births</Para>
+          </Headline>
+        </Title>
+        <LeadPara fid="lp">
+          <Para>Corrects 6th paragraph - scope and status of clinical trials - based on updated advice from the company</Para>
+          <Para>Katelyn Catanzariti</Para>
+        </LeadPara>
+      </HandL>
+      <TailParas fid="td">
+        <Para>SYDNEY, May 1 AAP - Six-year-old Franklin Taylor is a curious, intelligent boy who loves reading about outer space and going for rides on his bicycle.</Para>
+        <Para>But his bicycle has had to be specially adapted; while he can read, he can't turn the pages of a book; and he cannot talk clearly so he communicates through with a specially designed keyboard.</Para>
+        <Para>Franklin suffered ahypoxic-ischaemic encephalopathy (HIE) injury at birth that has left him severely disabled, requiring around-the-clock care for the rest of his life.</Para>
+        <Para>But an Australian-developed breakthrough drug could offer children who suffer the same injury as Franklin a 70 per cent better chance at a normal life.</Para>
+        <Para>Australian biotech company Argenica Therapeutics? potentially world-first neuroprotective drug is administered to protect brain cells at a critical time point to prevent brain tissue dying.</Para>
+        <Para>Developed in collaboration with the Perron Institute for Neurological and Translational Science and the University of Western Australia, the drug is in clinical trials involving humans, and will soon be tested on stroke patients.</Para>
+        <Para>After another round of animal testing, it is hoped it can be used in neonatal treatment to prevent life-long symptoms.</Para>
+        <Para>During Franklin's otherwise textbook birth - on his due date, six years ago on Anzac Day - he became distressed in the final stage of delivery and, for a short while, his brain was deprived of blood and oxygen.</Para>
+        <Para>Franklin's mother Sarah-Ann Taylor says their world stopped as doctors hit the 'code blue' button in the room and "a thousand" people seemed to descend. He was resuscitated and sent to the NICU and, for a little while, they thought the worst had been averted.</Para>
+        <Para>"Initially we thought he was going to pull through pretty well. They didn't seem too concerned," Ms Taylor, from Jannali in Sydney's south, told AAP.</Para>
+        <Para>"But as time went on, it became clear that he wasn't recovering in the way they expected.</Para>
+        <Para>"It was a few days later that the 'HIE' term got mentioned. Ioverheard the doctor using that term. I Googled it and then shut my phone immediately."</Para>
+        <Para>An MRI revealed Franklin had indeed suffered an HIE injury, which meant that while he had no oxygen and blood going to his brain, brain cells had begun to die.</Para>
+        <Para>In HIE injuries, even when blood and oxygen is restored to the brain, there comes a second wave of impact as the body tries to "kill off" any cells contaminated by the initial deprivation.</Para>
+        <Para>"We can't really do much with that initial injury, but that second injury happens hours to days after and ... itis almost the bigger injury," a neuroscientist and Argenica CEODr Liz Dallimore explains.</Para>
+        <Para>"After the initial brain cell death, you get an influx into the cells of all these toxins, which causes the cells to implode on themselves which sets off a second wave of cell deaths.</Para>
+        <Para>"That's what we're looking to prevent with this drug."</Para>
+        <Para>The new drug would be administered immediately after the initial injury and effectively "hibernate" the brain, reducing the impact of the second wave of brain cell death.</Para>
+        <Para>The latest research specifically shows a staggering 70 per cent prolonged reduction in brain tissue death.</Para>
+        <Para>It is also 40 per cent more effective than the current best standard of care, which is hypothermia treatment - where the newborn's body or head is kept cool to try and halt the brain tissue death.</Para>
+        <Para>As well as being less effective, hypothermia is only used in 30 per cent of cases as it has a very strict eligibility criteria, whereas the new drug might be able to be usedprophylactically after any distressed birth.</Para>
+        <Para>"There's obviously still a way to go, but the data is obviously pointing in the right direction," Dr Dallimore tells AAP.</Para>
+        <Para>Ms Taylor says the drug would be "absolutely life changing" for a family facing the same medical ordeal as hers.</Para>
+        <Para>"They're looking at 70 per cent reduction in brain cell death - if Franklin had 70 per cent more brain capacity, I can only imagine what he would be capable of," she says.</Para>
+        <Para>AAP ldj/KC/DJT/dm</Para>
+      </TailParas>
+      <Byline fid="by" index="field"/>
+      <Credit fid="cr" index="field"/>
+      <Contact fid="ct" index="field"/>
+      <Notes fid="rf" index="field"/>
+      <Art fid="art" index="field"/>
+      <Copyright fid="cy" index="field">(c) 2023 Australian Associated Press Pty Ltd. All Rights Reserved </Copyright>
+    </Article>
+  </ArchiveDoc>
+  <AdocTOC adoctype="article">
+    <Item size="0" ref="distdoc:archive/ArchiveDoc::Article" type="arttext"/>
+    <Item size="0" ref="distdoc:archive/InvertText" type="invtext"/>
+  </AdocTOC>
+</DistDoc>

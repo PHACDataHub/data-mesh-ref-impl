@@ -1,0 +1,414 @@
+<?xml version="1.0"?>
+<DistDoc action="add" dist="dist_id" distdocver="05.2" an="HTNLIN0020230501ej510005m" doctype="article">
+  <SelectData>
+    <FolderName id="301121937" rl="100">ChemicalNucRad</FolderName>
+  </SelectData>
+  <SelectDedupData>
+    <DupList cnt="1" dedupThreshold="VIRTUALLYIDENTICAL" id="301121937">
+            PRTRIN0020230501ej51005eh</DupList>
+  </SelectDedupData>
+  <ReplyItem lang="en">
+    <BaseLang value="en" fid="la"/>
+    <IPDocId fid="id">HTNLIN0020230501ej510005m</IPDocId>
+    <AccessionNo value="HTNLIN0020230501ej510005m" fid="an"/>
+    <Num value="198" fid="wc"/>
+    <Date value="20230501" fid="pd"/>
+    <SrcCode value="htnlin" fid="sc"/>
+    <SrcName fid="sn">The Northlines</SrcName>
+    <TruncRules>
+      <XS value="26"/>
+      <S value="59"/>
+    </TruncRules>
+    <Title fid="hl">
+      <SectionName fid="se"/>
+      <ColumnName fid="clm"/>
+      <Headline fid="hd">
+        <Para lang="en">Two IEDs, Grenade Launcher Seized From Terrorist Hideout In
+                    J&amp;K's Ramban</Para>
+      </Headline>
+    </Title>
+    <Snippet>
+      <Para>JAMMU, May 1 -- A terrorist hideout was busted in a remote forest area in Jammu
+                and Kashmir's Ramban district with the recovery of arms and explosives including two
+                improvised explosive devices (IEDs) and a grenade launcher, police said on ...</Para>
+    </Snippet>
+    <Byline fid="by">Northlines </Byline>
+    <Credit fid="cr"/>
+    <Copyright fid="cy">Copyright 2023. The Northlines </Copyright>
+    <CodeSets>
+      <CSet fid="re">
+        <Code value="kash"/>
+        <Code value="jammu"/>
+        <Code value="india"/>
+        <Code value="asiaz"/>
+        <Code value="bric"/>
+        <Code value="devgcoz"/>
+        <Code value="dvpcoz"/>
+        <Code value="sasiaz"/>
+      </CSet>
+      <CSet fid="ns">
+        <Code value="gcrim"/>
+        <Code value="gterr"/>
+        <Code value="gcat"/>
+        <Code value="gcns"/>
+        <Code value="ncat"/>
+        <Code value="nfact"/>
+        <Code value="nfcpex"/>
+      </CSet>
+    </CodeSets>
+  </ReplyItem>
+  <MetadataPT>
+    <DocData>
+      <DocType value="article" fid="fmt"/>
+      <IPDocId fid="id">HTNLIN0020230501ej510005m</IPDocId>
+      <AccessionNo value="HTNLIN0020230501ej510005m" fid="an"/>
+      <Num value="198" fid="wc"/>
+      <Num value="979" fid="cc"/>
+      <Date value="20230501" fid="pd"/>
+      <Date value="20230501" fid="upd"/>
+      <Date value="20230501" fid="md"/>
+      <Time value="092800" fid="upt"/>
+      <Time value="092800" fid="mt"/>
+      <BaseLang value="en" fid="la"/>
+      <Editor value="" fid="rve"/>
+      <RevisionNo value="0" fid="rvn"/>
+    </DocData>
+    <PubData>
+      <Restrictor fid="rst">
+        <Code value="FSPNORMAWS0500"/>
+        <Code value="HTNLIN"/>
+        <Code value="fspFileId392822367"/>
+        <Code value="FUT"/>
+        <Code value="ASIA"/>
+        <Code value="CLNTALL"/>
+        <Code value="EN"/>
+        <Code value="INDIA"/>
+        <Code value="SASIAZ"/>
+        <Code value="TGEN"/>
+        <Code value="TMID"/>
+        <Code value="TNWP"/>
+        <Code value="TNWPR"/>
+        <Code value="TSCH"/>
+        <Code value="TTRK"/>
+        <Code value="TYAS"/>
+        <Code value="TYLD"/>
+        <Code value="HTNLIN"/>
+        <Code value="djsipif"/>
+        <Code value="MPCV1M23M0B1"/>
+        <Code value="MPCEnvPROD"/>
+        <Code value="MPCDocHash1C950961ED0FA96A"/>
+        <Code value="FSPRBC"/>
+        <Code value="FSPRBCNS"/>
+        <Code value="FSP2YESNS"/>
+        <Code value="FSPCATEGORIZER"/>
+        <Code value="FSPCATRE"/>
+        <Code value="FSP2YESRE"/>
+        <Code value="FSPRBCRE"/>
+        <Code value="FSP2NOCO"/>
+        <Code value="FSP2NOCOOC"/>
+        <Code value="FSP2NOIN"/>
+        <Code value="FSP2NOPEOC"/>
+        <Code value="FSPRBC648050"/>
+        <Code value="FSPRBC678717"/>
+        <Code value="FSPRBC702573"/>
+        <Code value="FSPRBC798110"/>
+        <Code value="FSPRBC817538"/>
+        <Code value="FSPRBC881366"/>
+        <Code value="FSPRBC889566"/>
+        <Code value="MPCCL"/>
+        <Code value="MPCJP"/>
+        <Code value="MPCKW"/>
+        <Code value="MPCKP"/>
+        <Code value="MPCESRE"/>
+        <Code value="MPCESIN"/>
+        <Code value="MPCESNS"/>
+        <Code value="FSP2AC"/>
+        <Code value="FSP2ACRBCARES"/>
+        <Code value="FSP2ACRBCSTD"/>
+      </Restrictor>
+      <IPId value="HINDU" fid="ip"/>
+      <PublisherN fid="pub">The Northlines</PublisherN>
+      <AttribCode value="HTNLIN" fid="atr"/>
+      <SrcCode value="HTNLIN" fid="sc"/>
+      <SrcName fid="sn">The Northlines</SrcName>
+      <Logo img="htnlinLogo.gif" link="" src="http://logos.factiva.com"/>
+    </PubData>
+    <CodeSets>
+      <CSet fid="re">
+        <Code value="kash">
+          <CodeD index="no" lang="en">Kashmir</CodeD>
+          <CodeI org="categoriser" action="add">
+            <CodeA name="db" value="es-EnglishRE_en_20230425180959"/>
+            <CodeA name="es_score" value="120"/>
+          </CodeI>
+          <CodeI org="expansion" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="root" value="re:jammu"/>
+          </CodeI>
+          <CodeI org="validation" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="status" value="active"/>
+          </CodeI>
+          <CodeI org="hierarchy" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="nodelevel" value="2"/>
+          </CodeI>
+        </Code>
+        <Code value="jammu">
+          <CodeD index="no" lang="en">Jammu and Kashmir</CodeD>
+          <CodeI org="categoriser" action="add">
+            <CodeA name="db" value="es-EnglishRE_en_20230425180959"/>
+            <CodeA name="es_score" value="120"/>
+          </CodeI>
+          <CodeI org="rbc" action="add">
+            <CodeA name="db" value="prbc---00004614-20230501-003549"/>
+            <CodeA name="rule" value="678717"/>
+            <CodeA name="rule" value="702573"/>
+          </CodeI>
+          <CodeI org="validation" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="status" value="active"/>
+          </CodeI>
+          <CodeI org="hierarchy" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="nodelevel" value="2"/>
+            <CodeA name="nodelevel" value="3"/>
+          </CodeI>
+        </Code>
+        <Code value="india">
+          <CodeD index="no" lang="en">India</CodeD>
+          <CodeI org="rbc" action="add">
+            <CodeA name="db" value="prbc---00004614-20230501-003549"/>
+            <CodeA name="rule" value="889566"/>
+          </CodeI>
+          <CodeI org="expansion" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="root" value="re:jammu"/>
+          </CodeI>
+          <CodeI org="validation" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="status" value="active"/>
+          </CodeI>
+          <CodeI org="hierarchy" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="nodelevel" value="1"/>
+            <CodeA name="nodelevel" value="2"/>
+          </CodeI>
+        </Code>
+        <Code value="asiaz">
+          <CodeD index="no" lang="en">Asia</CodeD>
+          <CodeI org="expansion" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="root" value="re:india"/>
+            <CodeA name="root" value="re:jammu"/>
+            <CodeA name="root" value="re:kash"/>
+          </CodeI>
+          <CodeI org="validation" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="status" value="active"/>
+          </CodeI>
+          <CodeI org="hierarchy" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="nodelevel" value="0"/>
+          </CodeI>
+        </Code>
+        <Code value="bric">
+          <CodeD index="no" lang="en">BRICS Countries</CodeD>
+          <CodeI org="expansion" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="root" value="re:india"/>
+            <CodeA name="root" value="re:jammu"/>
+          </CodeI>
+          <CodeI org="validation" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="status" value="active"/>
+          </CodeI>
+          <CodeI org="hierarchy" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="nodelevel" value="1"/>
+          </CodeI>
+        </Code>
+        <Code value="devgcoz">
+          <CodeD index="no" lang="en">Emerging Market Countries</CodeD>
+          <CodeI org="expansion" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="root" value="re:india"/>
+            <CodeA name="root" value="re:jammu"/>
+          </CodeI>
+          <CodeI org="validation" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="status" value="active"/>
+          </CodeI>
+          <CodeI org="hierarchy" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="nodelevel" value="0"/>
+          </CodeI>
+        </Code>
+        <Code value="dvpcoz">
+          <CodeD index="no" lang="en">Developing Economies</CodeD>
+          <CodeI org="expansion" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="root" value="re:india"/>
+            <CodeA name="root" value="re:jammu"/>
+          </CodeI>
+          <CodeI org="validation" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="status" value="active"/>
+          </CodeI>
+          <CodeI org="hierarchy" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="nodelevel" value="0"/>
+          </CodeI>
+        </Code>
+        <Code value="sasiaz">
+          <CodeD index="no" lang="en">South Asia</CodeD>
+          <CodeI org="expansion" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="root" value="re:india"/>
+            <CodeA name="root" value="re:jammu"/>
+            <CodeA name="root" value="re:kash"/>
+          </CodeI>
+          <CodeI org="validation" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="status" value="active"/>
+          </CodeI>
+          <CodeI org="hierarchy" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="nodelevel" value="1"/>
+          </CodeI>
+        </Code>
+      </CSet>
+      <CSet fid="ns">
+        <Code value="gcrim">
+          <CodeD index="no" lang="en">Crime/Legal Action</CodeD>
+          <CodeI org="rbc" action="add">
+            <CodeA name="db" value="prbc---00004614-20230501-003549"/>
+            <CodeA name="rule" value="798110"/>
+          </CodeI>
+          <CodeI org="expansion" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="root" value="ns:gterr"/>
+          </CodeI>
+          <CodeI org="validation" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="status" value="active"/>
+          </CodeI>
+          <CodeI org="hierarchy" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="nodelevel" value="1"/>
+          </CodeI>
+        </Code>
+        <Code value="gterr">
+          <CodeD index="no" lang="en">Terrorism</CodeD>
+          <CodeI org="rbc" action="add">
+            <CodeA name="db" value="prbc---00004614-20230501-003549"/>
+            <CodeA name="rule" value="648050"/>
+          </CodeI>
+          <CodeI org="validation" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="status" value="active"/>
+          </CodeI>
+          <CodeI org="hierarchy" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="nodelevel" value="2"/>
+          </CodeI>
+        </Code>
+        <Code value="gcat">
+          <CodeD index="no" lang="en">Political/General News</CodeD>
+          <CodeI org="expansion" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="root" value="ns:gcrim"/>
+            <CodeA name="root" value="ns:gterr"/>
+          </CodeI>
+          <CodeI org="validation" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="status" value="active"/>
+          </CodeI>
+          <CodeI org="hierarchy" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="nodelevel" value="0"/>
+          </CodeI>
+        </Code>
+        <Code value="gcns">
+          <CodeD index="no" lang="en">National/Public Security</CodeD>
+          <CodeI org="expansion" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="root" value="ns:gterr"/>
+          </CodeI>
+          <CodeI org="validation" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="status" value="active"/>
+          </CodeI>
+          <CodeI org="hierarchy" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="nodelevel" value="1"/>
+          </CodeI>
+        </Code>
+        <Code value="ncat">
+          <CodeD index="no" lang="en">Content Types</CodeD>
+          <CodeI org="expansion" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="root" value="ns:gterr"/>
+          </CodeI>
+          <CodeI org="validation" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="status" value="active"/>
+          </CodeI>
+        </Code>
+        <Code value="nfact">
+          <CodeD index="no" lang="en">Factiva Filters</CodeD>
+          <CodeI org="expansion" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="root" value="ns:gterr"/>
+          </CodeI>
+          <CodeI org="validation" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="status" value="active"/>
+          </CodeI>
+        </Code>
+        <Code value="nfcpex">
+          <CodeD index="no" lang="en">C&amp;E Executive News Filter</CodeD>
+          <CodeI org="expansion" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="root" value="ns:gterr"/>
+          </CodeI>
+          <CodeI org="validation" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="status" value="active"/>
+          </CodeI>
+        </Code>
+      </CSet>
+    </CodeSets>
+    <DescTPC fid="de">
+      <DescField fid="ipcre">JAMMU </DescField>
+    </DescTPC>
+  </MetadataPT>
+  <ArchiveDoc xml:space="preserve">
+    <Article markup="pp0" lang="en" index="field">
+      <HandL fid="hlp">
+        <Title fid="hl">
+          <SectionName fid="se" index="field"/>
+          <ColumnName fid="clm" index="field"/>
+          <Headline fid="hd">
+            <Para lang="en">Two IEDs, Grenade Launcher Seized From Terrorist Hideout In J&amp;K's Ramban</Para>
+          </Headline>
+        </Title>
+        <LeadPara fid="lp">
+          <Para>JAMMU, May 1 -- A terrorist hideout was busted in a remote forest area in Jammu and Kashmir's Ramban district with the recovery of arms and explosives including two improvised explosive devices (IEDs) and a grenade launcher, police said on Monday.The hideout was busted on specific information about its location in the far-flung hilly and forested area of Burzalla in Khari tehsil, a police spokesperson said. The recoveries made from the hideout included an Under Barrel Grenade launcher (UBGL), two rifle grenades, a wireless set with an antenna, two IEDs with wire, a detonator, 17 rounds of AK-47 rifle, seven rounds of 9 mm pistol, one bottle containing some liquid, a 'Khakhi' jacket and a pair of black leather shoes, the spokesperson said.No one was arrested during the search operation, he said, adding police have registered a case under relevant sections of law and further investigation is on.</Para>
+          <Para>Published by HT Digital Content Services with permission from The Northlines.</Para>
+        </LeadPara>
+      </HandL>
+      <TailParas/>
+      <Byline fid="by" index="field">Northlines </Byline>
+      <Credit fid="cr" index="field"/>
+      <Contact fid="ct" index="field">For any query with respect to this article or any other content requirement, please contact Editor at contentservices@htlive.com </Contact>
+      <Notes fid="rf" index="field"/>
+      <Art fid="art" index="field"/>
+      <Copyright fid="cy" index="field">Copyright 2023. The Northlines </Copyright>
+    </Article>
+  </ArchiveDoc>
+  <AdocTOC adoctype="article">
+    <Item size="0" ref="distdoc:archive/ArchiveDoc::Article" type="arttext"/>
+    <Item size="0" ref="distdoc:archive/InvertText" type="invtext"/>
+  </AdocTOC>
+</DistDoc>

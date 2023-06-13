@@ -1,0 +1,92 @@
+{
+	"type": "record",
+	"name": "unique_article_value",
+	"fields": [
+		{
+			"name": "folder",
+			"type": [
+				"null",
+				"string"
+			],
+			"default": null
+		},
+		{
+			"name": "headline",
+			"type": [
+				"null",
+				"string"
+			],
+			"default": null
+		},
+		{
+			"name": "lead_para",
+			"type": [
+				"null",
+				{
+					"type": "array",
+					"items": "string"
+				}
+			],
+			"default": null
+		},
+		{
+			"name": "tail_para",
+			"type": [
+				"null",
+				{
+					"type": "array",
+					"items": "string"
+				}
+			],
+			"default": null
+		},
+		{
+			"name": "lang_id",
+			"type": [
+				"null",
+				"string"
+			],
+			"default": null
+		},
+		{
+			"name": "lang_name",
+			"type": [
+				"null",
+				"string"
+			],
+			"default": null
+		},
+		{
+			"name": "labels",
+			"type": [
+				"null",
+				"string"
+			],
+			"default": null
+		},
+		{
+			"name": "bio_ner",
+			"type": [
+				"null",
+				"string"
+			],
+			"default": null
+		},
+		{
+			"name": "ner",
+			"type": [
+				"null",
+				"string"
+			],
+			"default": null
+		},
+		{
+			"name": "summary_text",
+			"type": [
+				"null",
+				"string"
+			],
+			"default": null
+		}
+	]
+}

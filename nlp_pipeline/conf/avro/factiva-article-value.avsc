@@ -1,0 +1,60 @@
+{
+	"type": "record",
+	"name": "factiva_article_value",
+	"fields": [
+		{
+			"name": "doc_id",
+			"type": "string"
+		},
+		{
+			"name": "dup_id_list",
+			"type": [
+				"null",
+				{
+					"type": "array",
+					"items": "string"
+				}
+			],
+			"default": null
+		},
+		{
+			"name": "folder",
+			"type": [
+				"null",
+				"string"
+			],
+			"default": null
+		},
+		{
+			"name": "headline",
+			"type": [
+				"null",
+				"string"
+			],
+			"default": null
+		},
+		{
+			"name": "lead_para",
+			"type": [
+				"null",
+				{
+					"type": "array",
+					"items": "string"
+				}
+			],
+			"default": null
+		},
+		{
+			"name": "tail_para",
+			"type": [
+				"null",
+				{
+					"type": "array",
+					"items": "string"
+				}
+			],
+			"default": null
+		}
+	],
+	"connect.name": "factiva_article_value"
+}

@@ -1,0 +1,295 @@
+main:
+    steps:
+        - dedup_by_id:
+            type: kafka-worker
+            consumer:
+                bootstrap_servers: broker:${BROKER_INTERNAL_PORT}
+                schema_registry: http://schema-registry:${SCHEMA_REGISTRY_PORT}
+                poll_time: 1.0
+                auto_offset_reset: earliest
+                consumer_group_id: dedup_by_id
+                source_topic:
+                    - factiva-articles:
+                        avro_val_schema_file: factiva-article-value.avsc
+            worker:
+                postgres:
+                    host: postgres
+                    port: ${POSTGRES_PORT}
+                    user: ${POSTGRES_USER}
+                    pass: ${POSTGRES_PASSWORD}
+                    database: postgres
+            producer:
+                bootstrap_servers: broker:${BROKER_INTERNAL_PORT}
+                schema_registry: http://schema-registry:${SCHEMA_REGISTRY_PORT}
+                poll_time: 0.0
+                destination_topic:
+                    - unique-articles:
+                        avro_key_schema_file: unique-article-key.avsc
+                        avro_val_schema_file: unique-article-val.avsc
+            next: language_detector
+        - language_detector:
+            consumer:
+                bootstrap_servers: broker:${BROKER_INTERNAL_PORT}
+                schema_registry: http://schema-registry:${SCHEMA_REGISTRY_PORT}
+                poll_time: 1.0
+                auto_offset_reset: earliest
+                consumer_group_id: language_detector
+                source_topic:
+                    - unique-articles:
+                        avro_key_schema_file: unique-article-key.avsc
+                        avro_val_schema_file: unique-article-val.avsc
+            worker:
+                huggingface_model: papluca/xlm-roberta-base-language-detection
+                default_language: UNKNOWN
+                destination_topic_map:
+                    - english-articles: en
+                    - foreign-articles: ar,bg,de,el,es,fr,hi,it,ja,nl,pl,ru,th,ur,vi,zh
+                    - unknown-language-articles: UNKNOWN
+            producer:
+                bootstrap_servers: broker:${BROKER_INTERNAL_PORT}
+                schema_registry: http://schema-registry:${SCHEMA_REGISTRY_PORT}
+                poll_time: 0.0
+                destination_topic:
+                    - english-articles:
+                        avro_key_schema_file: unique-article-key.avsc
+                        avro_val_schema_file: unique-article-val.avsc
+                    - foreign-articles:
+                        avro_key_schema_file: unique-article-key.avsc
+                        avro_val_schema_file: unique-article-val.avsc
+                    - unknown-language-articles:
+                        avro_key_schema_file: unique-article-key.avsc
+                        avro_val_schema_file: unique-article-val.avsc
+            next:
+                - machine_translator
+                - dedup_by_content
+        - machine_translator:
+            consumer:
+                bootstrap_servers: broker:${BROKER_INTERNAL_PORT}
+                schema_registry: http://schema-registry:${SCHEMA_REGISTRY_PORT}
+                poll_time: 1.0
+                auto_offset_reset: earliest
+                consumer_group_id: machine_translator
+                source_topic:
+                    - foreign-articles:
+                        avro_key_schema_file: unique-article-key.avsc
+                        avro_val_schema_file: unique-article-val.avsc
+            worker:
+                huggingface_model_map:
+                    - ar: Helsinki-NLP/opus-mt-ar-en
+                    - bg: Helsinki-NLP/opus-mt-bg-en
+                    - de: Helsinki-NLP/opus-mt-de-en
+                    - el: Helsinki-NLP/opus-mt-tc-big-el-en
+                    - es: Helsinki-NLP/opus-mt-es-en
+                    - fr: Helsinki-NLP/opus-mt-fr-en
+                    - hi: Helsinki-NLP/opus-mt-hi-en
+                    - it: Helsinki-NLP/opus-mt-it-en
+                    - ja: Helsinki-NLP/opus-mt-ja-en
+                    - nl: Helsinki-NLP/opus-mt-nl-en
+                    - pl: Helsinki-NLP/opus-mt-pl-en
+                    - ru: Helsinki-NLP/opus-mt-ru-en
+                    - th: Helsinki-NLP/opus-mt-th-en
+                    - ur: Helsinki-NLP/opus-mt-ur-en
+                    - vi: Helsinki-NLP/opus-mt-vi-en 
+                    - zh: Helsinki-NLP/opus-mt-zh-en
+            producer:
+                bootstrap_servers: broker:${BROKER_INTERNAL_PORT}
+                schema_registry: http://schema-registry:${SCHEMA_REGISTRY_PORT}
+                poll_time: 0.0
+                destination_topic:
+                    - english-articles:
+                        avro_key_schema_file: unique-article-key.avsc
+                        avro_val_schema_file: unique-article-val.avsc
+            next: dedup_by_content
+        - dedup_by_content:
+            consumer:
+                bootstrap_servers: broker:${BROKER_INTERNAL_PORT}
+                schema_registry: http://schema-registry:${SCHEMA_REGISTRY_PORT}
+                poll_time: 1.0
+                auto_offset_reset: earliest
+                consumer_group_id: dedup_by_content
+                source_topic:
+                    - english-articles:
+                        avro_key_schema_file: unique-article-key.avsc
+                        avro_val_schema_file: unique-article-val.avsc
+            worker:
+                postgres:
+                    host: postgres
+                    port: ${POSTGRES_PORT}
+                    user: ${POSTGRES_USER}
+                    pass: ${POSTGRES_PASSWORD}
+                    database: postgres
+                    batch_size: 1000
+                gpu_device: cuda
+                huggingface_model: sentence-transformers/all-MiniLM-L6-v2
+                paragraph_similarity_threshold: 0.85
+                content_similarty_threshold: 0.85
+                number_of_threads: 4
+            producer:
+                bootstrap_servers: broker:${BROKER_INTERNAL_PORT}
+                schema_registry: http://schema-registry:${SCHEMA_REGISTRY_PORT}
+                poll_time: 0.0
+                destination_topic:
+                    - unique-english-articles:
+                        avro_key_schema_file: unique-article-key.avsc
+                        avro_val_schema_file: unique-article-val.avsc
+            next: off_topic_filterer
+        - off_topic_filterer:
+            consumer:
+                bootstrap_servers: broker:${BROKER_INTERNAL_PORT}
+                schema_registry: http://schema-registry:${SCHEMA_REGISTRY_PORT}
+                poll_time: 1.0
+                auto_offset_reset: earliest
+                consumer_group_id: off_topic_filterer
+                source_topic:
+                    - unique-english-articles:
+                        avro_key_schema_file: unique-article-key.avsc
+                        avro_val_schema_file: unique-article-val.avsc
+            worker:
+                huggingface_model: facebook/bart-large-mnli
+                labels: disaster,disease,health,illness,medical,medicine,outbreak,arts,business,entertainment,environment,fashion,music,politics,science,sports,technology,trade,traffic,war,weather,world
+                candidates: disaster,disease,illness,outbreak,war
+                threshold: 0.85
+            producer:
+                bootstrap_servers: broker:${BROKER_INTERNAL_PORT}
+                schema_registry: http://schema-registry:${SCHEMA_REGISTRY_PORT}
+                poll_time: 0.0
+                destination_topic:
+                    - filtered-articles:
+                        avro_key_schema_file: unique-article-key.avsc
+                        avro_val_schema_file: unique-article-val.avsc
+                    - off-topic-articles:
+                        avro_key_schema_file: unique-article-key.avsc
+                        avro_val_schema_file: unique-article-val.avsc
+            next: topic_categorizer
+        - topic_categorizer:
+            consumer:
+                bootstrap_servers: broker:${BROKER_INTERNAL_PORT}
+                schema_registry: http://schema-registry:${SCHEMA_REGISTRY_PORT}
+                poll_time: 1.0
+                auto_offset_reset: earliest
+                consumer_group_id: topic_categorizer
+                source_topic:
+                    - filtered-articles:
+                        avro_key_schema_file: unique-article-key.avsc
+                        avro_val_schema_file: unique-article-val.avsc
+            worker:
+                package: craft
+                ner_models: bc5cdr,ncbi_disease
+                destination_topic_map:
+                    - relevant-articles: DISEASE,CHEMICAL
+                optional_destination_topic_map:
+                    - pending-review-articles: AMINO_ACID,ANATOMICAL_SYSTEM,ANATOMY,CANCER,CELL,CELL_LINE,CELL_TYPE,CELLULAR_COMPONENT,CHEMICAL,DEVELOPING_ANATOMICAL_STRUCTURE,DISEASE,DNA,GENE_OR_GENE_PRODUCT,IMMATERIAL_ANATOMICAL_ENTITY,MULTI-TISSUE_STRUCTURE,ORGAN,ORGANISM,ORGANISM_SUBDIVISION,ORGANISM_SUBSTANCE,PATHOLOGICAL_FORMATION,PROBLEM,PROTEIN,RNA,SIMPLE_CHEMICAL,SPECIES,TISSUE
+            producer:
+                bootstrap_servers: broker:${BROKER_INTERNAL_PORT}
+                schema_registry: http://schema-registry:${SCHEMA_REGISTRY_PORT}
+                poll_time: 0.0
+                destination_topic:
+                    - relevant-articles:
+                        avro_key_schema_file: unique-article-key.avsc
+                        avro_val_schema_file: unique-article-val.avsc
+                    - pending-review-articles:
+                        avro_key_schema_file: unique-article-key.avsc
+                        avro_val_schema_file: unique-article-val.avsc
+                    - trashed-articles:
+                        avro_key_schema_file: unique-article-key.avsc
+                        avro_val_schema_file: unique-article-val.avsc
+            next: 
+                - geo_locator
+                - human_reviewer
+        - human_reviewer:
+            sink:
+                topic: pending-review-articles
+                connector: pending-review
+                postgres:
+                    host: postgres
+                    port: ${POSTGRES_PORT}
+                    user: ${POSTGRES_USER}
+                    pass: ${POSTGRES_PASSWORD}
+                    database: postgres
+                table: pending_review
+                pk_fields: doc_id
+                command: CREATE TABLE IF NOT EXISTS pending_review(doc_id TEXT PRIMARY KEY, folder TEXT, headline TEXT, lead_para TEXT[], tail_para TEXT[], lang_id TEXT, lang_name TEXT, labels TEXT, bio_ner TEXT, ner TEXT, summary_text TEXT, is_reviewed BOOLEAN DEFAULT FALSE);
+            source:
+                topic_prefix: review-
+                connector: review-complete
+                postgres:
+                    host: postgres
+                    port: ${POSTGRES_PORT}
+                    user: ${POSTGRES_USER}
+                    pass: ${POSTGRES_PASSWORD}
+                    database: postgres
+                table: status
+                pk_fields: doc_id
+                command: CREATE TABLE IF NOT EXISTS status(sequence_id SERIAL PRIMARY KEY, doc_id TEXT, is_relevant BOOLEAN);
+            next: 
+                - stream_processor
+        - stream_processor:
+            source_streams:
+                - pending_review_articles: 
+                    topic: pending-review-articles
+                - review_status:
+                    topic: review-status
+            join:
+                - reviewed_relevant_articles:
+                    streams: pending_review_articles,pending_review_articles
+                    fields: doc_id,folder,headline,lead_para,tail_para,lang_id,lang_name,labels,bio_ner,ner,summary_text
+                    match_fields: doc_id
+                    condition: rs.is_relevant = TRUE
+                    topic: reviewed-relevant-articles
+                - reviewed_transhed_articles: 
+                    streams: pending_review_articles,pending_review_articles
+                    fields: doc_id,folder,headline,lead_para,tail_para,lang_id,lang_name,labels,bio_ner,ner,summary_text
+                    match_fields: doc_id
+                    condition: rs.is_relevant = TRUE
+                    topic: review-trashed-articles
+            next: 
+                - geo_locator
+        - geo_locator:
+            consumer:
+                bootstrap_servers: broker:${BROKER_INTERNAL_PORT}
+                schema_registry: http://schema-registry:${SCHEMA_REGISTRY_PORT}
+                poll_time: 1.0
+                auto_offset_reset: earliest
+                consumer_group_id: geo_locator
+                source_topic: 
+                    - relevant-articles:
+                        avro_key_schema_file: unique-article-key.avsc
+                        avro_val_schema_file: unique-article-val.avsc
+                    - reviewed-relevant-articles:
+                        avro_key_schema_file: reviewed-relevant-article-key.avsc
+                        avro_val_schema_file: reviewed-relevant-article-val.avsc
+            worker:
+                ner_tags: GPE,LOC
+            producer:
+                bootstrap_servers: broker:${BROKER_INTERNAL_PORT}
+                schema_registry: http://schema-registry:${SCHEMA_REGISTRY_PORT}
+                poll_time: 0.0
+                destination_topic:
+                    - geo-located-articles:
+                        avro_key_schema_file: unique-article-key.avsc
+                        avro_val_schema_file: unique-article-val.avsc
+            next: 
+                - summarizer
+        - summarizer:
+            consumer:
+                bootstrap_servers: broker:${BROKER_INTERNAL_PORT}
+                schema_registry: http://schema-registry:${SCHEMA_REGISTRY_PORT}
+                poll_time: 1.0
+                auto_offset_reset: earliest
+                consumer_group_id: summarizer
+                source_topic:
+                    - geo-located-articles:
+                        avro_key_schema_file: unique-article-key.avsc
+                        avro_val_schema_file: unique-article-val.avsc
+            worker:
+                huggingface_model: facebook/bart-large-cnn
+                length_limit: 1024
+            producer:
+                bootstrap_servers: broker:${BROKER_INTERNAL_PORT}
+                schema_registry: http://schema-registry:${SCHEMA_REGISTRY_PORT}
+                poll_time: 0.0
+                destination_topic:
+                    - summarized-articles:
+                        avro_key_schema_file: unique-article-key.avsc
+                        avro_val_schema_file: unique-article-val.avsc
+            next: end

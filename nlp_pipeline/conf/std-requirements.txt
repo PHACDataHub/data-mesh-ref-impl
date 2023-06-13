@@ -1,0 +1,10 @@
+bs4
+confluent_kafka
+fastavro
+numpy
+pandas
+psycopg2-binary
+python-dotenv
+pyyaml
+requests
+tabulate

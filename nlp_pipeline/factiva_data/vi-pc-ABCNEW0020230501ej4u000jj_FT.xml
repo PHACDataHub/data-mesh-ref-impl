@@ -1,0 +1,228 @@
+<?xml version="1.0"?>
+<DistDoc action="add" dist="dist_id" distdocver="05.2" an="vi-pc-ABCNEW0020230501ej4u000jj" doctype="article">
+  <SelectData>
+    <FolderName id="301121990" rl="100">Products_1</FolderName>
+  </SelectData>
+  <SelectDedupData>
+    <DupList cnt="0" dedupThreshold="VIRTUALLYIDENTICAL" id="301121990"/>
+  </SelectDedupData>
+  <ReplyItem lang="en">
+    <BaseLang value="en" fid="la"/>
+    <IPDocId fid="id">vi-pc-ABCNEW0020230501ej4u000jj</IPDocId>
+    <AccessionNo value="vi-pc-ABCNEW0020230501ej4u000jj" fid="an"/>
+    <Num value="300" fid="wc"/>
+    <Date value="20230430" fid="pd"/>
+    <SrcCode value="abcnew" fid="sc"/>
+    <SrcName fid="sn">Australian Broadcasting Corporation News</SrcName>
+    <TruncRules>
+      <XS value="25"/>
+      <S value="53"/>
+      <M value="76"/>
+    </TruncRules>
+    <Title fid="hl">
+      <SectionName fid="se"/>
+      <ColumnName fid="clm"/>
+      <Headline fid="hd">
+        <Para lang="en">Search for man missing in water along Victorian coast suspended,
+                    another man found dead</Para>
+      </Headline>
+    </Title>
+    <Snippet>
+      <Para>Emergency services are suspending the search for a man missing since Sunday
+                afternoon in water along Victoria's Great Ocean Road due to deteriorating
+                conditions.</Para>
+    </Snippet>
+    <Byline fid="by"/>
+    <Credit fid="cr"/>
+    <Copyright fid="cy">(c) 2023 Australian Broadcasting Corporation </Copyright>
+    <CodeSets>
+      <CSet fid="re">
+        <Code value="victor"/>
+        <Code value="apacz"/>
+        <Code value="ausnz"/>
+        <Code value="austr"/>
+      </CSet>
+    </CodeSets>
+  </ReplyItem>
+  <MetadataPT>
+    <DocData>
+      <DocType value="article" fid="fmt"/>
+      <IPDocId fid="id">vi-pc-ABCNEW0020230501ej4u000jj</IPDocId>
+      <AccessionNo value="vi-pc-ABCNEW0020230501ej4u000jj" fid="an"/>
+      <Num value="300" fid="wc"/>
+      <Num value="1403" fid="cc"/>
+      <Date value="20230430" fid="pd"/>
+      <Date value="20230501" fid="upd"/>
+      <Date value="20230501" fid="md"/>
+      <Time value="070202" fid="upt"/>
+      <Time value="070202" fid="mt"/>
+      <BaseLang value="en" fid="la"/>
+      <Editor value="" fid="rve"/>
+      <RevisionNo value="0" fid="rvn"/>
+    </DocData>
+    <PubData>
+      <Restrictor fid="rst">
+        <Code value="FSPNORMAWS0500"/>
+        <Code value="ABCNEW"/>
+        <Code value="fspFileId392788805"/>
+        <Code value="FUT"/>
+        <Code value="AUSNZ"/>
+        <Code value="AUSTR"/>
+        <Code value="CLNTALL"/>
+        <Code value="en"/>
+        <Code value="NEWSPLUS"/>
+        <Code value="SFABCA"/>
+        <Code value="TBIZ"/>
+        <Code value="TCUWIR"/>
+        <Code value="TGORC"/>
+        <Code value="TGPW"/>
+        <Code value="TNWR"/>
+        <Code value="TSCH"/>
+        <Code value="TTRK"/>
+        <Code value="TWIR"/>
+        <Code value="TWWW"/>
+        <Code value="TYAS"/>
+        <Code value="TYLA"/>
+        <Code value="MPCV1M23M0B1"/>
+        <Code value="MPCEnvPROD"/>
+        <Code value="MPCDocHashEF92C629C92A2CF2"/>
+        <Code value="FSPRBC"/>
+        <Code value="FSPRBCRE"/>
+        <Code value="FSP2YESRE"/>
+        <Code value="FSP2NOCO"/>
+        <Code value="FSP2NOCOOC"/>
+        <Code value="FSP2NOIN"/>
+        <Code value="FSP2NONS"/>
+        <Code value="FSP2NOPEOC"/>
+        <Code value="FSPRBC853131"/>
+        <Code value="MPCCL"/>
+        <Code value="MPCJP"/>
+        <Code value="MPCKW"/>
+        <Code value="MPCKP"/>
+        <Code value="MPCESRE"/>
+        <Code value="MPCESIN"/>
+        <Code value="MPCESNS"/>
+        <Code value="FSP2AC"/>
+        <Code value="FSP2ACRBCTERA"/>
+        <Code value="FSP2ACRBCPRTY"/>
+      </Restrictor>
+      <IPId value="ABC" fid="ip"/>
+      <PublisherN fid="pub">Australian Broadcasting Corporation</PublisherN>
+      <AttribCode value="ABCNEW" fid="atr"/>
+      <SrcCode value="ABCNEW" fid="sc"/>
+      <SrcName fid="sn">Australian Broadcasting Corporation News</SrcName>
+      <Logo img="abcnewLogo.gif" link="" src="http://logos.factiva.com"/>
+    </PubData>
+    <CodeSets>
+      <CSet fid="re">
+        <Code value="victor">
+          <CodeD index="no" lang="en">Victoria (Australia)</CodeD>
+          <CodeI org="rbc" action="add">
+            <CodeA name="db" value="prbc---00004614-20230501-003549"/>
+            <CodeA name="rule" value="853131"/>
+          </CodeI>
+          <CodeI org="validation" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="status" value="active"/>
+          </CodeI>
+          <CodeI org="hierarchy" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="nodelevel" value="2"/>
+            <CodeA name="nodelevel" value="3"/>
+          </CodeI>
+        </Code>
+        <Code value="apacz">
+          <CodeD index="no" lang="en">Asia Pacific</CodeD>
+          <CodeI org="expansion" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="root" value="re:victor"/>
+          </CodeI>
+          <CodeI org="validation" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="status" value="active"/>
+          </CodeI>
+          <CodeI org="hierarchy" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="nodelevel" value="0"/>
+          </CodeI>
+        </Code>
+        <Code value="ausnz">
+          <CodeD index="no" lang="en">Australia/Oceania</CodeD>
+          <CodeI org="expansion" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="root" value="re:victor"/>
+          </CodeI>
+          <CodeI org="validation" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="status" value="active"/>
+          </CodeI>
+          <CodeI org="hierarchy" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="nodelevel" value="0"/>
+            <CodeA name="nodelevel" value="1"/>
+          </CodeI>
+        </Code>
+        <Code value="austr">
+          <CodeD index="no" lang="en">Australia</CodeD>
+          <CodeI org="expansion" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="root" value="re:victor"/>
+          </CodeI>
+          <CodeI org="validation" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="status" value="active"/>
+          </CodeI>
+          <CodeI org="hierarchy" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="nodelevel" value="1"/>
+            <CodeA name="nodelevel" value="2"/>
+          </CodeI>
+        </Code>
+      </CSet>
+    </CodeSets>
+    <DescTPC fid="de">
+      <DescField fid="ipd">Emergency Incidents Police </DescField>
+    </DescTPC>
+  </MetadataPT>
+  <ArchiveDoc xml:space="preserve">
+    <Article markup="pp0" lang="en" index="field">
+      <HandL fid="hlp">
+        <Title fid="hl">
+          <SectionName fid="se" index="field"/>
+          <ColumnName fid="clm" index="field"/>
+          <Headline fid="hd">
+            <Para lang="en">Search for man missing in water along Victorian coast suspended, another man found dead</Para>
+          </Headline>
+        </Title>
+        <LeadPara fid="lp">
+          <Para>Emergency services are suspending the search for a man missing since Sunday afternoon in water along Victoria's Great Ocean Road due to deteriorating conditions.</Para>
+          <Para>One man has already been found dead in water off Gellibrand Lower, on Victoria's Great Ocean Road.</Para>
+        </LeadPara>
+      </HandL>
+      <TailParas fid="td">
+        <Para>Victoria, Australia - Emergency Incidents Police annouced later on the day.</Para>
+        <Para>Sergeant Danny Brown said authorities were unable to continue their search for the second man due to worsening conditions on the coast.</Para>
+        <Para>"The conditions were far too treacherous again, the swell was up to seven metres and appears to be getting higher again in the next couple of days." he said.</Para>
+        <Para>Sergeant Brown said the Victoria Police Air Wing would resume searching on Tuesday morning.</Para>
+        <Para>Victoria Police said five people went missing in the water around 3pm on Sunday near Otway National Park.</Para>
+        <Para>Three people were found stranded on a cliff face between Wreck Beach and Devil's Kitchen around 4:30pm.</Para>
+        <Para>They were not injured.</Para>
+        <Para>Police said the body of a 30-year-old man from Sunshine North was found on rocks and was retrieved by emergency services.</Para>
+        <Para>It is believed the group were abalone fishing in the area, which is not regularly patrolled.</Para>
+        <Para>Andrew Devlin, who owns nearby Southern Anchorage Retreat, said it was a dangerous stretch of coastline.</Para>
+        <Para>"It is definitely not a spot to go swimming in. It is really rugged coastline. That's why it gets its name Wreck Beach from all of the shipwrecks that have happened in the area," he said.</Para>
+        <Para>(c) 2023 Australian Broadcasting Corporation</Para>
+      </TailParas>
+      <Byline fid="by" index="field"/>
+      <Credit fid="cr" index="field"/>
+      <Contact fid="ct" index="field"/>
+      <Notes fid="rf" index="field"/>
+      <Art fid="art" index="field"/>
+      <Copyright fid="cy" index="field">(c) 2023 Australian Broadcasting Corporation </Copyright>
+    </Article>
+  </ArchiveDoc>
+  <AdocTOC adoctype="article">
+    <Item size="0" ref="distdoc:archive/ArchiveDoc::Article" type="arttext"/>
+    <Item size="0" ref="distdoc:archive/InvertText" type="invtext"/>
+  </AdocTOC>
+</DistDoc>

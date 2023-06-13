@@ -1,0 +1,9 @@
+confluent_kafka
+fastavro
+numpy
+pandas
+python-dotenv
+pyyaml
+requests
+stanza
+tabulate

@@ -1,0 +1,252 @@
+<?xml version="1.0"?>
+<DistDoc action="add" dist="dist_id" distdocver="05.2" an="KBSWNE0020230501ej510008h" doctype="article">
+  <SelectData>
+    <FolderName id="301121923" rl="100">OtherDiseases</FolderName>
+  </SelectData>
+  <SelectDedupData>
+    <DupList cnt="0" dedupThreshold="VIRTUALLYIDENTICAL" id="301121923"/>
+  </SelectDedupData>
+  <ReplyItem lang="en">
+    <BaseLang value="en" fid="la"/>
+    <IPDocId fid="id">KBSWNE0020230501ej510008h</IPDocId>
+    <AccessionNo value="KBSWNE0020230501ej510008h" fid="an"/>
+    <Num value="139" fid="wc"/>
+    <Date value="20230501" fid="pd"/>
+    <SrcCode value="kbswne" fid="sc"/>
+    <SrcName fid="sn">KBS World News - English Edition</SrcName>
+    <TruncRules>
+      <XS value="23"/>
+    </TruncRules>
+    <Title fid="hl">
+      <SectionName fid="se">Domestic</SectionName>
+      <ColumnName fid="clm"/>
+      <Headline fid="hd">
+        <Para lang="en">5 Additional Mpox Cases Reported as Total Reaches 47</Para>
+      </Headline>
+    </Title>
+    <Snippet>
+      <Para>South Korea has confirmed five more cases of mpox as the country's total rises to
+                47.</Para>
+      <Para>According to the Korea Disease Control and Prevention Agency on Monday, three
+                patients are from Seoul, and one each from South Chungcheong Province and ...</Para>
+    </Snippet>
+    <Byline fid="by"/>
+    <Credit fid="cr"/>
+    <Copyright fid="cy">(c)2023 KBS. </Copyright>
+    <CodeSets>
+      <CSet fid="co">
+        <Code value="kcdcsk"/>
+      </CSet>
+      <CSet fid="re">
+        <Code value="skorea"/>
+        <Code value="busan"/>
+        <Code value="apacz"/>
+        <Code value="asiaz"/>
+        <Code value="easiaz"/>
+      </CSet>
+    </CodeSets>
+  </ReplyItem>
+  <MetadataPT>
+    <DocData>
+      <DocType value="article" fid="fmt"/>
+      <IPDocId fid="id">KBSWNE0020230501ej510008h</IPDocId>
+      <AccessionNo value="KBSWNE0020230501ej510008h" fid="an"/>
+      <Num value="139" fid="wc"/>
+      <Num value="720" fid="cc"/>
+      <Date value="20230501" fid="pd"/>
+      <Date value="20230501" fid="upd"/>
+      <Date value="20230501" fid="md"/>
+      <Time value="070015" fid="upt"/>
+      <Time value="070015" fid="mt"/>
+      <BaseLang value="en" fid="la"/>
+      <Editor value="" fid="rve"/>
+      <RevisionNo value="0" fid="rvn"/>
+    </DocData>
+    <PubData>
+      <Restrictor fid="rst">
+        <Code value="FSPNORMAWSMQ"/>
+        <Code value="FSPNORMAWS0500"/>
+        <Code value="KBSWNE"/>
+        <Code value="fspFileId392787791"/>
+        <Code value="FUT"/>
+        <Code value="ASIA"/>
+        <Code value="CLNTALL"/>
+        <Code value="EASIA"/>
+        <Code value="EN"/>
+        <Code value="SKOREA"/>
+        <Code value="TDIG"/>
+        <Code value="TSCH"/>
+        <Code value="TTRK"/>
+        <Code value="TYAS"/>
+        <Code value="TYLD"/>
+        <Code value="KBSWNE"/>
+        <Code value="MPCV1M23M0B1"/>
+        <Code value="MPCEnvPROD"/>
+        <Code value="MPCDocHashB43DC9D0DA7B31B7"/>
+        <Code value="FSPTHINGFINDER"/>
+        <Code value="FSP2YESCO"/>
+        <Code value="FSP2YESCOORG"/>
+        <Code value="FSPCATEGORIZER"/>
+        <Code value="FSPCATRE"/>
+        <Code value="FSPRBC"/>
+        <Code value="FSPRBCRE"/>
+        <Code value="FSP2YESRE"/>
+        <Code value="FSP2NOCOOC"/>
+        <Code value="FSP2NOIN"/>
+        <Code value="FSP2NONS"/>
+        <Code value="FSP2NOPEOC"/>
+        <Code value="FSPRBC635467"/>
+        <Code value="FSPRBC786682"/>
+        <Code value="MPCCL"/>
+        <Code value="MPCJP"/>
+        <Code value="MPCKW"/>
+        <Code value="MPCKP"/>
+        <Code value="MPCESRE"/>
+        <Code value="MPCESIN"/>
+        <Code value="MPCESNS"/>
+        <Code value="FSP2AC"/>
+        <Code value="FSP2ACRBCARES"/>
+        <Code value="FSP2ACRBCSTD"/>
+      </Restrictor>
+      <IPId value="KBSIC" fid="ip"/>
+      <PublisherN fid="pub">KBS Media Ltd.</PublisherN>
+      <AttribCode value="KBSWNE" fid="atr"/>
+      <SrcCode value="KBSWNE" fid="sc"/>
+      <SrcName fid="sn">KBS World News - English Edition</SrcName>
+      <Logo img="kbswneLogo.gif" link="" src="http://logos.factiva.com"/>
+    </PubData>
+    <CodeSets>
+      <CSet fid="co">
+        <Code value="kcdcsk">
+          <CodeD index="no" lang="en">Korea Disease Control and Prevention Agency</CodeD>
+          <CodeI org="thingfinder" action="add">
+            <CodeA name="db" value="ptf--aboutCo-00001170-20230430-154622.dictionary"/>
+          </CodeI>
+          <CodeI org="validation" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="status" value="active"/>
+          </CodeI>
+        </Code>
+      </CSet>
+      <CSet fid="re">
+        <Code value="skorea">
+          <CodeD index="no" lang="en">South Korea</CodeD>
+          <CodeI org="categoriser" action="add">
+            <CodeA name="db" value="es-EnglishRE_en_20230425180959"/>
+            <CodeA name="es_score" value="220"/>
+          </CodeI>
+          <CodeI org="rbc" action="add">
+            <CodeA name="db" value="prbc---00004614-20230501-003549"/>
+            <CodeA name="rule" value="635467"/>
+          </CodeI>
+          <CodeI org="expansion" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="root" value="re:busan"/>
+          </CodeI>
+          <CodeI org="validation" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="status" value="active"/>
+          </CodeI>
+          <CodeI org="hierarchy" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="nodelevel" value="2"/>
+          </CodeI>
+        </Code>
+        <Code value="busan">
+          <CodeD index="no" lang="en">Busan</CodeD>
+          <CodeI org="rbc" action="add">
+            <CodeA name="db" value="prbc---00004614-20230501-003549"/>
+            <CodeA name="rule" value="786682"/>
+          </CodeI>
+          <CodeI org="validation" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="status" value="active"/>
+          </CodeI>
+          <CodeI org="hierarchy" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="nodelevel" value="3"/>
+          </CodeI>
+        </Code>
+        <Code value="apacz">
+          <CodeD index="no" lang="en">Asia Pacific</CodeD>
+          <CodeI org="expansion" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="root" value="re:busan"/>
+            <CodeA name="root" value="re:skorea"/>
+          </CodeI>
+          <CodeI org="validation" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="status" value="active"/>
+          </CodeI>
+          <CodeI org="hierarchy" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="nodelevel" value="0"/>
+          </CodeI>
+        </Code>
+        <Code value="asiaz">
+          <CodeD index="no" lang="en">Asia</CodeD>
+          <CodeI org="expansion" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="root" value="re:busan"/>
+            <CodeA name="root" value="re:skorea"/>
+          </CodeI>
+          <CodeI org="validation" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="status" value="active"/>
+          </CodeI>
+          <CodeI org="hierarchy" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="nodelevel" value="0"/>
+          </CodeI>
+        </Code>
+        <Code value="easiaz">
+          <CodeD index="no" lang="en">East Asia</CodeD>
+          <CodeI org="expansion" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="root" value="re:busan"/>
+            <CodeA name="root" value="re:skorea"/>
+          </CodeI>
+          <CodeI org="validation" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="status" value="active"/>
+          </CodeI>
+          <CodeI org="hierarchy" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="nodelevel" value="1"/>
+          </CodeI>
+        </Code>
+      </CSet>
+    </CodeSets>
+  </MetadataPT>
+  <ArchiveDoc xml:space="preserve">
+        <Article markup="pp0" lang="en" index="field">
+            <HandL fid="hlp">
+                <Title fid="hl">
+                    <SectionName fid="se" index="field">Domestic</SectionName>
+                    <ColumnName fid="clm" index="field"/>
+                    <Headline fid="hd">
+                        <Para lang="en">5 Additional Mpox Cases Reported as Total Reaches 47</Para>
+                    </Headline>
+                </Title>
+                <LeadPara fid="lp">
+                    <Para>South Korea has confirmed five more cases of mpox as the country's total rises to 47.</Para>
+                    <Para>According to the Korea Disease Control and Prevention Agency on Monday, three patients are from Seoul, and one each from South Chungcheong Province and Busan, none of whom has traveled overseas within the last three weeks, suggesting local transmissions.</Para>
+                </LeadPara>
+            </HandL>
+            <TailParas fid="td">
+                <Para>Although the first case of mpox in South Korea reported last June and four more cases through March were all linked with overseas travel, the recent dozens of infections since early April are believed to be infections transmitted in the country.</Para>
+                <Para>KDCA chief Jee Young-mee offered assurances that mpox could be sufficiently managed with the current quarantine response capacity and urged those exhibiting symptoms to visit their nearest medical facility for testing.</Para>
+            </TailParas>
+            <Byline fid="by" index="field"/>
+            <Credit fid="cr" index="field"/>
+            <Contact fid="ct" index="field"/>
+            <Notes fid="rf" index="field"/>
+            <Art fid="art" index="field"/>
+            <Copyright fid="cy" index="field">(c)2023 KBS. </Copyright>
+        </Article>
+    </ArchiveDoc>
+  <AdocTOC adoctype="article">
+    <Item size="0" ref="distdoc:archive/ArchiveDoc::Article" type="arttext"/>
+    <Item size="0" ref="distdoc:archive/InvertText" type="invtext"/>
+  </AdocTOC>
+</DistDoc>

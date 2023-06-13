@@ -1,0 +1,17 @@
+bs4
+confluent_kafka
+datasets
+evaluate
+fastavro
+numpy
+pandas
+psycopg2-binary
+python-dotenv
+pyyaml
+requests
+sacremoses
+sentence_transformers
+tabulate
+transformers
+transformers[sentencepiece]
+xformers

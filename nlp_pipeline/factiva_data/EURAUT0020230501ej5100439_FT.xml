@@ -1,0 +1,401 @@
+<?xml version="1.0"?>
+<DistDoc action="add" dist="dist_id" distdocver="05.2" an="EURAUT0020230501ej5100439" doctype="article">
+  <SelectData>
+    <FolderName id="301125448" rl="100">InfectiousDiseaseHuman_S</FolderName>
+  </SelectData>
+  <SelectDedupData>
+    <DupList cnt="0" dedupThreshold="VIRTUALLYIDENTICAL" id="301125448"/>
+  </SelectDedupData>
+  <ReplyItem lang="es">
+    <BaseLang value="es" fid="la"/>
+    <IPDocId fid="id">EURAUT0020230501ej5100439</IPDocId>
+    <AccessionNo value="EURAUT0020230501ej5100439" fid="an"/>
+    <Num value="220" fid="wc"/>
+    <Date value="20230501" fid="pd"/>
+    <Time value="074053" fid="et"/>
+    <SrcCode value="euraut" fid="sc"/>
+    <SrcName fid="sn">Europa Press - Servicio Auton&#xF3;mico</SrcName>
+    <TruncRules>
+      <XS value="22"/>
+      <S value="52"/>
+    </TruncRules>
+    <Title fid="hl">
+      <SectionName fid="se"/>
+      <ColumnName fid="clm"/>
+      <Headline fid="hd">
+        <Para lang="es">CANTABRIA.-Coronavirus.- Cantabria tiene 10 personas hospitalizadas
+                    por Covid</Para>
+      </Headline>
+    </Title>
+    <Snippet>
+      <Para>SANTANDER, 1 (EUROPA PRESS)</Para>
+      <Para>El n&#xFA;mero de hospitalizados por Covid-19 en Cantabria ha descendido este domingo a
+                10, dos menos que en la jornada anterior, y sigue sin haber ning&#xFA;n paciente en la
+                Unidad de Cuidados Intensivos (UCI) debido al ...</Para>
+    </Snippet>
+    <Byline fid="by"/>
+    <Credit fid="cr"/>
+    <Copyright fid="cy">Copyright 2023. Europa Press. Est&#xE1; expresamente prohibida la
+            redistribuci&#xF3;n y la redifusi&#xF3;n de todo o parte de los servicios de Europa Press sin su
+            previo y expreso consentimiento. </Copyright>
+    <CodeSets>
+      <CSet fid="re">
+        <Code value="canta"/>
+        <Code value="spain"/>
+        <Code value="eecz"/>
+        <Code value="eurz"/>
+        <Code value="medz"/>
+        <Code value="weurz"/>
+      </CSet>
+      <CSet fid="ns">
+        <Code value="gsars"/>
+        <Code value="gout"/>
+        <Code value="ghea"/>
+        <Code value="gcat"/>
+        <Code value="gcold"/>
+        <Code value="gmed"/>
+        <Code value="gspox"/>
+      </CSet>
+    </CodeSets>
+  </ReplyItem>
+  <MetadataPT>
+    <DocData>
+      <DocType value="article" fid="fmt"/>
+      <IPDocId fid="id">EURAUT0020230501ej5100439</IPDocId>
+      <AccessionNo value="EURAUT0020230501ej5100439" fid="an"/>
+      <Num value="220" fid="wc"/>
+      <Num value="1024" fid="cc"/>
+      <Date value="20230501" fid="pd"/>
+      <Date value="20230501" fid="upd"/>
+      <Date value="20230501" fid="md"/>
+      <Time value="074053" fid="et"/>
+      <Time value="074103" fid="upt"/>
+      <Time value="074103" fid="mt"/>
+      <BaseLang value="es" fid="la"/>
+      <Editor value="" fid="rve"/>
+      <RevisionNo value="0" fid="rvn"/>
+    </DocData>
+    <PubData>
+      <Restrictor fid="rst">
+        <Code value="FSPNORMAWS0500"/>
+        <Code value="EURAUT"/>
+        <Code value="fspFileId392799091"/>
+        <Code value="FUT"/>
+        <Code value="CLNTALL"/>
+        <Code value="ES"/>
+        <Code value="EUR"/>
+        <Code value="MEDZ"/>
+        <Code value="SFEP"/>
+        <Code value="SPAIN"/>
+        <Code value="TCUWIR"/>
+        <Code value="TGEN"/>
+        <Code value="TNWR"/>
+        <Code value="TSCH"/>
+        <Code value="TTRK"/>
+        <Code value="TWIR"/>
+        <Code value="TWWW"/>
+        <Code value="TYAS"/>
+        <Code value="TYLC"/>
+        <Code value="WEURZ"/>
+        <Code value="MPCV1M23M0B1"/>
+        <Code value="MPCEnvPROD"/>
+        <Code value="MPCDocHashCAA2F394BA2F1EC9"/>
+        <Code value="FSPCATEGORIZER"/>
+        <Code value="FSPCATNS"/>
+        <Code value="FSP2YESNS"/>
+        <Code value="FSPRBC"/>
+        <Code value="FSPRBCNS"/>
+        <Code value="FSPCATRE"/>
+        <Code value="FSPRBCRE"/>
+        <Code value="FSP2YESRE"/>
+        <Code value="FSP2NOCO"/>
+        <Code value="FSP2NOCOOC"/>
+        <Code value="FSP2NOIN"/>
+        <Code value="FSP2NOPEOC"/>
+        <Code value="FSPRBC456736"/>
+        <Code value="FSPRBC676856"/>
+        <Code value="MPCCL"/>
+        <Code value="MPCJP"/>
+        <Code value="MPCKW"/>
+        <Code value="MPCKP"/>
+        <Code value="MPCESRE"/>
+        <Code value="MPCESIN"/>
+        <Code value="MPCESNS"/>
+        <Code value="FSP2AC"/>
+        <Code value="FSP2ACRBCARES"/>
+        <Code value="FSP2ACRBCSTD"/>
+      </Restrictor>
+      <IPId value="EUROP" fid="ip"/>
+      <PublisherN fid="pub">Europa Press Noticias S.A.</PublisherN>
+      <AttribCode value="EURAUT" fid="atr"/>
+      <SrcCode value="EURAUT" fid="sc"/>
+      <SrcName fid="sn">Europa Press - Servicio Auton&#xF3;mico</SrcName>
+      <Logo img="eurautLogo.gif" link="" src="http://logos.factiva.com"/>
+    </PubData>
+    <CodeSets>
+      <CSet fid="re">
+        <Code value="canta">
+          <CodeD index="no" lang="en">Cantabria</CodeD>
+          <CodeI org="categoriser" action="add">
+            <CodeA name="db" value="es-SpanishRE_es_20230426182443"/>
+            <CodeA name="es_score" value="242"/>
+          </CodeI>
+          <CodeI org="rbc" action="add">
+            <CodeA name="db" value="prbc---00004614-20230501-003549"/>
+            <CodeA name="rule" value="676856"/>
+          </CodeI>
+          <CodeI org="validation" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="status" value="active"/>
+          </CodeI>
+          <CodeI org="hierarchy" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="nodelevel" value="2"/>
+            <CodeA name="nodelevel" value="3"/>
+          </CodeI>
+        </Code>
+        <Code value="spain">
+          <CodeD index="no" lang="en">Spain</CodeD>
+          <CodeI org="categoriser" action="add">
+            <CodeA name="db" value="es-SpanishRE_es_20230426182443"/>
+            <CodeA name="es_score" value="220"/>
+          </CodeI>
+          <CodeI org="expansion" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="root" value="re:canta"/>
+          </CodeI>
+          <CodeI org="validation" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="status" value="active"/>
+          </CodeI>
+          <CodeI org="hierarchy" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="nodelevel" value="1"/>
+            <CodeA name="nodelevel" value="2"/>
+          </CodeI>
+        </Code>
+        <Code value="eecz">
+          <CodeD index="no" lang="en">European Union Countries</CodeD>
+          <CodeI org="expansion" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="root" value="re:canta"/>
+            <CodeA name="root" value="re:spain"/>
+          </CodeI>
+          <CodeI org="validation" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="status" value="active"/>
+          </CodeI>
+          <CodeI org="hierarchy" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="nodelevel" value="1"/>
+          </CodeI>
+        </Code>
+        <Code value="eurz">
+          <CodeD index="no" lang="en">Europe</CodeD>
+          <CodeI org="expansion" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="root" value="re:canta"/>
+            <CodeA name="root" value="re:spain"/>
+          </CodeI>
+          <CodeI org="validation" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="status" value="active"/>
+          </CodeI>
+          <CodeI org="hierarchy" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="nodelevel" value="0"/>
+          </CodeI>
+        </Code>
+        <Code value="medz">
+          <CodeD index="no" lang="en">Mediterranean Countries</CodeD>
+          <CodeI org="expansion" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="root" value="re:canta"/>
+            <CodeA name="root" value="re:spain"/>
+          </CodeI>
+          <CodeI org="validation" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="status" value="active"/>
+          </CodeI>
+          <CodeI org="hierarchy" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="nodelevel" value="0"/>
+          </CodeI>
+        </Code>
+        <Code value="weurz">
+          <CodeD index="no" lang="en">Western Europe</CodeD>
+          <CodeI org="expansion" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="root" value="re:canta"/>
+            <CodeA name="root" value="re:spain"/>
+          </CodeI>
+          <CodeI org="validation" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="status" value="active"/>
+          </CodeI>
+          <CodeI org="hierarchy" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="nodelevel" value="1"/>
+          </CodeI>
+        </Code>
+      </CSet>
+      <CSet fid="ns">
+        <Code value="gsars">
+          <CodeD index="no" lang="en">Novel Coronaviruses</CodeD>
+          <CodeI org="categoriser" action="add">
+            <CodeA name="db" value="es-SpanishNS_es_20230420182305"/>
+            <CodeA name="es_score" value="210"/>
+          </CodeI>
+          <CodeI org="validation" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="status" value="active"/>
+          </CodeI>
+          <CodeI org="hierarchy" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="nodelevel" value="4"/>
+          </CodeI>
+        </Code>
+        <Code value="gout">
+          <CodeD index="no" lang="en">Outbreaks/Epidemics</CodeD>
+          <CodeI org="categoriser" action="add">
+            <CodeA name="db" value="es-SpanishNS_es_20230420182305"/>
+            <CodeA name="es_score" value="174"/>
+          </CodeI>
+          <CodeI org="validation" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="status" value="active"/>
+          </CodeI>
+          <CodeI org="hierarchy" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="nodelevel" value="4"/>
+          </CodeI>
+        </Code>
+        <Code value="ghea">
+          <CodeD index="no" lang="en">Health</CodeD>
+          <CodeI org="rbc" action="add">
+            <CodeA name="db" value="prbc---00004614-20230501-003549"/>
+            <CodeA name="rule" value="456736"/>
+          </CodeI>
+          <CodeI org="expansion" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="root" value="ns:gout"/>
+            <CodeA name="root" value="ns:gsars"/>
+          </CodeI>
+          <CodeI org="validation" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="status" value="active"/>
+          </CodeI>
+          <CodeI org="hierarchy" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="nodelevel" value="1"/>
+          </CodeI>
+        </Code>
+        <Code value="gcat">
+          <CodeD index="no" lang="en">Political/General News</CodeD>
+          <CodeI org="expansion" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="root" value="ns:ghea"/>
+            <CodeA name="root" value="ns:gout"/>
+            <CodeA name="root" value="ns:gsars"/>
+          </CodeI>
+          <CodeI org="validation" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="status" value="active"/>
+          </CodeI>
+          <CodeI org="hierarchy" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="nodelevel" value="0"/>
+          </CodeI>
+        </Code>
+        <Code value="gcold">
+          <CodeD index="no" lang="en">Respiratory Tract Diseases</CodeD>
+          <CodeI org="expansion" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="root" value="ns:gsars"/>
+          </CodeI>
+          <CodeI org="validation" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="status" value="active"/>
+          </CodeI>
+          <CodeI org="hierarchy" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="nodelevel" value="3"/>
+          </CodeI>
+        </Code>
+        <Code value="gmed">
+          <CodeD index="no" lang="en">Medical Conditions</CodeD>
+          <CodeI org="expansion" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="root" value="ns:gout"/>
+            <CodeA name="root" value="ns:gsars"/>
+          </CodeI>
+          <CodeI org="validation" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="status" value="active"/>
+          </CodeI>
+          <CodeI org="hierarchy" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="nodelevel" value="2"/>
+          </CodeI>
+        </Code>
+        <Code value="gspox">
+          <CodeD index="no" lang="en">Infectious Diseases</CodeD>
+          <CodeI org="expansion" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="root" value="ns:gout"/>
+            <CodeA name="root" value="ns:gsars"/>
+          </CodeI>
+          <CodeI org="validation" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="status" value="active"/>
+          </CodeI>
+          <CodeI org="hierarchy" action="add">
+            <CodeA name="db" value="pedv---00000035-20230430-224111"/>
+            <CodeA name="nodelevel" value="3"/>
+          </CodeI>
+        </Code>
+      </CSet>
+    </CodeSets>
+    <DescTPC fid="de">
+      <DescField fid="ipd">Sanidad SALUD Health Spain Espa&#xF1;a </DescField>
+      <DescField fid="ipcns">SAN </DescField>
+      <DescField fid="ipcre">Spain </DescField>
+      <DescField fid="ipcin">07000000 </DescField>
+    </DescTPC>
+  </MetadataPT>
+  <ArchiveDoc xml:space="preserve">
+    <Article markup="pp0" lang="es" index="field">
+      <HandL fid="hlp">
+        <Title fid="hl">
+          <SectionName fid="se" index="field"/>
+          <ColumnName fid="clm" index="field"/>
+          <Headline fid="hd">
+            <Para lang="es">CANTABRIA.-Coronavirus.- Cantabria tiene 10 personas hospitalizadas por Covid</Para>
+          </Headline>
+        </Title>
+        <LeadPara fid="lp">
+          <Para>SANTANDER, 1 (EUROPA PRESS)</Para>
+          <Para>El n&#xFA;mero de hospitalizados por Covid-19 en Cantabria ha descendido este domingo a 10, dos menos que en la jornada anterior, y sigue sin haber ning&#xFA;n paciente en la Unidad de Cuidados Intensivos (UCI) debido al virus.</Para>
+        </LeadPara>
+      </HandL>
+      <TailParas fid="td">
+        <Para>De los ingresados, cinco se encuentran en el Hospital Valdecilla, tres en el de Sierrallana y dos en el de Laredo. Al reducirse los pacientes, el porcentaje de ocupaci&#xF3;n hospitalaria por camas Covid ha bajado dos d&#xE9;cimas, hasta el 0,6%.</Para>
+        <Para>En la jornada de ayer se detectaron seis nuevos casos de Covid en personas mayores de 60 a&#xF1;os --&#xFA;nico grupo del que se ofrecen datos de transmisi&#xF3;n comunitaria--, uno m&#xE1;s que en el d&#xED;a anterior.</Para>
+        <Para>Seg&#xFA;n los &#xFA;ltimos datos del Servicio C&#xE1;ntabro de Salud (SCS), correspondientes al cierre del 30 de abril, la incidencia acumulada a 14 d&#xED;as en mayores de 60 a&#xF1;os ha subido un punto, a 58 casos por cada 100.000 habitantes, mientras que la acumulada ha bajado dos puntos, a 27 casos.</Para>
+        <Para>Ambos par&#xE1;metros est&#xE1;n en riesgo bajo, si bien Cantabria en su conjunto se mantiene en riesgo controlado.</Para>
+        <Para>En la &#xFA;ltima semana se han contabilizado 48 nuevos casos entre mayores, que ascienden a 101 si se tienen en cuenta los &#xFA;ltimos 14 d&#xED;as.</Para>
+      </TailParas>
+      <Byline fid="by" index="field"/>
+      <Credit fid="cr" index="field"/>
+      <Contact fid="ct" index="field"/>
+      <Notes fid="rf" index="field"/>
+      <Art fid="art" index="field"/>
+      <Copyright fid="cy" index="field">Copyright 2023. Europa Press. Est&#xE1; expresamente prohibida la redistribuci&#xF3;n y la redifusi&#xF3;n de todo o parte de los servicios de Europa Press sin su previo y expreso consentimiento. </Copyright>
+      <Dateline fid="dln" index="field">1 May. 2023; Europa Press, Espa&#xF1;a </Dateline>
+    </Article>
+  </ArchiveDoc>
+  <AdocTOC adoctype="article">
+    <Item size="0" ref="distdoc:archive/ArchiveDoc::Article" type="arttext"/>
+    <Item size="0" ref="distdoc:archive/InvertText" type="invtext"/>
+  </AdocTOC>
+</DistDoc>
