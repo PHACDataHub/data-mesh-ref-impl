@@ -310,7 +310,7 @@ brew install jq
 brew install wget
 ```
 
-Start the `Kafka` cluster and feed the messages (persons, vaccines, vaccination events, adverse effects)
+Start the `Kafka` cluster:
 ```bash
 ./setup.sh
 ```
@@ -321,9 +321,9 @@ Start the `Kafka` cluster and feed the messages (persons, vaccines, vaccination 
 
 ```bash
 ./setup.sh
+
 Creating volumes for zookeeper ...
 kafka-ce/zk/data
-Password:
 kafka-ce/zk/data volume is created.
 kafka-ce/zk/txn-logs
 kafka-ce/zk/txn-logs volume is created.
@@ -332,6 +332,10 @@ Volumes for zookeeper created ✅
 Creating volumes for brokers ...
 kafka-ce/broker/data
 kafka-ce/broker/data volume is created.
+kafka-ce/broker2/data
+kafka-ce/broker2/data volume is created.
+kafka-ce/broker3/data
+kafka-ce/broker3/data volume is created.
 Volumes for brokers created ✅
 
 Creating volumes for schema-registry ...
@@ -357,16 +361,20 @@ kafka-ce/connect/data/filepulse/xml volume is created.
 Volumes for filepulse created ✅
 
 Start all services ...
-[+] Running 9/9
- ✔ Network backend            Created                                                                                                                              0.0s
- ✔ Container zookeeper        Started                                                                                                                              0.5s
- ✔ Container broker           Started                                                                                                                              0.8s
- ✔ Container schema-registry  Started                                                                                                                              1.0s
- ✔ Container connect          Started                                                                                                                              1.2s
- ✔ Container kafka-ui         Started                                                                                                                              1.5s
- ✔ Container init-kafka       Started                                                                                                                              1.4s
- ✔ Container ksqldb-server    Started                                                                                                                              1.4s
- ✔ Container ksqldb-cli       Started                                                                                                                              1.7s
+[+] Running 13/13
+ ✔ Network backend            Created                                                                                                                                                    0.1s 
+ ✔ Container zookeeper        Started                                                                                                                                                    0.6s 
+ ✔ Container broker           Started                                                                                                                                                    1.0s 
+ ✔ Container broker3          Started                                                                                                                                                    1.7s 
+ ✔ Container broker2          Started                                                                                                                                                    1.7s 
+ ✔ Container schema-registry  Started                                                                                                                                                    1.7s 
+ ✔ Container connect          Started                                                                                                                                                    2.1s 
+ ✔ Container connect3         Started                                                                                                                                                    3.3s 
+ ✔ Container ksqldb-server    Started                                                                                                                                                    3.0s 
+ ✔ Container connect2         Started                                                                                                                                                    4.1s 
+ ✔ Container kafka-ui         Started                                                                                                                                                    3.7s 
+ ✔ Container rest-proxy       Started                                                                                                                                                    4.0s 
+ ✔ Container ksqldb-cli       Started                                                                                                                                                    4.3s 
 
 Wait for zookeeper:2181 ...
 zookeeper:2181 is ready ✅
@@ -374,17 +382,45 @@ zookeeper:2181 is ready ✅
 Wait for broker:29092 ...
 broker:29092 is ready ✅
 
+Wait for broker2:29094 ...
+broker2:29094 is ready ✅
+
+Wait for broker3:29096 ...
+broker3:29096 is ready ✅
+
 Wait for schema-registry:8081 ...
 schema-registry:8081 is ready ✅
 
 Wait for connect:8083 ...
 connect:8083 is ready ✅
 
+Wait for connect2:8083 ...
+connect2:8083 is ready ✅
+
+Wait for connect3:8083 ...
+connect3:8083 is ready ✅
+
 Wait for ksqldb-server:8088 ...
 ksqldb-server:8088 is ready ✅
 
 Kafka cluster is ready ✅
 All services have started ✅
+```
+</p>
+</details>
+
+![After setup](./img/after_setup.png)
+
+Now, lets create topics and propagate them with messages (persons, vaccines, vaccination events, adverse effects)
+```bash
+./create_topics.sh
+```
+
+<details>
+<summary>You would see this output ...</summary>
+<p>
+
+```bash
 Check if avro is one of supported schema types ...
 ["JSON","PROTOBUF","AVRO"] are supported ✅
 AVRO is supported ✅
@@ -395,51 +431,51 @@ Top level schema compatibility configuration ...
 List all current subjects ...
 curl --silent -X GET http://localhost:8081/subjects | jq .[]
 
-Creating subject vaccines-key with schema /Users/nghia/work/data-mesh-ref-impl/usvdm/kafka_streams/conf/vaccines-key.avsc ...
+Creating subject vaccine-standards-key with schema /home/nghia_doan_gcp_hc_sc_gc_ca/data-mesh-ref-impl/usvdm/kafka_streams/conf/vaccine-standards-key.avsc ...
 1
 
-Creating subject vaccines-value with schema /Users/nghia/work/data-mesh-ref-impl/usvdm/kafka_streams/conf/vaccines-val.avsc ...
+Creating subject vaccine-standards-value with schema /home/nghia_doan_gcp_hc_sc_gc_ca/data-mesh-ref-impl/usvdm/kafka_streams/conf/vaccine-standards-val.avsc ...
 2
 
 List all current subjects ...
 curl --silent -X GET http://localhost:8081/subjects | jq .[]
-"vaccines-key"
-"vaccines-value"
+"vaccine-standards-key"
+"vaccine-standards-value"
 
-Find ID of the vaccines-key...
+Find ID of the vaccine-standards-key...
 schema_id=1
 
 
-Find details of the vaccines-key...
-curl --silent -X GET http://localhost:8081/subjects/vaccines-key/versions/latest
-{"subject":"vaccines-key","version":1,"id":1,"schema":"{\"type\":\"record\",\"name\":\"vaccine_key\",\"namespace\":\"ca.gov.phac.cdsb.dmia.oan.dmri\",\"fields\":[{\"name\":\"vid\",\"type\":\"string\"}]}"}
+Find details of the vaccine-standards-key...
+curl --silent -X GET http://localhost:8081/subjects/vaccine-standards-key/versions/latest
+{"subject":"vaccine-standards-key","version":1,"id":1,"schema":"{\"type\":\"record\",\"name\":\"vaccine_key\",\"namespace\":\"ca.gov.phac.cdsb.dmia.oan.dmri\",\"fields\":[{\"name\":\"vid\",\"type\":\"string\"}]}"}
 
-List all versions of vaccines-key...
-curl --silent -X GET http://localhost:8081/subjects/vaccines-key/versions | jq
+List all versions of vaccine-standards-key...
+curl --silent -X GET http://localhost:8081/subjects/vaccine-standards-key/versions | jq
 [
   1
 ]
 
-Find ID of the vaccines-value...
+Find ID of the vaccine-standards-value...
 schema_id=2
 
 
-Find details of the vaccines-value...
-curl --silent -X GET http://localhost:8081/subjects/vaccines-value/versions/latest
-{"subject":"vaccines-value","version":1,"id":2,"schema":"{\"type\":\"record\",\"name\":\"vaccine_value\",\"namespace\":\"ca.gov.phac.cdsb.dmia.oan.dmri\",\"fields\":[{\"name\":\"name\",\"type\":\"string\"},{\"name\":\"unit_of_sale\",\"type\":\"string\"},{\"name\":\"unit_of_use\",\"type\":\"string\"}]}"}
+Find details of the vaccine-standards-value...
+curl --silent -X GET http://localhost:8081/subjects/vaccine-standards-value/versions/latest
+{"subject":"vaccine-standards-value","version":1,"id":2,"schema":"{\"type\":\"record\",\"name\":\"vaccine_value\",\"namespace\":\"ca.gov.phac.cdsb.dmia.oan.dmri\",\"fields\":[{\"name\":\"name\",\"type\":\"string\"}]}"}
 
-List all versions of vaccines-value...
-curl --silent -X GET http://localhost:8081/subjects/vaccines-value/versions | jq
+List all versions of vaccine-standards-value...
+curl --silent -X GET http://localhost:8081/subjects/vaccine-standards-value/versions | jq
 [
   1
 ]
 
-Create topic vaccines ...
-docker exec -it broker /bin/kafka-topics     --bootstrap-server broker:29092     --create --topic vaccines
-Created topic vaccines.
-vaccines created ✅
+Create topic vaccine-standards ...
+docker exec -it broker /bin/kafka-topics     --bootstrap-server broker:29092     --create --topic vaccine-standards --partitions 3 --replication-factor 3
+Created topic vaccine-standards.
+vaccine-standards created ✅
 
-Produce 6 messages for vaccines ...
+Produce 6 messages for vaccine-standards ...
 
 Check if avro is one of supported schema types ...
 ["JSON","PROTOBUF","AVRO"] are supported ✅
@@ -450,29 +486,93 @@ Top level schema compatibility configuration ...
 
 List all current subjects ...
 curl --silent -X GET http://localhost:8081/subjects | jq .[]
-"vaccines-key"
-"vaccines-value"
+"vaccine-standards-key"
+"vaccine-standards-value"
 
-Creating subject persons-BC-key with schema /Users/nghia/work/data-mesh-ref-impl/usvdm/kafka_streams/conf/persons-BC-key.avsc ...
+Creating subject vaccine-lot-info-key with schema /home/nghia_doan_gcp_hc_sc_gc_ca/data-mesh-ref-impl/usvdm/kafka_streams/conf/vaccine-lot-info-key.avsc ...
+1
+
+Creating subject vaccine-lot-info-value with schema /home/nghia_doan_gcp_hc_sc_gc_ca/data-mesh-ref-impl/usvdm/kafka_streams/conf/vaccine-lot-info-val.avsc ...
 3
 
-Creating subject persons-BC-value with schema /Users/nghia/work/data-mesh-ref-impl/usvdm/kafka_streams/conf/persons-BC-val.avsc ...
+List all current subjects ...
+curl --silent -X GET http://localhost:8081/subjects | jq .[]
+"vaccine-lot-info-key"
+"vaccine-lot-info-value"
+"vaccine-standards-key"
+"vaccine-standards-value"
+
+Find ID of the vaccine-lot-info-key...
+schema_id=1
+
+
+Find details of the vaccine-lot-info-key...
+curl --silent -X GET http://localhost:8081/subjects/vaccine-lot-info-key/versions/latest
+{"subject":"vaccine-lot-info-key","version":1,"id":1,"schema":"{\"type\":\"record\",\"name\":\"vaccine_key\",\"namespace\":\"ca.gov.phac.cdsb.dmia.oan.dmri\",\"fields\":[{\"name\":\"vid\",\"type\":\"string\"}]}"}
+
+List all versions of vaccine-lot-info-key...
+curl --silent -X GET http://localhost:8081/subjects/vaccine-lot-info-key/versions | jq
+[
+  1
+]
+
+Find ID of the vaccine-lot-info-value...
+schema_id=3
+
+
+Find details of the vaccine-lot-info-value...
+curl --silent -X GET http://localhost:8081/subjects/vaccine-lot-info-value/versions/latest
+{"subject":"vaccine-lot-info-value","version":1,"id":3,"schema":"{\"type\":\"record\",\"name\":\"vaccine_value\",\"namespace\":\"ca.gov.phac.cdsb.dmia.oan.dmri\",\"fields\":[{\"name\":\"unit_of_sale\",\"type\":\"string\"},{\"name\":\"unit_of_use\",\"type\":\"string\"}]}"}
+
+List all versions of vaccine-lot-info-value...
+curl --silent -X GET http://localhost:8081/subjects/vaccine-lot-info-value/versions | jq
+[
+  1
+]
+
+Create topic vaccine-lot-info ...
+docker exec -it broker /bin/kafka-topics     --bootstrap-server broker:29092     --create --topic vaccine-lot-info --partitions 3 --replication-factor 3
+Created topic vaccine-lot-info.
+vaccine-lot-info created ✅
+
+Produce 6 messages for vaccine-lot-info ...
+
+Check if avro is one of supported schema types ...
+["JSON","PROTOBUF","AVRO"] are supported ✅
+AVRO is supported ✅
+
+Top level schema compatibility configuration ...
+"BACKWARD"
+
+List all current subjects ...
+curl --silent -X GET http://localhost:8081/subjects | jq .[]
+"vaccine-lot-info-key"
+"vaccine-lot-info-value"
+"vaccine-standards-key"
+"vaccine-standards-value"
+
+Creating subject persons-BC-key with schema /home/nghia_doan_gcp_hc_sc_gc_ca/data-mesh-ref-impl/usvdm/kafka_streams/conf/persons-BC-key.avsc ...
 4
+
+Creating subject persons-BC-value with schema /home/nghia_doan_gcp_hc_sc_gc_ca/data-mesh-ref-impl/usvdm/kafka_streams/conf/persons-BC-val.avsc ...
+5
 
 List all current subjects ...
 curl --silent -X GET http://localhost:8081/subjects | jq .[]
 "persons-BC-key"
 "persons-BC-value"
-"vaccines-key"
-"vaccines-value"
+"vaccine-lot-info-key"
+"vaccine-lot-info-value"
+"vaccine-standards-key"
+"vaccine-standards-value"
 
 Find ID of the persons-BC-key...
-schema_id=3
+schema_id=4
 
 
 Find details of the persons-BC-key...
 curl --silent -X GET http://localhost:8081/subjects/persons-BC-key/versions/latest
-{"subject":"persons-BC-key","version":1,"id":3,"schema":"{\"type\":\"record\",\"name\":\"person_bc_key\",\"namespace\":\"ca.gov.phac.cdsb.dmia.oan.dmri\",\"fields\":[{\"name\":\"pid\",\"type\":\"string\"}]}"}
+{"subject":"persons-BC-key","version":1,"id":4,"schema":"{\"type\":\"record\",\"name\":\"person_bc_key\",\"namespace\":\"ca.gov.phac.cdsb.dmia.oan.dmri\",\"fields\":[{\"name\":\"pid\",\"type\":\"string\"}]}"}
 
 List all versions of persons-BC-key...
 curl --silent -X GET http://localhost:8081/subjects/persons-BC-key/versions | jq
@@ -481,12 +581,12 @@ curl --silent -X GET http://localhost:8081/subjects/persons-BC-key/versions | jq
 ]
 
 Find ID of the persons-BC-value...
-schema_id=4
+schema_id=5
 
 
 Find details of the persons-BC-value...
 curl --silent -X GET http://localhost:8081/subjects/persons-BC-value/versions/latest
-{"subject":"persons-BC-value","version":1,"id":4,"schema":"{\"type\":\"record\",\"name\":\"person_bc_value\",\"namespace\":\"ca.gov.phac.cdsb.dmia.oan.dmri\",\"fields\":[{\"name\":\"name\",\"type\":\"string\"},{\"name\":\"blood_type\",\"type\":\"string\"},{\"name\":\"birthday\",\"type\":\"string\"},{\"name\":\"address\",\"type\":\"string\"}]}"}
+{"subject":"persons-BC-value","version":1,"id":5,"schema":"{\"type\":\"record\",\"name\":\"person_bc_value\",\"namespace\":\"ca.gov.phac.cdsb.dmia.oan.dmri\",\"fields\":[{\"name\":\"name\",\"type\":\"string\"},{\"name\":\"blood_type\",\"type\":\"string\"},{\"name\":\"birthday\",\"type\":\"string\"},{\"name\":\"address\",\"type\":\"string\"}]}"}
 
 List all versions of persons-BC-value...
 curl --silent -X GET http://localhost:8081/subjects/persons-BC-value/versions | jq
@@ -495,7 +595,7 @@ curl --silent -X GET http://localhost:8081/subjects/persons-BC-value/versions | 
 ]
 
 Create topic persons-BC ...
-docker exec -it broker /bin/kafka-topics     --bootstrap-server broker:29092     --create --topic persons-BC
+docker exec -it broker /bin/kafka-topics     --bootstrap-server broker:29092     --create --topic persons-BC --partitions 3 --replication-factor 3
 Created topic persons-BC.
 persons-BC created ✅
 
@@ -512,14 +612,16 @@ List all current subjects ...
 curl --silent -X GET http://localhost:8081/subjects | jq .[]
 "persons-BC-key"
 "persons-BC-value"
-"vaccines-key"
-"vaccines-value"
+"vaccine-lot-info-key"
+"vaccine-lot-info-value"
+"vaccine-standards-key"
+"vaccine-standards-value"
 
-Creating subject persons-ON-key with schema /Users/nghia/work/data-mesh-ref-impl/usvdm/kafka_streams/conf/persons-ON-key.avsc ...
-5
-
-Creating subject persons-ON-value with schema /Users/nghia/work/data-mesh-ref-impl/usvdm/kafka_streams/conf/persons-ON-val.avsc ...
+Creating subject persons-ON-key with schema /home/nghia_doan_gcp_hc_sc_gc_ca/data-mesh-ref-impl/usvdm/kafka_streams/conf/persons-ON-key.avsc ...
 6
+
+Creating subject persons-ON-value with schema /home/nghia_doan_gcp_hc_sc_gc_ca/data-mesh-ref-impl/usvdm/kafka_streams/conf/persons-ON-val.avsc ...
+7
 
 List all current subjects ...
 curl --silent -X GET http://localhost:8081/subjects | jq .[]
@@ -527,16 +629,18 @@ curl --silent -X GET http://localhost:8081/subjects | jq .[]
 "persons-BC-value"
 "persons-ON-key"
 "persons-ON-value"
-"vaccines-key"
-"vaccines-value"
+"vaccine-lot-info-key"
+"vaccine-lot-info-value"
+"vaccine-standards-key"
+"vaccine-standards-value"
 
 Find ID of the persons-ON-key...
-schema_id=5
+schema_id=6
 
 
 Find details of the persons-ON-key...
 curl --silent -X GET http://localhost:8081/subjects/persons-ON-key/versions/latest
-{"subject":"persons-ON-key","version":1,"id":5,"schema":"{\"type\":\"record\",\"name\":\"person_on_key\",\"namespace\":\"ca.gov.phac.cdsb.dmia.oan.dmri\",\"fields\":[{\"name\":\"pid\",\"type\":\"string\"}]}"}
+{"subject":"persons-ON-key","version":1,"id":6,"schema":"{\"type\":\"record\",\"name\":\"person_on_key\",\"namespace\":\"ca.gov.phac.cdsb.dmia.oan.dmri\",\"fields\":[{\"name\":\"pid\",\"type\":\"string\"}]}"}
 
 List all versions of persons-ON-key...
 curl --silent -X GET http://localhost:8081/subjects/persons-ON-key/versions | jq
@@ -545,12 +649,12 @@ curl --silent -X GET http://localhost:8081/subjects/persons-ON-key/versions | jq
 ]
 
 Find ID of the persons-ON-value...
-schema_id=6
+schema_id=7
 
 
 Find details of the persons-ON-value...
 curl --silent -X GET http://localhost:8081/subjects/persons-ON-value/versions/latest
-{"subject":"persons-ON-value","version":1,"id":6,"schema":"{\"type\":\"record\",\"name\":\"person_on_value\",\"namespace\":\"ca.gov.phac.cdsb.dmia.oan.dmri\",\"fields\":[{\"name\":\"name\",\"type\":\"string\"},{\"name\":\"blood_type\",\"type\":\"string\"},{\"name\":\"birthday\",\"type\":\"string\"},{\"name\":\"address\",\"type\":\"string\"}]}"}
+{"subject":"persons-ON-value","version":1,"id":7,"schema":"{\"type\":\"record\",\"name\":\"person_on_value\",\"namespace\":\"ca.gov.phac.cdsb.dmia.oan.dmri\",\"fields\":[{\"name\":\"name\",\"type\":\"string\"},{\"name\":\"blood_type\",\"type\":\"string\"},{\"name\":\"birthday\",\"type\":\"string\"},{\"name\":\"address\",\"type\":\"string\"}]}"}
 
 List all versions of persons-ON-value...
 curl --silent -X GET http://localhost:8081/subjects/persons-ON-value/versions | jq
@@ -559,7 +663,7 @@ curl --silent -X GET http://localhost:8081/subjects/persons-ON-value/versions | 
 ]
 
 Create topic persons-ON ...
-docker exec -it broker /bin/kafka-topics     --bootstrap-server broker:29092     --create --topic persons-ON
+docker exec -it broker /bin/kafka-topics     --bootstrap-server broker:29092     --create --topic persons-ON --partitions 3 --replication-factor 3
 Created topic persons-ON.
 persons-ON created ✅
 
@@ -578,14 +682,16 @@ curl --silent -X GET http://localhost:8081/subjects | jq .[]
 "persons-BC-value"
 "persons-ON-key"
 "persons-ON-value"
-"vaccines-key"
-"vaccines-value"
+"vaccine-lot-info-key"
+"vaccine-lot-info-value"
+"vaccine-standards-key"
+"vaccine-standards-value"
 
-Creating subject persons-QC-key with schema /Users/nghia/work/data-mesh-ref-impl/usvdm/kafka_streams/conf/persons-QC-key.avsc ...
-7
-
-Creating subject persons-QC-value with schema /Users/nghia/work/data-mesh-ref-impl/usvdm/kafka_streams/conf/persons-QC-val.avsc ...
+Creating subject persons-QC-key with schema /home/nghia_doan_gcp_hc_sc_gc_ca/data-mesh-ref-impl/usvdm/kafka_streams/conf/persons-QC-key.avsc ...
 8
+
+Creating subject persons-QC-value with schema /home/nghia_doan_gcp_hc_sc_gc_ca/data-mesh-ref-impl/usvdm/kafka_streams/conf/persons-QC-val.avsc ...
+9
 
 List all current subjects ...
 curl --silent -X GET http://localhost:8081/subjects | jq .[]
@@ -595,16 +701,18 @@ curl --silent -X GET http://localhost:8081/subjects | jq .[]
 "persons-ON-value"
 "persons-QC-key"
 "persons-QC-value"
-"vaccines-key"
-"vaccines-value"
+"vaccine-lot-info-key"
+"vaccine-lot-info-value"
+"vaccine-standards-key"
+"vaccine-standards-value"
 
 Find ID of the persons-QC-key...
-schema_id=7
+schema_id=8
 
 
 Find details of the persons-QC-key...
 curl --silent -X GET http://localhost:8081/subjects/persons-QC-key/versions/latest
-{"subject":"persons-QC-key","version":1,"id":7,"schema":"{\"type\":\"record\",\"name\":\"person_qc_key\",\"namespace\":\"ca.gov.phac.cdsb.dmia.oan.dmri\",\"fields\":[{\"name\":\"pid\",\"type\":\"string\"}]}"}
+{"subject":"persons-QC-key","version":1,"id":8,"schema":"{\"type\":\"record\",\"name\":\"person_qc_key\",\"namespace\":\"ca.gov.phac.cdsb.dmia.oan.dmri\",\"fields\":[{\"name\":\"pid\",\"type\":\"string\"}]}"}
 
 List all versions of persons-QC-key...
 curl --silent -X GET http://localhost:8081/subjects/persons-QC-key/versions | jq
@@ -613,12 +721,12 @@ curl --silent -X GET http://localhost:8081/subjects/persons-QC-key/versions | jq
 ]
 
 Find ID of the persons-QC-value...
-schema_id=8
+schema_id=9
 
 
 Find details of the persons-QC-value...
 curl --silent -X GET http://localhost:8081/subjects/persons-QC-value/versions/latest
-{"subject":"persons-QC-value","version":1,"id":8,"schema":"{\"type\":\"record\",\"name\":\"person_qc_value\",\"namespace\":\"ca.gov.phac.cdsb.dmia.oan.dmri\",\"fields\":[{\"name\":\"name\",\"type\":\"string\"},{\"name\":\"blood_type\",\"type\":\"string\"},{\"name\":\"birthday\",\"type\":\"string\"},{\"name\":\"address\",\"type\":\"string\"}]}"}
+{"subject":"persons-QC-value","version":1,"id":9,"schema":"{\"type\":\"record\",\"name\":\"person_qc_value\",\"namespace\":\"ca.gov.phac.cdsb.dmia.oan.dmri\",\"fields\":[{\"name\":\"name\",\"type\":\"string\"},{\"name\":\"blood_type\",\"type\":\"string\"},{\"name\":\"birthday\",\"type\":\"string\"},{\"name\":\"address\",\"type\":\"string\"}]}"}
 
 List all versions of persons-QC-value...
 curl --silent -X GET http://localhost:8081/subjects/persons-QC-value/versions | jq
@@ -627,7 +735,7 @@ curl --silent -X GET http://localhost:8081/subjects/persons-QC-value/versions | 
 ]
 
 Create topic persons-QC ...
-docker exec -it broker /bin/kafka-topics     --bootstrap-server broker:29092     --create --topic persons-QC
+docker exec -it broker /bin/kafka-topics     --bootstrap-server broker:29092     --create --topic persons-QC --partitions 3 --replication-factor 3
 Created topic persons-QC.
 persons-QC created ✅
 
@@ -648,14 +756,16 @@ curl --silent -X GET http://localhost:8081/subjects | jq .[]
 "persons-ON-value"
 "persons-QC-key"
 "persons-QC-value"
-"vaccines-key"
-"vaccines-value"
+"vaccine-lot-info-key"
+"vaccine-lot-info-value"
+"vaccine-standards-key"
+"vaccine-standards-value"
 
-Creating subject vaccination-events-BC-key with schema /Users/nghia/work/data-mesh-ref-impl/usvdm/kafka_streams/conf/vaccination-events-BC-key.avsc ...
-9
-
-Creating subject vaccination-events-BC-value with schema /Users/nghia/work/data-mesh-ref-impl/usvdm/kafka_streams/conf/vaccination-events-BC-val.avsc ...
+Creating subject vaccination-events-BC-key with schema /home/nghia_doan_gcp_hc_sc_gc_ca/data-mesh-ref-impl/usvdm/kafka_streams/conf/vaccination-events-BC-key.avsc ...
 10
+
+Creating subject vaccination-events-BC-value with schema /home/nghia_doan_gcp_hc_sc_gc_ca/data-mesh-ref-impl/usvdm/kafka_streams/conf/vaccination-events-BC-val.avsc ...
+11
 
 List all current subjects ...
 curl --silent -X GET http://localhost:8081/subjects | jq .[]
@@ -667,16 +777,18 @@ curl --silent -X GET http://localhost:8081/subjects | jq .[]
 "persons-QC-value"
 "vaccination-events-BC-key"
 "vaccination-events-BC-value"
-"vaccines-key"
-"vaccines-value"
+"vaccine-lot-info-key"
+"vaccine-lot-info-value"
+"vaccine-standards-key"
+"vaccine-standards-value"
 
 Find ID of the vaccination-events-BC-key...
-schema_id=9
+schema_id=10
 
 
 Find details of the vaccination-events-BC-key...
 curl --silent -X GET http://localhost:8081/subjects/vaccination-events-BC-key/versions/latest
-{"subject":"vaccination-events-BC-key","version":1,"id":9,"schema":"{\"type\":\"record\",\"name\":\"vaccination_event_bc_key\",\"namespace\":\"ca.gov.phac.cdsb.dmia.oan.dmri\",\"fields\":[{\"name\":\"vid\",\"type\":\"string\"},{\"name\":\"pid\",\"type\":\"string\"}]}"}
+{"subject":"vaccination-events-BC-key","version":1,"id":10,"schema":"{\"type\":\"record\",\"name\":\"vaccination_event_bc_key\",\"namespace\":\"ca.gov.phac.cdsb.dmia.oan.dmri\",\"fields\":[{\"name\":\"pid\",\"type\":\"string\"}]}"}
 
 List all versions of vaccination-events-BC-key...
 curl --silent -X GET http://localhost:8081/subjects/vaccination-events-BC-key/versions | jq
@@ -685,12 +797,12 @@ curl --silent -X GET http://localhost:8081/subjects/vaccination-events-BC-key/ve
 ]
 
 Find ID of the vaccination-events-BC-value...
-schema_id=10
+schema_id=11
 
 
 Find details of the vaccination-events-BC-value...
 curl --silent -X GET http://localhost:8081/subjects/vaccination-events-BC-value/versions/latest
-{"subject":"vaccination-events-BC-value","version":1,"id":10,"schema":"{\"type\":\"record\",\"name\":\"vaccination_event_bc_value\",\"namespace\":\"ca.gov.phac.cdsb.dmia.oan.dmri\",\"fields\":[{\"name\":\"datetime\",\"type\":\"string\"},{\"name\":\"location\",\"type\":\"string\"}]}"}
+{"subject":"vaccination-events-BC-value","version":1,"id":11,"schema":"{\"type\":\"record\",\"name\":\"vaccination_event_bc_value\",\"namespace\":\"ca.gov.phac.cdsb.dmia.oan.dmri\",\"fields\":[{\"name\":\"vid\",\"type\":\"string\"},{\"name\":\"datetime\",\"type\":\"string\"},{\"name\":\"location\",\"type\":\"string\"}]}"}
 
 List all versions of vaccination-events-BC-value...
 curl --silent -X GET http://localhost:8081/subjects/vaccination-events-BC-value/versions | jq
@@ -699,7 +811,7 @@ curl --silent -X GET http://localhost:8081/subjects/vaccination-events-BC-value/
 ]
 
 Create topic vaccination-events-BC ...
-docker exec -it broker /bin/kafka-topics     --bootstrap-server broker:29092     --create --topic vaccination-events-BC
+docker exec -it broker /bin/kafka-topics     --bootstrap-server broker:29092     --create --topic vaccination-events-BC --partitions 3 --replication-factor 3
 Created topic vaccination-events-BC.
 vaccination-events-BC created ✅
 
@@ -722,14 +834,16 @@ curl --silent -X GET http://localhost:8081/subjects | jq .[]
 "persons-QC-value"
 "vaccination-events-BC-key"
 "vaccination-events-BC-value"
-"vaccines-key"
-"vaccines-value"
+"vaccine-lot-info-key"
+"vaccine-lot-info-value"
+"vaccine-standards-key"
+"vaccine-standards-value"
 
-Creating subject vaccination-events-ON-key with schema /Users/nghia/work/data-mesh-ref-impl/usvdm/kafka_streams/conf/vaccination-events-ON-key.avsc ...
-11
-
-Creating subject vaccination-events-ON-value with schema /Users/nghia/work/data-mesh-ref-impl/usvdm/kafka_streams/conf/vaccination-events-ON-val.avsc ...
+Creating subject vaccination-events-ON-key with schema /home/nghia_doan_gcp_hc_sc_gc_ca/data-mesh-ref-impl/usvdm/kafka_streams/conf/vaccination-events-ON-key.avsc ...
 12
+
+Creating subject vaccination-events-ON-value with schema /home/nghia_doan_gcp_hc_sc_gc_ca/data-mesh-ref-impl/usvdm/kafka_streams/conf/vaccination-events-ON-val.avsc ...
+13
 
 List all current subjects ...
 curl --silent -X GET http://localhost:8081/subjects | jq .[]
@@ -743,16 +857,18 @@ curl --silent -X GET http://localhost:8081/subjects | jq .[]
 "vaccination-events-BC-value"
 "vaccination-events-ON-key"
 "vaccination-events-ON-value"
-"vaccines-key"
-"vaccines-value"
+"vaccine-lot-info-key"
+"vaccine-lot-info-value"
+"vaccine-standards-key"
+"vaccine-standards-value"
 
 Find ID of the vaccination-events-ON-key...
-schema_id=11
+schema_id=12
 
 
 Find details of the vaccination-events-ON-key...
 curl --silent -X GET http://localhost:8081/subjects/vaccination-events-ON-key/versions/latest
-{"subject":"vaccination-events-ON-key","version":1,"id":11,"schema":"{\"type\":\"record\",\"name\":\"vaccination_event_on_key\",\"namespace\":\"ca.gov.phac.cdsb.dmia.oan.dmri\",\"fields\":[{\"name\":\"vid\",\"type\":\"string\"},{\"name\":\"pid\",\"type\":\"string\"}]}"}
+{"subject":"vaccination-events-ON-key","version":1,"id":12,"schema":"{\"type\":\"record\",\"name\":\"vaccination_event_on_key\",\"namespace\":\"ca.gov.phac.cdsb.dmia.oan.dmri\",\"fields\":[{\"name\":\"pid\",\"type\":\"string\"}]}"}
 
 List all versions of vaccination-events-ON-key...
 curl --silent -X GET http://localhost:8081/subjects/vaccination-events-ON-key/versions | jq
@@ -761,12 +877,12 @@ curl --silent -X GET http://localhost:8081/subjects/vaccination-events-ON-key/ve
 ]
 
 Find ID of the vaccination-events-ON-value...
-schema_id=12
+schema_id=13
 
 
 Find details of the vaccination-events-ON-value...
 curl --silent -X GET http://localhost:8081/subjects/vaccination-events-ON-value/versions/latest
-{"subject":"vaccination-events-ON-value","version":1,"id":12,"schema":"{\"type\":\"record\",\"name\":\"vaccination_event_on_value\",\"namespace\":\"ca.gov.phac.cdsb.dmia.oan.dmri\",\"fields\":[{\"name\":\"datetime\",\"type\":\"string\"},{\"name\":\"location\",\"type\":\"string\"}]}"}
+{"subject":"vaccination-events-ON-value","version":1,"id":13,"schema":"{\"type\":\"record\",\"name\":\"vaccination_event_on_value\",\"namespace\":\"ca.gov.phac.cdsb.dmia.oan.dmri\",\"fields\":[{\"name\":\"vid\",\"type\":\"string\"},{\"name\":\"datetime\",\"type\":\"string\"},{\"name\":\"location\",\"type\":\"string\"}]}"}
 
 List all versions of vaccination-events-ON-value...
 curl --silent -X GET http://localhost:8081/subjects/vaccination-events-ON-value/versions | jq
@@ -775,7 +891,7 @@ curl --silent -X GET http://localhost:8081/subjects/vaccination-events-ON-value/
 ]
 
 Create topic vaccination-events-ON ...
-docker exec -it broker /bin/kafka-topics     --bootstrap-server broker:29092     --create --topic vaccination-events-ON
+docker exec -it broker /bin/kafka-topics     --bootstrap-server broker:29092     --create --topic vaccination-events-ON --partitions 3 --replication-factor 3
 Created topic vaccination-events-ON.
 vaccination-events-ON created ✅
 
@@ -800,14 +916,16 @@ curl --silent -X GET http://localhost:8081/subjects | jq .[]
 "vaccination-events-BC-value"
 "vaccination-events-ON-key"
 "vaccination-events-ON-value"
-"vaccines-key"
-"vaccines-value"
+"vaccine-lot-info-key"
+"vaccine-lot-info-value"
+"vaccine-standards-key"
+"vaccine-standards-value"
 
-Creating subject vaccination-events-QC-key with schema /Users/nghia/work/data-mesh-ref-impl/usvdm/kafka_streams/conf/vaccination-events-QC-key.avsc ...
-13
-
-Creating subject vaccination-events-QC-value with schema /Users/nghia/work/data-mesh-ref-impl/usvdm/kafka_streams/conf/vaccination-events-QC-val.avsc ...
+Creating subject vaccination-events-QC-key with schema /home/nghia_doan_gcp_hc_sc_gc_ca/data-mesh-ref-impl/usvdm/kafka_streams/conf/vaccination-events-QC-key.avsc ...
 14
+
+Creating subject vaccination-events-QC-value with schema /home/nghia_doan_gcp_hc_sc_gc_ca/data-mesh-ref-impl/usvdm/kafka_streams/conf/vaccination-events-QC-val.avsc ...
+15
 
 List all current subjects ...
 curl --silent -X GET http://localhost:8081/subjects | jq .[]
@@ -823,16 +941,18 @@ curl --silent -X GET http://localhost:8081/subjects | jq .[]
 "vaccination-events-ON-value"
 "vaccination-events-QC-key"
 "vaccination-events-QC-value"
-"vaccines-key"
-"vaccines-value"
+"vaccine-lot-info-key"
+"vaccine-lot-info-value"
+"vaccine-standards-key"
+"vaccine-standards-value"
 
 Find ID of the vaccination-events-QC-key...
-schema_id=13
+schema_id=14
 
 
 Find details of the vaccination-events-QC-key...
 curl --silent -X GET http://localhost:8081/subjects/vaccination-events-QC-key/versions/latest
-{"subject":"vaccination-events-QC-key","version":1,"id":13,"schema":"{\"type\":\"record\",\"name\":\"vaccination_event_qc_key\",\"namespace\":\"ca.gov.phac.cdsb.dmia.oan.dmri\",\"fields\":[{\"name\":\"vid\",\"type\":\"string\"},{\"name\":\"pid\",\"type\":\"string\"}]}"}
+{"subject":"vaccination-events-QC-key","version":1,"id":14,"schema":"{\"type\":\"record\",\"name\":\"vaccination_event_qc_key\",\"namespace\":\"ca.gov.phac.cdsb.dmia.oan.dmri\",\"fields\":[{\"name\":\"pid\",\"type\":\"string\"}]}"}
 
 List all versions of vaccination-events-QC-key...
 curl --silent -X GET http://localhost:8081/subjects/vaccination-events-QC-key/versions | jq
@@ -841,12 +961,12 @@ curl --silent -X GET http://localhost:8081/subjects/vaccination-events-QC-key/ve
 ]
 
 Find ID of the vaccination-events-QC-value...
-schema_id=14
+schema_id=15
 
 
 Find details of the vaccination-events-QC-value...
 curl --silent -X GET http://localhost:8081/subjects/vaccination-events-QC-value/versions/latest
-{"subject":"vaccination-events-QC-value","version":1,"id":14,"schema":"{\"type\":\"record\",\"name\":\"vaccination_event_qc_value\",\"namespace\":\"ca.gov.phac.cdsb.dmia.oan.dmri\",\"fields\":[{\"name\":\"datetime\",\"type\":\"string\"},{\"name\":\"location\",\"type\":\"string\"}]}"}
+{"subject":"vaccination-events-QC-value","version":1,"id":15,"schema":"{\"type\":\"record\",\"name\":\"vaccination_event_qc_value\",\"namespace\":\"ca.gov.phac.cdsb.dmia.oan.dmri\",\"fields\":[{\"name\":\"vid\",\"type\":\"string\"},{\"name\":\"datetime\",\"type\":\"string\"},{\"name\":\"location\",\"type\":\"string\"}]}"}
 
 List all versions of vaccination-events-QC-value...
 curl --silent -X GET http://localhost:8081/subjects/vaccination-events-QC-value/versions | jq
@@ -855,7 +975,7 @@ curl --silent -X GET http://localhost:8081/subjects/vaccination-events-QC-value/
 ]
 
 Create topic vaccination-events-QC ...
-docker exec -it broker /bin/kafka-topics     --bootstrap-server broker:29092     --create --topic vaccination-events-QC
+docker exec -it broker /bin/kafka-topics     --bootstrap-server broker:29092     --create --topic vaccination-events-QC --partitions 3 --replication-factor 3
 Created topic vaccination-events-QC.
 vaccination-events-QC created ✅
 
@@ -882,14 +1002,16 @@ curl --silent -X GET http://localhost:8081/subjects | jq .[]
 "vaccination-events-ON-value"
 "vaccination-events-QC-key"
 "vaccination-events-QC-value"
-"vaccines-key"
-"vaccines-value"
+"vaccine-lot-info-key"
+"vaccine-lot-info-value"
+"vaccine-standards-key"
+"vaccine-standards-value"
 
-Creating subject adverse-effects-BC-key with schema /Users/nghia/work/data-mesh-ref-impl/usvdm/kafka_streams/conf/adverse-effects-BC-key.avsc ...
-15
-
-Creating subject adverse-effects-BC-value with schema /Users/nghia/work/data-mesh-ref-impl/usvdm/kafka_streams/conf/adverse-effects-BC-val.avsc ...
+Creating subject adverse-effects-BC-key with schema /home/nghia_doan_gcp_hc_sc_gc_ca/data-mesh-ref-impl/usvdm/kafka_streams/conf/adverse-effects-BC-key.avsc ...
 16
+
+Creating subject adverse-effects-BC-value with schema /home/nghia_doan_gcp_hc_sc_gc_ca/data-mesh-ref-impl/usvdm/kafka_streams/conf/adverse-effects-BC-val.avsc ...
+17
 
 List all current subjects ...
 curl --silent -X GET http://localhost:8081/subjects | jq .[]
@@ -907,16 +1029,18 @@ curl --silent -X GET http://localhost:8081/subjects | jq .[]
 "vaccination-events-ON-value"
 "vaccination-events-QC-key"
 "vaccination-events-QC-value"
-"vaccines-key"
-"vaccines-value"
+"vaccine-lot-info-key"
+"vaccine-lot-info-value"
+"vaccine-standards-key"
+"vaccine-standards-value"
 
 Find ID of the adverse-effects-BC-key...
-schema_id=15
+schema_id=16
 
 
 Find details of the adverse-effects-BC-key...
 curl --silent -X GET http://localhost:8081/subjects/adverse-effects-BC-key/versions/latest
-{"subject":"adverse-effects-BC-key","version":1,"id":15,"schema":"{\"type\":\"record\",\"name\":\"adverse_effect_bc_key\",\"namespace\":\"ca.gov.phac.cdsb.dmia.oan.dmri\",\"fields\":[{\"name\":\"vid\",\"type\":\"string\"},{\"name\":\"pid\",\"type\":\"string\"}]}"}
+{"subject":"adverse-effects-BC-key","version":1,"id":16,"schema":"{\"type\":\"record\",\"name\":\"adverse_effect_bc_key\",\"namespace\":\"ca.gov.phac.cdsb.dmia.oan.dmri\",\"fields\":[{\"name\":\"pid\",\"type\":\"string\"}]}"}
 
 List all versions of adverse-effects-BC-key...
 curl --silent -X GET http://localhost:8081/subjects/adverse-effects-BC-key/versions | jq
@@ -925,12 +1049,12 @@ curl --silent -X GET http://localhost:8081/subjects/adverse-effects-BC-key/versi
 ]
 
 Find ID of the adverse-effects-BC-value...
-schema_id=16
+schema_id=17
 
 
 Find details of the adverse-effects-BC-value...
 curl --silent -X GET http://localhost:8081/subjects/adverse-effects-BC-value/versions/latest
-{"subject":"adverse-effects-BC-value","version":1,"id":16,"schema":"{\"type\":\"record\",\"name\":\"adverse_effect_bc_value\",\"namespace\":\"ca.gov.phac.cdsb.dmia.oan.dmri\",\"fields\":[{\"name\":\"datetime\",\"type\":\"string\"}]}"}
+{"subject":"adverse-effects-BC-value","version":1,"id":17,"schema":"{\"type\":\"record\",\"name\":\"adverse_effect_bc_value\",\"namespace\":\"ca.gov.phac.cdsb.dmia.oan.dmri\",\"fields\":[{\"name\":\"vid\",\"type\":\"string\"},{\"name\":\"datetime\",\"type\":\"string\"}]}"}
 
 List all versions of adverse-effects-BC-value...
 curl --silent -X GET http://localhost:8081/subjects/adverse-effects-BC-value/versions | jq
@@ -939,7 +1063,7 @@ curl --silent -X GET http://localhost:8081/subjects/adverse-effects-BC-value/ver
 ]
 
 Create topic adverse-effects-BC ...
-docker exec -it broker /bin/kafka-topics     --bootstrap-server broker:29092     --create --topic adverse-effects-BC
+docker exec -it broker /bin/kafka-topics     --bootstrap-server broker:29092     --create --topic adverse-effects-BC --partitions 3 --replication-factor 3
 Created topic adverse-effects-BC.
 adverse-effects-BC created ✅
 
@@ -968,14 +1092,16 @@ curl --silent -X GET http://localhost:8081/subjects | jq .[]
 "vaccination-events-ON-value"
 "vaccination-events-QC-key"
 "vaccination-events-QC-value"
-"vaccines-key"
-"vaccines-value"
+"vaccine-lot-info-key"
+"vaccine-lot-info-value"
+"vaccine-standards-key"
+"vaccine-standards-value"
 
-Creating subject adverse-effects-ON-key with schema /Users/nghia/work/data-mesh-ref-impl/usvdm/kafka_streams/conf/adverse-effects-ON-key.avsc ...
-17
-
-Creating subject adverse-effects-ON-value with schema /Users/nghia/work/data-mesh-ref-impl/usvdm/kafka_streams/conf/adverse-effects-ON-val.avsc ...
+Creating subject adverse-effects-ON-key with schema /home/nghia_doan_gcp_hc_sc_gc_ca/data-mesh-ref-impl/usvdm/kafka_streams/conf/adverse-effects-ON-key.avsc ...
 18
+
+Creating subject adverse-effects-ON-value with schema /home/nghia_doan_gcp_hc_sc_gc_ca/data-mesh-ref-impl/usvdm/kafka_streams/conf/adverse-effects-ON-val.avsc ...
+19
 
 List all current subjects ...
 curl --silent -X GET http://localhost:8081/subjects | jq .[]
@@ -995,16 +1121,18 @@ curl --silent -X GET http://localhost:8081/subjects | jq .[]
 "vaccination-events-ON-value"
 "vaccination-events-QC-key"
 "vaccination-events-QC-value"
-"vaccines-key"
-"vaccines-value"
+"vaccine-lot-info-key"
+"vaccine-lot-info-value"
+"vaccine-standards-key"
+"vaccine-standards-value"
 
 Find ID of the adverse-effects-ON-key...
-schema_id=17
+schema_id=18
 
 
 Find details of the adverse-effects-ON-key...
 curl --silent -X GET http://localhost:8081/subjects/adverse-effects-ON-key/versions/latest
-{"subject":"adverse-effects-ON-key","version":1,"id":17,"schema":"{\"type\":\"record\",\"name\":\"adverse_effect_on_key\",\"namespace\":\"ca.gov.phac.cdsb.dmia.oan.dmri\",\"fields\":[{\"name\":\"vid\",\"type\":\"string\"},{\"name\":\"pid\",\"type\":\"string\"}]}"}
+{"subject":"adverse-effects-ON-key","version":1,"id":18,"schema":"{\"type\":\"record\",\"name\":\"adverse_effect_on_key\",\"namespace\":\"ca.gov.phac.cdsb.dmia.oan.dmri\",\"fields\":[{\"name\":\"pid\",\"type\":\"string\"}]}"}
 
 List all versions of adverse-effects-ON-key...
 curl --silent -X GET http://localhost:8081/subjects/adverse-effects-ON-key/versions | jq
@@ -1013,12 +1141,12 @@ curl --silent -X GET http://localhost:8081/subjects/adverse-effects-ON-key/versi
 ]
 
 Find ID of the adverse-effects-ON-value...
-schema_id=18
+schema_id=19
 
 
 Find details of the adverse-effects-ON-value...
 curl --silent -X GET http://localhost:8081/subjects/adverse-effects-ON-value/versions/latest
-{"subject":"adverse-effects-ON-value","version":1,"id":18,"schema":"{\"type\":\"record\",\"name\":\"adverse_effect_on_value\",\"namespace\":\"ca.gov.phac.cdsb.dmia.oan.dmri\",\"fields\":[{\"name\":\"datetime\",\"type\":\"string\"}]}"}
+{"subject":"adverse-effects-ON-value","version":1,"id":19,"schema":"{\"type\":\"record\",\"name\":\"adverse_effect_on_value\",\"namespace\":\"ca.gov.phac.cdsb.dmia.oan.dmri\",\"fields\":[{\"name\":\"vid\",\"type\":\"string\"},{\"name\":\"datetime\",\"type\":\"string\"}]}"}
 
 List all versions of adverse-effects-ON-value...
 curl --silent -X GET http://localhost:8081/subjects/adverse-effects-ON-value/versions | jq
@@ -1027,7 +1155,7 @@ curl --silent -X GET http://localhost:8081/subjects/adverse-effects-ON-value/ver
 ]
 
 Create topic adverse-effects-ON ...
-docker exec -it broker /bin/kafka-topics     --bootstrap-server broker:29092     --create --topic adverse-effects-ON
+docker exec -it broker /bin/kafka-topics     --bootstrap-server broker:29092     --create --topic adverse-effects-ON --partitions 3 --replication-factor 3
 Created topic adverse-effects-ON.
 adverse-effects-ON created ✅
 
@@ -1058,14 +1186,16 @@ curl --silent -X GET http://localhost:8081/subjects | jq .[]
 "vaccination-events-ON-value"
 "vaccination-events-QC-key"
 "vaccination-events-QC-value"
-"vaccines-key"
-"vaccines-value"
+"vaccine-lot-info-key"
+"vaccine-lot-info-value"
+"vaccine-standards-key"
+"vaccine-standards-value"
 
-Creating subject adverse-effects-QC-key with schema /Users/nghia/work/data-mesh-ref-impl/usvdm/kafka_streams/conf/adverse-effects-QC-key.avsc ...
-19
-
-Creating subject adverse-effects-QC-value with schema /Users/nghia/work/data-mesh-ref-impl/usvdm/kafka_streams/conf/adverse-effects-QC-val.avsc ...
+Creating subject adverse-effects-QC-key with schema /home/nghia_doan_gcp_hc_sc_gc_ca/data-mesh-ref-impl/usvdm/kafka_streams/conf/adverse-effects-QC-key.avsc ...
 20
+
+Creating subject adverse-effects-QC-value with schema /home/nghia_doan_gcp_hc_sc_gc_ca/data-mesh-ref-impl/usvdm/kafka_streams/conf/adverse-effects-QC-val.avsc ...
+21
 
 List all current subjects ...
 curl --silent -X GET http://localhost:8081/subjects | jq .[]
@@ -1087,16 +1217,18 @@ curl --silent -X GET http://localhost:8081/subjects | jq .[]
 "vaccination-events-ON-value"
 "vaccination-events-QC-key"
 "vaccination-events-QC-value"
-"vaccines-key"
-"vaccines-value"
+"vaccine-lot-info-key"
+"vaccine-lot-info-value"
+"vaccine-standards-key"
+"vaccine-standards-value"
 
 Find ID of the adverse-effects-QC-key...
-schema_id=19
+schema_id=20
 
 
 Find details of the adverse-effects-QC-key...
 curl --silent -X GET http://localhost:8081/subjects/adverse-effects-QC-key/versions/latest
-{"subject":"adverse-effects-QC-key","version":1,"id":19,"schema":"{\"type\":\"record\",\"name\":\"adverse_effect_qc_key\",\"namespace\":\"ca.gov.phac.cdsb.dmia.oan.dmri\",\"fields\":[{\"name\":\"vid\",\"type\":\"string\"},{\"name\":\"pid\",\"type\":\"string\"}]}"}
+{"subject":"adverse-effects-QC-key","version":1,"id":20,"schema":"{\"type\":\"record\",\"name\":\"adverse_effect_qc_key\",\"namespace\":\"ca.gov.phac.cdsb.dmia.oan.dmri\",\"fields\":[{\"name\":\"pid\",\"type\":\"string\"}]}"}
 
 List all versions of adverse-effects-QC-key...
 curl --silent -X GET http://localhost:8081/subjects/adverse-effects-QC-key/versions | jq
@@ -1105,12 +1237,12 @@ curl --silent -X GET http://localhost:8081/subjects/adverse-effects-QC-key/versi
 ]
 
 Find ID of the adverse-effects-QC-value...
-schema_id=20
+schema_id=21
 
 
 Find details of the adverse-effects-QC-value...
 curl --silent -X GET http://localhost:8081/subjects/adverse-effects-QC-value/versions/latest
-{"subject":"adverse-effects-QC-value","version":1,"id":20,"schema":"{\"type\":\"record\",\"name\":\"adverse_effect_qc_value\",\"namespace\":\"ca.gov.phac.cdsb.dmia.oan.dmri\",\"fields\":[{\"name\":\"datetime\",\"type\":\"string\"}]}"}
+{"subject":"adverse-effects-QC-value","version":1,"id":21,"schema":"{\"type\":\"record\",\"name\":\"adverse_effect_qc_value\",\"namespace\":\"ca.gov.phac.cdsb.dmia.oan.dmri\",\"fields\":[{\"name\":\"vid\",\"type\":\"string\"},{\"name\":\"datetime\",\"type\":\"string\"}]}"}
 
 List all versions of adverse-effects-QC-value...
 curl --silent -X GET http://localhost:8081/subjects/adverse-effects-QC-value/versions | jq
@@ -1119,21 +1251,26 @@ curl --silent -X GET http://localhost:8081/subjects/adverse-effects-QC-value/ver
 ]
 
 Create topic adverse-effects-QC ...
-docker exec -it broker /bin/kafka-topics     --bootstrap-server broker:29092     --create --topic adverse-effects-QC
+docker exec -it broker /bin/kafka-topics     --bootstrap-server broker:29092     --create --topic adverse-effects-QC --partitions 3 --replication-factor 3
 Created topic adverse-effects-QC.
 adverse-effects-QC created ✅
 
 Produce 3 messages for adverse-effects-QC ...
 ```
-
 </p>
 </details>
+
 
 (note that you might need to type your password for a few `sudo`)
 
 Now, if you open [`Kafka UI`](http://localhost:8080), type `kafkaui` and `phac@2023` if needed (if you runs this exercise on a cloud VM, then forward the port 8080, for more complete use of `vscode` on these purposes, checkout the writeup [remote-dev](../remote-dev/remote-development.md)).
 
-![After setup](./img/after_setup.png)
+![After topics creation](./img/topics_created.png)
+
+A vaccination event from BC is shown below:
+
+![A vaccination event from BC](./img/vaccination-events-BC-example.png)
+
 
 There are three ways to continue with the example.
 
@@ -1141,21 +1278,7 @@ There are three ways to continue with the example.
 
 Then you copy the instructions line-by-line (each ends with ';') from [streams_processing.sql](./conf/stream_processing.sql) to the UI and execute them. It's convenient as an UI, but you can execute only one SQL command at a time. No dirty terminal-handling, but tedious copy-and-paste.
 
-2. Second, open a terminal to the `Kafka cluster` VM, then usie `ksqldb-cli` `Docker` container (included with the `Kafka cluster`) to open the command line to `ksqldb`:
-
-```bash
-docker exec -it ksqldb-cli ksql http://ksqldb-server:8088
-```
-
-Then you copy the instructions from [streams_processing.sql](./conf/stream_processing.sql) to the command line. Still tedious copy-and-paste, but you can run a number of instructions (multiple lines) instead of a single one and then observe the outcomes.
-
-3. Finally, if you don't have time and just want to observe the end-results, run:
-
-```bash
-./run.sh
-```
-
-In the sections below, the second way is demonstrated. The instructions are discussed in detailed illustrated by outputs from execution of them. Let get the `ksql` command line ready:
+2. Second, open a terminal to the `Kafka cluster` VM, then use `ksqldb-cli` `Docker` container (included with the `Kafka cluster`) to open the command line to `ksqldb`:
 
 ```bash
 docker exec -it ksqldb-cli ksql http://ksqldb-server:8088
@@ -1185,6 +1308,15 @@ ksql>
 
 More on [`CREATE STREAM` syntax](https://docs.ksqldb.io/en/latest/developer-guide/ksqldb-reference/create-stream/).
 
+Then you copy the instructions from [streams_processing.sql](./conf/stream_processing.sql) to the command line. Still tedious copy-and-paste, but you can run a number of instructions (multiple lines) instead of a single one and then observe the outcomes. Let get the `ksql` command line ready:
+
+3. Thirs, if you don't have time and just want to observe the end-results, run:
+
+```bash
+./run.sh
+```
+
+In the section below, we break down the process into a number of steps, each is to execute a part of the [streams_processing.sql](./conf/stream_processing.sql) script on `ksqldb-cli`.
 &nbsp;
 
 ### E.1. Aggregate vaccine standards and vaccine lot information into vaccine information stream 
@@ -1662,6 +1794,8 @@ Successfully changed local property 'auto.offset.reset' from 'earliest' to 'earl
 ksql>
 ```
 
+![Enriched vaccination events](./img/enriched_vaccination_events.png)
+
 &nbsp;
 
 ### E.8. Merge adverse effects with (original) vaccination events and then enrich them with vaccine info
@@ -1684,7 +1818,11 @@ INNER JOIN unique_vaccination_events_stream u
 	ON a.ROWKEY->vid = u.ROWKEY->vid
     WHERE a.ROWKEY->pid = u.ROWKEY->pid
 EMIT CHANGES;
+```
 
+![Enriched adverse effects](./img/enriched_adverse_effects.png)
+
+```sql
 SELECT * FROM enriched_adverse_effects_stream  EMIT CHANGES LIMIT 4;
 SET 'auto.offset.reset' = 'earliest';
 
@@ -1708,6 +1846,8 @@ INNER JOIN vaccines_stream v
 EMIT CHANGES;
 ```
 
+![Enriched adverse effects](./img/enriched_adverse_effects_with_vaccine.png)
+
 Thus adverse events now are enriched from both vaccination event and vaccine information,
 
 ```sql
@@ -1730,6 +1870,7 @@ ksql> SET 'auto.offset.reset' = 'earliest';
 Successfully changed local property 'auto.offset.reset' from 'earliest' to 'earliest'.
 ksql>
 ```
+
 
 &nbsp;
 
@@ -2241,6 +2382,8 @@ vaccination records for Ontario,
 {"U_ROWKEY":{"io.confluent.ksql.avro_schemas.KsqlDataSourceSchema_U_ROWKEY":{"PID":{"string":"07dc617f"},"VID":{"string":"Z"},"LOCATION":{"string":"Montreal"}}},"NAME":{"string":"Alice"},"BLOOD_TYPE":{"string":"A+"},"BIRTHDAY":{"string":"1970-03-02"},"ADDRESS":{"string":"12 Oak Street, Ottawa, ON, K1H 0A0"},"DATETIME":{"string":"2023-07-21 15:00:00"},"LOCATION":{"string":"Montreal"},"VACCINE_ID":{"string":"Z"},"VACCINE_NAME":{"string":"Vivotif"},"VACCINE_UNIT_OF_SALE":{"string":"46028-208-01"},"VACCINE_UNIT_OF_USE":{"string":"46028-219-11"}}
 ```
 
+![Vaccination records for ON](./img/enriched_vaccination_records_ON.png)
+
 vaccination records for Quebec,
 
 ```json
@@ -2262,6 +2405,8 @@ adverse effects for Ontario, and
 ```json
 {"A_ROWKEY":{"io.confluent.ksql.avro_schemas.KsqlDataSourceSchema_A_ROWKEY":{"PID":{"string":"07dc617f"},"VID":{"string":"Z"}}},"NAME":{"string":"Alice"},"BLOOD_TYPE":{"string":"A+"},"BIRTHDAY":{"string":"1970-03-02"},"ADDRESS":{"string":"12 Oak Street, Ottawa, ON, K1H 0A0"},"DATETIME":{"string":"2023-07-21 15:00:00"},"LOCATION":{"string":"Montreal"},"VACCINE_ID":{"string":"Z"},"VACCINE_NAME":{"string":"Vivotif"},"VACCINE_UNIT_OF_SALE":{"string":"46028-208-01"},"VACCINE_UNIT_OF_USE":{"string":"46028-219-11"}}
 ```
+
+![Adverse effects for Ontario](./img/enriched_adverse_effects_ON.png)
 
 adverse effects for Ontario.
 

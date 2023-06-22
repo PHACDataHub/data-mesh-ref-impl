@@ -1,6 +1,6 @@
 #!/bin/bash
 
-./create_topics.sh
+# ./create_topics.sh
 
 ./create_stream_processing.sh
 
