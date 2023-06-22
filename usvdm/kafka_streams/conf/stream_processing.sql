@@ -336,7 +336,7 @@ CREATE STREAM enriched_vaccination_events_stream WITH (
     KAFKA_TOPIC='enriched-vaccination-events', KEY_FORMAT='AVRO', VALUE_FORMAT='AVRO', 
     TIMESTAMP='datetime', TIMESTAMP_FORMAT='yyyy-MM-dd HH:mm:ss', PARTITIONS=3, REPLICAS=3
 ) AS SELECT
-    ROWKEY_1,
+    ROWKEY_2,
     u.ROWKEY,
     u.datetime AS datetime,
     u.province AS province,
@@ -412,7 +412,7 @@ CREATE STREAM enriched_vaccination_events_stream_BC WITH (
     KAFKA_TOPIC='enriched-vaccination-events-BC', KEY_FORMAT='AVRO', VALUE_FORMAT='AVRO', 
     TIMESTAMP='datetime', TIMESTAMP_FORMAT='yyyy-MM-dd HH:mm:ss', PARTITIONS=3, REPLICAS=3
 ) AS SELECT
-    ROWKEY_2,
+    ROWKEY_1,
     u.U_ROWKEY,
     u.datetime AS datetime,
     u.U_ROWKEY->location AS location,
@@ -430,7 +430,7 @@ CREATE STREAM enriched_vaccination_events_stream_ON WITH (
     KAFKA_TOPIC='enriched-vaccination-events-ON', KEY_FORMAT='AVRO', VALUE_FORMAT='AVRO', 
     TIMESTAMP='datetime', TIMESTAMP_FORMAT='yyyy-MM-dd HH:mm:ss', PARTITIONS=3, REPLICAS=3
 ) AS SELECT
-    ROWKEY_2,
+    ROWKEY_1,
     u.U_ROWKEY,
     u.datetime AS datetime,
     u.U_ROWKEY->location AS location,
@@ -448,7 +448,7 @@ CREATE STREAM enriched_vaccination_events_stream_QC WITH (
     KAFKA_TOPIC='enriched-vaccination-events-QC', KEY_FORMAT='AVRO', VALUE_FORMAT='AVRO', 
     TIMESTAMP='datetime', TIMESTAMP_FORMAT='yyyy-MM-dd HH:mm:ss', PARTITIONS=3, REPLICAS=3
 ) AS SELECT
-    ROWKEY_2,
+    ROWKEY_1,
     u.U_ROWKEY,
     u.datetime AS datetime,
     u.U_ROWKEY->location AS location,
@@ -479,7 +479,7 @@ CREATE STREAM enriched_vaccination_records_stream_BC WITH (
     KAFKA_TOPIC='enriched-vaccination-records-BC', KEY_FORMAT='AVRO', VALUE_FORMAT='AVRO', 
     TIMESTAMP='datetime', TIMESTAMP_FORMAT='yyyy-MM-dd HH:mm:ss', PARTITIONS=3, REPLICAS=3
 ) AS SELECT
-    ROWKEY_1,
+    ROWKEY_2,
     u.U_ROWKEY,
     p.name AS name,
     p.blood_type AS blood_type,
@@ -501,7 +501,7 @@ CREATE STREAM enriched_vaccination_records_stream_ON WITH (
     KAFKA_TOPIC='enriched-vaccination-records-ON', KEY_FORMAT='AVRO', VALUE_FORMAT='AVRO', 
     TIMESTAMP='datetime', TIMESTAMP_FORMAT='yyyy-MM-dd HH:mm:ss', PARTITIONS=3, REPLICAS=3
 ) AS SELECT
-    ROWKEY_1,
+    ROWKEY_2,
     u.U_ROWKEY,
     p.name AS name,
     p.blood_type AS blood_type,
@@ -523,7 +523,7 @@ CREATE STREAM enriched_vaccination_records_stream_QC WITH (
     KAFKA_TOPIC='enriched-vaccination-records-QC', KEY_FORMAT='AVRO', VALUE_FORMAT='AVRO', 
     TIMESTAMP='datetime', TIMESTAMP_FORMAT='yyyy-MM-dd HH:mm:ss', PARTITIONS=3, REPLICAS=3
 ) AS SELECT
-    ROWKEY_1,
+    ROWKEY_2,
     u.U_ROWKEY,
     p.name AS name,
     p.blood_type AS blood_type,
