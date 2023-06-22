@@ -9,7 +9,7 @@
 
 ### B.1. The vaccines
 
-In the beginning (of this story), there are seven types of vaccines:
+In the beginning (of this story), there are seven types of vaccines. Their national standards are usually kept centrally, illustrated below:
 
 | vid | name              |
 |:---:|-------------------|
@@ -37,7 +37,7 @@ The `vid` - vaccine identifier is an obscured string for identification for a va
 
 It is important to emphasize that knowing the identifier itself would not identify the actual vaccine lot or any other information about the administered dose.
 
-Each of the vaccines is produced in batches and lot information is assigned to them:
+Vaccine manufacturers, when producing vaccines in batches, assign lot information to them:
 
 | vid | unit_of_sale |  unit_of_use |
 |:---:|:------------:|:------------:|
@@ -1187,14 +1187,28 @@ More on [`CREATE STREAM` syntax](https://docs.ksqldb.io/en/latest/developer-guid
 
 &nbsp;
 
-### E.1. Create vaccine info stream 
+### E.1. Aggregate vaccine standards and vaccine lot information into vaccine information stream 
 
-First, the vaccine information published in `vaccines` topic is converted into stream for stream processing purpose.
+First, the vaccine standars and vaccine lot info need to be merged into `vaccines` topic, which is then converted into stream for stream processing purpose.
 
 ![E1](./img/kafka_stream_processing.e1.jpeg)
 
 ```sql
-ksql> CREATE STREAM vaccines_stream WITH (KAFKA_TOPIC='vaccines', KEY_FORMAT='AVRO', VALUE_FORMAT='AVRO', PARTITIONS=3, REPLICAS=3);
+ksql> CREATE STREAM vaccine_standards_stream WITH (KAFKA_TOPIC='vaccine-standards', KEY_FORMAT='AVRO', VALUE_FORMAT='AVRO', PARTITIONS=3, REPLICAS=3);
+CREATE STREAM vaccine_lot_info_stream WITH (KAFKA_TOPIC='vaccine-lot-info', KEY_FORMAT='AVRO', VALUE_FORMAT='AVRO', PARTITIONS=3, REPLICAS=3); 
+CREATE STREAM vaccines_stream WITH (
+    KAFKA_TOPIC='vaccines', KEY_FORMAT='AVRO', VALUE_FORMAT='AVRO', PARTITIONS=3, REPLICAS=3
+) AS SELECT
+    ROWKEY_1,
+    s.ROWKEY AS ROWKEY,
+    s.name AS name,
+    l.unit_of_sale AS unit_of_sale,
+    l.unit_of_use AS unit_of_use
+FROM vaccine_standards_stream s
+INNER JOIN vaccine_lot_info_stream l
+	WITHIN 365 DAYS GRACE PERIOD 12 HOURS
+	ON s.ROWKEY->vid = l.ROWKEY->vid
+EMIT CHANGES;
 ```
 
 We can look into the stream to see what data is there. Since it is stream processing, so tt will take an amount of time for the query to `timeout`. Just be patient when executing these queries. 
