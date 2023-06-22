@@ -1,7 +1,0 @@
-{ "vid": "T" }|{ "name": "ActHIB", "unit_of_sale": "49281-545-03", "unit_of_use": "49281-547-58" }
-{ "vid": "U" }|{ "name": "IMOVAX RABIES", "unit_of_sale": "49281-250-51", "unit_of_use": "49281-249-01" }
-{ "vid": "V" }|{ "name": "IPOL vial", "unit_of_sale": "49281-860-10", "unit_of_use": "49281-860-78" }
-{ "vid": "X" }|{ "name": "Menveo", "unit_of_sale": "58160-955-09", "unit_of_use": "58160-958-01" }
-{ "vid": "Y" }|{ "name": "Typhim Vi syringe", "unit_of_sale": "49281-790-51", "unit_of_use": "49281-790-88" }
-{ "vid": "Z" }|{ "name": "Vivotif", "unit_of_sale": "46028-208-01", "unit_of_use": "46028-219-11" }
-{ "vid": "W" }|{ "name": "BIOTHRAX", "unit_of_sale": "49281-790-20", "unit_of_use": "49281-790-38" }

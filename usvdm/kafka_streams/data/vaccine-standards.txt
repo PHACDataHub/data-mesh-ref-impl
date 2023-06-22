@@ -1,0 +1,7 @@
+{ "vid": "T" }|{ "name": "ActHIB" }
+{ "vid": "U" }|{ "name": "IMOVAX RABIES" }
+{ "vid": "V" }|{ "name": "IPOL vial" }
+{ "vid": "X" }|{ "name": "Menveo" }
+{ "vid": "Y" }|{ "name": "Typhim Vi syringe" }
+{ "vid": "Z" }|{ "name": "Vivotif" }
+{ "vid": "W" }|{ "name": "BIOTHRAX" }

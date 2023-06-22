@@ -3,7 +3,6 @@
 	"namespace": "ca.gov.phac.cdsb.dmia.oan.dmri",
 	"name": "vaccine_value",
 	"fields": [
-		{"name": "name",  "type": "string" },
 		{"name": "unit_of_sale", "type": "string" },
 		{"name": "unit_of_use", "type": "string" }
 	]

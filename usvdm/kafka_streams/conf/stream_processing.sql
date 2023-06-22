@@ -10,12 +10,30 @@ LIST STREAMS;
 --- Creating vaccines_stream from existing topics ----------------------------------------
 ------------------------------------------------------------------------------------------
 
-PRINT vaccines FROM BEGINNING LIMIT 7;
+PRINT 'vaccine-standards' FROM BEGINNING LIMIT 7;
+PRINT 'vaccine-lot-info' FROM BEGINNING LIMIT 7;
 SET 'auto.offset.reset' = 'earliest';
 
 DROP STREAM IF EXISTS vaccines_stream;
+DROP STREAM IF EXISTS vaccine_standards_stream;
+DROP STREAM IF EXISTS vaccine_lot_info_stream;
 
-CREATE STREAM vaccines_stream WITH (KAFKA_TOPIC='vaccines', KEY_FORMAT='AVRO', VALUE_FORMAT='AVRO', PARTITIONS=3, REPLICAS=3);
+CREATE STREAM vaccine_standards_stream WITH (KAFKA_TOPIC='vaccine-standards', KEY_FORMAT='AVRO', VALUE_FORMAT='AVRO', PARTITIONS=3, REPLICAS=3);
+CREATE STREAM vaccine_lot_info_stream WITH (KAFKA_TOPIC='vaccine-lot-info', KEY_FORMAT='AVRO', VALUE_FORMAT='AVRO', PARTITIONS=3, REPLICAS=3);
+
+CREATE STREAM vaccines_stream WITH (
+    KAFKA_TOPIC='vaccines', KEY_FORMAT='AVRO', VALUE_FORMAT='AVRO', PARTITIONS=3, REPLICAS=3
+) AS SELECT
+    ROWKEY_1,
+    s.ROWKEY AS ROWKEY,
+    s.name AS name,
+    l.unit_of_sale AS unit_of_sale,
+    l.unit_of_use AS unit_of_use
+FROM vaccine_standards_stream s
+INNER JOIN vaccine_lot_info_stream l
+	WITHIN 365 DAYS GRACE PERIOD 12 HOURS
+	ON s.ROWKEY->vid = l.ROWKEY->vid
+EMIT CHANGES;
 
 SELECT * FROM vaccines_stream  EMIT CHANGES LIMIT 7;
 SET 'auto.offset.reset' = 'earliest';

@@ -11,19 +11,55 @@
 
 In the beginning (of this story), there are seven types of vaccines:
 
-| vid | name              | unit_of_sale |  unit_of_use |
-|:---:|-------------------|:------------:|:------------:|
-|  T  | ActHIB            | 49281-545-03 | 49281-547-58 |
-|  U  | IMOVAX RABIES     | 49281-250-51 | 49281-249-01 |
-|  V  | IPOL vial         | 49281-860-10 | 49281-860-78 |
-|  X  | Menveo            | 58160-955-09 | 58160-958-01 |
-|  Y  | Typhim Vi syringe | 49281-790-51 | 49281-790-88 |
-|  Z  | Vivotif           | 46028-208-01 | 46028-219-11 |
-|  W  | BIOTHRAX          | 49281-790-20 | 49281-790-38 |
+| vid | name              |
+|:---:|-------------------|
+|  T  | ActHIB            |
+|  U  | IMOVAX RABIES     |
+|  V  | IPOL vial         |
+|  X  | Menveo            |
+|  Y  | Typhim Vi syringe |
+|  Z  | Vivotif           |
+|  W  | BIOTHRAX          |
+
+Their representation as `json` data:
+
+```json
+{ "vid": "T" } { "name": "ActHIB" }
+{ "vid": "U" } { "name": "IMOVAX RABIES" }
+{ "vid": "V" } { "name": "IPOL vial" }
+{ "vid": "X" } { "name": "Menveo" }
+{ "vid": "Y" } { "name": "Typhim Vi syringe" }
+{ "vid": "Z" } { "name": "Vivotif" }
+{ "vid": "W" } { "name": "BIOTHRAX" }
+```
 
 The `vid` - vaccine identifier is an obscured string for identification for a vaccine from the manufacturer. The record can contain additional vaccine information from some standards. Note that for the simplicity of the exercise, the assumption here is a vaccine record can provide adequate information about an administered dose. 
 
 It is important to emphasize that knowing the identifier itself would not identify the actual vaccine lot or any other information about the administered dose.
+
+Each of the vaccines is produced in batches and lot information is assigned to them:
+
+| vid | unit_of_sale |  unit_of_use |
+|:---:|:------------:|:------------:|
+|  T  | 9281-545-03 | 49281-547-58 |
+|  U  | 49281-250-51 | 49281-249-01 |
+|  V  | 49281-860-10 | 49281-860-78 |
+|  X  | 58160-955-09 | 58160-958-01 |
+|  Y  | 49281-790-51 | 49281-790-88 |
+|  Z  | 46028-208-01 | 46028-219-11 |
+|  W  | 49281-790-20 | 49281-790-38 |
+
+Their representation as `json` data:
+
+```json
+{ "vid": "T" } { "unit_of_sale": "49281-545-03", "unit_of_use": "49281-547-58" }
+{ "vid": "U" } { "unit_of_sale": "49281-250-51", "unit_of_use": "49281-249-01" }
+{ "vid": "V" } { "unit_of_sale": "49281-860-10", "unit_of_use": "49281-860-78" }
+{ "vid": "X" } { "unit_of_sale": "58160-955-09", "unit_of_use": "58160-958-01" }
+{ "vid": "Y" } { "unit_of_sale": "49281-790-51", "unit_of_use": "49281-790-88" }
+{ "vid": "Z" } { "unit_of_sale": "46028-208-01", "unit_of_use": "46028-219-11" }
+{ "vid": "W" } { "unit_of_sale": "49281-790-20", "unit_of_use": "49281-790-38" }
+```
 
 ### B.2. The actors
 

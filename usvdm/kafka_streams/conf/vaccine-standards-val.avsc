@@ -1,0 +1,8 @@
+{
+	"type": "record",
+	"namespace": "ca.gov.phac.cdsb.dmia.oan.dmri",
+	"name": "vaccine_value",
+	"fields": [
+		{"name": "name",  "type": "string" }
+	]
+}
