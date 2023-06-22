@@ -124,32 +124,32 @@ Each of the three provinces sent a stream vaccination events to the Federal.
 Here's Ontario's stream, all of the records here belong to Alice (`07dc617f`). 
 
 ```json
-{ "vid": "X", "pid": "07dc617f" } { "datetime": "2023-05-01 10:00:00", "location": "Ottawa" }
-{ "vid": "Y", "pid": "07dc617f" } { "datetime": "2023-05-05 10:00:00", "location": "Ottawa" }
-{ "vid": "X", "pid": "07dc617f" } { "datetime": "2023-06-02 10:00:00", "location": "Ottawa" }
-{ "vid": "X", "pid": "07dc617f" } { "datetime": "2023-06-02 22:00:00", "location": "Ottawa" }
-{ "vid": "X", "pid": "07dc617f" } { "datetime": "2023-07-10 13:00:00", "location": "Ottawa" }
+{ "pid": "07dc617f" } { "vid": "X", "datetime": "2023-05-01 10:00:00", "location": "Ottawa" }
+{ "pid": "07dc617f" } { "vid": "Y", "datetime": "2023-05-05 10:00:00", "location": "Ottawa" }
+{ "pid": "07dc617f" } { "vid": "X", "datetime": "2023-06-02 10:00:00", "location": "Ottawa" }
+{ "pid": "07dc617f" } { "vid": "X", "datetime": "2023-06-02 22:00:00", "location": "Ottawa" }
+{ "pid": "07dc617f" } { "vid": "X", "datetime": "2023-07-10 13:00:00", "location": "Ottawa" }
 ```
 
 here's Quebec's stream, most of the records here belong to Bob (`a74d8d56`). However *two records indicate two events for Alice, when she was in Montreal* (once is a duplicate of the other, see below.)
 
 ```json
-{ "vid": "Y", "pid": "a74d8d56" } { "datetime": "2023-05-02 13:30:00", "location": "Quebec" }
-{ "vid": "X", "pid": "a74d8d56" } { "datetime": "2023-06-01 12:30:00", "location": "Quebec" }
-{ "vid": "Z", "pid": "a74d8d56" } { "datetime": "2023-07-12 14:30:00", "location": "Quebec" }
-{ "vid": "Z", "pid": "07dc617f" } { "datetime": "2023-07-21 15:00:00", "location": "Montreal" }
-{ "vid": "W", "pid": "a74d8d56" } { "datetime": "2023-07-21 17:30:00", "location": "Quebec" }
-{ "vid": "Z", "pid": "07dc617f" } { "datetime": "2023-07-22 08:00:00", "location": "Montreal" }
+{ "pid": "a74d8d56" } { "vid": "Y", "datetime": "2023-05-02 13:30:00", "location": "Quebec" }
+{ "pid": "a74d8d56" } { "vid": "X", "datetime": "2023-06-01 12:30:00", "location": "Quebec" }
+{ "pid": "a74d8d56" } { "vid": "Z", "datetime": "2023-07-12 14:30:00", "location": "Quebec" }
+{ "pid": "07dc617f" } { "vid": "Z", "datetime": "2023-07-21 15:00:00", "location": "Montreal" }
+{ "pid": "a74d8d56" } { "vid": "W", "datetime": "2023-07-21 17:30:00", "location": "Quebec" }
+{ "pid": "07dc617f" } { "vid": "Z", "datetime": "2023-07-22 08:00:00", "location": "Montreal" }
 ```
 
 and here's British Columbia stream,all of the records here belong to Charlie (`35d8d75c`). 
 
 ```json
-{ "vid": "Z", "pid": "35d8d75c" } { "datetime": "2023-05-02 08:45:00", "location": "Pender Island" }
-{ "vid": "T", "pid": "35d8d75c" } { "datetime": "2023-05-04 09:45:00", "location": "Pender Island" }
-{ "vid": "T", "pid": "35d8d75c" } { "datetime": "2023-05-05 07:45:00", "location": "Pender Island" }
-{ "vid": "U", "pid": "35d8d75c" } { "datetime": "2023-06-16 11:45:00", "location": "Pender Island" }
-{ "vid": "V", "pid": "35d8d75c" } { "datetime": "2023-07-21 17:45:00", "location": "Pender Island" }
+{ "pid": "35d8d75c" } { "vid": "Z", "datetime": "2023-05-02 08:45:00", "location": "Pender Island" }
+{ "pid": "35d8d75c" } { "vid": "T", "datetime": "2023-05-04 09:45:00", "location": "Pender Island" }
+{ "pid": "35d8d75c" } { "vid": "T", "datetime": "2023-05-05 07:45:00", "location": "Pender Island" }
+{ "pid": "35d8d75c" } { "vid": "U", "datetime": "2023-06-16 11:45:00", "location": "Pender Island" }
+{ "pid": "35d8d75c" } { "vid": "V", "datetime": "2023-07-21 17:45:00", "location": "Pender Island" }
 ```
 
 In total there are sixteen (`16`) vaccination events, however three (`3`) of them are duplicated, these were sent a few hours later, but not exceeding 24 hours, thus the incoming streams altogether contain sixteen events. 
@@ -159,19 +159,19 @@ In total there are sixteen (`16`) vaccination events, however three (`3`) of the
 |  X  | 07dc617f | 2023-05-01 10:00:00 |     Ottawa    |           |         |
 |  Z  | 35d8d75c | 2023-05-02 08:45:00 | Pender Island |           |    A    |
 |  Y  | a74d8d56 | 2023-05-02 13:30:00 |     Quebec    |           |         |
-|  T  | 35d8d75c | 2023-05-04 09:45:00 | Pender Island |   (1) O   |         |
-|  T  | 35d8d75c | 2023-05-05 07:45:00 | Pender Island |   (1) D   |         |
+|  <span style="color: blue;">T</span>  | <span style="color: blue;">35d8d75c</span> | <span style="color: blue;">2023-05-04 09:45:00</span> | <span style="color: blue;">Pender Island</span> |   <span style="color: blue;">(1) O</span>    |         |
+|  <span style="color: red;">T</span>  | <span style="color: red;">35d8d75c</span> | <span style="color: red;">2023-05-05 07:45:00</span> | <span style="color: red;">Pender Island</span> |   <span style="color: red;">(1) D</span>   |         |
 |  Y  | 07dc617f | 2023-05-05 10:00:00 |     Ottawa    |           |         |
 |  X  | a74d8d56 | 2023-06-01 12:30:00 |     Quebec    |           |    A    |
-|  X  | 07dc617f | 2023-06-02 10:00:00 |     Ottawa    |   (2) O   |         |
-|  X  | 07dc617f | 2023-06-02 22:00:00 |     Ottawa    |   (2) D   |         |
+|  <span style="color: blue;">X</span>  | <span style="color: blue;">07dc617f</span> | <span style="color: blue;">2023-06-02 10:00:00</span> |     <span style="color: blue;">Ottawa</span>    |   <span style="color: blue;">(2) O</span>   |         |
+|  <span style="color: red;">X</span>  | <span style="color: red;">07dc617f</span> | <span style="color: red;">2023-06-02 22:00:00</span> |     <span style="color: red;">Ottawa</span>    |   <span style="color: red;">(2) D</span>   |         |
 |  U  | 35d8d75c | 2023-06-16 11:45:00 | Pender Island |           |         |
 |  X  | 07dc617f | 2023-07-10 13:00:00 |     Ottawa    |           |         |
 |  Z  | a74d8d56 | 2023-07-12 14:30:00 |     Quebec    |           |         |
-|  Z  | 07dc617f | 2023-07-21 15:00:00 |    Montreal   |   (3) O   |    A    |
+|  <span style="color: blue;">Z</span>  | <span style="color: blue;">07dc617f</span> | <span style="color: blue;">2023-07-21 15:00:00</span> |    <span style="color: blue;">Montreal</span>   |   <span style="color: blue;">(3) O</span>   |    A    |
 |  W  | a74d8d56 | 2023-07-21 17:30:00 |     Quebec    |           |         |
 |  V  | 35d8d75c | 2023-07-21 17:45:00 | Pender Island |           |    A    |
-|  Z  | 07dc617f | 2023-07-22 08:00:00 |    Montreal   |   (3) D   |    A    |
+|  <span style="color: red;">Z</span>  | <span style="color: red;">07dc617f</span> | <span style="color: red;">2023-07-22 08:00:00</span> |    <span style="color: red;">Montreal</span>   |   <span style="color: red;">(3) D</span>   |    A    |
 
 Notes:
 - let assume that any vaccination of the same type for the same person later than `36` hours comparing with the previous one is considered as new one,
@@ -205,9 +205,9 @@ Here the aggregated view,
 |:---:|:--------:|:-------------------:|:---------:|:-------:|
 |  Z  | ed7c0aa8 | 2023-05-02 08:45:00 |           |    A    |
 |  X  | 8c535c71 | 2023-06-01 12:30:00 |           |    A    |
-|  Z  | 06ecb949 | 2023-07-21 15:00:00 |   (3) O   |    A    |
+|  <span style="color: blue;">Z</span>  | <span style="color: blue;">06ecb949</span> | <span style="color: blue;">2023-07-21 15:00:00</span> |   <span style="color: blue;">(3) O</span>   |    <span style="color: blue;">A</span>    |
 |  V  | ed7c0aa8 | 2023-07-21 17:45:00 |           |    A    |
-|  Z  | 06ecb949 | 2023-07-22 08:00:00 |   (3) D   |    A    |
+|  <span style="color: red;">Z</span>  | <span style="color: red;">06ecb949</span> | <span style="color: red;">2023-07-22 08:00:00</span> |   <span style="color: red;">(3) D</span>   |    <span style="color: red;">A</span>    |
 
 &nbsp;
 
