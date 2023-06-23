@@ -19,8 +19,6 @@ As an exercise on vaccination data management, it is to:
 7. Demonstrate ability to *enrich downstream data* to supply complete information record within jurisdiction.
 (8. Demonstrate ability *peer-to-peer information exchange in a vast mesh network*.)
 
-&nbsp;
-
 ### A.2 From technonolgy aspect
 
 As an example case of the Data Mesh Reference Implementation,
@@ -29,6 +27,8 @@ As an example case of the Data Mesh Reference Implementation,
 3. In-stream transformation to aggregate/filter/transform data in order to maintain consistent vaccination data.
 4. Data governance based on metadata cataloguing, distinct policies for sensitive information items, anonymization and/or encryption.
 5. Data lineage to monitor and collect evidence for later audit.
+
+&nbsp;
 
 ## B. The story
 
