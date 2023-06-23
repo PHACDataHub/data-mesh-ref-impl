@@ -5,6 +5,31 @@
 - *This story does not aim to solve any problems of data management caused by incorrectly designed business process, malpractices of IT technologies, or misconception in applications. It would neither shed any light on what Data Mesh principles are, nor reveal why at-source data collection with proper data governance policy supported by event sourcing infrastructure can save the day.*
 - *This story focuses on data on the move, with many copies, incomplete, related to things that also move, ephemeral, and never at rest.*
 
+## A. Purposes
+
+### A.1. For the public health domain
+
+As an exercise on vaccination data management, it is to:
+1. Demonstrate collecting information of vaccination events and adverse effects at source, in separate streams.
+2. Demonstrate aggregating information of vaccination events and adverse effects from multiple streams (to perform analytics or collect statistics).
+3. Demonstrate aggregating information of vaccination standards and vaccination lot from different sources.
+4. Demonstrate data governance ability as simple master person index for anonymization.
+5. Demonstrate ability to *enrich upstream data* to gain complete knowlege without compromising privacy
+6. Demonstrate ability to *respond or recommend to downstream* for individual events.
+7. Demonstrate ability to *enrich downstream data* to supply complete information record within jurisdiction.
+(8. Demonstrate ability *peer-to-peer information exchange in a vast mesh network*.)
+
+&nbsp;
+
+### A.2 From technonolgy aspect
+
+As an example case of the Data Mesh Reference Implementation,
+1. Multiple event sourcing infrastructure in a cluster (a number of individual nodes can be groupped into a cluster with dedicated authentication/authorization/accounting and data governance policy)
+2. Exchange protocol based on `HL7` with outdated transport layer `SOAP` can be replaced by `Apache AVRO` messages as `Kafaka` events.
+3. In-stream transformation to aggregate/filter/transform data in order to maintain consistent vaccination data.
+4. Data governance based on metadata cataloguing, distinct policies for sensitive information items, anonymization and/or encryption.
+5. Data lineage to monitor and collect evidence for later audit.
+
 ## B. The story
 
 ### B.1. The vaccines
