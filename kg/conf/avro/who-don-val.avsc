@@ -1,0 +1,8 @@
+{
+    "type": "record",
+    "name": "who_don_val",
+    "fields": [
+        {"name": "url",  "type": ["null", "string"], "default": null},
+        {"name": "cnt",  "type": ["null", "string"], "default": null},
+    ]
+}
