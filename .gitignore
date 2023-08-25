@@ -1,6 +1,8 @@
 # Project specific
 
+kg/kafka-ce
 kg/neo4j
+kg/postgres
 secrets
 faers/data
 faers/kafka-ce

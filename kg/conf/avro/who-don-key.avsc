@@ -1,10 +1,7 @@
 {
 	"type": "record",
-	"name": "who_don_key",
+	"name": "do_class_key",
 	"fields": [
-		{
-			"name": "url",
-			"type": "string"
-		}
+		{ "name": "url", "type": "string" }
 	]
 }

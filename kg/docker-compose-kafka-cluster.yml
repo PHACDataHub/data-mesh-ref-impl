@@ -410,16 +410,9 @@ services:
       kafka-topics --bootstrap-server broker:${BROKER_INTERNAL_PORT} --list
 
       echo -e 'Creating kafka topics'
-      kafka-topics --bootstrap-server broker:${BROKER_INTERNAL_PORT} --create --if-not-exists --topic factiva-articles --replication-factor ${REPLICATION_FACTOR} --partitions ${PARTITIONS}
-      kafka-topics --bootstrap-server broker:${BROKER_INTERNAL_PORT} --create --if-not-exists --topic unique-articles --replication-factor ${REPLICATION_FACTOR} --partitions ${PARTITIONS}
-      kafka-topics --bootstrap-server broker:${BROKER_INTERNAL_PORT} --create --if-not-exists --topic segment-articles --replication-factor ${REPLICATION_FACTOR} --partitions ${PARTITIONS}
-      kafka-topics --bootstrap-server broker:${BROKER_INTERNAL_PORT} --create --if-not-exists --topic english-articles --replication-factor ${REPLICATION_FACTOR} --partitions ${PARTITIONS}
-      kafka-topics --bootstrap-server broker:${BROKER_INTERNAL_PORT} --create --if-not-exists --topic unknown-language-articles --replication-factor ${REPLICATION_FACTOR} --partitions ${PARTITIONS}
-      kafka-topics --bootstrap-server broker:${BROKER_INTERNAL_PORT} --create --if-not-exists --topic classified-articles --replication-factor ${REPLICATION_FACTOR} --partitions ${PARTITIONS}
-      kafka-topics --bootstrap-server broker:${BROKER_INTERNAL_PORT} --create --if-not-exists --topic summarized-articles --replication-factor ${REPLICATION_FACTOR} --partitions ${PARTITIONS}
-      kafka-topics --bootstrap-server broker:${BROKER_INTERNAL_PORT} --create --if-not-exists --topic recognized-articles --replication-factor ${REPLICATION_FACTOR} --partitions ${PARTITIONS}
-      kafka-topics --bootstrap-server broker:${BROKER_INTERNAL_PORT} --create --if-not-exists --topic pending-review-articles --replication-factor ${REPLICATION_FACTOR} --partitions ${PARTITIONS}
-      kafka-topics --bootstrap-server broker:${BROKER_INTERNAL_PORT} --create --if-not-exists --topic review-status --replication-factor ${REPLICATION_FACTOR} --partitions ${PARTITIONS}
+      kafka-topics --bootstrap-server broker:${BROKER_INTERNAL_PORT} --create --if-not-exists --topic who-don-articles --replication-factor ${REPLICATION_FACTOR} --partitions ${PARTITIONS}
+      kafka-topics --bootstrap-server broker:${BROKER_INTERNAL_PORT} --create --if-not-exists --topic do-class-entities --replication-factor ${REPLICATION_FACTOR} --partitions ${PARTITIONS}
+      kafka-topics --bootstrap-server broker:${BROKER_INTERNAL_PORT} --create --if-not-exists --topic extracted-entities --replication-factor ${REPLICATION_FACTOR} --partitions ${PARTITIONS}
       
       echo -e 'Successfully created the following topics:'
       kafka-topics --bootstrap-server broker:${BROKER_INTERNAL_PORT} --list

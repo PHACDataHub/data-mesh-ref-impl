@@ -77,10 +77,10 @@ class Scraper(object):
                         print(f"[{len(page_content)}] content added from {url}.", flush=True)
 
                         msg_key = {
-                            'url': {'string': url}
+                            'url': url
                         }
                         msg_val = {
-                            'url': {'string': url}, 
+                            'url': url, 
                             'cnt': {'string': page_content},
                         }
                         out_file.write(f"{json.dumps(msg_key)}|{json.dumps(msg_val)}\n")

@@ -17,11 +17,10 @@ if [ "$valid_vm" = "kafka_cluster" ] && [ ! -d "kafka-ce/zk" ]; then
 fi
 
 if [ "$valid_vm" = "kafka_cluster" ]; then
-    ./create_postgres_connectors.sh kafka_cluster
-    ./produce_factiva_articles.sh
+    ./produce_messages.sh who-don-articles data/who/who_dons.tar.gz who_dons-1-142.txt 2836 who-don-key who-don-val
+    ./produce_messages.sh do-class-entities data/do/do-classes.tar.gz do-classes.txt 13843 do-class-key do-class-val
 fi
 
 if [ "$valid_vm" = "neo4j_cluster" ]; then
     ./create_neo4j_database.sh
-    ./create_neo4j_connectors.sh
 fi

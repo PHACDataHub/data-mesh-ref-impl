@@ -18,11 +18,9 @@ if __name__ == '__main__':
 
     producer = AvroProducer(config['producer'])
     worker = Worker(config['worker'])
-    consumer = AvroConsumer(config['consumer']) if 'consumer' in config else worker
+    consumer = AvroConsumer(config['consumer'])
 
-    if consumer:
-        consumer.subscribe()
-
+    consumer.subscribe()
     worker.start()
     count = 0
 
