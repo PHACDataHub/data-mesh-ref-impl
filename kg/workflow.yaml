@@ -18,7 +18,7 @@ main:
                         avro_val_schema_file: do-class-val.avsc
             worker:
                 language: en
-                processors: tokenize,mwt,pos,lemma,constituency,ner
+                processors: tokenize,pos,constituency,ner
                 ner_packages: anatem,bc5cdr,bc4chemd,bionlp13cg,jnlpba,linnaeus,ncbi_disease,s800,i2b2,radiology
             producer:
                 broker_host: ${BROKER_HOST}

@@ -26,10 +26,6 @@ CREATE CONSTRAINT time_text IF NOT EXISTS FOR (n: `TIME`) REQUIRE n.`text` IS UN
 CREATE CONSTRAINT title_text IF NOT EXISTS FOR (n: `TITLE`) REQUIRE n.`text` IS UNIQUE;
 CREATE CONSTRAINT url_text IF NOT EXISTS FOR (n: `URL`) REQUIRE n.`text` IS UNIQUE;
 //
-// Creating constraint for key phrases
-CREATE CONSTRAINT KP_text IF NOT EXISTS FOR (n: `KP`) REQUIRE n.`text` IS UNIQUE;
-CREATE CONSTRAINT W_text IF NOT EXISTS FOR (n: `W`) REQUIRE n.`text` IS UNIQUE;
-//
 // Creating constraint for Biomedical & Clinical NER Models
 CREATE CONSTRAINT anatem_radiology_text IF NOT EXISTS FOR (n: `ANATOMY`) REQUIRE n.`text` IS UNIQUE;
 CREATE CONSTRAINT bc5cdr_bc4chemd_text IF NOT EXISTS FOR (n: `CHEMICAL`) REQUIRE n.`text` IS UNIQUE;
@@ -63,6 +59,14 @@ CREATE CONSTRAINT organism_substance_text IF NOT EXISTS FOR (n: `ORGANISM_SUBSTA
 CREATE CONSTRAINT pathological_formation_text IF NOT EXISTS FOR (n: `PATHOLOGICAL_FORMATION`) REQUIRE n.`text` IS UNIQUE;
 CREATE CONSTRAINT simple_chemical_text IF NOT EXISTS FOR (n: `SIMPLE_CHEMICAL`) REQUIRE n.`text` IS UNIQUE;
 CREATE CONSTRAINT tissue_text IF NOT EXISTS FOR (n: `TISSUE`) REQUIRE n.`text` IS UNIQUE;
+//
+// Creating constraint for key phrases
+CREATE CONSTRAINT NE_text IF NOT EXISTS FOR (n: `NE`) REQUIRE n.`text` IS UNIQUE;
+CREATE CONSTRAINT KP_text IF NOT EXISTS FOR (n: `KP`) REQUIRE n.`text` IS UNIQUE;
+CREATE CONSTRAINT W_text IF NOT EXISTS FOR (n: `W`) REQUIRE n.`text` IS UNIQUE;
+//
+// Creating constraint for WHO DONs
+CREATE CONSTRAINT DON_text IF NOT EXISTS FOR (n: `DON`) REQUIRE n.`url` IS UNIQUE;
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

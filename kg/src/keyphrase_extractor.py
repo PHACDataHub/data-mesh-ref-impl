@@ -4,7 +4,7 @@ from utils import to_json_str
 
 def extract_phrases(tree, key_phrase_dict):
     if len(tree.children) > 0 and all(x.is_preterminal() for x in tree.children):
-        words = [x.children[0].label.lower() for x in tree.children]
+        words = [x.children[0].label.lower() for x in tree.children if x.label not in ['CC', 'DT', 'IN', 'TO']]
         text = ' '.join(words)
         if text in key_phrase_dict:
             key_phrase_dict[text][0] += 1
@@ -33,10 +33,6 @@ class Worker(object):
         
         key_phrase_dict = dict()
         named_entity_dict = dict()
-        
-        print(f">>>>> {msg_key['url']} <<<<<")
-        # content = msg_val['cnt'].replace('\n', '\\n')
-        # print(f">>>>> {content} <<<<<")
         processed_doc = self.pipeline(msg_val['cnt'])
 
         for entity in processed_doc.entities:
@@ -46,15 +42,23 @@ class Worker(object):
             else:
                 named_entity_dict[text] = [1, entity.type, text.split()]
                 
-        for k, v in named_entity_dict.items():
-            print('NE', k, v)
-            
         for sentence in processed_doc.sentences:
             extract_phrases(sentence.constituency, key_phrase_dict)
-            
-        for k, v in key_phrase_dict.items():
-            print('KP', k, v)
+
+        named_entity_list = []
+        for k in sorted(named_entity_dict.keys()):
+            v = named_entity_dict[k]
+            named_entity_list.append([k, *v])
         
+        key_phrase_list = []
+        for k in sorted(key_phrase_dict.keys()):
+            v = key_phrase_dict[k]
+            key_phrase_list.append([k, *v])
+        
+        msg_val['ets'] = to_json_str(named_entity_list)
+        msg_val['kps'] = to_json_str(key_phrase_list)
+
+        print(f"[{msg_key['url']}] {len(msg_val['ets'])} entities, {len(msg_val['kps'])} key_phrases", flush=True)
         return None, msg_key, msg_val
 
 
@@ -76,32 +80,28 @@ if __name__ == '__main__':
 
     start_time = datetime.now()
 
-    messages = []
-
-    count = 0
+    doc_count = 0
     with open(config['do_file'], 'rt', encoding='utf-8') as in_file:
         lines = in_file.readlines()
         for line in lines:
             key, val = [json.loads(s) for s in line.strip().split('|')]
-            messages.append({'key': key, 'val': val})
-            count += 1
-        print(f"LOAD [{count}] messages from {config['do_file']}.")
+            topic, msg_key, msg_val = worker.process(key, val)
+            doc_count += 1
+            if doc_count == 10:
+                break
+            print(f"LOAD [{doc_count}] messages from {config['do_file']}.", flush=True)
 
-    # count = 0
-    # with open(config['who_file'], 'rt', encoding='utf-8') as in_file:
-    #     dons = json.load(in_file)
-    #     for don in dons:
-    #         key, val = {'url': don['url']}, {'url': don['url'], 'cnt': don['cnt']}
-    #         messages.append({'key': key, 'val': val})
-    #         count += 1
-    #         if count == 1:
-    #             break
-    #     print(f"LOAD [{count}] messages from {config['who_file']}.")
+    don_count = 0
+    with open(config['who_file'], 'rt', encoding='utf-8') as in_file:
+        dons = json.load(in_file)
+        for don in dons:
+            key, val = {'url': don['url']}, {'url': don['url'], 'cnt': don['cnt']}
+            topic, msg_key, msg_val = worker.process(key, val)
+            don_count += 1
+            if don_count == 20:
+                break
+            print(f"LOAD [{don_count}] messages from {config['who_file']}.", flush=True)
         
-    for message in messages:
-        msg_key, msg_val = message['key'], message['val']
-        topic, msg_key, msg_val = worker.process(msg_key, msg_val)
-
     end_time = datetime.now()
     seconds = (end_time - start_time).total_seconds()
-    print(f"Total {count} messages. Time spent {seconds} seconds. {count//seconds} messages per seconds.")
+    print(f"Total {doc_count + don_count} messages. Time spent {seconds} seconds. {(doc_count + don_count)/seconds} messages per seconds.")
