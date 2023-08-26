@@ -38,18 +38,18 @@ do
     echo ''
 done
 
-ksqldb_server_host=ksqldb-server
-ksqldb_server_port=${KSQLDB_PORT}
-echo "Wait for ${ksqldb_server_host}:${ksqldb_server_port} ...";
-docker exec -it zookeeper cub ksql-server-ready $ksqldb_server_host $ksqldb_server_port $timeout > /dev/null
-echo "${ksqldb_server_host}:${ksqldb_server_port} is ready ✅";
-echo ''
+# ksqldb_server_host=ksqldb-server
+# ksqldb_server_port=${KSQLDB_PORT}
+# echo "Wait for ${ksqldb_server_host}:${ksqldb_server_port} ...";
+# docker exec -it zookeeper cub ksql-server-ready $ksqldb_server_host $ksqldb_server_port $timeout > /dev/null
+# echo "${ksqldb_server_host}:${ksqldb_server_port} is ready ✅";
+# echo ''
 
-rest_proxy_host=rest-proxy
-rest_proxy_port=${REST_PROXY_PORT}
-echo "Wait for ${rest_proxy_host}:${rest_proxy_port} ...";
-docker exec -it zookeeper cub kr-ready $rest_proxy_host $rest_proxy_port $timeout > /dev/null
-echo "${rest_proxy_host}:${rest_proxy_port} is ready ✅";
-echo ''
+# rest_proxy_host=rest-proxy
+# rest_proxy_port=${REST_PROXY_PORT}
+# echo "Wait for ${rest_proxy_host}:${rest_proxy_port} ...";
+# docker exec -it zookeeper cub kr-ready $rest_proxy_host $rest_proxy_port $timeout > /dev/null
+# echo "${rest_proxy_host}:${rest_proxy_port} is ready ✅";
+# echo ''
 
 echo "Kafka cluster is ready ✅";

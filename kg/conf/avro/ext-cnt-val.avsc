@@ -3,8 +3,7 @@
     "name": "do_class_val",
     "fields": [
         {"name": "url", "type": "string"},
-        {"name": "cnt", "type": "string"}
-        {"name": "src",  "type": "string"},
+        {"name": "cnt", "type": "string"},
         {"name": "ets",  "type": ["null", "string"], "default": null},
         {"name": "kps",  "type": ["null", "string"], "default": null}
     ]

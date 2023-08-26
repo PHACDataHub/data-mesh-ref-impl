@@ -15,7 +15,13 @@ connect_port=${CONNECT_PORT}
 curl -X POST http://${connect_host}:${connect_port}/connectors \
   -H 'Content-Type:application/json' \
   -H 'Accept:application/json' \
-  -d @conf/json/extracted_entities_sink_connector.json
+  -d @conf/json/extracted_doc_entities_sink_connector.json
+echo
+
+curl -X POST http://${connect_host}:${connect_port}/connectors \
+  -H 'Content-Type:application/json' \
+  -H 'Accept:application/json' \
+  -d @conf/json/extracted_don_entities_sink_connector.json
 echo
 
 # List the current connector instances

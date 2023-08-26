@@ -83,6 +83,32 @@ services:
     restart: always
 
   ####################
+  # init-kafka
+  ####################
+  init-kafka:
+    image: confluentinc/cp-kafka:${KAFKA_VERSION}
+    container_name: init-kafka
+    depends_on:
+      - zookeeper
+      - broker
+    networks:
+      - backend
+    entrypoint: [ '/bin/sh', '-c' ]
+    command: |
+      "
+      # blocks until kafka is reachable
+      kafka-topics --bootstrap-server broker:${BROKER_INTERNAL_PORT} --list
+
+      echo -e 'Creating kafka topics'
+      kafka-topics --bootstrap-server broker:${BROKER_INTERNAL_PORT} --create --if-not-exists --topic incoming-articles --replication-factor ${REPLICATION_FACTOR} --partitions ${PARTITIONS}
+      kafka-topics --bootstrap-server broker:${BROKER_INTERNAL_PORT} --create --if-not-exists --topic extracted-doc-entities --replication-factor ${REPLICATION_FACTOR} --partitions ${PARTITIONS}
+      kafka-topics --bootstrap-server broker:${BROKER_INTERNAL_PORT} --create --if-not-exists --topic extracted-don-entities --replication-factor ${REPLICATION_FACTOR} --partitions ${PARTITIONS}
+      
+      echo -e 'Successfully created the following topics:'
+      kafka-topics --bootstrap-server broker:${BROKER_INTERNAL_PORT} --list
+      "
+
+  ####################
   # broker2
   ####################
   broker2:
@@ -282,85 +308,6 @@ services:
     restart: always
 
   ####################
-  # ksqldb-server
-  ####################
-  ksqldb-server:
-    image: confluentinc/cp-ksqldb-server:${KAFKA_VERSION}
-    hostname: ksqldb-server
-    container_name: ksqldb-server
-    depends_on:
-      - zookeeper
-      - broker
-      - connect
-    networks:
-      - backend
-    ports:
-      - ${KSQLDB_PORT}:8088
-    environment:
-      KSQL_CONFIG_DIR: /etc/ksql
-      KSQL_BOOTSTRAP_SERVERS: broker:${BROKER_INTERNAL_PORT}
-      KSQL_HOST_NAME: ksqldb-server
-      KSQL_LISTENERS: http://0.0.0.0:${KSQLDB_PORT}
-      KSQL_CACHE_MAX_BYTES_BUFFERING: 0
-      KSQL_KSQL_SCHEMA_REGISTRY_URL: http://schema-registry:${SCHEMA_REGISTRY_PORT}
-      KSQL_PRODUCER_INTERCEPTOR_CLASSES: io.confluent.monitoring.clients.interceptor.MonitoringProducerInterceptor
-      KSQL_CONSUMER_INTERCEPTOR_CLASSES: io.confluent.monitoring.clients.interceptor.MonitoringConsumerInterceptor
-      KSQL_KSQL_CONNECT_URL: http://connect:${CONNECT_PORT}
-      KSQL_KSQL_LOGGING_PROCESSING_TOPIC_REPLICATION_FACTOR: ${REPLICATION_FACTOR}
-      KSQL_KSQL_LOGGING_PROCESSING_TOPIC_AUTO_CREATE: true
-      KSQL_KSQL_LOGGING_PROCESSING_STREAM_AUTO_CREATE: true
-      KSQL_LOG4J_ROOT_LOGLEVEL: WARN
-      KSQL_TOOLS_LOG4J_LOGLEVEL: ERROR
-    restart: always
-
-  ####################
-  # ksqldb-cli
-  ####################
-  ksqldb-cli:
-    # *-----------------------------------------------------------*
-    # To connect to the DB: 
-    #   docker exec -it ksqldb-cli ksql http://ksqldb-server:8088
-    # *-----------------------------------------------------------*
-    image: confluentinc/cp-ksqldb-cli:${KAFKA_VERSION}
-    hostname: ksqldb-cli
-    container_name: ksqldb-cli
-    depends_on:
-      - zookeeper
-      - broker
-      - connect
-      - ksqldb-server
-    networks:
-      - backend
-    entrypoint: /bin/sh
-    tty: true
-    volumes:
-      - $PWD/kafka-ce/ksqldb-cli/scripts:/data/scripts
-    restart: always    
-
-  ####################
-  # rest-proxy
-  ####################
-  rest-proxy:
-    image: confluentinc/cp-kafka-rest:${KAFKA_VERSION}
-    hostname: rest-proxy
-    container_name: rest-proxy
-    depends_on:
-      - broker
-      - schema-registry
-    networks:
-      - backend
-    ports:
-      - ${REST_PROXY_PORT}:8082
-    environment:
-      KAFKA_REST_HOST_NAME: rest-proxy
-      KAFKA_REST_BOOTSTRAP_SERVERS: 'broker:${BROKER_INTERNAL_PORT}'
-      KAFKA_REST_LISTENERS: http://0.0.0.0:${REST_PROXY_PORT}
-      KAFKA_REST_SCHEMA_REGISTRY_URL: http://schema-registry:${SCHEMA_REGISTRY_PORT}
-      KAFKA_REST_LOG4J_ROOT_LOGLEVEL: WARN
-      KAFKA_REST_TOOLS_LOG4J_LOGLEVEL: ERROR
-    restart: always
-    
-  ####################
   # kafka-ui
   ####################
   kafka-ui:
@@ -390,33 +337,6 @@ services:
       SPRING_SECURITY_USER_PASSWORD: ${KAFKA_UI_SPRING_SECURITY_USER_PASSWORD}
     restart: always
 
-  ####################
-  # init-kafka
-  ####################
-  init-kafka:
-    image: confluentinc/cp-kafka:${KAFKA_VERSION}
-    container_name: init-kafka
-    depends_on:
-      - zookeeper
-      - broker
-      - schema-registry
-      - connect
-    networks:
-      - backend
-    entrypoint: [ '/bin/sh', '-c' ]
-    command: |
-      "
-      # blocks until kafka is reachable
-      kafka-topics --bootstrap-server broker:${BROKER_INTERNAL_PORT} --list
-
-      echo -e 'Creating kafka topics'
-      kafka-topics --bootstrap-server broker:${BROKER_INTERNAL_PORT} --create --if-not-exists --topic who-don-articles --replication-factor ${REPLICATION_FACTOR} --partitions ${PARTITIONS}
-      kafka-topics --bootstrap-server broker:${BROKER_INTERNAL_PORT} --create --if-not-exists --topic do-class-entities --replication-factor ${REPLICATION_FACTOR} --partitions ${PARTITIONS}
-      kafka-topics --bootstrap-server broker:${BROKER_INTERNAL_PORT} --create --if-not-exists --topic extracted-entities --replication-factor ${REPLICATION_FACTOR} --partitions ${PARTITIONS}
-      
-      echo -e 'Successfully created the following topics:'
-      kafka-topics --bootstrap-server broker:${BROKER_INTERNAL_PORT} --list
-      "
 
 ##############################################################################
 #
@@ -438,7 +358,6 @@ services:
     build:
       context: ./
       dockerfile: conf/docker/pipeline/Dockerfile
-      shm_size: '1gb'
       args:
         - BASE_IMAGE=python:3.11
         - PYTHON_REQUIREMENTS=conf/python/keyphrase_extractor-requirements.txt
@@ -446,19 +365,10 @@ services:
         - WORKFLOW_FILE=workflow.yaml
         - WORKFLOW_NAME=main
         - STEP_NAME=keyphrase_extractor
-    shm_size: '1gb'
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              device_ids: ['0']
-              capabilities: [gpu]
-    # depends_on:
-    #   - broker
-    #   - init-kafka
-    #   - connect
-    #   - dedup_by_id
+    depends_on:
+      - broker
+      - init-kafka
+      - connect
     volumes:
       - $PWD/nlp-tasks/keyphrase-extractor/cache:/root/stanza_resources
       # - $PWD/data/:/data/
@@ -466,117 +376,87 @@ services:
       - backend
     restart: always
 
-  ####################
-  # keyphrase_extractor2
-  ####################
-  keyphrase_extractor2:
-    image: keyphrase_extractor2:latest
-    container_name: keyphrase_extractor2
-    build:
-      context: ./
-      dockerfile: conf/docker/pipeline/Dockerfile
-      shm_size: '1gb'
-      args:
-        - BASE_IMAGE=python:3.11
-        - PYTHON_REQUIREMENTS=conf/python/keyphrase_extractor-requirements.txt
-        - AVRO_DIR=conf/avro
-        - WORKFLOW_FILE=workflow.yaml
-        - WORKFLOW_NAME=main
-        - STEP_NAME=keyphrase_extractor
-    shm_size: '1gb'
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              device_ids: ['1']
-              capabilities: [gpu]
-    # depends_on:
-    #   - broker
-    #   - init-kafka
-    #   - connect
-    #   - dedup_by_id
-    volumes:
-      - $PWD/nlp-tasks/keyphrase-extractor/cache:/root/stanza_resources
-      # - $PWD/data/:/data/
-    networks:
-      - backend
-    restart: always
+  # ####################
+  # # keyphrase_extractor2
+  # ####################
+  # keyphrase_extractor2:
+  #   image: keyphrase_extractor2:latest
+  #   container_name: keyphrase_extractor2
+  #   build:
+  #     context: ./
+  #     dockerfile: conf/docker/pipeline/Dockerfile
+  #     args:
+  #       - BASE_IMAGE=python:3.11
+  #       - PYTHON_REQUIREMENTS=conf/python/keyphrase_extractor-requirements.txt
+  #       - AVRO_DIR=conf/avro
+  #       - WORKFLOW_FILE=workflow.yaml
+  #       - WORKFLOW_NAME=main
+  #       - STEP_NAME=keyphrase_extractor
+  #   depends_on:
+  #     - broker
+  #     - init-kafka
+  #     - connect
+  #   volumes:
+  #     - $PWD/nlp-tasks/keyphrase-extractor/cache:/root/stanza_resources
+  #     # - $PWD/data/:/data/
+  #   networks:
+  #     - backend
+  #   restart: always
     
-  ####################
-  # keyphrase_extractor3
-  ####################
-  keyphrase_extractor3:
-    image: keyphrase_extractor3:latest
-    container_name: keyphrase_extractor3
-    build:
-      context: ./
-      dockerfile: conf/docker/pipeline/Dockerfile
-      shm_size: '1gb'
-      args:
-        - BASE_IMAGE=python:3.11
-        - PYTHON_REQUIREMENTS=conf/python/keyphrase_extractor-requirements.txt
-        - AVRO_DIR=conf/avro
-        - WORKFLOW_FILE=workflow.yaml
-        - WORKFLOW_NAME=main
-        - STEP_NAME=keyphrase_extractor
-    shm_size: '1gb'
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              device_ids: ['2']
-              capabilities: [gpu]
-    # depends_on:
-    #   - broker
-    #   - init-kafka
-    #   - connect
-    #   - dedup_by_id
-    volumes:
-      - $PWD/nlp-tasks/keyphrase-extractor/cache:/root/stanza_resources
-      # - $PWD/data/:/data/
-    networks:
-      - backend
-    restart: always            
+  # ####################
+  # # keyphrase_extractor3
+  # ####################
+  # keyphrase_extractor3:
+  #   image: keyphrase_extractor3:latest
+  #   container_name: keyphrase_extractor3
+  #   build:
+  #     context: ./
+  #     dockerfile: conf/docker/pipeline/Dockerfile
+  #     args:
+  #       - BASE_IMAGE=python:3.11
+  #       - PYTHON_REQUIREMENTS=conf/python/keyphrase_extractor-requirements.txt
+  #       - AVRO_DIR=conf/avro
+  #       - WORKFLOW_FILE=workflow.yaml
+  #       - WORKFLOW_NAME=main
+  #       - STEP_NAME=keyphrase_extractor
+  #   depends_on:
+  #     - broker
+  #     - init-kafka
+  #     - connect
+  #   volumes:
+  #     - $PWD/nlp-tasks/keyphrase-extractor/cache:/root/stanza_resources
+  #     # - $PWD/data/:/data/
+  #   networks:
+  #     - backend
+  #   restart: always            
 
-  ####################
-  # keyphrase_extractor4
-  ####################
-  keyphrase_extractor4:
-    image: keyphrase_extractor4:latest
-    container_name: keyphrase_extractor4
-    build:
-      context: ./
-      dockerfile: conf/docker/pipeline/Dockerfile
-      shm_size: '1gb'
-      args:
-        - BASE_IMAGE=python:3.11
-        - PYTHON_REQUIREMENTS=conf/python/keyphrase_extractor-requirements.txt
-        - AVRO_DIR=conf/avro
-        - WORKFLOW_FILE=workflow.yaml
-        - WORKFLOW_NAME=main
-        - STEP_NAME=keyphrase_extractor
-    shm_size: '1gb'
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              device_ids: ['3']
-              capabilities: [gpu]
-    # depends_on:
-    #   - broker
-    #   - init-kafka
-    #   - connect
-    #   - dedup_by_id
-    volumes:
-      - $PWD/nlp-tasks/keyphrase-extractor/cache:/root/stanza_resources
-      - $PWD/data/:/data/
-    networks:
-      - backend
-    restart: always
-
+  # ####################
+  # # keyphrase_extractor4
+  # ####################
+  # keyphrase_extractor4:
+  #   image: keyphrase_extractor4:latest
+  #   container_name: keyphrase_extractor4
+  #   build:
+  #     context: ./
+  #     dockerfile: conf/docker/pipeline/Dockerfile
+  #     args:
+  #       - BASE_IMAGE=python:3.11
+  #       - PYTHON_REQUIREMENTS=conf/python/keyphrase_extractor-requirements.txt
+  #       - AVRO_DIR=conf/avro
+  #       - WORKFLOW_FILE=workflow.yaml
+  #       - WORKFLOW_NAME=main
+  #       - STEP_NAME=keyphrase_extractor
+  #   depends_on:
+  #     - broker
+  #     - init-kafka
+  #     - connect
+  #   volumes:
+  #     - $PWD/nlp-tasks/keyphrase-extractor/cache:/root/stanza_resources
+  #     # - $PWD/data/:/data/
+  #   networks:
+  #     - backend
+  #   restart: always
+  
 
 ################################################################################
 #
@@ -669,36 +549,6 @@ services:
       - backend
     ports:
       - ${NEODASH_DESIGNER_PORT}:5005
-    restart: always
-
-
-################################################################################
-#
-# supporting services
-# - postgres: for human analysts to access topics pending-review-articles and review-status
-#
-################################################################################
-
-  ####################
-  # postgres
-  ####################
-  postgres:
-    # *-----------------------------------------------------------------------*
-    # To connect to the DB: 
-    #   docker exec -it postgres bash -c 'psql -U $POSTGRES_USER $POSTGRES_DB'
-    # *-----------------------------------------------------------------------*
-    image: postgres:15
-    container_name: postgres
-    ports:
-      - ${POSTGRES_PORT}:5432
-    environment:
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      - ON_DEMAND_RECORD_COUNT=10000
-    networks:
-      - backend
-    volumes:
-      - $PWD/postgres/postgres/data:/var/lib/postgresql/data
     restart: always
 
 

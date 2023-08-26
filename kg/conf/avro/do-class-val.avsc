@@ -1,8 +1,0 @@
-{
-    "type": "record",
-    "name": "do_class_val",
-    "fields": [
-        {"name": "url", "type": "string"},
-        {"name": "cnt", "type": "string"}
-    ]
-}

@@ -1,7 +1,0 @@
-{
-	"type": "record",
-	"name": "who_don_key",
-	"fields": [
-		{ "name": "url", "type": "string" }
-	]
-}

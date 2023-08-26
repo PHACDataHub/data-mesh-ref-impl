@@ -12,7 +12,8 @@ fi
 ./scripts/create_volumes.sh connect kafka-ce/connect/data kafka-ce/connect/plugins
 ./scripts/create_volumes.sh ksqldb-cli kafka-ce/ksqldb-cli/scripts
 ./scripts/create_volumes.sh filepulse kafka-ce/connect/data/filepulse/xml
-./scripts/create_volumes.sh postgres postgres/postgres/data
+
+./scripts/create_volumes.sh nlp-tasks nlp-tasks/keyphrase-extractor/cache
 
 ./scripts/create_volumes.sh neo4j neo4j/data neo4j/import neo4j/logs neo4j/plugins
 ./scripts/download_neo4j_plugins.sh neo4j

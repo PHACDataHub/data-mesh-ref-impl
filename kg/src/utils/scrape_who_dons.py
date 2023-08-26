@@ -75,10 +75,15 @@ class Scraper(object):
                         print(f"[{response.status_code}] response for {url}.", flush=True)
                         
                         page_content = ''
-                        soup = BeautifulSoup(response.text, 'html.parser')
-                        for content in soup.find_all('div', attrs={'data-sf-element': 'Column 1', 'data-placeholder-label': 'Body'}):
-                            text = unicodedata.normalize('NFKD', content.get_text())
-                            page_content = f"{page_content} {text}" if page_content else f"{text}"
+                        soup = BeautifulSoup(response.content, 'html.parser')
+                        body = soup.find('article', class_='sf-detail-body-wrapper')
+                        for child in body.children:
+                            if child.name == 'div' or child.name == 'h3':
+                                text = unicodedata.normalize('NFKD', child.get_text()).strip()
+                                if child.name == 'div':
+                                    page_content = f"{page_content}\n\n{text}" if page_content else f"{text}"
+                                else:
+                                    page_content = f"{page_content}\n\n\n\n{text}" if page_content else f"{text}"
                         print(f"[{len(page_content)}] content added from {url}.", flush=True)
 
                         msg_key = {

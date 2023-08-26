@@ -28,9 +28,9 @@ ENV __STEP_NAME=${STEP_NAME}
 ENV __INSTANCE_ID=${INSTANCE_ID}
 ENV __TEST_ARGS=${TEST_ARGS}
 
-# RUN echo python main.py ${__WORKFLOW_FILE} ${__WORKFLOW_NAME} ${__STEP_NAME} ${__TEST_ARGS}
+RUN echo python main.py ${__WORKFLOW_FILE} ${__WORKFLOW_NAME} ${__STEP_NAME} ${__TEST_ARGS}
 
 CMD python main.py ${__WORKFLOW_FILE} ${__WORKFLOW_NAME} ${__STEP_NAME}
 
 # Use this for test
-CMD python worker.py ${__TEST_ARGS}
+# CMD python worker.py ${__TEST_ARGS}

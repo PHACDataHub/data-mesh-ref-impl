@@ -1,0 +1,7 @@
+{
+	"type": "record",
+	"name": "incoming_article_key",
+	"fields": [
+		{ "name": "url", "type": "string" }
+	]
+}

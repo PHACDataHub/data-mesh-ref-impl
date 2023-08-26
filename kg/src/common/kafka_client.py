@@ -63,6 +63,7 @@ class AvroConsumer(AvroClient):
         self.topic_names = list(self.topic_dict.keys())
 
     def subscribe(self):
+        print(f"[SUBSCRIBE] {self.topic_names}")
         self.consumer.subscribe(self.topic_names)
 
     def poll(self):
@@ -89,6 +90,7 @@ class AvroProducer(AvroClient):
         })
         self.setup_topics(config_section['destination_topic'], AvroSerializer)
         self.topic_names = list(self.topic_dict.keys())
+        print(f"[PRODUCE] {self.topic_names}")
 
     def produce(self, topic, msg_key, msg_val):
         self.producer.poll(self.poll_time)

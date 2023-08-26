@@ -1,7 +1,0 @@
-{
-	"type": "record",
-	"name": "do_class_key",
-	"fields": [
-		{ "name": "url", "type": "string" }
-	]
-}

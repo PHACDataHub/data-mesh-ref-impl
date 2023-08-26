@@ -1,5 +1,6 @@
 from datetime import datetime
 import sys
+from time import sleep
 
 from kafka_client import AvroConsumer, AvroProducer
 from step_config import load_step_config
@@ -15,6 +16,8 @@ if __name__ == '__main__':
     
     yaml_file, workflow_name, step_name = sys.argv[1:4]
     config = load_step_config(yaml_file, workflow_name, step_name)
+
+    sleep(30)
 
     producer = AvroProducer(config['producer'])
     worker = Worker(config['worker'])
@@ -36,10 +39,11 @@ if __name__ == '__main__':
             msg_key, msg_val = consumer.consume(msg)
             if msg_key is None and msg_val is None:
                 continue
+            print(f"{datetime.now().strftime('%m/%d/%Y, %H:%M:%S')} >>> [#{count}] [{msg_key}]", flush=True)
 
             count += 1
             mapped_topic, msg_key, msg_val = worker.process(msg_key, msg_val)
-            print(f"{datetime.now().strftime('%m/%d/%Y, %H:%M:%S')} --- [#{count}] [{msg_key}] {msg_val}", flush=True)
+            print(f"{datetime.now().strftime('%m/%d/%Y, %H:%M:%S')} <<< [#{count}] [{msg_key}]", flush=True)
 
             if msg_key is None and msg_val is None:
                 continue
