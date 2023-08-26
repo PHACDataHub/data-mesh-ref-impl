@@ -2,6 +2,7 @@
 
 kg/kafka-ce
 kg/neo4j
+kg/nlp-tasks
 kg/postgres
 secrets
 faers/data

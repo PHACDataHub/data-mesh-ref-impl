@@ -2,6 +2,7 @@ from bs4 import BeautifulSoup
 import json
 import requests
 from time import sleep
+import unicodedata
 
 
 # Note the / at the end
@@ -27,11 +28,16 @@ class Scraper(object):
         self.session = None
 
     def scrape_pages(self):
+        self.messages = []
         current_page = self.start_page
         while current_page <= self.end_page:
             self.scrape_page(current_page)
             current_page += 1
             sleep(1)
+
+        with open(f"{self.out_file_name}-{ self.start_page}-{self.end_page}-kpx.txt", "a+t") as out_file:
+            json.dump(self.messages, out_file)
+            
 
     def scrape_page(self, current_page):
         while True:
@@ -42,7 +48,7 @@ class Scraper(object):
                 response = session.get(f"{self.base_url}{current_page}")
                 print(f"[{response.status_code}] response for {self.base_url}{current_page}.", flush=True)
                 
-                soup = BeautifulSoup(response.text, 'html.parser')
+                soup = BeautifulSoup(response.content, 'html.parser')
                 href_list = list()
                 count = 0
                 for link in soup.find_all('a', class_='sf-list-vertical__item'):
@@ -55,7 +61,6 @@ class Scraper(object):
                 print(f"[{ex}] for {self.base_url}{current_page}.", flush=True)
                 self.close_session()
                 sleep(10)
-
 
         with open(f"{self.out_file_name}-{ self.start_page}-{self.end_page}.txt", "a+t") as out_file:
             
@@ -72,7 +77,7 @@ class Scraper(object):
                         page_content = ''
                         soup = BeautifulSoup(response.text, 'html.parser')
                         for content in soup.find_all('div', attrs={'data-sf-element': 'Column 1', 'data-placeholder-label': 'Body'}):
-                            text = content.text.strip()
+                            text = unicodedata.normalize('NFKD', content.get_text())
                             page_content = f"{page_content} {text}" if page_content else f"{text}"
                         print(f"[{len(page_content)}] content added from {url}.", flush=True)
 
@@ -81,9 +86,11 @@ class Scraper(object):
                         }
                         msg_val = {
                             'url': url, 
-                            'cnt': {'string': page_content},
+                            'cnt': page_content
                         }
                         out_file.write(f"{json.dumps(msg_key)}|{json.dumps(msg_val)}\n")
+                        
+                        self.messages.append(msg_val)
                         break
                     
                     except Exception as ex:
@@ -94,11 +101,12 @@ class Scraper(object):
             self.close_session()
 
 
+
 if __name__ == '__main__':
     import sys
     
     if len(sys.argv) < 4:
-        print('Usage: python scrape_who_dons.py <output_filename>  <start_page> <end_page>')
+        print('Usage: python scrape_who_dons.py <output_filename> <start_page> <end_page>')
         print()
         print('Example: python scrape_who_dons.py who_dons 1 10')
         exit(1)

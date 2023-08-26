@@ -30,6 +30,40 @@ CREATE CONSTRAINT url_text IF NOT EXISTS FOR (n: `URL`) REQUIRE n.`text` IS UNIQ
 CREATE CONSTRAINT KP_text IF NOT EXISTS FOR (n: `KP`) REQUIRE n.`text` IS UNIQUE;
 CREATE CONSTRAINT W_text IF NOT EXISTS FOR (n: `W`) REQUIRE n.`text` IS UNIQUE;
 //
+// Creating constraint for Biomedical & Clinical NER Models
+CREATE CONSTRAINT anatem_radiology_text IF NOT EXISTS FOR (n: `ANATOMY`) REQUIRE n.`text` IS UNIQUE;
+CREATE CONSTRAINT bc5cdr_bc4chemd_text IF NOT EXISTS FOR (n: `CHEMICAL`) REQUIRE n.`text` IS UNIQUE;
+CREATE CONSTRAINT bc5cdr_ncbi_text IF NOT EXISTS FOR (n: `DISEASE`) REQUIRE n.`text` IS UNIQUE;
+CREATE CONSTRAINT protein_text IF NOT EXISTS FOR (n: `PROTEIN`) REQUIRE n.`text` IS UNIQUE;
+CREATE CONSTRAINT dna_text IF NOT EXISTS FOR (n: `DNA`) REQUIRE n.`text` IS UNIQUE;
+CREATE CONSTRAINT rna_text IF NOT EXISTS FOR (n: `RNA`) REQUIRE n.`text` IS UNIQUE;
+CREATE CONSTRAINT cell_line_text IF NOT EXISTS FOR (n: `CELL_LINE`) REQUIRE n.`text` IS UNIQUE;
+CREATE CONSTRAINT cell_type_text IF NOT EXISTS FOR (n: `CELL_TYPE`) REQUIRE n.`text` IS UNIQUE;
+CREATE CONSTRAINT linnaeus_s800_text IF NOT EXISTS FOR (n: `SPECIES`) REQUIRE n.`text` IS UNIQUE;
+CREATE CONSTRAINT problem_text IF NOT EXISTS FOR (n: `PROBLEM`) REQUIRE n.`text` IS UNIQUE;
+CREATE CONSTRAINT test_text IF NOT EXISTS FOR (n: `TEST`) REQUIRE n.`text` IS UNIQUE;
+CREATE CONSTRAINT treatment_text IF NOT EXISTS FOR (n: `TREATMENT`) REQUIRE n.`text` IS UNIQUE;
+CREATE CONSTRAINT observation_text IF NOT EXISTS FOR (n: `OBSERVATION`) REQUIRE n.`text` IS UNIQUE;
+CREATE CONSTRAINT anatomy_modifier_text IF NOT EXISTS FOR (n: `ANATOMY_MODIFIER`) REQUIRE n.`text` IS UNIQUE;
+CREATE CONSTRAINT observation_modifier_text IF NOT EXISTS FOR (n: `OBSERVATION_MODIFIER`) REQUIRE n.`text` IS UNIQUE;
+CREATE CONSTRAINT uncertainty_text IF NOT EXISTS FOR (n: `UNCERTAINTY`) REQUIRE n.`text` IS UNIQUE;
+CREATE CONSTRAINT amino_acid_text IF NOT EXISTS FOR (n: `AMINO_ACID`) REQUIRE n.`text` IS UNIQUE;
+CREATE CONSTRAINT anatomical_system_text IF NOT EXISTS FOR (n: `ANATOMICAL_SYSTEM`) REQUIRE n.`text` IS UNIQUE;
+CREATE CONSTRAINT cancer_text IF NOT EXISTS FOR (n: `CANCER`) REQUIRE n.`text` IS UNIQUE;
+CREATE CONSTRAINT cell_text IF NOT EXISTS FOR (n: `CELL`) REQUIRE n.`text` IS UNIQUE;
+CREATE CONSTRAINT cellular_component_text IF NOT EXISTS FOR (n: `CELLULAR_COMPONENT`) REQUIRE n.`text` IS UNIQUE;
+CREATE CONSTRAINT developing_anatomical_structure_text IF NOT EXISTS FOR (n: `DEVELOPING_ANATOMICAL_STRUCTURE`) REQUIRE n.`text` IS UNIQUE;
+CREATE CONSTRAINT gene_or_gene_product_text IF NOT EXISTS FOR (n: `GENE_OR_GENE_PRODUCT`) REQUIRE n.`text` IS UNIQUE;
+CREATE CONSTRAINT immaterial_anatomical_entity_text IF NOT EXISTS FOR (n: `IMMATERIAL_ANATOMICAL_ENTITY`) REQUIRE n.`text` IS UNIQUE;
+CREATE CONSTRAINT multi_tissue_structure_text IF NOT EXISTS FOR (n: `MULTI_TISSUE_STRUCTURE`) REQUIRE n.`text` IS UNIQUE;
+CREATE CONSTRAINT organ_text IF NOT EXISTS FOR (n: `ORGAN`) REQUIRE n.`text` IS UNIQUE;
+CREATE CONSTRAINT organism_text IF NOT EXISTS FOR (n: `ORGANISM`) REQUIRE n.`text` IS UNIQUE;
+CREATE CONSTRAINT organism_subdivision_text IF NOT EXISTS FOR (n: `ORGANISM_SUBDIVISION`) REQUIRE n.`text` IS UNIQUE;
+CREATE CONSTRAINT organism_substance_text IF NOT EXISTS FOR (n: `ORGANISM_SUBSTANCE`) REQUIRE n.`text` IS UNIQUE;
+CREATE CONSTRAINT pathological_formation_text IF NOT EXISTS FOR (n: `PATHOLOGICAL_FORMATION`) REQUIRE n.`text` IS UNIQUE;
+CREATE CONSTRAINT simple_chemical_text IF NOT EXISTS FOR (n: `SIMPLE_CHEMICAL`) REQUIRE n.`text` IS UNIQUE;
+CREATE CONSTRAINT tissue_text IF NOT EXISTS FOR (n: `TISSUE`) REQUIRE n.`text` IS UNIQUE;
+//
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -59,5 +93,24 @@ RETURN prefix, namespace;
 //
 // Import Disease Ontology
 CALL n10s.rdf.import.fetch("https://raw.githubusercontent.com/DiseaseOntology/HumanDiseaseOntology/main/src/ontology/doid.owl", "RDF/XML");
+//
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+WITH 
+    "MATCH (r:Resource:owl__Class)
+        WHERE r.rdfs__label IS NOT NULL OR r.obo__IAO_0000115 IS NOT NULL OR r.oboInOwl__hasExactSynonym IS NOT NULL
+    WITH 
+        r.uri AS url, 
+        r.rdfs__label AS labels,
+        CASE WHEN r.obo__IAO_0000115 IS NOT NULL THEN r.obo__IAO_0000115 ELSE [] END AS textual_definitions,
+        CASE WHEN r.oboInOwl__hasExactSynonym IS NOT NULL THEN r.oboInOwl__hasExactSynonym ELSE [] END AS synonyms
+    RETURN
+        url, apoc.text.join(labels + synonyms,'\\\\n\\\\n') AS cnt"
+    AS query
+CALL apoc.export.csv.query(query, "do-classes.csv", {})
+YIELD file, source, format, nodes, relationships, properties, time, rows, batchSize, batches, done, data
+RETURN file, source, format, nodes, relationships, properties, time, rows, batchSize, batches, done, data;
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

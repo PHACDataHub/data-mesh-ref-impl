@@ -1,0 +1,6 @@
+confluent_kafka
+fastavro
+python-dotenv
+pyyaml
+requests
+stanza

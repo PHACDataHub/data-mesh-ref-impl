@@ -2,7 +2,7 @@
     "type": "record",
     "name": "who_don_val",
     "fields": [
-        {"name": "url",  "type": "string"},
-        {"name": "cnt",  "type": ["null", "string"], "default": null}
+        {"name": "url", "type": "string"},
+        {"name": "cnt", "type": "string"}
     ]
 }

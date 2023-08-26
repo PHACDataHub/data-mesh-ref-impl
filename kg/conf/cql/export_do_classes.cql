@@ -11,7 +11,7 @@ WITH
     RETURN
         url, apoc.text.join(labels + textual_definitions + synonyms,'\\\\n\\\\n') AS cnt"
     AS query
-CALL apoc.export.csv.query(query, "do-classes.csv")
+CALL apoc.export.csv.query(query, "do-classes.csv", {})
 YIELD file, source, format, nodes, relationships, properties, time, rows, batchSize, batches, done, data
 RETURN file, source, format, nodes, relationships, properties, time, rows, batchSize, batches, done, data;
 

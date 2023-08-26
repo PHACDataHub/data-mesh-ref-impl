@@ -1,0 +1,69 @@
+version: "3.8"
+
+##############################################################################
+#
+# services
+#
+# - Uses .env for environment variables
+# - Kafka Cluster, Community Edition, Starter version (see below for details)
+#
+##############################################################################
+
+services:
+
+##############################################################################
+#
+#  Each of the tasks below performs a step in the workflow
+# -------------------------
+# - keyphrase_extractor
+#
+##############################################################################
+
+  ####################
+  # keyphrase_extractor
+  ####################
+  keyphrase_extractor:
+    image: keyphrase_extractor:latest
+    container_name: keyphrase_extractor
+    build:
+      context: ./
+      dockerfile: conf/docker/pipeline/Dockerfile
+      shm_size: '1gb'
+      args:
+        - BASE_IMAGE=python:3.11
+        - PYTHON_REQUIREMENTS=conf/python/keyphrase_extractor-requirements.txt
+        - AVRO_DIR=conf/avro
+        - WORKFLOW_FILE=workflow.yaml
+        - WORKFLOW_NAME=main
+        - STEP_NAME=keyphrase_extractor
+    shm_size: '1gb'
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: ['0']
+              capabilities: [gpu]
+    # depends_on:
+    #   - broker
+    #   - init-kafka
+    #   - connect
+    #   - dedup_by_id
+    volumes:
+      - $PWD/nlp-tasks/keyphrase-extractor/cache:/root/stanza_resources
+      - $PWD/data/:/data/
+    networks:
+      - backend
+    # restart: always
+
+
+################################################################################
+#
+# networks
+# - backend
+#
+################################################################################
+networks:
+  backend:
+    name: backend
+
