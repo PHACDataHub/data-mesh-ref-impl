@@ -1,0 +1,44 @@
+﻿[
+  {
+    "n": {
+      "identity": 19024,
+      "labels": [
+        "Resource",
+        "owl__Class"
+      ],
+      "properties": {
+        "skos__exactMatch": [
+          "MESH:D014205"
+        ],
+        "oboInOwl__id": [
+          "DOID:11101"
+        ],
+        "oboInOwl__hasExactSynonym": [
+          "shin bone fever",
+          "Quintan fever",
+          "His-Werner disease",
+          "Wolhynian fever",
+          "tibialgic fever"
+        ],
+        "oboInOwl__hasOBONamespace": [
+          "disease_ontology"
+        ],
+        "rdfs__label": [
+          "trench fever"
+        ],
+        "obo__IAO_0000115": [
+          "A primary bacterial infectious disease that results in systemic infection, has_material_basis_in Bartonella quintana, which is transmitted by body lice (Pediculus humanus corporis). The infection has symptom relapsing fever, has symptom headache, has symptom shin pain, and has symptom soreness of the muscles of the legs and back."
+        ],
+        "uri": "http://purl.obolibrary.org/obo/DOID_11101",
+        "oboInOwl__hasDbXref": [
+          "ICD9CM:083.1",
+          "MESH:D014205",
+          "SNOMEDCT_US_2022_09_01:82214002",
+          "ICD10CM:A79.0",
+          "UMLS_CUI:C0040830"
+        ]
+      },
+      "elementId": "19024"
+    }
+  }
+]

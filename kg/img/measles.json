@@ -1,0 +1,44 @@
+﻿[
+  {
+    "n": {
+      "identity": 33789,
+      "labels": [
+        "Resource",
+        "owl__Class"
+      ],
+      "properties": {
+        "oboInOwl__id": [
+          "DOID:8622"
+        ],
+        "oboInOwl__hasExactSynonym": [
+          "morbilli"
+        ],
+        "oboInOwl__hasOBONamespace": [
+          "disease_ontology"
+        ],
+        "rdfs__label": [
+          "measles"
+        ],
+        "obo__IAO_0000115": [
+          "A viral infectious disease that results_in infection located_in skin, has_material_basis_in Measles virus, which is transmitted_by contact with oronasal secretions, or semen of an infected person. The infection has_symptom fever, has_symptom cough, has_symptom coryza, has_symptom conjunctivitis, and has_symptom maculopapular, erythematous rash."
+        ],
+        "uri": "http://purl.obolibrary.org/obo/DOID_8622",
+        "oboInOwl__hasAlternativeId": [
+          "DOID:8963",
+          "DOID:8621",
+          "DOID:9112"
+        ],
+        "oboInOwl__hasDbXref": [
+          "MESH:D008457",
+          "ICD9CM:055",
+          "GARD:3434",
+          "NCI:C96406",
+          "UMLS_CUI:C0025007",
+          "ICD10CM:B05",
+          "SNOMEDCT_US_2022_09_01:154338006"
+        ]
+      },
+      "elementId": "33789"
+    }
+  }
+]

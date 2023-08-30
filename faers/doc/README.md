@@ -114,7 +114,7 @@ git clone https://github.com/PHACDataHub/data-mesh-ref-impl.git
 2. Install `Docker` and `Docker Compose`:
 
 ```bash
-./scripts/docker/setup.sh
+./scripts/docker/install.sh
 ```
 
 Don't for get to install `unzip` and `jq`:
