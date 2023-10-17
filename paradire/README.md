@@ -38,4 +38,6 @@
 
 ## C. Architecture
 
+![Architecture Diagram](./img/system-architecture.drawio.svg)
+
 &nbsp;

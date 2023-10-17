@@ -1,12 +1,13 @@
 # !/bin/sh
 
-set -e
+output_dir=$1
+pt=$2
 
-prefix=$1
+set -e
 
 curr_dir=$(pwd)
 
-for file in `ls $curr_dir/output/fhir/$prefix*.json`; do
+for file in `ls $curr_dir/$output_dir/$pt/fhir/*.json`; do
     [[ $file =~ hospitalInformation* ]] && continue
     [[ $file =~ practitionerInformation* ]] && continue
     echo $file
