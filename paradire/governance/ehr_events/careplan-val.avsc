@@ -1,0 +1,15 @@
+{
+    "type": "record",
+    "name": "careplan_key",
+    "fields": [
+        {"name": "careplan_id", "type": "string", "doc": "Primary Key. Unique Identifier of the care plan - UUID."},
+        {"name": "start", "type": "string", "doc": "The date the care plan was initiated - Date (YYYY-MM-DD)"},
+		{"name": "stop", "type": ["null", "string"], "default": null, "doc": "The date the care plan ended, if applicable - Date (YYYY-MM-DD)"},
+        {"name": "patient_id", "type": "string", "doc": "Foreign key to the Patient - UUID."},
+        {"name": "encounter_id", "type": "string", "doc": "Foreign key to the Encounter when the care plan was initiated - UUID"},
+        {"name": "code", "type": "string", "doc": "Code from SNOMED-CT"},
+        {"name": "description", "type": "string", "doc": "Description of the care plan"},
+        {"name": "reason_code", "type": "string", "doc": "Diagnosis code from SNOMED-CT that this care plan addresses"},
+        {"name": "reason_description", "type": "string", "doc": "Description of the reason code"}
+    ]
+}
