@@ -1,7 +1,0 @@
-{
-	"type": "record",
-	"name": "ehr_key",
-	"fields": [
-		{"name": "patient_id", "type": "string", "doc": "Unique identifier of the Patient. UUID."}
-	]
-}

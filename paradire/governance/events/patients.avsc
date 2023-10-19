@@ -1,0 +1,33 @@
+{
+    "type": "record",
+    "name": "patient_val",
+    "fields": [
+        {"name": "patient_id", "type": "string", "doc": "Primary Key. Unique Identifier of the patient - UUID"},
+        {"name": "birth_date", "type": "string", "doc": "The date the patient was born - Date (YYYY-MM-DD)"},
+        {"name": "death_date", "type": ["null", "string"], "default": null, "doc": "The date the patient died - Date (YYYY-MM-DD)"},
+        {"name": "ssn", "type": "string", "doc": "Patient Social Security identifier"},
+        {"name": "drivers", "type": ["null", "string"], "default": null, "doc": "Patient Drivers License identifier"},
+        {"name": "passport", "type": ["null", "string"], "default": null, "doc": "Patient Passport identifier"},
+        {"name": "prefix", "type": ["null", "string"], "default": null, "doc": "Name prefix, such as Mr., Mrs., Dr., etc."},
+        {"name": "first", "type": "string", "doc": "First name of the patient"},
+        {"name": "last", "type": "string", "doc": "Last or surname of the patient"},
+        {"name": "suffix", "type": ["null", "string"], "default": null, "doc": "Name suffix, such as PhD, MD, JD, etc."},
+        {"name": "maiden", "type": ["null", "string"], "default": null, "doc": "Maiden name of the patient"},
+        {"name": "marital", "type": ["null", "string"], "default": null, "doc": "Marital Status. M is married, S is single. Currently no support for divorce (D) or widowing (W)"},
+        {"name": "race", "type": "string", "doc": "Description of the patient's primary race"},
+        {"name": "ethnicity", "type": "string", "doc": "Description of the patient's primary ethnicity"},
+        {"name": "gender", "type": "string", "doc": "Gender. M is male, F is female"},
+        {"name": "birth_place", "type": "string", "doc": "Name of the town where the patient was born"},
+        {"name": "address", "type": "string", "doc": "Patient's street address without commas or newlines"},
+        {"name": "city", "type": "string", "doc": "Patient's address city"},
+        {"name": "state", "type": "string", "doc": "Patient's address state"},
+        {"name": "county", "type": ["null", "string"], "default": null, "doc": "Patient's address county"},
+        {"name": "fips_county_code", "type": ["null", "string"], "default": null, "doc": "Patient's FIPS county code"},
+        {"name": "zip", "type": ["null", "string"], "default": null, "doc": "Patient's zip code"},
+        {"name": "lat", "type": ["null", "float"], "default": null, "doc": "Latitude of Patient's address"},
+        {"name": "lng", "type": ["null", "float"], "default": null, "doc": "Longitude of Patient's address"},
+        {"name": "healthcase_expenses", "type": "float", "doc": "The total lifetime cost of healthcare to the patient (i.e. what the patient paid)"},
+        {"name": "healthcare_coverage", "type": "float", "doc": "The total lifetime cost of healthcare services that were covered by Payers (i.e. what the insurance company paid)"},
+        {"name": "income", "type": "int", "doc": "Annual income for the Patient"}
+    ]
+}

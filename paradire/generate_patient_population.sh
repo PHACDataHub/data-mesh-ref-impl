@@ -42,19 +42,19 @@ do
     cp $curr_dir/synthea_patch/$item.sh .
 done
 
-if [ -z "output" ]; then
-    cp -f $curr_dir/synthea_patch/LifecycleModule.java src/main/java/org/mitre/synthea/modules/.
+output=
 
-    tar xvzf $curr_dir/synthea_patch/ca_data.tar.gz
+cp -f $curr_dir/synthea_patch/LifecycleModule.java src/main/java/org/mitre/synthea/modules/.
 
-    mv -f demographics_ca.csv src/main/resources/geography/.
-    mv -f sdoh_ca.csv src/main/resources/geography/.
-    mv -f insurance_plans_ca.csv src/main/resources/payers/.
+tar xvzf $curr_dir/synthea_patch/ca_data.tar.gz
 
-    cp -f $curr_dir/synthea_patch/synthea.properties src/main/resources/.
-else
-    rm -rf output
-fi
+mv -f demographics_ca.csv src/main/resources/geography/.
+mv -f sdoh_ca.csv src/main/resources/geography/.
+mv -f insurance_plans_ca.csv src/main/resources/payers/.
+
+cp -f $curr_dir/synthea_patch/synthea.properties src/main/resources/.
+
+rm -rf output
 
 ./genenerate_ca_equi_sampling.sh $sampling_size $output_dir
 
