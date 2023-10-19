@@ -28,10 +28,10 @@
         {"name": "outstanding_1", "type": ["null", "int"], "default": null, "doc": "Total amount of money owed by Primary Insurance"},
         {"name": "outstanding_2", "type": ["null", "int"], "default": null, "doc": "Total amount of money owed by Secondary Insurance"},
         {"name": "outstanding_p", "type": ["null", "int"], "default": null, "doc": "Total amount of money owed by Patient"},
-        {"name": "last_billed_date_1", "type": ["null", "string"], "default": null, "doc": "Date the claim was sent to Primary Insurance"},
-        {"name": "last_billed_date_2", "type": ["null", "string"], "default": null, "doc": "Date the claim was sent to Secondary Insurance"},
-        {"name": "last_billed_date_p", "type": ["null", "string"], "default": null, "doc": "Date the claim was sent to the Patient"},
+        {"name": "last_billed_date_1", "type": ["null", "string"], "default": null, "doc": "Date the claim was sent to Primary Insurance - Date (yyyy-MM-dd'T'HH:mm'Z')"},
+        {"name": "last_billed_date_2", "type": ["null", "string"], "default": null, "doc": "Date the claim was sent to Secondary Insurance - Date (yyyy-MM-dd'T'HH:mm'Z')"},
+        {"name": "last_billed_date_p", "type": ["null", "string"], "default": null, "doc": "Date the claim was sent to the Patient - Date (yyyy-MM-dd'T'HH:mm'Z')"},
         {"name": "healthcare_claim_type_id_1", "type": ["null", "int"], "default": null, "doc": "Type of claim: 1 is professional, 2 is institutional"},
-        {"name": "healthcare_claim_type_id_2", "type": ["null", "int"], "default": null, "doc": "Type of claim: 1 is professional, 2 is institutional"},
+        {"name": "healthcare_claim_type_id_2", "type": ["null", "int"], "default": null, "doc": "Type of claim: 1 is professional, 2 is institutional"}
     ]
 }
