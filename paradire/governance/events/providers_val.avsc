@@ -1,0 +1,19 @@
+{
+    "type": "record",
+    "name": "provider_val",
+    "fields": [
+        {"name": "provider_id", "type": "string", "doc": "Primary key of the Provider/Clinician - UUID"},
+        {"name": "organization_id", "type": "string", "doc": "Foreign key to the Organization that employees this provider - UUID"},
+        {"name": "name", "type": "string", "doc": "First and last name of the Provider"},
+        {"name": "gender", "type": "string", "doc": "Gender. M is male, F is female"},
+        {"name": "speciality", "type": "string", "doc": "Provider speciality"},
+        {"name": "address", "type": "string", "doc": "Provider's street address without commas or newlines"},
+        {"name": "city", "type": "string", "doc": "Street address city"},
+        {"name": "state", "type": ["null", "string"], "default": null, "doc": "Street address state abbreviation"},
+        {"name": "zip", "type": ["null", "string"], "default": null, "doc": "Street address zip or postal code"},
+        {"name": "lat", "type": ["null", "float"], "default": null, "doc": "Latitude of Provider's address"},
+        {"name": "lon", "type": ["null", "float"], "default": null, "doc": "Longitude of Provider's address"},
+        {"name": "encounters", "type": ["null", "int"], "default": null, "doc": "The number of Encounters performed by this Provider"},
+        {"name": "procedures", "type": ["null", "int"], "default": null, "doc": "The number of Procedures performed by this Provider"}
+    ]
+}

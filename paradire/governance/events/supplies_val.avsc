@@ -1,0 +1,12 @@
+{
+    "type": "record",
+    "name": "supply_val",
+    "fields": [
+        {"name": "date", "type": "string", "doc": "The date the supplies were used - Date (YYYY-MM-DD)"},
+        {"name": "patient_id", "type": "string", "doc": "Foreign key to the Patient - UUID."},
+        {"name": "encounter_id", "type": "string", "doc": "Foreign key to the Encounter when the supplies were used - UUID"},
+        {"name": "code", "type": "string", "doc": "Code for the type of supply used, from SNOMED-CT"},
+        {"name": "description", "type": "string", "doc": "Description of supply used"},
+        {"name": "quantity", "type": "int", "doc": "Quantity of supply used"}
+    ]
+}

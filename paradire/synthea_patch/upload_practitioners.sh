@@ -1,5 +1,16 @@
 # !/bin/sh
 
+valid_pt="AB BC MB NB NL NS NT NU ON PE QC SK YT"
+
+if [ -z "$2" ]; then
+    echo "Usage: ./stream_pt_ehr_events.sh <province_or_territory_abbreviation>"
+    echo "   where province_or_territory_abbreviation is one of: ${valid_pt}"
+    echo "Example: ./stream_pt_ehr_events.sh AB"
+    exit
+
+    exit 1
+fi
+
 output_dir=$1
 pt=$2
 
