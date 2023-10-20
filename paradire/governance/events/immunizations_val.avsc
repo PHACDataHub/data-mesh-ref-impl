@@ -7,6 +7,6 @@
         {"name": "encounter_id", "type": "string", "doc": "Foreign key to the Encounter where the immunization was administered - UUID"},
         {"name": "code", "type": "string", "doc": "Immunization code from CVX"},
         {"name": "description", "type": "string", "doc": "Description of the immunization"},
-        {"name": "cost", "type": "float", "doc": "The line item cost of the immunization"}
+        {"name": "base_cost", "type": "float", "doc": "The line item cost of the immunization"}
     ]
 }

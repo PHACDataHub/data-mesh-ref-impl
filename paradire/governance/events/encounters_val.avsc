@@ -6,7 +6,6 @@
         {"name": "start", "type": "string", "doc": "The date and time the encounter started - Date (yyyy-MM-dd'T'HH:mm'Z')"},
 		{"name": "stop", "type": ["null", "string"], "default": null, "doc": "The date and time the encounter concluded - Date (yyyy-MM-dd'T'HH:mm'Z')"},
         {"name": "patient_id", "type": "string", "doc": "Foreign key to the Patient - UUID."},
-        {"name": "encounter_id", "type": "string", "doc": "Foreign key to the Encounter when the care plan was initiated - UUID"},
         {"name": "organization_id", "type": "string", "doc": "Foreign key to the Organization - UUID."},
         {"name": "provider_id", "type": "string", "doc": "Foreign key to the Provider. - UUID"},
         {"name": "payer_id", "type": "string", "doc": "Foreign key to the Payer. - UUID"},
@@ -14,7 +13,7 @@
         {"name": "code", "type": "string", "doc": "Code from SNOMED-CT"},
         {"name": "description", "type": "string", "doc": "Description of the encounter"},
         {"name": "base_encounter_cost", "type": "float", "doc": "The base cost of the encounter, not including any line item costs related to medications, immunizations, procedures, or other services"},
-        {"name": "total_claim", "type": "float", "doc": "The total cost of the encounter, including all line items"},
+        {"name": "total_claim_cost", "type": "float", "doc": "The total cost of the encounter, including all line items"},
         {"name": "payer_coverage", "type": "float", "doc": "The amount of cost covered by the Payer"},
         {"name": "reason_code", "type": ["null", "string"], "default": null, "doc": "Diagnosis code from SNOMED-CT, only if this encounter targeted a specific condition"},
         {"name": "reason_description", "type": ["null", "string"], "default": null, "doc": "Description of the reason code"}

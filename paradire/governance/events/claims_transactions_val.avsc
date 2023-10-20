@@ -30,9 +30,9 @@
         {"name": "transfers", "type": ["null", "float"], "default": null, "doc": "Dollar amount of a transfer for a TRANSFERIN or TRANSFEROUT row."},
         {"name": "outstanding", "type": ["null", "float"], "default": null, "doc": "Dollar amount left unpaid after this transaction was applied."},
         {"name": "appointment_id", "type": ["null", "string"], "default": null, "doc": "Foreign key to the Encounter - UUID"},
-        {"name": "line_note", "type": ["null", ""], "default": null, "doc": "Note"},
+        {"name": "line_note", "type": ["null", "string"], "default": null, "doc": "Note"},
         {"name": "patient_insurance_id", "type": ["null", "string"], "default": null, "doc": "Foreign key to the Payer Transitions table member ID - UUID"},
-        {"name": "fee_schedule_id", "type": ["null", ""], "default": null, "doc": "Fixed to 1."},
+        {"name": "fee_schedule_id", "type": ["null", "int"], "default": null, "doc": "Fixed to 1."},
         {"name": "provider_id", "type": "string", "doc": "Foreign key to the Provider. - UUID"},
         {"name": "supervising_provider_id", "type": ["null", "string"], "default": null, "doc": "Foreign key to the supervising Provider. - UUID"}
     ]

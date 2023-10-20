@@ -9,7 +9,7 @@
         {"name": "state", "type": ["null", "string"], "default": null, "doc": "Street address state abbreviation"},
         {"name": "zip", "type": ["null", "string"], "default": null, "doc": "Street address zip or postal code"},
         {"name": "lat", "type": ["null", "float"], "default": null, "doc": "Latitude of Organization's address"},
-        {"name": "lng", "type": ["null", "float"], "default": null, "doc": "Longitude of Organization's address"},
+        {"name": "lon", "type": ["null", "float"], "default": null, "doc": "Longitude of Organization's address"},
         {"name": "phone", "type": ["null", "string"], "default": null, "doc": "Organization's phone number."},
         {"name": "revenue", "type": ["null", "float"], "default": null, "doc": "The monetary revenue of the organization during the entire simulation"},
         {"name": "utilization", "type": ["null", "int"], "default": null, "doc": "The number of Encounters performed by this Organization"}

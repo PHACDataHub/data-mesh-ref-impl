@@ -1,0 +1,7 @@
+{
+    "type": "record",
+    "name": "medications_key",
+    "fields": [
+        {"name": "patient_id", "type": "string", "doc": "Foreign key to the Patient - UUID."}
+    ]
+}

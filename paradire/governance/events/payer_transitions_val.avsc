@@ -8,7 +8,7 @@
         {"name": "end_year", "type": "string", "doc": "Date (YYYY)"},
         {"name": "payer_id", "type": "string", "doc": "Foreign key to the Payer - UUID"},
         {"name": "secondary_payer_id", "type": ["null", "string"], "default": null, "doc": "Foreign key to the Secondary Payer - UUID"},
-        {"name": "ownership", "type": ["null", "string"], "default": null, "doc": "The owner of the insurance policy. Legal values: Guardian, Self, Spouse"},
+        {"name": "plan_ownership", "type": ["null", "string"], "default": null, "doc": "The owner of the insurance policy. Legal values: Guardian, Self, Spouse"},
         {"name": "owner_name", "type": ["null", "string"], "default": null, "doc": "The name of the insurance policy owner"}
     ]
 }

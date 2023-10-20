@@ -4,6 +4,7 @@
     "fields": [
         {"name": "payer_id", "type": "string", "doc": "Primary key of the Payer (e.g. Insurance) - UUID"},
         {"name": "name", "type": "string", "doc": "Name of the Payer."},
+        {"name": "ownership", "type": "string", "doc": "Owner of the Payer - GOVERNMENT or NO_INSURANCE"},
         {"name": "address", "type": "string", "doc": "Payer's street address without commas or newlines"},
         {"name": "city", "type": "string", "doc": "Street address city"},
         {"name": "state_headquartered", "type": ["null", "string"], "default": null, "doc": "Street address state abbreviation"},
