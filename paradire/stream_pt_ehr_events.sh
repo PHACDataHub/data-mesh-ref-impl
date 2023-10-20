@@ -38,10 +38,10 @@ echo ''
 ./scripts/get_schema_registry_config.sh
 ./scripts/list_subjects.sh
 
-for topic in allergies careplans claims claims_transactions conditions devices encounters imaging_studies immunizations medications observations organizations patient_expenses patient-key patients payer_transitions payers procedures providers supplies
+for topic in allergies careplans claims claims_transactions conditions devices encounters imaging_studies immunizations medications observations organizations patient_expenses patients payer_transitions payers procedures providers supplies
 do
-    ./scripts/create_subject.sh ${topic}-key ${avro_dir}/ehr_key.avsc
-    ./scripts/create_subject.sh ${topic}-value ${avro_dir}/${topic}.avsc
+    ./scripts/create_subject.sh ${topic}-key ${avro_dir}/${topic}_key.avsc
+    ./scripts/create_subject.sh ${topic}-value ${avro_dir}/${topic}_val.avsc
 
     ./scripts/get_subject_info.sh ${topic}-key
     ./scripts/get_subject_info.sh ${topic}-value
