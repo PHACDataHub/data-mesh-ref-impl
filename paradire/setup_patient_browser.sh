@@ -6,6 +6,12 @@ set -e
 
 curr_dir=$(pwd)
 
+has_node=$(which node)
+
+if [ -z "$has_node" ]; then
+    sudo apt install nodejs -y
+fi
+
 cd 
 
 if [ ! -d "patient-browser" ]; then
@@ -23,6 +29,8 @@ echo "Generating config, please wait..."
 node config-genrator/generate_config.js -s http://127.0.0.1:8080/fhir -f default
 mv config/default.json5 ./build/config/
 rm -rf ./config
+# Disable the broken fihr-viewer
+sed -i 's/enabled: true/enabled: false/g' ./build/config/default.json5
 
 # Build docker image
 docker build . -t patient-browser
