@@ -1,5 +1,6 @@
 # Project specific
 
+paradire/data
 kg/kafka-ce
 kg/neo4j
 kg/nlp-tasks
