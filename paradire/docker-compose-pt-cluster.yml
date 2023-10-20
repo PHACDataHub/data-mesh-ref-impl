@@ -503,7 +503,7 @@ services:
       - ssoDiscoveryUrl=
       - standalone=true
       - standaloneProtocol=bolt
-      - standaloneHost=${PUBLIC_IP}
+      # - standaloneHost=${PUBLIC_IP}
       - standaloneHost=localhost
       - standalonePort=7687
       - standaloneDatabase=neo4j
@@ -541,7 +541,7 @@ services:
     # To connect to the DB: 
     #   docker exec -it postgres bash -c 'psql -U $POSTGRES_USER $POSTGRES_DB'
     # *-----------------------------------------------------------------------*
-    image: postgres:15
+    image: postgres:${POSTGRES_VERSION}
     container_name: postgres
     ports:
       - ${POSTGRES_PORT}:5432
