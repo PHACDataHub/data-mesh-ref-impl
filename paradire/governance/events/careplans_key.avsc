@@ -2,6 +2,6 @@
     "type": "record",
     "name": "careplans_key",
     "fields": [
-        {"name": "patient_id", "type": "string", "doc": "Foreign key to the Patient - UUID."}
+        {"name": "careplan_id", "type": "string", "doc": "Primary Key. Unique Identifier of the care plan - UUID."}
     ]
 }

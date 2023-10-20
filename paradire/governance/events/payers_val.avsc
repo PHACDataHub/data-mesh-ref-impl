@@ -22,7 +22,7 @@
         {"name": "covered_immunizations", "type": "int",  "doc": "The number of Immunizations paid for by this Payer"},
         {"name": "uncovered_immunizations", "type": "int",  "doc": "The number of Immunizations not paid for by this Payer, and paid out of pocket by patients"},
         {"name": "unique_customers", "type": "int",  "doc": "The number of unique patients enrolled with this Payer during the entire simulation"},
-        {"name": "qols_avg", "type": "float",  "doc": "The average Quality of Life Scores (QOLS) for all patients enrolled with this Payer during the entire simulation"},
+        {"name": "qols_avg", "type": ["null", "float"], "default": null,  "doc": "The average Quality of Life Scores (QOLS) for all patients enrolled with this Payer during the entire simulation"},
         {"name": "member_months", "type": "int",  "doc": "The total number of months that patients were enrolled with this Payer during the simulation and paid monthly premiums (if any)"}
     ]
 }

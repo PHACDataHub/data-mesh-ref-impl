@@ -1,18 +1,23 @@
 #!/bin/bash
 
 if [ -z "$1" ]; then
-    echo "Usage: ./stream_pt_ehr_events.sh <data_dir>"
-    echo "   where data_dir would be, e.g.: "
-    echo "Example: ./stream_pt_ehr_events.sh ~/synthea/ca_spp/SK/avro/2023_10_17T22_19_30Z"
-    exit 1
+    if [ -d "data" ]; then
+        data_dir=data
+    else
+        echo "Usage: ./stream_pt_ehr_events.sh <data_dir>"
+        echo "   where data_dir would be, e.g.: "
+        echo "Example: ./stream_pt_ehr_events.sh data"
+        exit 1
+    fi
+else
+    data_dir=$1
 fi
 
 set -e
 
 curr_dir=$(pwd)
 avro_dir=${curr_dir}/governance/events
-data_dir=$1
-
+kafka_ce_schema_registry_data_dir=kafka-ce/schema-registry/data
 source .env
 
 broker_container_name=broker
@@ -25,7 +30,7 @@ schema_registry_local_host=localhost
 schema_registry_port=${SCHEMA_REGISTRY_PORT}
 
 echo "Check if avro is one of supported schema types ...";
-supported_types=$(../kafka_cluster/scripts/get_supported_schema_types.sh)
+supported_types=$(./scripts/get_supported_schema_types.sh)
 echo $supported_types "are supported ✅";
 if [ -z "$(echo $supported_types} | grep AVRO)" ]; then
     echo 'AVRO is not supported ❌'
@@ -51,6 +56,7 @@ do
 
     data_file=${topic}.avro
     no_messages=$(cat $data_dir/$data_file | wc -l | tr -d ' ')
+    cp $data_dir/${data_file} ${kafka_ce_schema_registry_data_dir}/.
 
     echo "Produce ${no_messages} messages ..." 
     docker exec ${schema_registry_container} bash -c \

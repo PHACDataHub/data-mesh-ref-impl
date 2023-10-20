@@ -35,12 +35,14 @@ def convert_primitive(value, value_type):
         if value_type == 'null':
             return 'null'
         if value_type  == 'string':
-            return ''
+            return '""'
         assert False, f"Empty string cannot be converted into one of {type_list}."
 
     if value_type == 'int' and all(e in '-0123456789' for e in value) and isinstance(int(value), int):
         return int(value)
 
+    if value_type == 'float' and value == 'NaN':
+        return 'null'
     if value_type == 'float' and isinstance(float(value), float):
         return float(value)
 
@@ -61,6 +63,8 @@ def convert_union(value, type_list):
     if 'int' in type_list and all(e in '-0123456789' for e in value) and isinstance(int(value), int):
         return '{"int":' + f"{int(value)}" + '}'
 
+    if 'float' in type_list and value == 'NaN':
+        return 'null'
     if 'float' in type_list and isinstance(float(value), float):
         return '{"float":' + f"{float(value)}" + '}'
 
@@ -74,7 +78,7 @@ if __name__ == '__main__':
     if len(sys.argv) < 2:
         print("""
               Usage: python csv2avro.py <csv_folder>
-              Example: ~/synthea/ca_spp/SK/avro/2023_10_17T22_19_30Z
+              Example: ~/synthea/ca_spp/SK/csv/2023_10_17T22_19_30Z
         """)
         exit(1)
     
@@ -94,7 +98,6 @@ if __name__ == '__main__':
         with open(f"{output_path}/{entity}.avro", "wt") as out_file:
             with open(f"{input_path}/{entity}.csv") as in_file:
                 
-                line = in_file.readline()
                 line_count = 1
                 while True:
                     line = in_file.readline()

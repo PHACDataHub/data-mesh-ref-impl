@@ -1,7 +1,7 @@
 {
 	"type": "record",
-	"name": "ehr_key",
+	"name": "organization_key",
 	"fields": [
-		{"name": "patient_id", "type": "string", "doc": "Unique identifier of the Patient. UUID."}
+		{"name": "organization_id", "type": "string", "doc": "Primary key of the Organization - UUID"}
 	]
 }
