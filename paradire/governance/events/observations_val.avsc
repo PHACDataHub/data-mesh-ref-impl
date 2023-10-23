@@ -10,6 +10,6 @@
         {"name": "description", "type": "string", "doc": "Description of the observation or lab"},
         {"name": "value", "type": "string", "doc": "The recorded value of the observation"},
         {"name": "units", "type": ["null", "string"], "default": null, "doc": "The units of measure for the value"},
-        {"name": "type", "type": "string", "doc": "The datatype of Value: text or numeric"}
+        {"name": "observation_type", "type": "string", "doc": "The datatype of Value: text or numeric"}
     ]
 }

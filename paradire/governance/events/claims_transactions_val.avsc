@@ -6,7 +6,7 @@
         {"name": "claim_id", "type": "string", "doc": "Foreign key to the Claim - UUID."},
         {"name": "charge_id", "type": "int", "doc": "Charge ID"},
         {"name": "patient_id", "type": "string", "doc": "Foreign key to the Patient - UUID."},
-        {"name": "type", "type": "string", "doc": "CHARGE: original line item. PAYMENT: payment made against a charge by an insurance company (aka Payer) or patient. ADJUSTMENT: change in the charge without a payment, made by an insurance company. TRANSFERIN and TRANSFEROUT: transfer of the balance from one insurance company to another, or to a patient."},
+        {"name": "claim_transaction_type", "type": "string", "doc": "CHARGE: original line item. PAYMENT: payment made against a charge by an insurance company (aka Payer) or patient. ADJUSTMENT: change in the charge without a payment, made by an insurance company. TRANSFERIN and TRANSFEROUT: transfer of the balance from one insurance company to another, or to a patient."},
         {"name": "amount", "type": ["null", "float"], "default": null, "doc": "Dollar amount for a CHARGE or TRANSFERIN"},
         {"name": "method", "type": ["null", "string"], "default": null, "doc": "Payment made by CASH, CHECK, ECHECK, COPAY, SYSTEM (adjustments without payment), or CC (credit card)."},
         {"name": "from_date", "type": ["null", "string"], "default": null, "doc": "Transaction start date - Date (yyyy-MM-dd'T'HH:mm'Z')"},
