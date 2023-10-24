@@ -1,0 +1,25 @@
+{
+  "name": "gateway",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "compile": "tsc && npm run copy-files",
+    "start": "npm run compile && node ./dist/index.js",
+    "copy-files": "cp ../schemas/graphql/hl7.r4.graphql ./dist/"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "dependencies": {
+    "@apidevtools/json-schema-ref-parser": "^11.1.0",
+    "@apollo/server": "^4.9.4",
+    "graphql": "^16.8.1",
+    "graphql-parse-resolve-info": "^4.13.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.8.7",
+    "typescript": "^5.2.2"
+  }
+}
