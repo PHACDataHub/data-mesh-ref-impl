@@ -115,7 +115,7 @@ MERGE (n:ClaimTransaction {claim_transaction_id: event.claim_transaction_id})
 WITH n, event
     MERGE (claim:Claim {claim_id: event.claim_id})
     MERGE (patient:Patient {patient_id: event.patient_id})
-    MERGE (organization:Organization {organization_id: event.place_of_service})
+    MERGE (organization:Organization {organization_id: event.organization_id})
     MERGE (provider:Provider {provider_id: event.provider_id})
 WITH n, event, claim, patient, organization, provider
     MERGE (n)-[:CLAIM_TRANSACTION_OF_CLAIM]->(claim)
@@ -170,7 +170,7 @@ MERGE (n:Encounter {encounter_id: event.encounter_id})
         n.reason_description = event.reason_description
 WITH n, event
     MERGE (patient:Patient {patient_id: event.patient_id})
-    MERGE (organization:Organization {organization_id: event.place_of_service})
+    MERGE (organization:Organization {organization_id: event.organization_id})
     MERGE (provider:Provider {provider_id: event.provider_id})
     MERGE (payer:Payer {payer_id: event.payer_id})
 WITH n, patient, organization, provider, payer
@@ -240,10 +240,13 @@ CREATE (n:Observation)
         n.observation_type = event.observation_type
 WITH n, event
     MERGE (patient:Patient {patient_id: event.patient_id})
-    MERGE (encounter:Encounter {encounter_id: event.encounter_id})
-WITH n, patient, encounter
+WITH n, event, patient
     MERGE (n)-[:OBSERVATION_OF_PATIENT]->(patient)
-    MERGE (n)-[:OBSERVATION_OF_ENCOUNTER]->(encounter)
+WITH n, event
+    FOREACH (dummy IN CASE WHEN event.encounter_id IS NOT NULL AND SIZE(event.encounter_id) > 0 THEN [1] ELSE [] END |
+        MERGE (encounter:Encounter {encounter_id: event.encounter_id})
+        MERGE (n)-[:OBSERVATION_OF_ENCOUNTER]->(encounter)
+    )
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 MERGE (n:Organization {organization_id: event.organization_id})
     SET n.name = event.name,
@@ -296,18 +299,21 @@ MERGE (n:Patient {patient_id: event.patient_id})
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 CREATE (n:PayerTransition)
     SET n.member_id = event.member_id,
-        n.start_year = DATE(event.start_year),
-        n.end_year = DATE(event.end_year),
+        n.start_year = DATETIME(event.start_year),
+        n.end_year = DATETIME(event.end_year),
         n.plan_ownership = event.plan_ownership,
         n.owner_name = event.owner_name
 WITH n, event
     MERGE (patient:Patient {patient_id: event.patient_id})
     MERGE (payer:Payer {payer_id: event.payer_id})
-    MERGE (secondary_payer:Payer {payer_id: event.secondary_payer_id})
-WITH n, patient, payer, secondary_payer
+WITH n, event, patient, payer
     MERGE (n)-[:PAYER_TRANSITION_OF_PATIENT]->(patient)
     MERGE (n)-[:PAYER_TRANSITION_OF_PAYER]->(payer)
-    MERGE (n)-[:PAYER_TRANSITION_OF_SECONDARY_PAYER]->(secondary_payer)
+WITH n, event
+    FOREACH (dummy IN CASE WHEN event.secondary_payer_id IS NOT NULL THEN [1] ELSE [] END |
+        MERGE (secondary_payer:Payer {payer_id: event.secondary_payer_id})
+        MERGE (n)-[:PAYER_TRANSITION_OF_SECONDARY_PAYER]->(secondary_payer)
+    )
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 MERGE (n:Payer {payer_id: event.payer_id})
     SET n.name = event.name,
@@ -359,9 +365,10 @@ MERGE (n:Provider {provider_id: event.provider_id})
         n.encounters = event.encounters,
         n.procedures = event.procedures
 WITH n, event
-    MERGE (organization:Organization {organization_id: event.organization_id})
-WITH n, organization
-    MERGE (n)-[:PROVIDER_OF_ORGANIZATION]->(organization)
+    FOREACH (dummy IN CASE WHEN event.organization_id IS NOT NULL THEN [1] ELSE [] END |
+        MERGE (organization:Organization {organization_id: event.organization_id})
+        MERGE (n)-[:PROVIDER_OF_ORGANIZATION]->(organization)
+    )
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 CREATE (n:Supply)
     SET n.date = DATETIME(event.date),

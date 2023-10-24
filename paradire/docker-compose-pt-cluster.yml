@@ -507,7 +507,7 @@ services:
       - standaloneHost=localhost
       - standalonePort=7687
       - standaloneDatabase=neo4j
-      - standaloneDashboardName=News Articles
+      - standaloneDashboardName=PT Analytics
       - standaloneDashboardDatabase=neo4j
     restart: always
 
