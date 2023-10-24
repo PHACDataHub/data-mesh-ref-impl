@@ -56,60 +56,87 @@
 
 sampling_size=$1
 output_dir=$2
+pt=$3
 
 # echo $sampling_size $output_dir
 
 rm -rf $output_dir
 mkdir $output_dir
 
-./run_synthea -p $sampling_size Alberta
-mkdir $output_dir/AB
-mv output/* $output_dir/AB/.
+if [ $pt == 'AB' ]; then
+    ./run_synthea -p $sampling_size Alberta
+    mkdir $output_dir/AB
+    mv output/* $output_dir/AB/.
+fi
 
-./run_synthea -p $sampling_size "British Columbia"
-mkdir $output_dir/BC
-mv output/* $output_dir/BC/.
+if [ $pt == 'BC' ]; then
+    ./run_synthea -p $sampling_size "British Columbia"
+    mkdir $output_dir/BC
+    mv output/* $output_dir/BC/.
+fi
 
-./run_synthea -p $sampling_size Manitoba
-mkdir $output_dir/MB
-mv output/* $output_dir/MB/.
+if [ $pt == 'MB' ]; then
+    ./run_synthea -p $sampling_size Manitoba
+    mkdir $output_dir/MB
+    mv output/* $output_dir/MB/.
+fi
 
-./run_synthea -p $sampling_size "New Brunswick"
-mkdir $output_dir/NB
-mv output/* $output_dir/NB/.
+if [ $pt == 'NB' ]; then
+    ./run_synthea -p $sampling_size "New Brunswick"
+    mkdir $output_dir/NB
+    mv output/* $output_dir/NB/.
+fi
 
-./run_synthea -p $sampling_size "Newfoundland and Labrador"
-mkdir $output_dir/NL
-mv output/* $output_dir/NL/.
+if [ $pt == 'NL' ]; then
+    ./run_synthea -p $sampling_size "Newfoundland and Labrador"
+    mkdir $output_dir/NL
+    mv output/* $output_dir/NL/.
+fi
 
-./run_synthea -p $sampling_size "Northwest Territories"
-mkdir $output_dir/NT
-mv output/* $output_dir/NT/.
+if [ $pt == 'NU' ]; then
+    ./run_synthea -p $sampling_size "Northwest Territories"
+    mkdir $output_dir/NT
+    mv output/* $output_dir/NU/.
+fi
 
-./run_synthea -p $sampling_size "Nova Scotia"
-mkdir $output_dir/NS
-mv output/* $output_dir/NS/.
+if [ $pt == 'NU' ]; then
+    ./run_synthea -p $sampling_size "Nova Scotia"
+    mkdir $output_dir/NS
+    mv output/* $output_dir/NU/.
+fi
 
-./run_synthea -p $sampling_size Nunavut
-mkdir $output_dir/NU
-mv output/* $output_dir/NU/.
+if [ $pt == 'NU' ]; then
+    ./run_synthea -p $sampling_size Nunavut
+    mkdir $output_dir/NU
+    mv output/* $output_dir/NU/.
+fi
 
-./run_synthea -p $sampling_size Ontario
-mkdir $output_dir/ON
-mv output/* $output_dir/ON/.
+if [ $pt == 'ON' ]; then
+    ./run_synthea -p $sampling_size Ontario
+    mkdir $output_dir/ON
+    mv output/* $output_dir/ON/.
+fi
 
-./run_synthea -p $sampling_size "Prince Edward Island"
-mkdir $output_dir/PE
-mv output/* $output_dir/PE/.
+if [ $pt == 'PE' ]; then
+    ./run_synthea -p $sampling_size "Prince Edward Island"
+    mkdir $output_dir/PE
+    mv output/* $output_dir/PE/.
+fi
 
-./run_synthea -p $sampling_size Quebec
-mkdir $output_dir/QC
-mv output/* $output_dir/QC/.
+if [ $pt == 'QC' ]; then
+    ./run_synthea -p $sampling_size Quebec
+    mkdir $output_dir/QC
+    mv output/* $output_dir/QC/.
+fi
 
-./run_synthea -p $sampling_size Saskatchewan
-mkdir $output_dir/SK
-mv output/* $output_dir/SK/.
+if [ $pt == 'SK' ]; then
+    ./run_synthea -p $sampling_size Saskatchewan
+    mkdir $output_dir/SK
+    mv output/* $output_dir/SK/.
+fi
 
-./run_synthea -p $sampling_size Yukon
-mkdir $output_dir/YT
-mv output/* $output_dir/YT/.
+if [ $pt == 'YT' ]; then
+    ./run_synthea -p $sampling_size Yukon
+    mkdir $output_dir/YT
+    mv output/* $output_dir/YT/.
+fi

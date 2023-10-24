@@ -18,6 +18,12 @@ else
     output_dir=$2
 fi
 
+if [ -z "$3" ]; then
+    pt=ON
+else
+    pt=$3
+fi
+
 set -e
 
 curr_dir=$(pwd)
@@ -37,7 +43,7 @@ fi
 
 cd synthea
 
-for item in genenerate_ca_demo_sampling genenerate_ca_equi_sampling upload_EHRs upload_hospitals upload_practitioners
+for item in genenerate_ca_demo_sampling genenerate_pt_sampling upload_EHRs upload_hospitals upload_practitioners
 do
     cp $curr_dir/synthea_patch/$item.sh .
 done
@@ -56,6 +62,6 @@ cp -f $curr_dir/synthea_patch/synthea.properties src/main/resources/.
 
 rm -rf output
 
-./genenerate_ca_equi_sampling.sh $sampling_size $output_dir
+./genenerate_pt_sampling.sh $sampling_size $output_dir $pt
 
 cd $curr_dir
