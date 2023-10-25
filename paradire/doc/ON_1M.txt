@@ -1,0 +1,47 @@
+Number of events
+----------------
+     1025745 allergies.csv
+     4420705 careplans.csv
+   225695998 claims.csv
+   739363663 claims_transactions.csv
+    62124218 conditions.csv
+     2367979 devices.csv
+   106123974 encounters.csv
+   114191992 imaging_studies.csv
+    17072671 immunizations.csv
+   119572024 medications.csv
+  1147962040 observations.csv
+        2599 organizations.csv
+    11557500 patient_expenses.csv
+     1171005 patients.csv
+    11557500 payer_transitions.csv
+           2 payers.csv
+   155708133 procedures.csv
+        2599 providers.csv
+    17734103 supplies.csv
+  2737654450 total
+
+Physical sizes
+--------------
+total 762856876
+         4096 Oct 24 23:32 .
+         4096 Oct 24 23:32 ..
+    181365068 Oct 25 07:46 allergies.csv
+    821305008 Oct 25 07:46 careplans.csv
+  86666443847 Oct 25 07:46 claims.csv
+ 334919023297 Oct 25 07:46 claims_transactions.csv
+   8364357973 Oct 25 07:46 conditions.csv
+    542889373 Oct 25 07:46 devices.csv
+  34544216094 Oct 25 07:46 encounters.csv
+  39741463831 Oct 25 07:46 imaging_studies.csv
+   2574175663 Oct 25 07:46 immunizations.csv
+  31299852467 Oct 25 07:46 medications.csv
+ 205374430072 Oct 25 07:46 observations.csv
+       422708 Oct 25 07:46 organizations.csv
+   1278249659 Oct 25 07:46 patient_expenses.csv
+    311899004 Oct 25 07:46 patients.csv
+   2078805078 Oct 25 07:46 payer_transitions.csv
+          295 Oct 25 07:46 payers.csv
+  29862884169 Oct 25 07:46 procedures.csv
+       481480 Oct 25 07:46 providers.csv
+   2602951397 Oct 25 07:46 supplies.csv
