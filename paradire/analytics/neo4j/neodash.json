@@ -1,0 +1,155 @@
+{
+    "title": "PT Analytics Platform",
+    "version": "2.3",
+    "settings": {
+      "pagenumber": 0,
+      "editable": true,
+      "fullscreenEnabled": false,
+      "parameters": {},
+      "theme": "light"
+    },
+    "pages": [
+      {
+        "title": "Pie Chart",
+        "reports": [
+          {
+            "id": "8e85c1a2-0183-45bb-bde5-3c56d125452c",
+            "title": "Immunization count per zip code",
+            "query": "MATCH (n:Patient)-[r]-(i:Immunization)\nRETURN DISTINCT(n.zip) AS zip, COUNT(i) AS immunization_count\n\n\n\n\n",
+            "width": 12,
+            "height": 4,
+            "x": 0,
+            "y": 0,
+            "type": "pie",
+            "selection": {
+              "index": "zip",
+              "value": "immunization_count",
+              "key": "(none)"
+            },
+            "settings": {
+              "frozen": false,
+              "nodePositions": {}
+            },
+            "schema": []
+          }
+        ]
+      },
+      {
+        "title": "Map",
+        "reports": [
+          {
+            "id": "9f3d49c1-ec80-416f-9169-3762915f41d2",
+            "title": "COVID doses administration",
+            "query": "MATCH (p:Patient)\nWITH p\n  MATCH (p)-[r1]-(i:Immunization {code: '208'})-[r2]-(e:Encounter)-[r3]-(o:Organization)\nWITH DISTINCT([p, o]) AS po, COUNT(*) AS count\nWITH po[0] AS p, po[1] AS o, count\nWITH p, o, count, \n  apoc.create.vRelationship(p,'ADMINISTERED_BY',{count: count}, o) AS rel\nRETURN p, rel, o\n\n\n\n\n",
+            "width": 12,
+            "height": 4,
+            "x": 0,
+            "y": 0,
+            "type": "map",
+            "selection": {
+              "Patient": "first",
+              "ADMINISTERED_BY": "(label)",
+              "Organization": "name"
+            },
+            "settings": {},
+            "schema": [
+              [
+                "Patient",
+                "income",
+                "zip",
+                "address",
+                "last",
+                "race",
+                "ethnicity",
+                "gender",
+                "city",
+                "healthcare_expenses",
+                "prefix",
+                "birth_date",
+                "county",
+                "birth_place",
+                "ssn",
+                "maiden",
+                "marital",
+                "passport",
+                "healthcare_coverage",
+                "patient_id",
+                "location",
+                "drivers",
+                "first",
+                "death_date",
+                "suffix"
+              ],
+              [
+                "ADMINISTERED_BY",
+                "count"
+              ],
+              [
+                "Organization",
+                "zip",
+                "revenue",
+                "address",
+                "phone",
+                "city",
+                "organization_id",
+                "name",
+                "location",
+                "utilization",
+                "state"
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Bar Chart",
+        "reports": [
+          {
+            "id": "95a53e78-6f98-4069-8fe0-1cee90ca3c2d",
+            "title": "Encounters with symptom (SNOMED-CT 185345009) per provider in 2021",
+            "query": "MATCH (e:Encounter)-[r]-(p:Provider)\n  WHERE e.code = \"185345009\" AND e.start > DATETIME('2020-01-01T00:00:00Z') AND e.stop < DATETIME('2021-01-01T00:00:00Z')\nRETURN DISTINCT(p.name), COUNT(e) AS encounter_count\n",
+            "width": 12,
+            "height": 4,
+            "x": 0,
+            "y": 0,
+            "type": "bar",
+            "selection": {
+              "index": "(p.name)",
+              "value": "encounter_count",
+              "key": "(none)"
+            },
+            "settings": {},
+            "schema": []
+          }
+        ]
+      }
+    ],
+    "parameters": {},
+    "extensions": {
+      "active": true,
+      "activeReducers": [
+        "DASHBOARD/EXTENSIONS/QUERY_TRANSLATOR/"
+      ],
+      "advanced-charts": {
+        "active": true
+      },
+      "styling": {
+        "active": true
+      },
+      "actions": {
+        "active": true
+      },
+      "query-translator": {
+        "active": true,
+        "modelProvider": "OpenAI",
+        "settings": {
+          "modelType": "gpt-3.5-turbo-16k-0613"
+        },
+        "lastMessages": {
+          "0": {
+            "8e85c1a2-0183-45bb-bde5-3c56d125452c": "How many Patients are there?"
+          }
+        }
+      }
+    }
+  }
