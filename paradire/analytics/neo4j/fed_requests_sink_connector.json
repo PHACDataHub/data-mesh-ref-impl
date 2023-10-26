@@ -1,0 +1,22 @@
+{
+    "name": "fed_requests_sink_connector",
+    "config": {
+        "_comment": "Sink configuration for Federated Analytics Requests",
+        "connector.class": "streams.kafka.connect.sink.Neo4jSinkConnector",
+        "key.converter": "io.confluent.connect.avro.AvroConverter",
+        "key.converter.schema.registry.url": "http://schema-registry:8081",
+        "value.converter": "io.confluent.connect.avro.AvroConverter",
+        "value.converter.schema.registry.url": "http://schema-registry:8081",
+        "errors.retry.timeout": "-1",
+        "errors.retry.delay.max.ms": "1000",
+        "errors.tolerance": "all",
+        "errors.log.enable": true,
+        "errors.log.include.messages": true,
+        "neo4j.server.uri": "bolt://neo4j:7687",
+        "neo4j.authentication.basic.username": "neo4j",
+        "neo4j.authentication.basic.password": "phac@2023",
+        "neo4j.encryption.enabled": false,
+        "topics": "fed_request_zip_immunization",
+        "neo4j.topic.cypher.fed_request_zip_immunization": "MATCH (n:Patient)-[r]-(i:Immunization) WHERE n.city = event.city WITH DISTINCT(n.zip) AS zip, event.request_id AS request_id, COUNT(i) AS immunization_count WITH request_id, zip, immunization_count CREATE (response:ZipImmunization) SET response.request_id = request_id, response.zip = zip, response.immunization_count = immunization_count, response.timestamp = apoc.date.currentTimestamp()"
+    }
+}

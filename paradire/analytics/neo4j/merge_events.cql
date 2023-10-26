@@ -382,3 +382,33 @@ WITH n, patient, encounter
     MERGE (n)-[:PROCEDURE_OF_PATIENT]->(patient)
     MERGE (n)-[:PROCEDURE_OF_ENCOUNTER]->(encounter)
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+MATCH (record:VaccinationRecord) 
+    WHERE record.timestamp > $lastCheck
+RETURN
+    record.immunization_date AS immunization_date,
+    record.immunization_code AS immunization_code,
+    record.immunization_description AS immunization_description,
+    record.organization_name AS organization_name,
+    record.organization_zip AS organization_zip,
+    record.encounter_class AS encounter_class,
+    record.encounter_code AS encounter_code,
+    record.encounter_description AS encounter_description,
+    record.patient_id AS patient_id,
+    record.patient_address AS patient_address,
+    record.patient_age AS patient_age,
+    record.patient_zip AS patient_zip,
+    record.patient_gender AS patient_gender,
+    record.patient_race AS patient_race,
+    record.patient_ethnicity AS patient_ethnicity,
+    record.timestamp AS timestamp
+////////////////////////////////////////////////////////////////////////////////////////////////////
+MATCH (n:Patient)-[r]-(i:Immunization)
+    WHERE n.city = event.city
+WITH DISTINCT(n.zip) AS zip, event.request_id AS request_id,  COUNT(i) AS immunization_count
+WITH request_id, zip, immunization_count
+    CREATE (response:ZipImmunization)
+        SET response.request_id = request_id,
+            response.zip = zip,
+            response.immunization_count = immunization_count
+            response.timestamp = apoc.date.currentTimestamp()
+////////////////////////////////////////////////////////////////////////////////////////////////////
