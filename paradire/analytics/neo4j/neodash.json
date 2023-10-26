@@ -2,7 +2,7 @@
     "title": "PT Analytics Platform",
     "version": "2.3",
     "settings": {
-      "pagenumber": 0,
+      "pagenumber": 11,
       "editable": true,
       "fullscreenEnabled": false,
       "parameters": {
@@ -632,6 +632,28 @@
             "schema": []
           }
         ]
+      },
+      {
+        "title": "New page",
+        "reports": [
+          {
+            "id": "d4bf8b5b-38bd-4ca4-944e-009f1b1f23cd",
+            "title": "How many Patients are there per zip?",
+            "query": "MATCH (p:Patient) \nRETURN p.zip as Zip_Code, count(p) as Number_of_Patients",
+            "width": 12,
+            "height": 3,
+            "x": 0,
+            "y": 0,
+            "type": "bar",
+            "selection": {
+              "index": "Zip_Code",
+              "value": "Number_of_Patients",
+              "key": "(none)"
+            },
+            "settings": {},
+            "schema": []
+          }
+        ]
       }
     ],
     "parameters": {},
@@ -653,7 +675,7 @@
         "active": true,
         "modelProvider": "OpenAI",
         "settings": {
-          "modelType": "gpt-3.5-turbo-16k-0613"
+          "modelType": "gpt-4-0613"
         },
         "lastMessages": {
           "0": {
@@ -661,6 +683,10 @@
           },
           "1": {
             "92b6ed72-5695-4cbe-ae19-3c89e8b9d1a0": "How many patients are there?"
+          },
+          "11": {
+            "5c3a6aa3-1d75-41b0-875e-61e8409b4446": "How many Patients are there per Zip?",
+            "d4bf8b5b-38bd-4ca4-944e-009f1b1f23cd": "How many Patients are there per zip?"
           }
         }
       }
