@@ -1,3 +1,12 @@
+interface JSONSchema6Discriminator {
+  discriminator: {
+    propertyName: string;
+    mapping: {
+      [string]: string;
+    };
+  };
+}
+
 type ResourceTypeField = string | { [field: string]: ResourceTypeField[] };
 
 /**
@@ -6,6 +15,7 @@ type ResourceTypeField = string | { [field: string]: ResourceTypeField[] };
 type ResourceTypeSelection = {
   name: string;
   selectedFields: ResourceTypeField[];
+  ref: string;
 };
 
 interface GovernanceUIStore {
@@ -26,4 +36,28 @@ interface Ruleset {
 
 interface RuleSetDocument {
   ruleset: Ruleset;
+}
+
+type AvroSchemaEnum = {
+  type: "enum";
+  name: string;
+  namespace?: string;
+  aliases?: string[];
+  doc?: string;
+  symbols: string[];
+  default?: string;
+};
+
+type AvroSchemaType = {
+  name: string;
+  type: string | AvroSchemaEnum;
+  items?: string;
+};
+
+interface AvroSchema {
+  namespace: string;
+  type: string;
+  name: string;
+  doc?: string;
+  fields: AvroSchemaType[];
 }

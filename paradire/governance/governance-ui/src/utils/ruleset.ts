@@ -1,4 +1,9 @@
+import { type JSONSchema6 } from "json-schema";
 import { Document, parse } from "yaml";
+import { dereference } from "./schema";
+
+export const getNamespacedRef = (ref: string | undefined) =>
+  `${ref ?? "UNKNOWN"}`;
 
 export const selectedResourceTypesToRuleSet = (
   resourceTypes: ResourceTypeSelection[],
@@ -26,10 +31,162 @@ export const ruleSetToSelectedResourceTypes = (yaml: string) => {
     if (rt.name) {
       selection.push({
         name: rt.name,
+        ref: `#/definitions/${rt.name}`,
         selectedFields: rt.fields,
       });
     }
   });
 
   return selection;
+};
+
+export function getFieldIfSelected(field: string, fields: ResourceTypeField[]) {
+  return fields.find(
+    (f) =>
+      (typeof f === "string" && f === field) ||
+      (f && typeof f === "object" && field in f),
+  );
+}
+
+export function isFieldSelected(field: string, fields: ResourceTypeField[]) {
+  return Boolean(getFieldIfSelected(field, fields));
+}
+
+export function getFieldType(
+  name: string,
+  fieldSpec: JSONSchema6,
+  schema: JSONSchema6,
+): [string | AvroSchemaEnum, boolean] {
+  const reference =
+    fieldSpec.$ref ??
+    (fieldSpec.type === "array" &&
+      fieldSpec.items &&
+      (fieldSpec.items as { $ref: string }).$ref);
+  if (reference) {
+    const ref = dereference(reference, schema);
+    if (ref && typeof ref !== "boolean") {
+      if (ref.properties) return [getNamespacedRef(reference), true];
+      if (ref.type) return [ref.type as string, false];
+      return ["UNSUPPORTED", false];
+    }
+  } else if (fieldSpec.enum) {
+    return [
+      {
+        type: "enum",
+        name,
+        doc: fieldSpec.description,
+        default: fieldSpec.default as string,
+        symbols: fieldSpec.enum as string[],
+      },
+      false,
+    ];
+  }
+  return [(fieldSpec.type as string) ?? "", false];
+}
+
+export const expandRuleset = (
+  resourceTypes: ResourceTypeSelection[],
+  schema: JSONSchema6,
+  expanded: ResourceTypeSelection[] = [],
+) => {
+  // expand by adding all resource types
+  resourceTypes.forEach((RT) => {
+    const NS = getNamespacedRef(RT.ref);
+    const def = dereference(RT.ref, schema);
+    if (!def || typeof def === "boolean") return;
+    if (!expanded.find((ex) => ex.name === NS)) {
+      expanded.push(Object.assign({}, RT, { name: NS }));
+      def.properties &&
+        Object.keys(def.properties)
+          .filter((name) => isFieldSelected(name, RT.selectedFields))
+          .forEach((name) => {
+            const fieldSpec = def.properties && def.properties[name];
+            if (fieldSpec && typeof fieldSpec !== "boolean") {
+              const [fieldRef, requiresRef] = getFieldType(
+                `${NS}.${name}`,
+                fieldSpec,
+                schema,
+              );
+              if (requiresRef && typeof fieldRef === "string") {
+                const sFields = Object.entries(RT.selectedFields)
+                  .filter(([, v]) => typeof v === "object" && name in v)
+                  .map(([, v]) => typeof v === "object" && v[name])
+                  .find(() => true);
+                if (Array.isArray(sFields)) {
+                  expandRuleset(
+                    [{ name, ref: fieldRef, selectedFields: sFields }],
+                    schema,
+                    expanded,
+                  );
+                }
+              }
+            }
+          });
+      /**Add schema only containing required properties to use as keys */
+      if (def.required) {
+        // TODO: deal with case where required fields are refs
+        expanded.push(
+          Object.assign({}, RT, {
+            name: `${NS}#key`,
+            selectedFields: def.required,
+          }),
+        );
+      }
+    } else {
+      // TODO: deal with loops
+      console.log("merge!");
+    }
+  });
+  return expanded;
+};
+
+export const rulesetToAvro = (yaml: string, schema: JSONSchema6) => {
+  if (!yaml) return {};
+  const selectedResourceTypes = expandRuleset(
+    ruleSetToSelectedResourceTypes(yaml),
+    schema,
+  );
+  const avro_schemas: AvroSchema[] = [];
+  selectedResourceTypes.forEach((resourceType) => {
+    const referenced_schema = dereference(resourceType.ref, schema);
+    if (!referenced_schema || typeof referenced_schema === "boolean") return;
+    const avroSchema = {
+      namespace: resourceType.name,
+      type: "record",
+      name: resourceType.name,
+      doc: referenced_schema.description,
+      fields: Object.keys(referenced_schema?.properties ?? {})
+        .filter((name) => isFieldSelected(name, resourceType.selectedFields))
+        .map((name) => {
+          const fieldSpec =
+            referenced_schema.properties && referenced_schema.properties[name];
+          if (fieldSpec && typeof fieldSpec !== "boolean") {
+            const [type, requiresRef] = getFieldType(
+              `${resourceType.name}.${name}`,
+              fieldSpec,
+              schema,
+            );
+            if (requiresRef) {
+            }
+            return Object.assign(
+              {
+                name,
+                type,
+              },
+              fieldSpec.items && {
+                items:
+                  typeof fieldSpec.items === "object"
+                    ? "$ref" in fieldSpec.items &&
+                      getNamespacedRef(fieldSpec.items.$ref)
+                    : fieldSpec.items,
+              },
+            );
+          }
+          return [] as AvroSchemaType[];
+        }),
+    };
+
+    avro_schemas.push(avroSchema as AvroSchema);
+  });
+  return avro_schemas;
 };

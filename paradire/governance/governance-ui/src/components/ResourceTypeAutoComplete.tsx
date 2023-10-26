@@ -9,12 +9,10 @@ import BoldedText from "./BoldedText";
 export default function ResourceTypeAutoComplete({
   mapping,
   selectedResourceTypes,
-  enabledResourceTypes,
   onChange,
 }: {
   mapping: Record<string, string>;
   selectedResourceTypes?: ResourceTypeSelection[];
-  enabledResourceTypes?: string[],
   onChange?: (selectedResourceTypes: ResourceTypeSelection[]) => void;
 }) {
   /**
@@ -129,7 +127,7 @@ export default function ResourceTypeAutoComplete({
   }, [documentClickHandler, openSearch]);
 
   return (
-    <form className="mb-5 mt-5" ref={dropdown}>
+    <form className="mb-5" ref={dropdown}>
       <div className="relative">
         <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
           <svg
@@ -164,17 +162,7 @@ export default function ResourceTypeAutoComplete({
         }`}
       >
         {searchResults.length === 0 && <li>No results</li>}
-        {searchResults.sort((a, b) => {
-            const aEnabled = enabledResourceTypes?.includes(a);
-            const bEnabled = enabledResourceTypes?.includes(b);
-            if (aEnabled && !bEnabled) return -1;
-            if (bEnabled && !aEnabled) return 1;
-            const A = a.toUpperCase();
-            const B = b.toUpperCase();
-            if (A < B) return -1;
-            if (A > B) return 1;
-            return 0;
-        }).map((key) => (
+        {searchResults.map((key) => (
           <li key={key} className="p-2 odd:bg-slate-100">
             <label className="flex space-x-2">
               <input
@@ -182,7 +170,6 @@ export default function ResourceTypeAutoComplete({
                 value={key}
                 checked={Boolean(selected.find((e) => e.name === key))}
                 onChange={selectedResourceChangeHandler}
-                disabled={!enabledResourceTypes?.includes(key)}
               />
               <h3 className="text-base">
                 <BoldedText text={key} bold={search} />
