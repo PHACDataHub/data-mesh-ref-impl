@@ -503,8 +503,8 @@ services:
       - ssoDiscoveryUrl=
       - standalone=true
       - standaloneProtocol=bolt
-      # - standaloneHost=${PUBLIC_IP}
-      - standaloneHost=localhost
+      - standaloneHost=${PUBLIC_IP}
+      # - standaloneHost=localhost
       - standalonePort=7687
       - standaloneDatabase=neo4j
       - standaloneDashboardName=PT Analytics Platform
