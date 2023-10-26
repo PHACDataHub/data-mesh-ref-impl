@@ -56,12 +56,14 @@ do
 
     data_file=${topic}.avro
     no_messages=$(cat $data_dir/$data_file | wc -l | tr -d ' ')
-    cp $data_dir/${data_file} ${kafka_ce_schema_registry_data_dir}/.
+    mv $data_dir/${data_file} ${kafka_ce_schema_registry_data_dir}/.
 
     echo "Produce ${no_messages} messages ..." 
     docker exec ${schema_registry_container} bash -c \
         "kafka-avro-console-producer  --broker-list $broker_internal_host:$broker_internal_port --topic $topic --property key.separator='|' --property parse.key=true --property key.schema.id=$key_schema_id --property value.schema.id=$value_schema_id < /data/$data_file"
     echo ''
+
+    mv ${kafka_ce_schema_registry_data_dir}/${data_file} $data_dir/.
 done
 
 ./scripts/list_subjects.sh
