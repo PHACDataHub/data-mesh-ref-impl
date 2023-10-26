@@ -9,6 +9,7 @@ import { XCircleIcon } from "@heroicons/react/24/outline";
 
 import BoldedText from "./BoldedText";
 import { dereference } from "~/utils/schema";
+import { getFieldIfSelected, isFieldSelected } from "~/utils/ruleset";
 
 function getSubSelectedFields(
   selected: ResourceTypeField | undefined,
@@ -20,14 +21,6 @@ function getSubSelectedFields(
   if (typeof val === "undefined") return [];
   if (!Array.isArray(val)) return [val];
   return val;
-}
-
-function isFieldChecked(field: string, fields: ResourceTypeField[]) {
-  return fields.find(
-    (f) =>
-      (typeof f === "string" && f === field) ||
-      (f && typeof f === "object" && field in f),
-  );
 }
 
 const namedFieldFilter = (search: string) => (field: ResourceTypeField) =>
@@ -68,7 +61,7 @@ export default function ResourceType({
   const onFieldChange = useCallback(
     (event: react.ChangeEvent<HTMLInputElement>) => {
       let changes: ResourceTypeField[] = [];
-      if (isFieldChecked(event.target.value, fields)) {
+      if (isFieldSelected(event.target.value, fields)) {
         changes = fields.filter(namedFieldFilter(event.target.value));
       } else changes = fields.concat(event.target.value);
       if (!selectedFields) setSelectedFields(changes);
@@ -79,7 +72,6 @@ export default function ResourceType({
 
   const onSubfieldChange = useCallback(
     (subFieldName: string, selectedFields: ResourceTypeField[]) => {
-      console.log({ subFieldName, name });
       const changes = fields
         .filter(namedFieldFilter(subFieldName))
         .concat({ [subFieldName]: selectedFields });
@@ -211,7 +203,7 @@ export default function ResourceType({
                     "$ref" in val.items &&
                     val.items.$ref);
 
-                const checked = isFieldChecked(field, fields);
+                const checked = getFieldIfSelected(field, fields);
 
                 const selectedSubFields = getSubSelectedFields(checked, field);
 
