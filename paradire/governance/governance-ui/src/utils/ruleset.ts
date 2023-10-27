@@ -1,4 +1,14 @@
-import { type JSONSchema6 } from "json-schema";
+import { JSONSchema6Definition, type JSONSchema6 } from "json-schema";
+import {
+  GraphQLBoolean,
+  GraphQLFloat,
+  GraphQLInt,
+  GraphQLObjectType,
+  GraphQLSchema,
+  GraphQLString,
+  printSchema,
+} from "graphql";
+
 import { Document, parse } from "yaml";
 import { dereference } from "./schema";
 
@@ -88,6 +98,7 @@ export const expandRuleset = (
   resourceTypes: ResourceTypeSelection[],
   schema: JSONSchema6,
   expanded: ResourceTypeSelection[] = [],
+  generateKey = true,
 ) => {
   // expand by adding all resource types
   resourceTypes.forEach((RT) => {
@@ -117,13 +128,14 @@ export const expandRuleset = (
                     [{ name, ref: fieldRef, selectedFields: sFields }],
                     schema,
                     expanded,
+                    generateKey,
                   );
                 }
               }
             }
           });
       /**Add schema only containing required properties to use as keys */
-      if (def.required) {
+      if (def.required && generateKey) {
         // TODO: deal with case where required fields are refs
         expanded.push(
           Object.assign({}, RT, {
@@ -140,8 +152,94 @@ export const expandRuleset = (
   return expanded;
 };
 
+const fieldSpecToGraphQlType = (
+  name: string,
+  fieldSpec: JSONSchema6Definition | undefined,
+  schema: JSONSchema6,
+) => {
+  if (!fieldSpec || typeof fieldSpec === "boolean")
+    return [name, { type: GraphQLString }];
+  const [type] = getFieldType(name, fieldSpec, schema);
+  switch (type) {
+    case "string":
+      return [name, { type: GraphQLString }];
+    case "integer":
+      return [name, { type: GraphQLInt }];
+    case "number":
+      return [name, { type: GraphQLFloat }];
+    case "boolean":
+      return [name, { type: GraphQLBoolean }];
+    default:
+      return [name, { type: GraphQLString }];
+  }
+};
+
+export const rulesToGraphQl = (yaml: string, schema: JSONSchema6) => {
+  if (!yaml) return "";
+  const selectedResourceTypes = expandRuleset(
+    ruleSetToSelectedResourceTypes(yaml),
+    schema,
+    [],
+    false,
+  );
+  if (selectedResourceTypes.length === 0) return "";
+
+  const queryType = new GraphQLObjectType({
+    name: "Query",
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    fields: Object.fromEntries(
+      selectedResourceTypes
+        .filter((resourceType) => {
+          const referenced_schema = dereference(resourceType.ref, schema);
+          return !(
+            !referenced_schema || typeof referenced_schema === "boolean"
+          );
+        })
+        .map((resourceType) => {
+          const referenced_schema = dereference(resourceType.ref, schema);
+          if (!referenced_schema || typeof referenced_schema === "boolean")
+            return ["invalid", { type: GraphQLString }]; // never hits, for TS
+
+          const typeName = resourceType.name.replace("#/definitions/", "");
+          const typeFields = Object.keys(referenced_schema?.properties ?? {})
+            .filter((name) =>
+              isFieldSelected(name, resourceType.selectedFields),
+            )
+            .map((name) => ({
+              name,
+              fieldSpec:
+                referenced_schema.properties &&
+                referenced_schema.properties[name],
+            }));
+          return [
+            typeName,
+            {
+              // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+              args: Object.fromEntries(
+                typeFields.map(({ name, fieldSpec }) =>
+                  fieldSpecToGraphQlType(name, fieldSpec, schema),
+                ),
+              ),
+              type: new GraphQLObjectType({
+                name: typeName,
+                description: referenced_schema.description,
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+                fields: Object.fromEntries(
+                  typeFields.map(({ name, fieldSpec }) =>
+                    fieldSpecToGraphQlType(name, fieldSpec, schema),
+                  ),
+                ),
+              }),
+            },
+          ];
+        }),
+    ),
+  });
+  return printSchema(new GraphQLSchema({ query: queryType }));
+};
+
 export const rulesetToAvro = (yaml: string, schema: JSONSchema6) => {
-  if (!yaml) return {};
+  if (!yaml) return [];
   const selectedResourceTypes = expandRuleset(
     ruleSetToSelectedResourceTypes(yaml),
     schema,
@@ -161,13 +259,11 @@ export const rulesetToAvro = (yaml: string, schema: JSONSchema6) => {
           const fieldSpec =
             referenced_schema.properties && referenced_schema.properties[name];
           if (fieldSpec && typeof fieldSpec !== "boolean") {
-            const [type, requiresRef] = getFieldType(
+            const [type] = getFieldType(
               `${resourceType.name}.${name}`,
               fieldSpec,
               schema,
             );
-            if (requiresRef) {
-            }
             return Object.assign(
               {
                 name,

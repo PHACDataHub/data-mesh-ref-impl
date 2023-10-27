@@ -14,7 +14,8 @@ import paradire_schema from "../../../schemas/json/paradire/paradire.json" asser
 
 import ResourceTypeAutoComplete from "~/components/ResourceTypeAutoComplete";
 import { useDataGovernance } from "~/store";
-import { rulesetToAvro } from "~/utils/ruleset";
+import { rulesToGraphQl, rulesetToAvro } from "~/utils/ruleset";
+import { dereference } from "~/utils/schema";
 
 export default function Home() {
   const [selectedSchema, setSelectedSchema] = useState<"Paradire" | "HL7R4">(
@@ -79,6 +80,27 @@ export default function Home() {
     }
   }, [selectedSchema]);
 
+  const addEverythingClickHandler = useCallback(() => {
+    setSelectedResourceTypes(
+      Object.entries(json_schema.discriminator.mapping).map(([name, ref]) => {
+        const referenced_schema = dereference(ref as string, json_schema);
+        // if (!referenced_schema || typeof referenced_schema === "boolean")
+        //   return undefined;
+        const selectedFields = Object.entries(
+          (referenced_schema && typeof referenced_schema !== "boolean" &&
+            referenced_schema.properties) ??
+            {},
+        ).filter(
+          ([field,]) =>
+            !field.startsWith("_") &&
+            field !== "resourceType"
+        ).map(([field]) => field);
+
+        return { name, selectedFields, ref: ref as string };
+      }),
+    );
+  }, [json_schema, setSelectedResourceTypes]);
+
   return (
     <>
       <Head>
@@ -103,16 +125,10 @@ export default function Home() {
               <select
                 className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
                 onChange={selectedSchemaChangeHandler}
+                value={selectedSchema}
               >
-                <option
-                  selected={selectedSchema === "Paradire"}
-                  value="Paradire"
-                >
-                  Paradire PoC
-                </option>
-                <option selected={selectedSchema === "HL7R4"} value="HL7R4">
-                  HL7 R4
-                </option>
+                <option value="Paradire">Paradire PoC</option>
+                <option value="HL7R4">HL7 R4</option>
               </select>
             </label>
           </div>
@@ -125,7 +141,14 @@ export default function Home() {
               onChange={changeSelectedResourceTypesHandler}
               mapping={json_schema.discriminator.mapping}
             />
-
+            <div className="flex justify-center">
+              <button
+                className="justify-center rounded bg-blue-500 p-2 text-slate-50"
+                onClick={addEverythingClickHandler}
+              >
+                Add everything!
+              </button>
+            </div>
             <div className="flex flex-wrap space-x-2 space-y-2">
               <div />
               {Object.entries(json_schema.discriminator.mapping)
@@ -160,10 +183,13 @@ export default function Home() {
                 }}
               />
             </div>
-            <div className="flex-1 border-2">
+            {/* <div className="flex-1 border-2">
               <pre>
                 {JSON.stringify(rulesetToAvro(yaml, json_schema), null, 2)}
               </pre>
+            </div> */}
+            <div className="flex-1 border-2">
+              <pre>{rulesToGraphQl(yaml, json_schema)}</pre>
             </div>
           </div>
         </div>
