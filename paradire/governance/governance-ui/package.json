@@ -12,6 +12,7 @@
     "start": "next start"
   },
   "dependencies": {
+    "@apollo/client": "^3.8.6",
     "@heroicons/react": "^2.0.18",
     "@monaco-editor/react": "^4.6.0",
     "@next-auth/prisma-adapter": "^1.0.7",

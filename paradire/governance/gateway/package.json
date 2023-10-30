@@ -15,8 +15,11 @@
   "dependencies": {
     "@apidevtools/json-schema-ref-parser": "^11.1.0",
     "@apollo/server": "^4.9.4",
+    "@neo4j/graphql": "^4.4.0",
     "graphql": "^16.8.1",
-    "graphql-parse-resolve-info": "^4.13.0"
+    "graphql-parse-resolve-info": "^4.13.0",
+    "neo4j-driver": "^5.14.0",
+    "yaml": "^2.3.3"
   },
   "devDependencies": {
     "@types/node": "^20.8.7",
