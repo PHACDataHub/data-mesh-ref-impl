@@ -7,6 +7,8 @@ import { type JSONSchema6 } from "json-schema";
 
 import Editor from "@monaco-editor/react";
 
+import { ApolloClient, InMemoryCache, ApolloProvider, gql, useMutation } from '@apollo/client';
+
 import ResourceType from "~/components/ResourceType";
 
 import hl7_r4_schema from "../../../schemas/json/hl7/R4/fhir.schema.json" assert { type: "json" };
@@ -16,6 +18,17 @@ import ResourceTypeAutoComplete from "~/components/ResourceTypeAutoComplete";
 import { useDataGovernance } from "~/store";
 import { rulesToGraphQl, rulesetToAvro } from "~/utils/ruleset";
 import { dereference } from "~/utils/schema";
+
+const client = new ApolloClient({
+  uri: 'http://localhost:4000/',
+  cache: new InMemoryCache(),
+});
+
+const UpdateRulesetMutation = gql`
+  mutation UpdateRuleset($yaml: String!) {
+    updateRuleset(yaml: $yaml)
+}
+`
 
 export default function Home() {
   const [selectedSchema, setSelectedSchema] = useState<"Paradire" | "HL7R4">(
@@ -89,7 +102,7 @@ export default function Home() {
         const selectedFields = Object.entries(
           (referenced_schema && typeof referenced_schema !== "boolean" &&
             referenced_schema.properties) ??
-            {},
+          {},
         ).filter(
           ([field,]) =>
             !field.startsWith("_") &&
@@ -100,6 +113,11 @@ export default function Home() {
       }),
     );
   }, [json_schema, setSelectedResourceTypes]);
+
+  const applyClickHandler = useCallback(async () => {
+    const bla = await client.mutate({ mutation: UpdateRulesetMutation, variables: { yaml } })
+    console.log(bla);
+  }, [yaml]);
 
   return (
     <>
@@ -141,13 +159,20 @@ export default function Home() {
               onChange={changeSelectedResourceTypesHandler}
               mapping={json_schema.discriminator.mapping}
             />
-            <div className="flex justify-center">
+            <div className="flex justify-between">
               <button
-                className="justify-center rounded bg-blue-500 p-2 text-slate-50"
+                className="rounded bg-blue-500 p-2 text-slate-50"
                 onClick={addEverythingClickHandler}
               >
                 Add everything!
               </button>
+              <button
+                className="rounded bg-green-500 p-2 text-slate-50"
+                onClick={applyClickHandler}
+              >
+                Apply
+              </button>
+
             </div>
             <div className="flex flex-wrap space-x-2 space-y-2">
               <div />
