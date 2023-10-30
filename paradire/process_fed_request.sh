@@ -1,5 +1,11 @@
 #!/bin/bash
 
+if [ -z "$1" ]; then
+    echo "Usage: ./process_fed_request.sh <fed_request_topic>"
+    echo "Example: ./process_fed_request.sh fed_request_zip_immunization"
+    exit 1
+fi
+
 set -e 
 
 source .env
