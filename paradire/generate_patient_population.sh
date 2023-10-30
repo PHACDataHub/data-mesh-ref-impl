@@ -6,23 +6,10 @@ if [ -z "$has_jdk" ]; then
     sudo apt install default-jdk -y
 fi
 
-if [ -z "$1" ]; then
-    sampling_size=100
-else
-    sampling_size=$1
-fi
-
-if [ -z "$2" ]; then
-    output_dir=ca_spp
-else
-    output_dir=$2
-fi
-
-if [ -z "$3" ]; then
-    pt=ON
-else
-    pt=$3
-fi
+# Assign default values to arguments if not provided
+sampling_size=${1:-100}
+output_dir=${2:-ca_spp}
+pt=${3:-ON}
 
 set -e
 
