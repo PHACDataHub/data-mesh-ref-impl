@@ -15,6 +15,8 @@
         "neo4j.server.uri": "bolt://neo4j:7687",
         "neo4j.authentication.basic.username": "neo4j",
         "neo4j.authentication.basic.password": "phac@2023",
+        "neo4j.batch.size": 10000,
+        "neo4j.batch.parallelize": true,
         "neo4j.encryption.enabled": false,
         "topics": "allergies,careplans,claims,claims_transactions,conditions,devices,encounters,imaging_studies,immunizations,medications,observations,organizations,patient_expenses,patients,payer_transitions,payers,procedures,providers,supplies",
         "neo4j.topic.cypher.allergies": "CREATE (n:Allergy) SET n.start = DATE(event.start), n.stop = DATE(event.stop), n.code = event.code, n.system = event.system, n.description = event.description, n.allergy_type = event.allergy_type, n.category = event.category, n.reaction_1 = event.reaction_1, n.description_1 = event.description_1, n.severity_1 = event.severity_1, n.reaction_2 = event.reaction_2, n.description_2 = event.description_2, n.severity_2 = event.severity_2 WITH n, event MERGE (patient:Patient {patient_id: event.patient_id}) MERGE (encounter:Encounter {encounter_id: event.encounter_id}) WITH n, patient, encounter MERGE (n)-[:ALLERGY_OF_PATIENT]->(patient) MERGE (n)-[:ALLERGY_OF_ENCOUNTER]->(encounter)",
