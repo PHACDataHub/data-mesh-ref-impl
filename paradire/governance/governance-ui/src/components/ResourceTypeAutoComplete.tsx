@@ -77,6 +77,7 @@ export default function ResourceTypeAutoComplete({
       } else {
         changes = selected.concat({
           name: event.target.value,
+          ref: `#/definitions/${event.target.value}`,
           selectedFields: [],
         });
       }

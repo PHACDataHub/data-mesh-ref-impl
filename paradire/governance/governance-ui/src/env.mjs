@@ -24,7 +24,7 @@ export const env = createEnv({
     NEXTAUTH_URL: z.preprocess(
       // This makes Vercel deployments not fail if you don't set NEXTAUTH_URL
       // Since NextAuth.js automatically uses the VERCEL_URL if present.
-      (str) => process.env.VERCEL_URL ?? str,
+      (str) => process.env.NEXT_PUBLIC_PUBLIC_IP ? `http://${process.env.NEXT_PUBLIC_PUBLIC_IP}:${process.env.NEXT_PUBLIC_GATEWAY_PORT}` : str,
       // VERCEL_URL doesn't include `https` so it cant be validated as a URL
       process.env.VERCEL ? z.string() : z.string().url()
     ),
@@ -36,6 +36,8 @@ export const env = createEnv({
    * `NEXT_PUBLIC_`.
    */
   client: {
+    NEXT_PUBLIC_PUBLIC_IP: z.string().optional(),
+    NEXT_PUBLIC_GATEWAY_PORT: z.string().optional(),
     // NEXT_PUBLIC_CLIENTVAR: z.string(),
   },
 
@@ -44,12 +46,12 @@ export const env = createEnv({
    * middlewares) or client-side so we need to destruct manually.
    */
   runtimeEnv: {
-    DATABASE_URL: process.env.DATABASE_URL,
+    DATABASE_URL: process.env.DATABASE_URL ?? "file:./db.sqlite",
+    NEXT_PUBLIC_PUBLIC_IP: process.env.NEXT_PUBLIC_PUBLIC_IP,
+    NEXT_PUBLIC_GATEWAY_PORT: process.env.NEXT_PUBLIC_GATEWAY_PORT,
     NODE_ENV: process.env.NODE_ENV,
     NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
     NEXTAUTH_URL: process.env.NEXTAUTH_URL,
-    DISCORD_CLIENT_ID: process.env.DISCORD_CLIENT_ID,
-    DISCORD_CLIENT_SECRET: process.env.DISCORD_CLIENT_SECRET,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially

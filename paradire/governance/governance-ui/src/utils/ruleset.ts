@@ -1,4 +1,4 @@
-import { JSONSchema6Definition, type JSONSchema6 } from "json-schema";
+import { type JSONSchema6Definition, type JSONSchema6 } from "json-schema";
 import {
   GraphQLBoolean,
   GraphQLFloat,

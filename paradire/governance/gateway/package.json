@@ -4,9 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "compile": "tsc && npm run copy-files",
-    "start": "npm run compile && node ./dist/index.js",
-    "copy-files": "cp ../schemas/graphql/hl7.r4.graphql ./dist/"
+    "compile": "tsc",
+    "start": "npm run compile && node ./dist/index.js"
   },
   "keywords": [],
   "author": "",

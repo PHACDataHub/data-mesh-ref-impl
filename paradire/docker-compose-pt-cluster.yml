@@ -558,6 +558,52 @@ services:
       - $PWD/postgres/postgres/data:/var/lib/postgresql/data
     restart: always
 
+################################################################################
+#
+# Data governance services
+# - governance-ui
+# - gateway (GraphQl query endpoint)
+#
+################################################################################
+
+  ####################
+  # governance-ui
+  ####################
+  governance-ui:
+    build:
+      context: governance/governance-ui
+      args:
+        NEXT_PUBLIC_PUBLIC_IP: ${PUBLIC_IP}
+        NEXT_PUBLIC_GATEWAY_PORT: ${GATEWAY_PORT}
+        NEXTAUTH_SECRET: ${NEXTAUTH_SECRET}
+
+    container_name: governance-ui
+    ports:
+      - ${GOVERNANCE_UI_PORT}:3000
+    environment:
+      NEXTAUTH_SECRET: ${NEXTAUTH_SECRET}
+
+    networks:
+      - backend
+    restart: always
+
+  ####################
+  # gateway
+  ####################
+
+  gateway:
+    build:
+      context: governance/gateway
+    container_name: gateway
+    environment:
+      NEO4J_URL: bolt://neo4j
+      NEO4J_USERNAME: ${NEO4J_USERNAME}
+      NEO4J_PASSWORD: ${NEO4J_PASSWORD}
+    ports:
+      - ${GATEWAY_PORT}:4000
+    networks:
+      - backend
+    restart: always
 
 ################################################################################
 #

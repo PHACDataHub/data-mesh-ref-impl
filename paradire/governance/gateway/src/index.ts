@@ -36,8 +36,8 @@ ruleset:
 
 
 const driver = neo4j.driver(
-  "bolt://localhost",
-  neo4j.auth.basic("neo4j", "phac@2023")
+  process.env.NEO4J_URL,
+  neo4j.auth.basic(process.env.NEO4J_USERNAME, process.env.NEO4J_PASSWORD)
 );
 
 const loadServer = async (yaml: string) => {

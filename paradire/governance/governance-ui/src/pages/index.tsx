@@ -7,20 +7,23 @@ import { type JSONSchema6 } from "json-schema";
 
 import Editor from "@monaco-editor/react";
 
-import { ApolloClient, InMemoryCache, ApolloProvider, gql, useMutation } from '@apollo/client';
+import { ApolloClient, InMemoryCache, gql } from '@apollo/client';
 
 import ResourceType from "~/components/ResourceType";
 
-import hl7_r4_schema from "../../../schemas/json/hl7/R4/fhir.schema.json" assert { type: "json" };
-import paradire_schema from "../../../schemas/json/paradire/paradire.json" assert { type: "json" };
+import hl7_r4_schema from "~/schemas/json/hl7/R4/fhir.schema.json" assert { type: "json" };
+import paradire_schema from "~/schemas/json/paradire/paradire.json" assert { type: "json" };
 
 import ResourceTypeAutoComplete from "~/components/ResourceTypeAutoComplete";
 import { useDataGovernance } from "~/store";
-import { rulesToGraphQl, rulesetToAvro } from "~/utils/ruleset";
+import { rulesToGraphQl } from "~/utils/ruleset";
 import { dereference } from "~/utils/schema";
+import { env } from "~/env.mjs";
+
+console.log(env);
 
 const client = new ApolloClient({
-  uri: 'http://localhost:4000/',
+  uri: `http://${env.NEXT_PUBLIC_PUBLIC_IP ?? "localhost"}:${env.NEXT_PUBLIC_GATEWAY_PORT ?? "4000"}`,
   cache: new InMemoryCache(),
 });
 
