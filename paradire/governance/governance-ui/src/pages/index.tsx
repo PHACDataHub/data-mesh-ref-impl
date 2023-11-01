@@ -7,12 +7,13 @@ import { type JSONSchema6 } from "json-schema";
 
 import Editor from "@monaco-editor/react";
 
-import { ApolloClient, InMemoryCache, gql } from '@apollo/client';
+import { ApolloClient, InMemoryCache, gql } from "@apollo/client";
 
 import ResourceType from "~/components/ResourceType";
 
 import hl7_r4_schema from "~/schemas/json/hl7/R4/fhir.schema.json" assert { type: "json" };
 import paradire_schema from "~/schemas/json/paradire/paradire.json" assert { type: "json" };
+import paradire_schema_neo4j from "~/schemas/json/paradire/paradire_neo4j.json" assert { type: "json" };
 
 import ResourceTypeAutoComplete from "~/components/ResourceTypeAutoComplete";
 import { useDataGovernance } from "~/store";
@@ -20,23 +21,23 @@ import { rulesToGraphQl } from "~/utils/ruleset";
 import { dereference } from "~/utils/schema";
 import { env } from "~/env.mjs";
 
-console.log(env);
-
 const client = new ApolloClient({
-  uri: `http://${env.NEXT_PUBLIC_PUBLIC_IP ?? "localhost"}:${env.NEXT_PUBLIC_GATEWAY_PORT ?? "4000"}`,
+  uri: `http://${env.NEXT_PUBLIC_PUBLIC_IP ?? "localhost"}:${
+    env.NEXT_PUBLIC_GATEWAY_PORT ?? "4000"
+  }`,
   cache: new InMemoryCache(),
 });
 
 const UpdateRulesetMutation = gql`
   mutation UpdateRuleset($yaml: String!) {
     updateRuleset(yaml: $yaml)
-}
-`
+  }
+`;
 
 export default function Home() {
-  const [selectedSchema, setSelectedSchema] = useState<"Paradire" | "HL7R4">(
-    "Paradire",
-  );
+  const [selectedSchema, setSelectedSchema] = useState<
+    "Paradire" | "HL7R4" | "Paradire-Neo4J"
+  >("Paradire-Neo4J");
 
   const { yaml, setYaml, selectedResourceTypes, setSelectedResourceTypes } =
     useDataGovernance();
@@ -71,7 +72,11 @@ export default function Home() {
 
   const selectedSchemaChangeHandler = useCallback(
     (event: react.ChangeEvent<HTMLSelectElement>) => {
-      if (event.target.value === "HL7R4" || event.target.value === "Paradire") {
+      if (
+        event.target.value === "HL7R4" ||
+        event.target.value === "Paradire" ||
+        event.target.value === "Paradire-Neo4J"
+      ) {
         setSelectedSchema(event.target.value);
         setSelectedResourceTypes([]);
       }
@@ -90,6 +95,8 @@ export default function Home() {
     switch (selectedSchema) {
       case "HL7R4":
         return hl7_r4_schema as JSONSchema6 & JSONSchema6Discriminator;
+      case "Paradire-Neo4J":
+        return paradire_schema_neo4j as JSONSchema6 & JSONSchema6Discriminator;
       case "Paradire":
       default:
         return paradire_schema as JSONSchema6 & JSONSchema6Discriminator;
@@ -103,14 +110,15 @@ export default function Home() {
         // if (!referenced_schema || typeof referenced_schema === "boolean")
         //   return undefined;
         const selectedFields = Object.entries(
-          (referenced_schema && typeof referenced_schema !== "boolean" &&
+          (referenced_schema &&
+            typeof referenced_schema !== "boolean" &&
             referenced_schema.properties) ??
-          {},
-        ).filter(
-          ([field,]) =>
-            !field.startsWith("_") &&
-            field !== "resourceType"
-        ).map(([field]) => field);
+            {},
+        )
+          .filter(
+            ([field]) => !field.startsWith("_") && field !== "resourceType",
+          )
+          .map(([field]) => field);
 
         return { name, selectedFields, ref: ref as string };
       }),
@@ -118,8 +126,10 @@ export default function Home() {
   }, [json_schema, setSelectedResourceTypes]);
 
   const applyClickHandler = useCallback(async () => {
-    const bla = await client.mutate({ mutation: UpdateRulesetMutation, variables: { yaml } })
-    console.log(bla);
+    await client.mutate({
+      mutation: UpdateRulesetMutation,
+      variables: { yaml },
+    });
   }, [yaml]);
 
   return (
@@ -148,6 +158,7 @@ export default function Home() {
                 onChange={selectedSchemaChangeHandler}
                 value={selectedSchema}
               >
+                <option value="Paradire-Neo4J">Paradire PoC (Neo4j)</option>
                 <option value="Paradire">Paradire PoC</option>
                 <option value="HL7R4">HL7 R4</option>
               </select>
@@ -175,7 +186,6 @@ export default function Home() {
               >
                 Apply
               </button>
-
             </div>
             <div className="flex flex-wrap space-x-2 space-y-2">
               <div />

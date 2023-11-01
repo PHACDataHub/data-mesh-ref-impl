@@ -1,12 +1,15 @@
 import { type JSONSchema6Definition, type JSONSchema6 } from "json-schema";
 import {
   GraphQLBoolean,
+  type GraphQLFieldConfig,
   GraphQLFloat,
   GraphQLInt,
   GraphQLObjectType,
+  GraphQLScalarType,
   GraphQLSchema,
   GraphQLString,
   printSchema,
+  GraphQLNonNull,
 } from "graphql";
 
 import { Document, parse } from "yaml";
@@ -66,7 +69,7 @@ export function getFieldType(
   name: string,
   fieldSpec: JSONSchema6,
   schema: JSONSchema6,
-): [string | AvroSchemaEnum, boolean] {
+): [string | AvroSchemaEnum, boolean, boolean] {
   const reference =
     fieldSpec.$ref ??
     (fieldSpec.type === "array" &&
@@ -75,9 +78,9 @@ export function getFieldType(
   if (reference) {
     const ref = dereference(reference, schema);
     if (ref && typeof ref !== "boolean") {
-      if (ref.properties) return [getNamespacedRef(reference), true];
-      if (ref.type) return [ref.type as string, false];
-      return ["UNSUPPORTED", false];
+      if (ref.properties) return [getNamespacedRef(reference), true, false];
+      if (ref.type) return [ref.type as string, false, false];
+      return ["UNSUPPORTED", false, false];
     }
   } else if (fieldSpec.enum) {
     return [
@@ -89,9 +92,24 @@ export function getFieldType(
         symbols: fieldSpec.enum as string[],
       },
       false,
+      false,
     ];
+  } else if (fieldSpec.format === "date-time") {
+    return ["date-time", false, false];
+  } else if (fieldSpec.format === "date") {
+    return ["date", false, false];
+  } else if (fieldSpec.format === "point") {
+    return ["point", false, false];
+  } else if (fieldSpec.format === "cartesian-point") {
+    return ["cartesian-point", false, false];
   }
-  return [(fieldSpec.type as string) ?? "", false];
+  if (Array.isArray(fieldSpec.type)) {
+    if (fieldSpec.type.includes("null")) {
+      const t = fieldSpec.type.find((t) => t !== "null");
+      return [(t as string) ?? "", false, true];
+    }
+  }
+  return [(fieldSpec.type as string) ?? "", false, false];
 }
 
 export const expandRuleset = (
@@ -152,26 +170,87 @@ export const expandRuleset = (
   return expanded;
 };
 
+// - date only year
+// - hashes
+
+// ruleset:
+//   version: 0.0.1
+//   resourceTypes:
+//     - name: Patient
+//       fields:
+//         - birth_date:
+//             transform: "YYYY"
+//         - ssn:
+//             hash: true
+//         - passport
+//             hash: true
+//         - prefix
+
 const fieldSpecToGraphQlType = (
   name: string,
   fieldSpec: JSONSchema6Definition | undefined,
   schema: JSONSchema6,
-) => {
+  typeDefs: (GraphQLScalarType | GraphQLObjectType)[],
+  directives: { match: string; directive: string }[],
+): [string, GraphQLFieldConfig<unknown, unknown, unknown>] => {
   if (!fieldSpec || typeof fieldSpec === "boolean")
     return [name, { type: GraphQLString }];
-  const [type] = getFieldType(name, fieldSpec, schema);
-  switch (type) {
-    case "string":
-      return [name, { type: GraphQLString }];
-    case "integer":
-      return [name, { type: GraphQLInt }];
-    case "number":
-      return [name, { type: GraphQLFloat }];
-    case "boolean":
-      return [name, { type: GraphQLBoolean }];
-    default:
-      return [name, { type: GraphQLString }];
+  const [type, , nullable] = getFieldType(name, fieldSpec, schema);
+  if (typeof type === "string" && type.startsWith("#/definitions/")) {
+    let match = "";
+    if ("relantionship" in fieldSpec) {
+      const rel = fieldSpec.relantionship as {
+        type: string;
+        direction: "IN" | "OUT";
+      };
+      match = `${name}${(Math.random() + 1).toString(36).substring(7)}`;
+      directives.push({
+        match,
+        directive: `@relationship(type: "${rel.type}", direction: ${rel.direction})`,
+      });
+    }
+    return [
+      `${name}${match}`,
+      {
+        type:
+          typeDefs.find((t) => t.name === type.replace("#/definitions/", "")) ??
+          typeDefs.find((t) => t.name === "FilterOut") ??
+          GraphQLString,
+      },
+    ];
   }
+  let tt:
+    | GraphQLScalarType<unknown, unknown>
+    | GraphQLObjectType<unknown, unknown>;
+  switch (type) {
+    case "integer":
+    case "int":
+      tt = GraphQLInt;
+      break;
+    case "number":
+      tt = GraphQLFloat;
+      break;
+    case "boolean":
+      tt = GraphQLBoolean;
+      break;
+    case "date-time":
+      tt = typeDefs.find((t) => t.name === "DateTime") ?? GraphQLString;
+      break;
+    case "date":
+      tt = typeDefs.find((t) => t.name === "Date") ?? GraphQLString;
+      break;
+    case "point":
+      tt = typeDefs.find((t) => t.name === "Point") ?? GraphQLString;
+      break;
+    case "cartesian-point":
+      tt = typeDefs.find((t) => t.name === "CartesianPoint") ?? GraphQLString;
+      break;
+
+    case "string":
+    default:
+      tt = GraphQLString;
+  }
+  return [name, { type: nullable ? tt : new GraphQLNonNull(tt) }];
 };
 
 export const rulesToGraphQl = (yaml: string, schema: JSONSchema6) => {
@@ -184,58 +263,85 @@ export const rulesToGraphQl = (yaml: string, schema: JSONSchema6) => {
   );
   if (selectedResourceTypes.length === 0) return "";
 
-  const queryType = new GraphQLObjectType({
-    name: "Query",
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    fields: Object.fromEntries(
-      selectedResourceTypes
-        .filter((resourceType) => {
-          const referenced_schema = dereference(resourceType.ref, schema);
-          return !(
-            !referenced_schema || typeof referenced_schema === "boolean"
-          );
-        })
-        .map((resourceType) => {
-          const referenced_schema = dereference(resourceType.ref, schema);
-          if (!referenced_schema || typeof referenced_schema === "boolean")
-            return ["invalid", { type: GraphQLString }]; // never hits, for TS
+  const typeDefs: (GraphQLScalarType | GraphQLObjectType)[] = [];
+  const directives: { match: string; directive: string }[] = [];
 
-          const typeName = resourceType.name.replace("#/definitions/", "");
-          const typeFields = Object.keys(referenced_schema?.properties ?? {})
-            .filter((name) =>
-              isFieldSelected(name, resourceType.selectedFields),
-            )
-            .map((name) => ({
-              name,
-              fieldSpec:
-                referenced_schema.properties &&
-                referenced_schema.properties[name],
-            }));
-          return [
-            typeName,
-            {
-              // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-              args: Object.fromEntries(
-                typeFields.map(({ name, fieldSpec }) =>
-                  fieldSpecToGraphQlType(name, fieldSpec, schema),
-                ),
-              ),
-              type: new GraphQLObjectType({
-                name: typeName,
-                description: referenced_schema.description,
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-                fields: Object.fromEntries(
-                  typeFields.map(({ name, fieldSpec }) =>
-                    fieldSpecToGraphQlType(name, fieldSpec, schema),
-                  ),
-                ),
-              }),
-            },
-          ];
-        }),
+  // Stubs for Neo4J GraphQL Types
+  const builtInTypes = [
+    "DateTime",
+    "Date",
+    "Point",
+    "CartesianPoint",
+    "FilterOut",
+  ];
+  builtInTypes.forEach((builtIn) =>
+    typeDefs.push(
+      new GraphQLScalarType<string, string>({
+        name: builtIn,
+      }),
     ),
+  );
+
+  const ffield = typeDefs.find((t) => t.name === "FilterOut");
+
+  selectedResourceTypes
+    .filter((resourceType) => {
+      const referenced_schema = dereference(resourceType.ref, schema);
+      return !(!referenced_schema || typeof referenced_schema === "boolean");
+    })
+    .forEach((resourceType) => {
+      const referenced_schema = dereference(resourceType.ref, schema);
+      if (!referenced_schema || typeof referenced_schema === "boolean")
+        return false; // never hits, for TS
+
+      const typeName = resourceType.name.replace("#/definitions/", "");
+      const typeFields = Object.keys(referenced_schema?.properties ?? {})
+        .filter((name) => isFieldSelected(name, resourceType.selectedFields))
+        .map((name) => ({
+          name,
+          fieldSpec:
+            referenced_schema.properties && referenced_schema.properties[name],
+        }));
+
+      typeDefs.push(
+        new GraphQLObjectType({
+          name: typeName,
+          description: referenced_schema.description,
+          fields: () =>
+            Object.fromEntries(
+              typeFields
+                .map(({ name, fieldSpec }) =>
+                  fieldSpecToGraphQlType(
+                    name,
+                    fieldSpec,
+                    schema,
+                    typeDefs,
+                    directives,
+                  ),
+                )
+                .filter(([, field]) => field.type !== ffield),
+            ),
+        }),
+      );
+    });
+  const generated_schema = new GraphQLSchema({ types: typeDefs });
+  let schema_text = printSchema(generated_schema);
+
+  // Workaround for no field directive support - fields that require a directive
+  // have a random string `match` in their name, so we can perform a regex.
+  directives.forEach(({ match, directive }) => {
+    schema_text = schema_text.replace(
+      new RegExp(`${match}(.*)`),
+      `$1 ${directive}`,
+    );
   });
-  return printSchema(new GraphQLSchema({ query: queryType }));
+  // Remove types defined by Neo4J's graphql library + "FilterOut" type which
+  // is used to prevent a field from being included in a type safe way.
+  builtInTypes.forEach(
+    (builtIn) =>
+      (schema_text = schema_text.replace(`scalar ${builtIn}\n\n`, "")),
+  );
+  return schema_text;
 };
 
 export const rulesetToAvro = (yaml: string, schema: JSONSchema6) => {
