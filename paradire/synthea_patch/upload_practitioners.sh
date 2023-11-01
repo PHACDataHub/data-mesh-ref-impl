@@ -1,7 +1,8 @@
-#!/bin/sh
+#!/bin/bash
 
 # Check and install necessary tools
 command -v parallel >/dev/null 2>&1 || { echo >&2 "GNU Parallel is not installed. Installing..."; sudo apt-get install -y parallel; }
+command -v jq >/dev/null 2>&1 || { echo >&2 "jq is not installed. Installing..."; sudo apt-get install -y jq; }
 
 valid_pt=" AB BC MB NB NL NS NT NU ON PE QC SK YT "
 
@@ -16,13 +17,24 @@ output_dir=$1
 pt=$2
 
 # Check if pt is a valid province or territory
-case "$valid_pt" in
-    *" $pt "*) ;;
-    *) echo "Invalid province or territory abbreviation. It should be one of:${valid_pt}"
-       exit 1 ;;
-esac
+if [[ ! "$valid_pt" =~ " $pt " ]]; then
+    echo "Invalid province or territory abbreviation. It should be one of:${valid_pt}"
+    exit 1
+fi
 
-curr_dir=$(pwd)
+# Upload function
+upload_file() {
+    file="$1"
+    response=$(curl -s http://localhost:8080/fhir --data-binary "@$file" -H "Content-Type: application/fhir+json")
+    if [[ "$response" == *"informational"* ]]; then
+        echo "Successfully uploaded $file"
+    else
+        echo "Failed to upload $file. Server response: $response"
+    fi
+}
 
-# Use this function inline with GNU Parallel
-find "$curr_dir/$output_dir/$pt/fhir/" -type f -name "practitionerInformation*.json" | parallel 'file={}; echo "$file"; curl http://localhost:8080/fhir --data-binary "@$file" -H "Content-Type: application/fhir+json"; echo'
+export -f upload_file
+
+echo "Starting uploads..."
+find "$output_dir/$pt/fhir/" -type f -name "practitionerInformation*.json" | parallel -j 16 upload_file {}
+echo "Upload process completed!"

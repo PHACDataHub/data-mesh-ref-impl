@@ -16,18 +16,22 @@ curr_dir=$(pwd)
 # Navigate to the synthea directory
 cd ~/synthea
 
-# Initialize counters for the number of records uploaded
-hospital_records=0
-practitioner_records=0
-ehr_records=0
-
 # Start timer
 start_time=$(date +%s)
 
-# Execute the upload scripts and count records (assuming one record per file)
-hospital_records=$(./upload_hospitals.sh "$output_dir" "$pt" | wc -l)
-practitioner_records=$(./upload_practitioners.sh "$output_dir" "$pt" | wc -l)
-ehr_records=$(./upload_EHRs.sh "$output_dir" "$pt" | wc -l)
+# Execute the upload scripts
+echo "--------------------------"
+echo "Uploading hospital records..."
+./upload_hospitals.sh "$output_dir" "$pt"
+echo "--------------------------"
+
+echo "Uploading practitioner records..."
+./upload_practitioners.sh "$output_dir" "$pt"
+echo "--------------------------"
+
+echo "Uploading EHR records..."
+./upload_EHRs.sh "$output_dir" "$pt"
+echo "--------------------------"
 
 # End timer
 end_time=$(date +%s)
@@ -35,12 +39,7 @@ end_time=$(date +%s)
 # Calculate time taken
 duration=$((end_time - start_time))
 
-# Navigate back to the original directory
-cd "$curr_dir"
-
 # Display summary
-echo "SUMMARY:"
-echo "Uploaded $hospital_records hospital records."
-echo "Uploaded $practitioner_records practitioner records."
-echo "Uploaded $ehr_records EHR records."
+echo "UPLOAD SUMMARY:"
 echo "Total time taken: $duration seconds."
+echo "Upload process completed!"
