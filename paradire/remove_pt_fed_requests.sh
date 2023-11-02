@@ -28,8 +28,8 @@ event_dir=${curr_dir}/analytics/events
 
 ./scripts/delete_connector.sh fed_request_sink_connector
 
-for request_topic in fed_request_vaccination_record fed_request_zip_immunization fed_request_top_k_immunization fed_request_patient_cvx_org fed_request_city_year_top_proc
-# for request_topic in fed_request_city_year_top_proc
+for request_topic in fed_request_vaccination_record fed_request_zip_immunization fed_request_top_k_immunization fed_request_patient_cvx_org fed_request_city_year_top_proc fed_request_pt_org_med fed_request_city_org_patient fed_request_city_org_patient_visit
+# for request_topic in fed_request_vaccination_record
 do
     ./scripts/delete_subject.sh ${request_topic}-key
     ./scripts/delete_subject.sh ${request_topic}-value
@@ -37,8 +37,8 @@ do
     ./scripts/delete_topic.sh ${request_topic}
 done
 
-for response_topic in fed_response_vaccination_record fed_response_zip_immunization fed_response_top_k_immunization fed_response_patient_cvx_org fed_response_city_year_top_proc
-# for response_topic in fed_response_city_year_top_proc
+for response_topic in fed_response_vaccination_record fed_response_zip_immunization fed_response_top_k_immunization fed_response_patient_cvx_org fed_response_city_year_top_proc fed_response_pt_org_med fed_response_city_org_patient fed_response_city_org_patient_visit
+# for response_topic in fed_response_vaccination_record
 do
     ./scripts/delete_connector.sh ${response_topic}_source_connector
 

@@ -1,0 +1,8 @@
+{
+    "type": "record",
+    "name": "fed_request_city_org_patient_visit_val",
+    "fields": [
+        {"name": "request_id", "type": "string", "doc": "Unique ID of a Fererated Analytics Request."},
+        {"name": "city", "type": "string", "default": null, "doc": "The city"}
+    ]
+}

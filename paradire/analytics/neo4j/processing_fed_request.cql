@@ -240,3 +240,129 @@ RETURN
     record.timestamp AS timestamp;
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// Creating PtOrgMed statistics
+//
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+WITH event,
+    CASE WHEN event.state IS NOT NULL 
+        THEN ' {state: \"' + event.state + '\"}'
+        ELSE '' END AS state_condition
+WITH event,
+    'MATCH (organization:Organization' + state_condition + ')-[]-(:Encounter)-[]-(medication:Medication) 
+    RETURN organization, COUNT(DISTINCT(medication)) AS count, \"' 
+    + event.request_id + 
+    '\" AS request_id' 
+    AS batch_producer,
+    'WITH organization, count, request_id
+        CREATE (record:PtOrgMed)
+            SET record.request_id = request_id,
+                record.city = organization.city,
+                record.state = organization.state,
+                record.name = organization.name,
+                record.count = count,
+                record.timestamp = apoc.date.currentTimestamp()'
+    AS batch_runner
+WITH batch_producer, batch_runner
+    CALL apoc.periodic.iterate(batch_producer, batch_runner, {batchSize:10000, parallel:true})
+        YIELD total RETURN total
+//
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+MATCH (record:PtOrgMed)
+    WHERE record.timestamp > $lastCheck
+RETURN
+    record.request_id AS request_id,
+    record.state AS state,
+    record.city AS city,
+    record.name AS name,
+    record.count AS count,
+    record.timestamp AS timestamp;
+//
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// Creating CityOrgPatient statistics
+//
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+WITH event,
+    CASE WHEN event.city IS NOT NULL 
+        THEN ' {city: \"' + event.city + '\"}'
+        ELSE '' END AS city_condition
+WITH event,
+    'MATCH (organization:Organization' + city_condition + ')-[]-(:Encounter)-[]-(patient:Patient)
+    RETURN organization, COUNT(DISTINCT(patient)) AS count, \"' 
+    + event.request_id + 
+    '\" AS request_id' 
+    AS batch_producer,
+    'WITH organization, count, request_id
+        CREATE (record:CityOrgPatient)
+            SET record.request_id = request_id,
+                record.city = organization.city,
+                record.name = organization.name,
+                record.count = count,
+                record.timestamp = apoc.date.currentTimestamp()'
+    AS batch_runner
+WITH batch_producer, batch_runner
+    CALL apoc.periodic.iterate(batch_producer, batch_runner, {batchSize:10000, parallel:true})
+        YIELD total RETURN total
+//
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+MATCH (record:CityOrgPatient)
+    WHERE record.timestamp > $lastCheck
+RETURN
+    record.request_id AS request_id,
+    record.city AS city,
+    record.name AS name,
+    record.count AS count,
+    record.timestamp AS timestamp;
+//
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// Creating CityOrgPatientVisit statistics
+//
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+WITH event,
+    CASE WHEN event.city IS NOT NULL 
+        THEN ' {city: \"' + event.city + '\"}'
+        ELSE '' END AS city_condition
+WITH event,
+    'MATCH (organization:Organization' + city_condition + ')-[]-(:Encounter)-[]-(patient:Patient)
+    WITH DISTINCT([organization, patient]) AS op, COUNT(*) AS count
+    WITH op[0] AS organization, op[1] AS patient, count
+    RETURN organization, patient, count, \"' 
+    + event.request_id + 
+    '\" AS request_id' 
+    AS batch_producer,
+    'WITH organization, patient, count, request_id
+        CREATE (record:CityOrgPatientVisit)
+            SET record.request_id = request_id,
+                record.city = organization.city,
+                record.name = organization.name,
+                record.patient_id = patient.patient_id,
+                record.count = count,
+                record.timestamp = apoc.date.currentTimestamp()'
+    AS batch_runner
+WITH batch_producer, batch_runner
+    CALL apoc.periodic.iterate(batch_producer, batch_runner, {batchSize:10000, parallel:true})
+        YIELD total RETURN total
+//
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+MATCH (record:CityOrgPatientVisit)
+    WHERE record.timestamp > $lastCheck
+RETURN
+    record.request_id AS request_id,
+    record.city AS city,
+    record.name AS name,
+    record.patient_id AS patient_id,
+    record.count AS count,
+    record.timestamp AS timestamp;
+//
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
