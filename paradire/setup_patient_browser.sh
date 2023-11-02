@@ -1,52 +1,57 @@
 #!/bin/bash
 set -e
 
-# Note, FHIR server must be running and available on localhost:8080 prior to running
-# this script.
+# Constants
+DOCKER_IMG_NAME="patient-browser"
+DOCKER_CONTAINER_NAME="patient-browser"
+DOCKER_PORT=9090
 
+# Note: Ensure FHIR server is running on localhost:8080 prior to running this script.
 curr_dir=$(pwd)
 
-has_node=$(which node)
-
-if [ -z "$has_node" ]; then
-    sudo apt install nodejs -y
+# Check for "patient-browser" directory and clone if missing
+if [ ! -d "$HOME/patient-browser" ]; then
+    git clone https://github.com/smart-on-fhir/patient-browser.git "$HOME/patient-browser"
 fi
 
-cd 
+cp "$curr_dir/patient_browser_patch/"* "$HOME/patient-browser"
 
-if [ ! -d "patient-browser" ]; then
-    sudo npm install typescript -g
-    git clone https://github.com/smart-on-fhir/patient-browser.git
-    ## Install dependencies and build project
-    (cd patient-browser && NODE_ENV=production npm install colors request commander@2.15.1 && npm ci && NODE_ENV=production npm run build)
-fi
+# Navigate to the "patient-browser" directory
+cd "$HOME/patient-browser"
 
-cd patient-browser
-
-# Configure browser
-rm -f ./dist/config/*.json5
-mkdir ./config
-echo "Generating config, please wait..."
-node config-genrator/generate_config.js --server http://127.0.0.1:8080/fhir --file default
-sleep 1
-mv config/default.json5 ./dist/config/
-rm -rf ./config
-# Disable the broken fihr-viewer
-sed -i 's/enabled: true/enabled: false/g' ./dist/config/default.json5
-
-# Create a dockerfile
+# Create a Dockerfile
 cat <<EOL > Dockerfile
+FROM node:latest AS build
+
+# Install TypeScript
+RUN npm install -g typescript
+
+# Set the working directory
+WORKDIR /app
+
+# Copy the local patient-browser directory to the container
+COPY . .
+
+# Install dependencies and build project
+RUN npm install colors request commander@2.15.1
+RUN npm ci
+RUN NODE_ENV=production npm run build
+
+# Configure the browser
+RUN mv default.json5 ./dist/config/
+
+# Disable the broken FHIR viewer
+RUN sed -i 's/enabled: true/enabled: false/g' ./dist/config/default.json5
+
 FROM nginx:alpine
-COPY ./dist /usr/share/nginx/html
+COPY --from=build /app/dist /usr/share/nginx/html
 CMD ["sh", "-c", "nginx -g 'daemon off;'"]
 EOL
 
-# Build docker image
-docker build . -t patient-browser
+# Build and run Docker image
+sudo docker build . -t "$DOCKER_IMG_NAME"
+sudo docker run -d --restart always --name "$DOCKER_CONTAINER_NAME" -p "$DOCKER_PORT":80 "$DOCKER_IMG_NAME"
 
-# Start browser
-docker run -d --restart always --name patient-browser -p 9090:80  patient-browser 
+echo "Patient browser started on http://localhost:$DOCKER_PORT"
 
-echo "Patient browser started on http://localhost:9090"
-
-cd $curr_dir
+cd "$curr_dir"
