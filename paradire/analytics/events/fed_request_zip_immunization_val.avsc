@@ -3,6 +3,6 @@
     "name": "fed_request_zip_immunization_val",
     "fields": [
         {"name": "request_id", "type": "string", "doc": "Unique ID of a Fererated Analytics Request."},
-        {"name": "city", "type": "string", "doc": "Name of a city"}
+        {"name": "city", "type": ["null", "string"], "default": null, "doc": "City name of a Fererated Analytics Request."}
     ]
 }

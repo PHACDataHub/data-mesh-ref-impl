@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [ "$#" -ne 2 ]; then
-    echo "Usage ./scripts/kafka/create_subject.sh <subject> <schema_file>";
+    echo "Usage ./scripts/create_subject.sh <subject> <schema_file>";
     exit 1
 fi
 

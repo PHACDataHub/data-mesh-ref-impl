@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [ -z "$1" ]; then
-    echo "Usage ./scripts/kafka/create_topic.sh <topic>";
+    echo "Usage ./scripts/create_topic.sh <topic>";
     exit 1
 fi
 

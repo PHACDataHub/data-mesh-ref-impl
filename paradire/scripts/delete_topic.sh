@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [ -z "$1" ]; then
-    echo "Usage ./scripts/kafka/delete_topic.sh <topic>";
+    echo "Usage ./scripts/delete_topic.sh <topic>";
     exit 1
 fi
 

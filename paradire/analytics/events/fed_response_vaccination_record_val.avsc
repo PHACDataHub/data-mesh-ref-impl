@@ -1,0 +1,24 @@
+{
+    "type": "record",
+    "name": "ConnectDefault",
+    "namespace": "io.confluent.connect.avro",
+    "fields": [
+        {"name": "request_id", "type": "string", "doc": "Unique ID of a Fererated Analytics Request."},
+        {"name": "immunization_date", "type": "string", "doc": "The date and time the imaging study was conducted - Date (yyyy-MM-dd'T'HH:mm'Z')"},
+        {"name": "immunization_code", "type": "string", "doc": "Immunization code from CVX"},
+        {"name": "immunization_description", "type": "string", "doc": "Description of the immunization"},
+        {"name": "organization_name", "type": "string", "doc": "Name of the Organization."},
+        {"name": "organization_zip", "type": ["null", "string"], "default": null, "doc": "Street address zip or postal code"},
+        {"name": "encounter_class", "type": "string", "doc": "Code from SNOMED-CT"},
+        {"name": "encounter_code", "type": "string", "doc": "Code from SNOMED-CT"},
+        {"name": "encounter_description", "type": "string", "doc": "Description of the encounter"},
+        {"name": "patient_id", "type": "string", "doc": "Primary Key. Unique Identifier of the patient - UUID"},
+        {"name": "patient_address", "type": "string", "doc": "Patient's street address without commas or newlines"},
+        {"name": "patient_age", "type": "int", "doc": "The age of the Patient"},
+        {"name": "patient_zip", "type": ["null", "string"], "default": null, "doc": "Patient's zip code"},
+        {"name": "patient_gender", "type": "string", "doc": "Gender. M is male, F is female"},
+        {"name": "patient_race", "type": "string", "doc": "Description of the patient's primary race"},
+        {"name": "patient_ethnicity", "type": "string", "doc": "Description of the patient's primary ethnicity"},
+        {"name": "timestamp", "type": "long", "doc": "Timestamp when this record is produced."}
+    ]
+}

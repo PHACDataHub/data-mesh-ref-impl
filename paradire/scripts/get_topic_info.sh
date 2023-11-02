@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [ -z "$1" ]; then
-    echo "Usage ./scripts/kafka/get_topic_info.sh <topic>";
+    echo "Usage ./scripts/get_topic_info.sh <topic>";
     exit 1
 fi
 
