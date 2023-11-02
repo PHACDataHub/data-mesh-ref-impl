@@ -1,0 +1,9 @@
+{
+    "type": "record",
+    "name": "fed_request_patient_cvx_org_val",
+    "fields": [
+        {"name": "request_id", "type": "string", "doc": "Unique ID of a Fererated Analytics Request."},
+        {"name": "code_list", "type": ["null", "string"], "default": null, "doc": "List of immunization codes from CVX. Comma separated"},
+        {"name": "term", "type": ["null", "string"], "default": null, "doc": "Term in the description"}
+    ]
+}

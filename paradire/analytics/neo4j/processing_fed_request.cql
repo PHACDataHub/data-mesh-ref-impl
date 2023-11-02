@@ -137,3 +137,60 @@ RETURN
     record.timestamp AS timestamp;
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// Creating PatientCvxOrg statistics
+//
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+WITH event,
+    CASE WHEN event.term IS NOT NULL 
+        THEN ['immunization.description CONTAINS \"' + event.term + '\"']
+        ELSE [] END AS conditions
+WITH event,
+    CASE WHEN event.code_list IS NOT NULL
+        THEN conditions + ['immunization.code IN [' + apoc.text.join([e IN apoc.text.split(event.code_list, ',') | '\"' + e + '\"'], ', ') + ']'] 
+        ELSE conditions + [] END AS conditions
+WITH event,
+    CASE WHEN SIZE(conditions) > 0 THEN ' WHERE ' + apoc.text.join(conditions, ' AND ') + ' ' ELSE '' END AS where_condition
+WITH event,
+    'MATCH (patient:Patient)-[]-(immunization:Immunization)-[]-(:Encounter)-[]-(organization:Organization)'
+    + where_condition + 
+    'WITH DISTINCT([patient, organization]) AS po, COLLECT(DISTINCT(immunization.code)) AS code_list, COUNT(*) AS immunization_count
+    RETURN po[0] AS patient, po[1] AS organization, code_list, immunization_count, \"' 
+    + event.request_id + '\" AS request_id'
+    AS batch_producer,
+    'WITH patient, organization, code_list, immunization_count, request_id
+        CREATE (record:PatientCvxOrg)
+            SET record.request_id = request_id,
+                record.patient_id = patient.patient_id,
+                record.patient_birth_date = TOSTRING(patient.birth_date.year),
+                record.patient_gender = patient.gender, 
+                record.patient_zip = patient.zip, 
+                record.code_list = apoc.text.join(code_list, \",\"), 
+                record.immunization_count = immunization_count, 
+                record.organization_name = organization.name, 
+                record.organization_zip = organization.zip, 
+                record.timestamp = apoc.date.currentTimestamp()'
+    AS batch_runner
+WITH batch_producer, batch_runner
+    CALL apoc.periodic.iterate(batch_producer, batch_runner, {batchSize:10000, parallel:true})
+        YIELD total RETURN total
+//
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+MATCH (record:PatientCvxOrg)
+    WHERE record.timestamp > $lastCheck
+RETURN
+    record.request_id AS request_id,
+    record.patient_id AS patient_id,
+    record.patient_birth_date AS patient_birth_date,
+    record.patient_gender AS patient_gender,
+    record.patient_zip AS patient_zip,
+    record.code_list AS code_list,
+    record.immunization_count AS immunization_count,
+    record.organization_name AS organization_name,
+    record.organization_zip AS organization_zip,
+    record.timestamp AS timestamp;
+//
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

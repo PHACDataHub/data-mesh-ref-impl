@@ -26,7 +26,17 @@ schema_registry_port=${SCHEMA_REGISTRY_PORT}
 
 event_dir=${curr_dir}/analytics/events
 
-for response_topic in fed_response_vaccination_record fed_response_zip_immunization fed_response_top_k_immunization
+./scripts/delete_connector.sh fed_request_sink_connector
+
+for request_topic in fed_request_vaccination_record fed_request_zip_immunization fed_request_top_k_immunization fed_request_patient_cvx_org
+do
+    ./scripts/delete_subject.sh ${request_topic}-key
+    ./scripts/delete_subject.sh ${request_topic}-value
+
+    ./scripts/delete_topic.sh ${request_topic}
+done
+
+for response_topic in fed_response_vaccination_record fed_response_zip_immunization fed_response_top_k_immunization fed_response_patient_cvx_org
 do
     ./scripts/delete_connector.sh ${response_topic}_source_connector
 
@@ -34,16 +44,6 @@ do
     ./scripts/delete_subject.sh ${response_topic}-value
 
     ./scripts/delete_topic.sh ${response_topic}
-done
-
-./scripts/delete_connector.sh fed_request_sink_connector
-
-for request_topic in fed_request_vaccination_record fed_request_zip_immunization fed_request_top_k_immunization
-do
-    ./scripts/delete_subject.sh ${request_topic}-key
-    ./scripts/delete_subject.sh ${request_topic}-value
-
-    ./scripts/delete_topic.sh ${request_topic}
 done
 
 ./scripts/list_connectors.sh
