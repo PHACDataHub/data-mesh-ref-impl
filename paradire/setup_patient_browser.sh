@@ -6,30 +6,26 @@ DOCKER_IMG_NAME="patient-browser"
 DOCKER_CONTAINER_NAME="patient-browser"
 DOCKER_PORT=9090
 
-# Note: Ensure FHIR server is running on localhost:8080 prior to running this script.
-curr_dir=$(pwd)
-
-# Check for "patient-browser" directory and clone if missing
-if [ ! -d "$HOME/patient-browser" ]; then
-    git clone https://github.com/smart-on-fhir/patient-browser.git "$HOME/patient-browser"
-fi
-
-cp "$curr_dir/patient_browser_patch/"* "$HOME/patient-browser"
-
 # Navigate to the "patient-browser" directory
-cd "$HOME/patient-browser"
+curr_dir=$(pwd)
+cd $curr_dir/patient_browser_patch
 
 # Create a Dockerfile
 cat <<EOL > Dockerfile
+# First stage: Clone and build the project
 FROM node:latest AS build
 
-# Install TypeScript
+# Install git, TypeScript, and other dependencies
+RUN apt-get update && apt-get install -y git
 RUN npm install -g typescript
 
 # Set the working directory
 WORKDIR /app
 
-# Copy the local patient-browser directory to the container
+# Clone the patient-browser repository
+RUN git clone https://github.com/smart-on-fhir/patient-browser.git .
+
+# Copy patches from host to container
 COPY . .
 
 # Install dependencies and build project
@@ -40,9 +36,7 @@ RUN NODE_ENV=production npm run build
 # Configure the browser
 RUN mv default.json5 ./dist/config/
 
-# Disable the broken FHIR viewer
-RUN sed -i 's/enabled: true/enabled: false/g' ./dist/config/default.json5
-
+# Setup the nginx server
 FROM nginx:alpine
 COPY --from=build /app/dist /usr/share/nginx/html
 CMD ["sh", "-c", "nginx -g 'daemon off;'"]
