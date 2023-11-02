@@ -108,7 +108,6 @@ do
         --topic ${response_topic} --group ${consumer_group} --from-beginning --max-messages=${response_messages} --timeout-ms ${timeout}\
         --property schema.registry.url=http://${schema_registry_internal_host}:${schema_registry_port}
     echo ''
-
     echo Reset all consumer offsets of ${consumer_group} consumer group ...
     echo "docker exec -it ${broker_container_name} /bin/kafka-consumer-groups \
         --bootstrap-server ${broker_internal_host}:${broker_internal_port} \
