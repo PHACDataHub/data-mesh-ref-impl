@@ -28,7 +28,8 @@ event_dir=${curr_dir}/analytics/events
 
 ./scripts/delete_connector.sh fed_request_sink_connector
 
-for request_topic in fed_request_vaccination_record fed_request_zip_immunization fed_request_top_k_immunization fed_request_patient_cvx_org
+for request_topic in fed_request_vaccination_record fed_request_zip_immunization fed_request_top_k_immunization fed_request_patient_cvx_org fed_request_city_year_top_proc
+# for request_topic in fed_request_city_year_top_proc
 do
     ./scripts/delete_subject.sh ${request_topic}-key
     ./scripts/delete_subject.sh ${request_topic}-value
@@ -36,7 +37,8 @@ do
     ./scripts/delete_topic.sh ${request_topic}
 done
 
-for response_topic in fed_response_vaccination_record fed_response_zip_immunization fed_response_top_k_immunization fed_response_patient_cvx_org
+for response_topic in fed_response_vaccination_record fed_response_zip_immunization fed_response_top_k_immunization fed_response_patient_cvx_org fed_response_city_year_top_proc
+# for response_topic in fed_response_city_year_top_proc
 do
     ./scripts/delete_connector.sh ${response_topic}_source_connector
 

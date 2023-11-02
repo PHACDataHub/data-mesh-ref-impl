@@ -2,7 +2,7 @@
     "title": "PT Analytics Platform",
     "version": "2.3",
     "settings": {
-      "pagenumber": 11,
+      "pagenumber": 0,
       "editable": true,
       "fullscreenEnabled": false,
       "parameters": {
@@ -59,6 +59,25 @@
         ]
       },
       {
+        "title": "Immunizations",
+        "reports": [
+          {
+            "id": "d22ed1bf-eb70-42f7-84e6-d9e47e0ad539",
+            "title": "100 (random) Immunizations",
+            "query": "MATCH (immunization:Immunization)\nWITH immunization SKIP TOINTEGER(RAND() * 100) + 1 LIMIT 100\nWITH immunization ORDER BY immunization.date ASC\n  MATCH (organization:Organization)-[]-(encounter:Encounter)-[:IMMUNIZATION_OF_ENCOUNTER]-(immunization)-[:IMMUNIZATION_OF_PATIENT]-(patient:Patient)\nWITH immunization, organization, encounter, patient\nRETURN\n  SUBSTRING(TOSTRING(immunization.date), 0, 10) AS date,\n  immunization.code AS code,\n  immunization.description AS description,\n  SUBSTRING(organization.name, 0, 50) AS organization,\n  encounter.description AS encounter_description,\n  SUBSTRING(patient.patient_id, 0, 8) AS patient_id,\n  2023 - patient.birth_date.year AS age,\n  patient.zip AS zip,\n  patient.gender AS gender\n",
+            "width": 12,
+            "height": 3,
+            "x": 0,
+            "y": 0,
+            "type": "table",
+            "selection": {},
+            "settings": {
+              "columnWidths": "[4,2,11,16,11,3,2,2,2]"
+            }
+          }
+        ]
+      },
+      {
         "title": "Graph",
         "reports": [
           {
@@ -78,7 +97,7 @@
               "Organization": "name",
               "ENCOUNTER_OF_PROVIDER": "(label)",
               "Provider": "name",
-              "CONDITION_OF_ENCOUNTER": "(label)",
+              "IMMUNIZATION_OF_ENCOUNTER": "(label)",
               "Immunization": "description",
               "ENCOUNTER_OF_PAYER": "(label)",
               "Payer": "name"
@@ -100,18 +119,22 @@
                 "zip",
                 "address",
                 "last",
-                "ethnicity",
-                "race",
                 "gender",
+                "race",
+                "ethnicity",
                 "city",
                 "healthcare_expenses",
+                "prefix",
                 "birth_date",
                 "county",
                 "birth_place",
                 "ssn",
+                "marital",
+                "passport",
                 "healthcare_coverage",
                 "patient_id",
                 "location",
+                "drivers",
                 "first"
               ],
               [
@@ -119,12 +142,12 @@
               ],
               [
                 "Encounter",
-                "code",
                 "payer_coverage",
+                "code",
                 "stop",
                 "start",
-                "description",
                 "encounter_class",
+                "description",
                 "total_claim_cost",
                 "encounter_id",
                 "base_encounter_cost"
@@ -163,7 +186,7 @@
                 "state"
               ],
               [
-                "CONDITION_OF_ENCOUNTER"
+                "IMMUNIZATION_OF_ENCOUNTER"
               ],
               [
                 "Immunization",
@@ -189,13 +212,13 @@
                 "ownership",
                 "uncovered_medications",
                 "name",
-                "uncovered_procedures",
                 "covered_medications",
+                "uncovered_procedures",
                 "uncovered_encounters",
                 "payer_id",
                 "member_months",
-                "unique_customers",
-                "qols_avg"
+                "qols_avg",
+                "unique_customers"
               ]
             ]
           }
@@ -234,8 +257,8 @@
         "reports": [
           {
             "id": "c4b769c9-340c-4665-9f78-a2437e5d3801",
-            "title": "Top 5 vaccinations per zip",
-            "query": "MATCH (immunization:Immunization)\nWITH DISTINCT(immunization.code) AS code, COUNT(immunization) AS count ORDER BY count DESC LIMIT 5\nWITH COLLECT(code) AS codes\n  MATCH (patient:Patient)-[]-(immunization:Immunization)\n    WHERE immunization.code IN codes\nRETURN patient.zip AS zip, COUNT(immunization) AS count, immunization.code AS code, immunization.description AS description\n",
+            "title": "Top 5 immunizations per zip",
+            "query": "MATCH (immunization:Immunization)\nWITH DISTINCT(immunization.code) AS code, COUNT(immunization) AS count ORDER BY count DESC LIMIT 5\nWITH COLLECT(code) AS codes\n  MATCH (patient:Patient)-[]-(immunization:Immunization)\n    WHERE immunization.code IN codes\nRETURN patient.zip AS zip, COUNT(immunization) AS count, immunization.code AS code\n",
             "width": 12,
             "height": 4,
             "x": 0,
@@ -244,7 +267,7 @@
             "selection": {
               "index": "zip",
               "value": "count",
-              "key": "description"
+              "key": "code"
             },
             "settings": {
               "groupMode": "stacked",
@@ -294,7 +317,7 @@
           {
             "id": "9f3d49c1-ec80-416f-9169-3762915f41d2",
             "title": "Vaccination administrations in Ontario",
-            "query": "MATCH (p:Patient)\nWITH p\n  MATCH (p)-[r1]-(i:Immunization)-[r2]-(e:Encounter)-[r3]-(o:Organization)\nWITH DISTINCT([p, o]) AS po, COUNT(*) AS count\nWITH po[0] AS p, po[1] AS o, count\nWITH p, o, count, \n  apoc.create.vRelationship(p,'ADMINISTERED_BY',{count: count}, o) AS rel\nRETURN p, rel, o\n\n\n\n\n",
+            "query": "MATCH (p:Patient)\nWITH p\n  MATCH (p)-[r1]-(i:Immunization)-[r2]-(e:Encounter)-[r3]-(o:Organization)\nWITH DISTINCT([p, o]) AS po, COUNT(*) AS count\nWITH po[0] AS p, po[1] AS o, count\nWITH p, o, count, \n  apoc.create.vRelationship(p,'ADMINISTERED_BY',{count: count}, o) AS rel\nRETURN p, rel, o\n",
             "width": 12,
             "height": 4,
             "x": 0,
@@ -305,7 +328,9 @@
               "ADMINISTERED_BY": "(label)",
               "Organization": "name"
             },
-            "settings": {},
+            "settings": {
+              "defaultNodeSize": "small"
+            },
             "schema": [
               [
                 "Patient",

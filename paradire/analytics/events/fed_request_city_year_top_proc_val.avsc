@@ -1,0 +1,11 @@
+{
+    "type": "record",
+    "name": "fed_request_city_year_top_proc_val",
+    "fields": [
+        {"name": "request_id", "type": "string", "doc": "Unique ID of a Fererated Analytics Request."},
+        {"name": "city", "type": "string", "doc": "The city"},
+        {"name": "procedure_1", "type": "string", "doc": "Code of the first procedure"},
+        {"name": "procedure_2", "type": "string", "doc": "Code of the second procedure"},
+        {"name": "procedure_3", "type": "string", "doc": "Code of the third procedure"}
+    ]
+}

@@ -194,3 +194,49 @@ RETURN
     record.timestamp AS timestamp;
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// Creating CityYearTopProc statistics
+//
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+WITH event,
+    'city: \"' + event.city + '\"' AS city_condition,
+    'WHERE procedure.code IN [' + apoc.text.join([e IN [event.procedure_1, event.procedure_2, event.procedure_3] | '\"' + e + '\"'], ', ') + '] ' AS where_condition
+WITH event,
+    'MATCH (organization:Organization {' + city_condition + '})-[]-(:Encounter)-[]-(procedure:Procedure) '
+    + where_condition + 
+    'WITH DISTINCT(procedure.start.year) AS year, COLLECT(DISTINCT(procedure)) AS procedures, \"' 
+    + event.request_id + 
+    '\" AS request_id, \"' 
+    + event.city + 
+    '\" AS city RETURN city, year, procedures, request_id ORDER BY year'
+    AS batch_producer,
+    'WITH city, year, procedures, request_id
+        CREATE (record:CityYearTopProc)
+            SET record.request_id = request_id,
+                record.city = city,
+                record.year = year,
+                record.procedure_1 = SIZE([e IN procedures WHERE e.code = \"' + event.procedure_1 + '\"]),
+                record.procedure_2 = SIZE([e IN procedures WHERE e.code = \"' + event.procedure_2 + '\"]),
+                record.procedure_3 = SIZE([e IN procedures WHERE e.code = \"' + event.procedure_3 + '\"]),
+                record.timestamp = apoc.date.currentTimestamp()'
+    AS batch_runner
+WITH batch_producer, batch_runner
+    CALL apoc.periodic.iterate(batch_producer, batch_runner, {batchSize:10000, parallel:true})
+        YIELD total RETURN total
+//
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+MATCH (record:CityYearTopProc)
+    WHERE record.timestamp > $lastCheck
+RETURN
+    record.request_id AS request_id,
+    record.city AS city,
+    record.year AS year,
+    record.procedure_1 AS procedure_1,
+    record.procedure_2 AS procedure_2,
+    record.procedure_3 AS procedure_3,
+    record.timestamp AS timestamp;
+//
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

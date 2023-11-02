@@ -39,7 +39,8 @@ event_dir=${curr_dir}/analytics/events
 kafka_ce_schema_registry_data_dir=kafka-ce/schema-registry/data
 connector_dir=${curr_dir}/analytics/connectors
 
-for request_topic in fed_request_vaccination_record fed_request_zip_immunization fed_request_top_k_immunization fed_request_patient_cvx_org
+for request_topic in fed_request_vaccination_record fed_request_zip_immunization fed_request_top_k_immunization fed_request_patient_cvx_org fed_request_city_year_top_proc
+# for request_topic in fed_request_city_year_top_proc
 do
     ./scripts/create_topic.sh ${request_topic}
 
@@ -62,7 +63,8 @@ do
     echo ''
 done
 
-for response_topic in fed_response_vaccination_record fed_response_zip_immunization fed_response_top_k_immunization fed_response_patient_cvx_org
+for response_topic in fed_response_vaccination_record fed_response_zip_immunization fed_response_top_k_immunization fed_response_patient_cvx_org fed_response_city_year_top_proc
+# for response_topic in fed_response_city_year_top_proc
 do
     ./scripts/create_topic.sh ${response_topic}
 
@@ -77,7 +79,8 @@ do
     echo $key_schema_id $value_schema_id
 done
 
-for response_topic in fed_response_vaccination_record fed_response_zip_immunization fed_response_top_k_immunization fed_response_patient_cvx_org
+for response_topic in fed_response_vaccination_record fed_response_zip_immunization fed_response_top_k_immunization fed_response_patient_cvx_org fed_response_city_year_top_proc
+# for response_topic in fed_response_city_year_top_proc
 do
     curl -X POST http://${connect_host}:${connect_port}/connectors \
     -H 'Content-Type:application/json' \
@@ -94,7 +97,8 @@ echo
 
 timeout=10000
 
-for response_topic in fed_response_vaccination_record fed_response_zip_immunization fed_response_top_k_immunization fed_response_patient_cvx_org
+for response_topic in fed_response_vaccination_record fed_response_zip_immunization fed_response_top_k_immunization fed_response_patient_cvx_org fed_response_city_year_top_proc
+# for response_topic in fed_response_city_year_top_proc
 do
     consumer_group=${response_topic}
 
