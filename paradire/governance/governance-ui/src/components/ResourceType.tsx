@@ -5,7 +5,10 @@ import { type JSONSchema6 } from "json-schema";
 
 import { useDebounce } from "@uidotdev/usehooks";
 
-import { XCircleIcon } from "@heroicons/react/24/outline";
+import {
+  XCircleIcon,
+  WrenchScrewdriverIcon,
+} from "@heroicons/react/24/outline";
 
 import BoldedText from "./BoldedText";
 import { dereference } from "~/utils/schema";
@@ -17,7 +20,7 @@ function getSubSelectedFields(
 ) {
   if (typeof selected === "undefined") return [];
   if (typeof selected === "string") return [];
-  const val = selected[field];
+  const val = selected[field]?.fields;
   if (typeof val === "undefined") return [];
   if (!Array.isArray(val)) return [val];
   return val;
@@ -58,23 +61,89 @@ export default function ResourceType({
   const [filter, setFilter] = useState("");
   const debouncedFilter = useDebounce(filter, 300);
 
-  const onFieldChange = useCallback(
+  const [showOptions, setShowOptions] = useState<string[]>([]);
+  const [_fieldOptions, setFieldOptions] = useState<
+    Record<string, { format?: string; hash?: boolean }>
+  >({});
+
+  const fieldToggleHandler = useCallback(
     (event: react.ChangeEvent<HTMLInputElement>) => {
       let changes: ResourceTypeField[] = [];
       if (isFieldSelected(event.target.value, fields)) {
         changes = fields.filter(namedFieldFilter(event.target.value));
-      } else changes = fields.concat(event.target.value);
+      } else {
+        if (_fieldOptions[event.target.value]) {
+          changes = fields.concat({
+            [event.target.value]: { ..._fieldOptions[event.target.value] },
+          });
+        } else {
+          changes = fields.concat(event.target.value);
+        }
+      }
+
       if (!selectedFields) setSelectedFields(changes);
       if (onChange) onChange(name, changes);
     },
-    [fields, name, onChange, selectedFields],
+    [_fieldOptions, fields, name, onChange, selectedFields],
   );
 
-  const onSubfieldChange = useCallback(
+  const updateFormatFieldOptionHandler = useCallback(
+    (field: string) => (event: react.ChangeEvent<HTMLInputElement>) => {
+      const _thisFieldOptions = Object.assign({}, _fieldOptions[field], {
+        format: event.target.value || undefined,
+      });
+
+      setFieldOptions(
+        Object.assign({}, _fieldOptions, {
+          [field]: _thisFieldOptions,
+        }),
+      );
+
+      const changes = fields.filter(namedFieldFilter(field)).concat(
+        !Object.values(_thisFieldOptions).every((el) => el === undefined)
+          ? {
+              [field]: _thisFieldOptions,
+            }
+          : field,
+      );
+
+      if (!selectedFields) setSelectedFields(changes);
+      if (onChange) onChange(name, changes);
+    },
+    [_fieldOptions, fields, name, onChange, selectedFields],
+  );
+
+  const updateHashFieldOptionHandler = useCallback(
+    (field: string) => (event: react.ChangeEvent<HTMLInputElement>) => {
+      const _thisFieldOptions = Object.assign({}, _fieldOptions[field], {
+        hash: event.target.checked || undefined,
+      });
+
+      setFieldOptions(
+        Object.assign({}, _fieldOptions, {
+          [field]: _thisFieldOptions,
+        }),
+      );
+
+      const changes = fields.filter(namedFieldFilter(field)).concat(
+        !Object.values(_thisFieldOptions).every((el) => el === undefined)
+          ? {
+              [field]: _thisFieldOptions,
+            }
+          : field,
+      );
+
+      if (!selectedFields) setSelectedFields(changes);
+      if (onChange) onChange(name, changes);
+    },
+    [_fieldOptions, fields, name, onChange, selectedFields],
+  );
+
+  const subfieldChangeHandler = useCallback(
     (subFieldName: string, selectedFields: ResourceTypeField[]) => {
       const changes = fields
         .filter(namedFieldFilter(subFieldName))
-        .concat({ [subFieldName]: selectedFields });
+        .concat({ [subFieldName]: { fields: selectedFields } });
       if (!selectedFields) setSelectedFields(changes);
       if (onChange) onChange(name, changes);
     },
@@ -99,6 +168,18 @@ export default function ResourceType({
   const showDescriptionChangeHandler = useCallback(() => {
     setShowDescriptions(!_showDescriptions);
   }, [_showDescriptions]);
+
+  const showOptionsClickHandler = useCallback(
+    (event: react.MouseEvent<HTMLButtonElement>) => {
+      const field = event.currentTarget.value;
+      if (showOptions.includes(field)) {
+        setShowOptions(showOptions.filter((o) => o !== field));
+      } else {
+        setShowOptions(showOptions.concat(field));
+      }
+    },
+    [showOptions],
+  );
 
   const referenced_schema = dereference(reference, schema);
   if (!referenced_schema || typeof referenced_schema === "boolean")
@@ -205,7 +286,18 @@ export default function ResourceType({
 
                 const checked = getFieldIfSelected(field, fields);
 
+                const fieldConf =
+                  typeof checked === "object" ? checked[field] : {};
+
                 const selectedSubFields = getSubSelectedFields(checked, field);
+
+                const isDate = val.format === "date";
+                const isDateTime = val.format === "date-time";
+                const isString =
+                  !isDate &&
+                  !isDateTime &&
+                  (val.type === "string" ||
+                    (Array.isArray(val.type) && val.type.includes("string")));
 
                 return (
                   <label
@@ -216,9 +308,9 @@ export default function ResourceType({
                       type="checkbox"
                       checked={Boolean(checked)}
                       value={field}
-                      onChange={onFieldChange}
+                      onChange={fieldToggleHandler}
                     />
-                    <div>
+                    <div className="flex-1">
                       <h4 className="text-lg">
                         <BoldedText text={field} bold={debouncedFilter} />
                       </h4>
@@ -230,6 +322,36 @@ export default function ResourceType({
                           />
                         </p>
                       )}
+                      {showOptions.includes(field) && (
+                        <div className="">
+                          <h5 className="border-b-2 border-t-2 font-bold">
+                            Options
+                          </h5>
+                          {(isDate || isDateTime) && (
+                            <label className="flex items-center space-x-3 p-1">
+                              <input
+                                type="text"
+                                placeholder="Expose using date format (example: YYYY)"
+                                className="flex-1 border-[1px] border-black p-1"
+                                onChange={updateFormatFieldOptionHandler(field)}
+                                value={fieldConf?.format ?? ""}
+                              />
+                            </label>
+                          )}
+                          {isString && (
+                            <label className="flex">
+                              <input
+                                type="checkbox"
+                                className="mr-2"
+                                onChange={updateHashFieldOptionHandler(field)}
+                                checked={fieldConf?.hash}
+                              />
+                              Apply one way hash
+                            </label>
+                          )}
+                        </div>
+                      )}
+
                       {checked && ref && (
                         <ResourceType
                           name={field}
@@ -240,9 +362,18 @@ export default function ResourceType({
                           )}
                           showDescriptions={_showDescriptions}
                           selectedFields={selectedSubFields}
-                          onChange={onSubfieldChange}
+                          onChange={subfieldChangeHandler}
                         />
                       )}
+                    </div>
+                    <div className="pt-2">
+                      <button
+                        value={field}
+                        onClick={showOptionsClickHandler}
+                        className="rounded border-2 bg-green-200 p-2 text-slate-800"
+                      >
+                        <WrenchScrewdriverIcon className="h-5 w-5" />
+                      </button>
                     </div>
                   </label>
                 );

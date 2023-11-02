@@ -7,7 +7,15 @@ interface JSONSchema6Discriminator {
   };
 }
 
-type ResourceTypeField = string | { [field: string]: ResourceTypeField[] };
+type ResourceTypeFieldOptions = {
+  fields?: ResourceTypeField[];
+  hash?: boolean;
+  format?: string;
+};
+
+type ResourceTypeField =
+  | string
+  | Record<string, ResourceTypeFieldOptions>;
 
 /**
  * Type describing a resource type by name and what fields are selected.

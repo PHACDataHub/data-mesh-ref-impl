@@ -139,7 +139,7 @@ export const expandRuleset = (
               if (requiresRef && typeof fieldRef === "string") {
                 const sFields = Object.entries(RT.selectedFields)
                   .filter(([, v]) => typeof v === "object" && name in v)
-                  .map(([, v]) => typeof v === "object" && v[name])
+                  .map(([, v]) => typeof v === "object" && v[name]?.fields)
                   .find(() => true);
                 if (Array.isArray(sFields)) {
                   expandRuleset(
@@ -170,47 +170,46 @@ export const expandRuleset = (
   return expanded;
 };
 
-// - date only year
-// - hashes
-
-// ruleset:
-//   version: 0.0.1
-//   resourceTypes:
-//     - name: Patient
-//       fields:
-//         - birth_date:
-//             transform: "YYYY"
-//         - ssn:
-//             hash: true
-//         - passport
-//             hash: true
-//         - prefix
+const addFieldDirective = (
+  field: string,
+  directive: string,
+  directives: { match: RegExp; directive: string }[],
+) => {
+  const match = `${field}${(Math.random() + 1).toString(36).substring(7)}`;
+  directives.push({
+    match: new RegExp(`${match}(.*)`),
+    directive: `$1 ${directive}`,
+  });
+  return `${field}${match}`;
+};
 
 const fieldSpecToGraphQlType = (
   name: string,
   fieldSpec: JSONSchema6Definition | undefined,
+  options: ResourceTypeFieldOptions,
   schema: JSONSchema6,
   typeDefs: (GraphQLScalarType | GraphQLObjectType)[],
-  directives: { match: string; directive: string }[],
+  directives: { match: RegExp; directive: string }[],
 ): [string, GraphQLFieldConfig<unknown, unknown, unknown>] => {
   if (!fieldSpec || typeof fieldSpec === "boolean")
     return [name, { type: GraphQLString }];
   const [type, , nullable] = getFieldType(name, fieldSpec, schema);
+  let fieldName = name;
   if (typeof type === "string" && type.startsWith("#/definitions/")) {
-    let match = "";
     if ("relantionship" in fieldSpec) {
       const rel = fieldSpec.relantionship as {
         type: string;
         direction: "IN" | "OUT";
       };
-      match = `${name}${(Math.random() + 1).toString(36).substring(7)}`;
-      directives.push({
-        match,
-        directive: `@relationship(type: "${rel.type}", direction: ${rel.direction})`,
-      });
+      fieldName = addFieldDirective(
+        name,
+        `@relationship(type: "${rel.type}", direction: ${rel.direction})`,
+        directives,
+      );
     }
+    
     return [
-      `${name}${match}`,
+      `${fieldName}`,
       {
         type:
           typeDefs.find((t) => t.name === type.replace("#/definitions/", "")) ??
@@ -219,6 +218,14 @@ const fieldSpecToGraphQlType = (
       },
     ];
   }
+  if (options.format) {
+    fieldName = addFieldDirective(
+      name,
+      `@format(${options.format})`,
+      directives,
+    );
+  }
+
   let tt:
     | GraphQLScalarType<unknown, unknown>
     | GraphQLObjectType<unknown, unknown>;
@@ -250,7 +257,7 @@ const fieldSpecToGraphQlType = (
     default:
       tt = GraphQLString;
   }
-  return [name, { type: nullable ? tt : new GraphQLNonNull(tt) }];
+  return [fieldName, { type: nullable ? tt : new GraphQLNonNull(tt) }];
 };
 
 export const rulesToGraphQl = (yaml: string, schema: JSONSchema6) => {
@@ -264,7 +271,7 @@ export const rulesToGraphQl = (yaml: string, schema: JSONSchema6) => {
   if (selectedResourceTypes.length === 0) return "";
 
   const typeDefs: (GraphQLScalarType | GraphQLObjectType)[] = [];
-  const directives: { match: string; directive: string }[] = [];
+  const directives: { match: RegExp; directive: string }[] = [];
 
   // Stubs for Neo4J GraphQL Types
   const builtInTypes = [
@@ -282,6 +289,7 @@ export const rulesToGraphQl = (yaml: string, schema: JSONSchema6) => {
     ),
   );
 
+  // Reference to filter out type
   const ffield = typeDefs.find((t) => t.name === "FilterOut");
 
   selectedResourceTypes
@@ -297,12 +305,22 @@ export const rulesToGraphQl = (yaml: string, schema: JSONSchema6) => {
       const typeName = resourceType.name.replace("#/definitions/", "");
       const typeFields = Object.keys(referenced_schema?.properties ?? {})
         .filter((name) => isFieldSelected(name, resourceType.selectedFields))
-        .map((name) => ({
-          name,
-          fieldSpec:
-            referenced_schema.properties && referenced_schema.properties[name],
-        }));
+        .map((name) => {
+          const field = getFieldIfSelected(name, resourceType.selectedFields);
+          // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+          const options = (typeof field === "object" && field[name]) || {};
+          return {
+            name,
+            fieldSpec:
+              referenced_schema.properties &&
+              referenced_schema.properties[name],
+            options,
+          };
+        });
 
+      // const match = `${typeName}${(Math.random() + 1)
+      //   .toString(36)
+      //   .substring(7)}`;
       typeDefs.push(
         new GraphQLObjectType({
           name: typeName,
@@ -310,10 +328,11 @@ export const rulesToGraphQl = (yaml: string, schema: JSONSchema6) => {
           fields: () =>
             Object.fromEntries(
               typeFields
-                .map(({ name, fieldSpec }) =>
+                .map(({ name, fieldSpec, options }) =>
                   fieldSpecToGraphQlType(
                     name,
                     fieldSpec,
+                    options,
                     schema,
                     typeDefs,
                     directives,
@@ -323,17 +342,18 @@ export const rulesToGraphQl = (yaml: string, schema: JSONSchema6) => {
             ),
         }),
       );
+      // directives.push({
+      //   match: new RegExp(`(${match})(.*)`),
+      //   directive: ` @mutation(operations: []) $2`,
+      // });
     });
   const generated_schema = new GraphQLSchema({ types: typeDefs });
   let schema_text = printSchema(generated_schema);
 
   // Workaround for no field directive support - fields that require a directive
-  // have a random string `match` in their name, so we can perform a regex.
+  // have a random string in their name, so we can perform a regex.
   directives.forEach(({ match, directive }) => {
-    schema_text = schema_text.replace(
-      new RegExp(`${match}(.*)`),
-      `$1 ${directive}`,
-    );
+    schema_text = schema_text.replace(match, directive);
   });
   // Remove types defined by Neo4J's graphql library + "FilterOut" type which
   // is used to prevent a field from being included in a type safe way.

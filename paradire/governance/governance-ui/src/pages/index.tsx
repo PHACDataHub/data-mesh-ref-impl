@@ -187,7 +187,7 @@ export default function Home() {
                 Apply
               </button>
             </div>
-            <div className="flex flex-wrap space-x-2 space-y-2">
+            <div className="flex flex-col space-x-2 space-y-2">
               <div />
               {Object.entries(json_schema.discriminator.mapping)
                 .filter(([key]) =>

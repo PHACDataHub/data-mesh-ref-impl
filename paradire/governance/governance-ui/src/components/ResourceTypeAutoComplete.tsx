@@ -83,6 +83,7 @@ export default function ResourceTypeAutoComplete({
       }
       if (!selectedResourceTypes) setSelectedResourceTypes(changes);
       if (onChange) onChange(changes);
+      setOpenSearch(false);
     },
     [onChange, selected, selectedResourceTypes],
   );
