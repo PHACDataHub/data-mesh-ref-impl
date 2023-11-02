@@ -1,0 +1,8 @@
+{
+    "type": "record",
+    "name": "fed_request_zip_immunization_val",
+    "fields": [
+        {"name": "request_id", "type": "string", "doc": "Unique ID of a Fererated Analytics Request."},
+        {"name": "k", "type": ["null", "int"], "default": null, "doc": "Number of top immunizations."}
+    ]
+}

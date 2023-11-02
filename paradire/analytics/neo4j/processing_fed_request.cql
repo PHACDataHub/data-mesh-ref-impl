@@ -97,3 +97,43 @@ RETURN
     record.timestamp AS timestamp;
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// Creating Top-K Immunization per Zip Code statistics
+//
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+WITH event,
+    'MATCH (immunization:Immunization)
+        WITH DISTINCT(immunization.code) AS code, COUNT(immunization) AS count ORDER BY count DESC LIMIT ' 
+        + (CASE WHEN event.k IS NOT NULL THEN TOSTRING(event.k) + ' ' ELSE '5 ' END) +
+    'WITH COLLECT(code) AS codes
+        MATCH (patient:Patient)-[]-(immunization:Immunization)
+            WHERE immunization.code IN codes
+    RETURN patient.zip AS zip, immunization.code AS code, COUNT(immunization) AS count, \"' 
+    + event.request_id + '\" AS request_id'
+    AS batch_producer,
+    'WITH zip, code, count, request_id
+        CREATE (record:TopKImmunization)
+            SET record.request_id = request_id,
+                record.zip = zip,
+                record.code = code,
+                record.count = count, 
+                record.timestamp = apoc.date.currentTimestamp()'
+    AS batch_runner
+WITH batch_producer, batch_runner
+    CALL apoc.periodic.iterate(batch_producer, batch_runner, {batchSize:10000, parallel:true})
+        YIELD total RETURN total
+//
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+MATCH (record:TopKImmunization)
+    WHERE record.timestamp > $lastCheck
+RETURN
+    record.request_id AS request_id,
+    record.zip AS zip,
+    record.code AS code,
+    record.count AS count,
+    record.timestamp AS timestamp;
+//
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

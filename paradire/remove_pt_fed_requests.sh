@@ -26,7 +26,7 @@ schema_registry_port=${SCHEMA_REGISTRY_PORT}
 
 event_dir=${curr_dir}/analytics/events
 
-for response_topic in fed_response_vaccination_record fed_response_zip_immunization
+for response_topic in fed_response_vaccination_record fed_response_zip_immunization fed_response_top_k_immunization
 do
     ./scripts/delete_connector.sh ${response_topic}_source_connector
 
@@ -38,7 +38,7 @@ done
 
 ./scripts/delete_connector.sh fed_request_sink_connector
 
-for request_topic in fed_request_vaccination_record fed_request_zip_immunization
+for request_topic in fed_request_vaccination_record fed_request_zip_immunization fed_request_top_k_immunization
 do
     ./scripts/delete_subject.sh ${request_topic}-key
     ./scripts/delete_subject.sh ${request_topic}-value
