@@ -9,6 +9,7 @@
         {"name": "procedure_1", "type": "int", "doc": "Number of time the first procedure perfomed"},
         {"name": "procedure_2", "type": "int", "doc": "Number of time the second procedure perfomed"},
         {"name": "procedure_3", "type": "int", "doc": "Number of time the third procedure perfomed"},
+        {"name": "pt", "type": ["null", "string"], "default": null, "doc": "The pt."},
         {"name": "timestamp", "type": "long", "doc": "Timestamp when this record is produced."}
     ]
 }

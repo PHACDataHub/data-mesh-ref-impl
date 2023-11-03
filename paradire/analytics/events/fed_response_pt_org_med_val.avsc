@@ -8,6 +8,7 @@
         {"name": "city", "type": ["null", "string"], "default": null, "doc": "Organization's city"},
         {"name": "name", "type": ["null", "string"], "default": null, "doc": "Organization's name"},
         {"name": "count", "type": "int", "doc": "The number of medications by this organization."},
+        {"name": "pt", "type": ["null", "string"], "default": null, "doc": "The pt."},
         {"name": "timestamp", "type": "long", "doc": "Timestamp when this record is produced."}
     ]
 }

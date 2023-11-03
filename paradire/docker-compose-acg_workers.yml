@@ -1,0 +1,98 @@
+version: "3.8"
+
+##############################################################################
+#
+# services
+#
+# - Uses .env for environment variables
+# - acg_f2pt: Kafka worker for Access Gateway, maintaining F-to-PT traffic
+# - acg_pt2f: Kafka worker for Access Gateway, maintaining PT-to-F traffic
+#
+##############################################################################
+
+services:
+
+  ####################
+  # acg_f2pt
+  ####################
+  acg_f2pt:
+    image: acg_f2pt:latest
+    container_name: acg_f2pt
+    build:
+      context: ./
+      dockerfile: $PWD/analytics/dockerized/Dockerfile
+      # shm_size: '1gb'
+      args:
+        - BASE_IMAGE=python:3.11
+        - PYTHON_REQUIREMENTS=$PWD/analytics/dockerized/acg_worker-requirements.txt
+        - AVRO_DIR=$PWD/analytics/events
+        - WORKFLOW_FILE=workflow.yaml
+        - WORKFLOW_NAME=main
+        - STEP_NAME=acg_f2pt
+    # shm_size: '1gb'
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           device_ids: ['0']
+    #           capabilities: [gpu]
+    # depends_on:
+    #   - broker
+    #   - init-kafka
+    #   - connect
+    #   - dedup_by_id
+    volumes:
+      # - $PWD/nlp-tasks/keyphrase-extractor/cache:/root/stanza_resources
+      - $PWD/analytics/events:/data/
+    networks:
+      - backend
+    # restart: always
+
+  ####################
+  # acg_pt2f
+  ####################
+  acg_pt2f:
+    image: acg_pt2f:latest
+    container_name: acg_pt2f
+    build:
+      context: ./
+      dockerfile: $PWD/analytics/dockerized/Dockerfile
+      # shm_size: '1gb'
+      args:
+        - BASE_IMAGE=python:3.11
+        - PYTHON_REQUIREMENTS=$PWD/analytics/dockerized/acg_worker-requirements.txt
+        - AVRO_DIR=$PWD/analytics/events
+        - WORKFLOW_FILE=workflow.yaml
+        - WORKFLOW_NAME=main
+        - STEP_NAME=acg_pt2f
+    # shm_size: '1gb'
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           device_ids: ['0']
+    #           capabilities: [gpu]
+    # depends_on:
+    #   - broker
+    #   - init-kafka
+    #   - connect
+    #   - dedup_by_id
+    volumes:
+      # - $PWD/nlp-tasks/keyphrase-extractor/cache:/root/stanza_resources
+      - $PWD/analytics/events:/data/
+    networks:
+      - backend
+    # restart: always
+
+################################################################################
+#
+# networks
+# - backend
+#
+################################################################################
+networks:
+  backend:
+    name: backend
+    external: true

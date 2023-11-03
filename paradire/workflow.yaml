@@ -1,0 +1,33 @@
+main:
+    steps:
+        - acg_f2pt:
+            consumer:
+                broker_host: ${BROKER_HOST}
+                broker_port: ${BROKER_EXTERNAL_PORT}
+                schema_registry_host: ${SCHEMA_REGISTRY_HOST}
+                schema_registry_port: ${SCHEMA_REGISTRY_PORT}
+                poll_time: 1.0
+                consumer_group_id: keyphrase_extractor
+                auto_offset_reset: earliest
+                source_topic:
+                    - incoming-articles:
+                        avro_key_schema_file: incoming-article-key.avsc
+                        avro_val_schema_file: incoming-article-val.avsc
+            worker:
+                language: en
+                processors: tokenize,pos,lemma,constituency,ner
+                ner_packages: anatem,bc5cdr,bc4chemd,bionlp13cg,jnlpba,linnaeus,ncbi_disease,s800,i2b2,radiology
+            producer:
+                broker_host: ${BROKER_HOST}
+                broker_port: ${BROKER_EXTERNAL_PORT}
+                schema_registry_host: ${SCHEMA_REGISTRY_HOST}
+                schema_registry_port: ${SCHEMA_REGISTRY_PORT}
+                poll_time: 0.0
+                destination_topic:
+                    - extracted-don-entities:
+                        avro_key_schema_file: ext-cnt-key.avsc
+                        avro_val_schema_file: ext-cnt-val.avsc
+                    - extracted-doc-entities:
+                        avro_key_schema_file: ext-cnt-key.avsc
+                        avro_val_schema_file: ext-cnt-val.avsc
+            next: end

@@ -8,6 +8,7 @@
         {"name": "name", "type": ["null", "string"], "default": null, "doc": "Organization's name"},
         {"name": "patient_id", "type": "string", "doc": "Primary Key. Unique Identifier of the patient - UUID"},
         {"name": "count", "type": "int", "doc": "The number of visits of the patient to this organization."},
+        {"name": "pt", "type": ["null", "string"], "default": null, "doc": "The pt."},
         {"name": "timestamp", "type": "long", "doc": "Timestamp when this record is produced."}
     ]
 }

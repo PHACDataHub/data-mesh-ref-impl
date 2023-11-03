@@ -31,7 +31,11 @@ services:
     hostname: zookeeper
     container_name: zookeeper
     networks:
-      - pt_backend
+      - f_backend
+      - f2pt:
+        aliases:
+          f_zookeeper
+
     ports:
       - ${ZOOKEEPER_CLIENT_PORT}:2181
     environment:
@@ -54,7 +58,10 @@ services:
     depends_on:
       - zookeeper
     networks:
-      - pt_backend
+      - f_backend
+      - f2pt:
+        aliases:
+          f_zookeeper
     ports:
       - ${BROKER_EXTERNAL_PORT}:${BROKER_EXTERNAL_PORT}
       - ${BROKER_LOCAL_PORT}:${BROKER_LOCAL_PORT}
@@ -93,7 +100,10 @@ services:
       - zookeeper
       - broker
     networks:
-      - pt_backend
+      - f_backend
+      - f2pt:
+        aliases:
+          f_zookeeper
     ports:
       - ${BROKER2_EXTERNAL_PORT}:${BROKER2_EXTERNAL_PORT}
       - ${BROKER2_LOCAL_PORT}:${BROKER2_LOCAL_PORT}
@@ -131,7 +141,10 @@ services:
       - zookeeper
       - broker
     networks:
-      - pt_backend
+      - f_backend
+      - f2pt:
+        aliases:
+          f_zookeeper
     ports:
       - ${BROKER3_EXTERNAL_PORT}:${BROKER3_EXTERNAL_PORT}
       - ${BROKER3_LOCAL_PORT}:${BROKER3_LOCAL_PORT}
@@ -169,7 +182,10 @@ services:
       - zookeeper
       - broker
     networks:
-      - pt_backend
+      - f_backend
+      - f2pt:
+        aliases:
+          f_zookeeper
     ports:
       - ${BROKER4_EXTERNAL_PORT}:${BROKER4_EXTERNAL_PORT}
       - ${BROKER4_LOCAL_PORT}:${BROKER4_LOCAL_PORT}
@@ -207,7 +223,10 @@ services:
       - zookeeper
       - broker
     networks:
-      - pt_backend
+      - f_backend
+      - f2pt:
+        aliases:
+          f_zookeeper
     ports:
       - ${SCHEMA_REGISTRY_PORT}:8081
     environment:
@@ -232,7 +251,7 @@ services:
       - broker
       - schema-registry
     networks:
-      - pt_backend
+      - f_backend
     ports:
       - ${CONNECT_PORT}:8083
     environment:
@@ -293,7 +312,7 @@ services:
       - broker
       - connect
     networks:
-      - pt_backend
+      - f_backend
     ports:
       - ${KSQLDB_PORT}:8088
     environment:
@@ -330,7 +349,7 @@ services:
       - connect
       - ksqldb-server
     networks:
-      - pt_backend
+      - f_backend
     entrypoint: /bin/sh
     tty: true
     volumes:
@@ -348,7 +367,7 @@ services:
       - broker
       - schema-registry
     networks:
-      - pt_backend
+      - f_backend
     ports:
       - ${REST_PROXY_PORT}:8082
     environment:
@@ -370,7 +389,7 @@ services:
     ports:
       - ${KAFKA_UI_PORT}:8080
     networks:
-      - pt_backend
+      - f_backend
     depends_on:
       - zookeeper
       - broker
@@ -402,7 +421,7 @@ services:
       - schema-registry
       - connect
     networks:
-      - pt_backend
+      - f_backend
     entrypoint: [ '/bin/sh', '-c' ]
     command: |
       "
@@ -410,25 +429,7 @@ services:
       kafka-topics --bootstrap-server broker:${BROKER_INTERNAL_PORT} --list
 
       echo -e 'Creating kafka topics'
-      kafka-topics --bootstrap-server broker:${BROKER_INTERNAL_PORT} --create --if-not-exists --topic allergies --replication-factor ${REPLICATION_FACTOR} --partitions ${PARTITIONS}
-      kafka-topics --bootstrap-server broker:${BROKER_INTERNAL_PORT} --create --if-not-exists --topic careplans --replication-factor ${REPLICATION_FACTOR} --partitions ${PARTITIONS}
-      kafka-topics --bootstrap-server broker:${BROKER_INTERNAL_PORT} --create --if-not-exists --topic claims_transactions --replication-factor ${REPLICATION_FACTOR} --partitions ${PARTITIONS}
-      kafka-topics --bootstrap-server broker:${BROKER_INTERNAL_PORT} --create --if-not-exists --topic claims --replication-factor ${REPLICATION_FACTOR} --partitions ${PARTITIONS}
-      kafka-topics --bootstrap-server broker:${BROKER_INTERNAL_PORT} --create --if-not-exists --topic conditions --replication-factor ${REPLICATION_FACTOR} --partitions ${PARTITIONS}
-      kafka-topics --bootstrap-server broker:${BROKER_INTERNAL_PORT} --create --if-not-exists --topic devices --replication-factor ${REPLICATION_FACTOR} --partitions ${PARTITIONS}
-      kafka-topics --bootstrap-server broker:${BROKER_INTERNAL_PORT} --create --if-not-exists --topic encounters --replication-factor ${REPLICATION_FACTOR} --partitions ${PARTITIONS}
-      kafka-topics --bootstrap-server broker:${BROKER_INTERNAL_PORT} --create --if-not-exists --topic imaging_studies --replication-factor ${REPLICATION_FACTOR} --partitions ${PARTITIONS}
-      kafka-topics --bootstrap-server broker:${BROKER_INTERNAL_PORT} --create --if-not-exists --topic immunizations --replication-factor ${REPLICATION_FACTOR} --partitions ${PARTITIONS}
-      kafka-topics --bootstrap-server broker:${BROKER_INTERNAL_PORT} --create --if-not-exists --topic medications --replication-factor ${REPLICATION_FACTOR} --partitions ${PARTITIONS}
-      kafka-topics --bootstrap-server broker:${BROKER_INTERNAL_PORT} --create --if-not-exists --topic observations --replication-factor ${REPLICATION_FACTOR} --partitions ${PARTITIONS}
-      kafka-topics --bootstrap-server broker:${BROKER_INTERNAL_PORT} --create --if-not-exists --topic organizations --replication-factor ${REPLICATION_FACTOR} --partitions ${PARTITIONS}
-      kafka-topics --bootstrap-server broker:${BROKER_INTERNAL_PORT} --create --if-not-exists --topic patient_expenses --replication-factor ${REPLICATION_FACTOR} --partitions ${PARTITIONS}
-      kafka-topics --bootstrap-server broker:${BROKER_INTERNAL_PORT} --create --if-not-exists --topic patients --replication-factor ${REPLICATION_FACTOR} --partitions ${PARTITIONS}
-      kafka-topics --bootstrap-server broker:${BROKER_INTERNAL_PORT} --create --if-not-exists --topic payer_transitions --replication-factor ${REPLICATION_FACTOR} --partitions ${PARTITIONS}
-      kafka-topics --bootstrap-server broker:${BROKER_INTERNAL_PORT} --create --if-not-exists --topic payers --replication-factor ${REPLICATION_FACTOR} --partitions ${PARTITIONS}
-      kafka-topics --bootstrap-server broker:${BROKER_INTERNAL_PORT} --create --if-not-exists --topic procedures --replication-factor ${REPLICATION_FACTOR} --partitions ${PARTITIONS}
-      kafka-topics --bootstrap-server broker:${BROKER_INTERNAL_PORT} --create --if-not-exists --topic providers --replication-factor ${REPLICATION_FACTOR} --partitions ${PARTITIONS}
-      kafka-topics --bootstrap-server broker:${BROKER_INTERNAL_PORT} --create --if-not-exists --topic supplies --replication-factor ${REPLICATION_FACTOR} --partitions ${PARTITIONS}
+      kafka-topics --bootstrap-server broker:${BROKER_INTERNAL_PORT} --create --if-not-exists --topic fed_requests --replication-factor ${REPLICATION_FACTOR} --partitions ${PARTITIONS}
       kafka-topics --bootstrap-server broker:${BROKER_INTERNAL_PORT} --create --if-not-exists --topic fed_request_city_org_patient --replication-factor ${REPLICATION_FACTOR} --partitions ${PARTITIONS}
       kafka-topics --bootstrap-server broker:${BROKER_INTERNAL_PORT} --create --if-not-exists --topic fed_request_city_org_patient_visit --replication-factor ${REPLICATION_FACTOR} --partitions ${PARTITIONS}
       kafka-topics --bootstrap-server broker:${BROKER_INTERNAL_PORT} --create --if-not-exists --topic fed_request_city_year_top_proc --replication-factor ${REPLICATION_FACTOR} --partitions ${PARTITIONS}
@@ -467,7 +468,7 @@ services:
     hostname: neo4j
     container_name: neo4j
     networks:
-      - pt_backend
+      - f_backend
     ports:
       - ${NEO4J_HTTP_PORT}:7474
       - ${NEO4J_HTTPS_PORT}:7473
@@ -511,7 +512,7 @@ services:
     depends_on:
       - neo4j
     networks:
-      - pt_backend
+      - f_backend
     ports:
       - ${NEODASH_PORT}:5005
     environment:
@@ -523,7 +524,7 @@ services:
       # - standaloneHost=localhost
       - standalonePort=7687
       - standaloneDatabase=neo4j
-      - standaloneDashboardName=PT Analytics Platform
+      - standaloneDashboardName=Federal Analytics Platform
       - standaloneDashboardDatabase=neo4j
     restart: always
 
@@ -537,7 +538,7 @@ services:
     depends_on:
       - neo4j
     networks:
-      - pt_backend
+      - f_backend
     ports:
       - ${NEODASH_DESIGNER_PORT}:5005
     restart: always
@@ -566,63 +567,20 @@ services:
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - ON_DEMAND_RECORD_COUNT=10000
     networks:
-      - pt_backend
+      - f_backend
     volumes:
       - $PWD/postgres/postgres/data:/var/lib/postgresql/data
     restart: always
 
 ################################################################################
 #
-# Data governance services
-# - governance-ui
-# - gateway (GraphQl query endpoint)
-#
-################################################################################
-
-  # ####################
-  # # governance-ui
-  # ####################
-  # governance-ui:
-  #   build:
-  #     context: governance/governance-ui
-  #     args:
-  #       NEXT_PUBLIC_PUBLIC_IP: ${PUBLIC_IP}
-  #       NEXT_PUBLIC_GATEWAY_PORT: ${GATEWAY_PORT}
-  #       NEXTAUTH_SECRET: ${NEXTAUTH_SECRET}
-
-  #   container_name: governance-ui
-  #   ports:
-  #     - ${GOVERNANCE_UI_PORT}:3000
-  #   environment:
-  #     NEXTAUTH_SECRET: ${NEXTAUTH_SECRET}
-
-  #   networks:
-  #     - pt_backend
-  #   restart: always
-
-  # ####################
-  # # gateway
-  # ####################
-  # gateway:
-  #   build:
-  #     context: governance/gateway
-  #   container_name: gateway
-  #   environment:
-  #     NEO4J_URL: bolt://neo4j
-  #     NEO4J_USERNAME: ${NEO4J_USERNAME}
-  #     NEO4J_PASSWORD: ${NEO4J_PASSWORD}
-  #   ports:
-  #     - ${GATEWAY_PORT}:4000
-  #   networks:
-  #     - pt_backend
-  #   restart: always
-
-################################################################################
-#
 # networks
-# - pt_backend
+# - f_backend: local network for the cluster
+# - f2pt: exposed network to all ACGs (from PT clusters)
 #
 ################################################################################
 networks:
-  pt_backend:
-    name: pt_backend
+  f_backend:
+    name: f_backend
+  f2pt:
+    name: f2pt

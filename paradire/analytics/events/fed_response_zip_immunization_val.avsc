@@ -7,6 +7,7 @@
         {"name": "city", "type": "string", "doc": "Patient's address city"},
         {"name": "zip", "type": ["null", "string"], "default": null, "doc": "Patient's zip code"},
         {"name": "immunization_count", "type": "int", "doc": "The number of immunizations per the zip code."},
+        {"name": "pt", "type": ["null", "string"], "default": null, "doc": "The pt."},
         {"name": "timestamp", "type": "long", "doc": "Timestamp when this record is produced."}
     ]
 }
