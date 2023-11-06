@@ -27,6 +27,12 @@ if [[ "$platform" == 'linux' ]]; then
     sed -i s/CONNECT_HOST=.*/CONNECT_HOST=${KAFKA_CLUSTER_IP}/g .env
     sed -i s/KSQLDB_HOST=.*/KSQLDB_HOST=${KAFKA_CLUSTER_IP}/g .env
     sed -i s/REST_PROXY_HOST=.*/REST_PROXY_HOST=${KAFKA_CLUSTER_IP}/g .env
+    if [ ! -z "$2" ]; then
+        REMOTE_KAFKA_CLUSTER_IP=$2
+        sed -i s/F_ZOOKEEPER_HOST=.*/F_ZOOKEEPER_HOST=${REMOTE_KAFKA_CLUSTER_IP}/g .env
+        sed -i s/F_BROKER_HOST=.*/F_BROKER_HOST=${REMOTE_KAFKA_CLUSTER_IP}/g .env
+        sed -i s/F_SCHEMA_REGISTRY_HOST=.*/F_SCHEMA_REGISTRY_HOST=${REMOTE_KAFKA_CLUSTER_IP}/g .env
+    fi
 else
     VM_IP=$(ip route get 8.8.8.8 | ggrep -oP 'src \K[^ ]+')
     sed -e s/CURRENT_UID=.*/CURRENT_UID=${CURRENT_UID}/g .env > .env.1

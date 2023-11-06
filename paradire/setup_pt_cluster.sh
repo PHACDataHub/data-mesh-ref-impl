@@ -1,6 +1,15 @@
 #!/bin/bash
 
-./scripts/prepare_dot_env.sh
+PT_KAFKA_CLUSTER_IP=$(ip route get 8.8.8.8 | grep -oP 'src \K[^ ]+')
+
+if [ -z "$1" ]; then
+    echo WARNING: default IP of 35.203.83.135 is used for F cluster.
+    F_KAFKA_CLUSTER_IP=35.203.83.135
+else
+    F_KAFKA_CLUSTER_IP=$1
+fi
+
+./scripts/prepare_dot_env.sh $PT_KAFKA_CLUSTER_IP $F_KAFKA_CLUSTER_IP
 
 if [ -d "kafka-ce/zk" ]; then
     echo "The cluster is already setup ❌";

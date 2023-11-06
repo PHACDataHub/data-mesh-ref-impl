@@ -1,11 +1,7 @@
 from utils import to_json_str
 
 
-def request_converter(request_from_fed, request_to_pt):
-
-
 class Worker(object):
-
     def __init__(self, config):
         self.config = config
         self.request_identifier = config['request_identifier']
@@ -24,7 +20,7 @@ class Worker(object):
         
         topic_name = request_type
         key = msg_key
-        val = {k: msg_val[k] for k in self.converter_dict[topic]['val']}
+        val = {k: msg_val[k] for k in self.converter_dict[topic_name]['val']}
         
         return topic_name, key, val
 
@@ -43,6 +39,8 @@ if __name__ == '__main__':
 
     start_time = datetime.now()
     msg_count = 0
+    
+    print(avro_file, flush=True)
     
     with open(avro_file, 'rt', encoding='utf-8') as in_file:
         lines = in_file.readlines()
