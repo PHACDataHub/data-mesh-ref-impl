@@ -14,7 +14,7 @@ class Worker(object):
     def start(self):
         pass
         
-    def process(self, msg_key, msg_val):
+    def process(self, in_topic, msg_key, msg_val):
         request_id = msg_key['request_id']
         request_type = msg_val['request_type']
         
@@ -46,7 +46,7 @@ if __name__ == '__main__':
         lines = in_file.readlines()
         for line in lines:
             key, val = [json.loads(s) for s in line.strip().split('|')]
-            topic, msg_key, msg_val = worker.process(key, val)
+            topic, msg_key, msg_val = worker.process('test', key, val)
             msg_count += 1
             print(f"{datetime.now().strftime('%m/%d/%Y, %H:%M:%S')} <<< [#{msg_count}] [{msg_key}] [{msg_val}]", flush=True)
         

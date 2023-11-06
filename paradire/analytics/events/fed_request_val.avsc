@@ -4,5 +4,14 @@
     "fields": [
         {"name": "request_id", "type": "string", "doc": "Unique ID of a Fererated Analytics Request."},
         {"name": "request_type", "type": "string", "doc": "Type of the parameterized request, e.g fed_request_city_org_patient or fed_request_vaccination_record"},
+        {"name": "city", ""type": ["null", "string"], "default": null, "doc": "The city"},
+        {"name": "code_list", "type": ["null", "string"], "default": null, "doc": "List of immunization codes from CVX. Comma separated"},
+        {"name": "k", "type": ["null", "int"], "default": null, "doc": "Number of top immunizations."},
+        {"name": "procedure_1", "type": ["null", "string"], "default": null, "doc": "Code of the first procedure"},
+        {"name": "procedure_2", "type": ["null", "string"], "default": null, "doc": "Code of the second procedure"},
+        {"name": "procedure_3", "type": ["null", "string"], "default": null, "doc": "Code of the third procedure"},
+        {"name": "state", "type": ["null", "string"], "default": null, "doc": "The state"},
+        {"name": "term", "type": ["null", "string"], "default": null, "doc": "Term in the description"},
+        {"name": "timestamp", "type": "long", "doc": "Timestamp when this record is produced."}
     ]
 }

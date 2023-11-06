@@ -42,7 +42,7 @@ if __name__ == '__main__':
             print(f"{datetime.now().strftime('%m/%d/%Y, %H:%M:%S')} >>> [#{count}] [{msg_key}]", flush=True)
 
             count += 1
-            mapped_topic, msg_key, msg_val = worker.process(msg_key, msg_val)
+            mapped_topic, msg_key, msg_val = worker.process(msg.topic(), msg_key, msg_val)
             print(f"{datetime.now().strftime('%m/%d/%Y, %H:%M:%S')} <<< [#{count}] [{msg_key}]", flush=True)
 
             if msg_key is None and msg_val is None:

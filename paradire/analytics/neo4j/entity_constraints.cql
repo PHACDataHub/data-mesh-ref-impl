@@ -423,6 +423,8 @@ CREATE INDEX quantity_code_supply IF NOT EXISTS FOR (n:Supply) ON (n.quantity);
 // Creating constraints and indexes for VaccinationRecord entities
 //
 CREATE INDEX timestamp_vaccination_record IF NOT EXISTS FOR (n:VaccinationRecord) ON (n.timestamp);
+CREATE INDEX request_id_vaccination_record IF NOT EXISTS FOR (n:VaccinationRecord) ON (n.request_id);
+CREATE INDEX pt_vaccination_record IF NOT EXISTS FOR (n:VaccinationRecord) ON (n.pt);
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -431,6 +433,8 @@ CREATE INDEX timestamp_vaccination_record IF NOT EXISTS FOR (n:VaccinationRecord
 // Creating constraints and indexes for ZipImmunization entities
 //
 CREATE INDEX timestamp_zip_immunization IF NOT EXISTS FOR (n:ZipImmunization) ON (n.timestamp);
+CREATE INDEX request_id_zip_immunization IF NOT EXISTS FOR (n:ZipImmunization) ON (n.request_id);
+CREATE INDEX pt_zip_immunization IF NOT EXISTS FOR (n:ZipImmunization) ON (n.pt);
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -439,6 +443,8 @@ CREATE INDEX timestamp_zip_immunization IF NOT EXISTS FOR (n:ZipImmunization) ON
 // Creating constraints and indexes for TopKImmunization entities
 //
 CREATE INDEX timestamp_top_k_immunization IF NOT EXISTS FOR (n:TopKImmunization) ON (n.timestamp);
+CREATE INDEX request_id_top_k_immunization IF NOT EXISTS FOR (n:TopKImmunization) ON (n.request_id);
+CREATE INDEX pt_top_k_immunization IF NOT EXISTS FOR (n:TopKImmunization) ON (n.pt);
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -447,6 +453,8 @@ CREATE INDEX timestamp_top_k_immunization IF NOT EXISTS FOR (n:TopKImmunization)
 // Creating constraints and indexes for PatientCvxOrg entities
 //
 CREATE INDEX timestamp_patient_cvx_org IF NOT EXISTS FOR (n:PatientCvxOrg) ON (n.timestamp);
+CREATE INDEX request_id_patient_cvx_org IF NOT EXISTS FOR (n:PatientCvxOrg) ON (n.request_id);
+CREATE INDEX pt_patient_cvx_org IF NOT EXISTS FOR (n:PatientCvxOrg) ON (n.pt);
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -455,6 +463,8 @@ CREATE INDEX timestamp_patient_cvx_org IF NOT EXISTS FOR (n:PatientCvxOrg) ON (n
 // Creating constraints and indexes for CityYearTopProc entities
 //
 CREATE INDEX timestamp_city_year_top_proc IF NOT EXISTS FOR (n:CityYearTopProc) ON (n.timestamp);
+CREATE INDEX request_id_city_year_top_proc IF NOT EXISTS FOR (n:CityYearTopProc) ON (n.request_id);
+CREATE INDEX pt_city_year_top_proc IF NOT EXISTS FOR (n:CityYearTopProc) ON (n.pt);
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -463,6 +473,8 @@ CREATE INDEX timestamp_city_year_top_proc IF NOT EXISTS FOR (n:CityYearTopProc) 
 // Creating constraints and indexes for PtOrgMed entities
 //
 CREATE INDEX timestamp_pt_org_med IF NOT EXISTS FOR (n:PtOrgMed) ON (n.timestamp);
+CREATE INDEX request_id_pt_org_med IF NOT EXISTS FOR (n:PtOrgMed) ON (n.request_id);
+CREATE INDEX pt_pt_org_med IF NOT EXISTS FOR (n:PtOrgMed) ON (n.pt);
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -471,6 +483,8 @@ CREATE INDEX timestamp_pt_org_med IF NOT EXISTS FOR (n:PtOrgMed) ON (n.timestamp
 // Creating constraints and indexes for CityOrgPatient entities
 //
 CREATE INDEX timestamp_city_org_patient IF NOT EXISTS FOR (n:CityOrgPatient) ON (n.timestamp);
+CREATE INDEX request_id_city_org_patient IF NOT EXISTS FOR (n:CityOrgPatient) ON (n.request_id);
+CREATE INDEX pt_city_org_patient IF NOT EXISTS FOR (n:CityOrgPatient) ON (n.pt);
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -479,5 +493,16 @@ CREATE INDEX timestamp_city_org_patient IF NOT EXISTS FOR (n:CityOrgPatient) ON 
 // Creating constraints and indexes for CityOrgPatientVisit entities
 //
 CREATE INDEX timestamp_city_org_patient_visit IF NOT EXISTS FOR (n:CityOrgPatientVisit) ON (n.timestamp);
+CREATE INDEX request_id_city_org_patient_visit IF NOT EXISTS FOR (n:CityOrgPatientVisit) ON (n.request_id);
+CREATE INDEX pt_city_org_patient_visit IF NOT EXISTS FOR (n:CityOrgPatientVisit) ON (n.pt);
+//
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// Creating constraints and indexes for FedRequest entities
+//
+CREATE INDEX request_id_fed_request IF NOT EXISTS FOR (n:FedRequest) ON (n.request_id);
+CREATE INDEX timestamp_fed_request IF NOT EXISTS FOR (n:FedRequest) ON (n.timestamp);
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
