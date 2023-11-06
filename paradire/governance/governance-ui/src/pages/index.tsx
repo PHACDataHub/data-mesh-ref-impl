@@ -3,22 +3,23 @@ import { useCallback, useMemo, useState } from "react";
 
 import Head from "next/head";
 
-import { type JSONSchema6 } from "json-schema";
-
 import Editor from "@monaco-editor/react";
 
 import { ApolloClient, InMemoryCache, gql } from "@apollo/client";
 
 import ResourceType from "~/components/ResourceType";
 
-import hl7_r4_schema from "~/schemas/json/hl7/R4/fhir.schema.json" assert { type: "json" };
-import paradire_schema from "~/schemas/json/paradire/paradire.json" assert { type: "json" };
-import paradire_schema_neo4j from "~/schemas/json/paradire/paradire_neo4j.json" assert { type: "json" };
-
 import ResourceTypeAutoComplete from "~/components/ResourceTypeAutoComplete";
 import { useDataGovernance } from "~/store";
-import { rulesToGraphQl } from "~/utils/ruleset";
-import { dereference } from "~/utils/schema";
+import {
+  rulesToGraphQl,
+  dereference,
+  getSchema,
+  type ResourceTypeSelection,
+  type ResourceTypeField,
+  type SchemaType,
+} from "@phac-aspc-dgg/schema-tools";
+
 import { env } from "~/env.mjs";
 
 const client = new ApolloClient({
@@ -35,9 +36,8 @@ const UpdateRulesetMutation = gql`
 `;
 
 export default function Home() {
-  const [selectedSchema, setSelectedSchema] = useState<
-    "Paradire" | "HL7R4" | "Paradire-Neo4J"
-  >("Paradire-Neo4J");
+  const [selectedSchema, setSelectedSchema] =
+    useState<SchemaType>("paradire-parameterized");
 
   const { yaml, setYaml, selectedResourceTypes, setSelectedResourceTypes } =
     useDataGovernance();
@@ -73,9 +73,10 @@ export default function Home() {
   const selectedSchemaChangeHandler = useCallback(
     (event: react.ChangeEvent<HTMLSelectElement>) => {
       if (
-        event.target.value === "HL7R4" ||
-        event.target.value === "Paradire" ||
-        event.target.value === "Paradire-Neo4J"
+        event.target.value === "hl7r4" ||
+        event.target.value === "paradire" ||
+        event.target.value === "paradire-parameterized" ||
+        event.target.value === "paradire-neo4j"
       ) {
         setSelectedSchema(event.target.value);
         setSelectedResourceTypes([]);
@@ -92,15 +93,7 @@ export default function Home() {
   );
 
   const json_schema = useMemo(() => {
-    switch (selectedSchema) {
-      case "HL7R4":
-        return hl7_r4_schema as JSONSchema6 & JSONSchema6Discriminator;
-      case "Paradire-Neo4J":
-        return paradire_schema_neo4j as JSONSchema6 & JSONSchema6Discriminator;
-      case "Paradire":
-      default:
-        return paradire_schema as JSONSchema6 & JSONSchema6Discriminator;
-    }
+    return getSchema(selectedSchema);
   }, [selectedSchema]);
 
   const addEverythingClickHandler = useCallback(() => {
@@ -158,9 +151,12 @@ export default function Home() {
                 onChange={selectedSchemaChangeHandler}
                 value={selectedSchema}
               >
-                <option value="Paradire-Neo4J">Paradire PoC (Neo4j)</option>
-                <option value="Paradire">Paradire PoC</option>
-                <option value="HL7R4">HL7 R4</option>
+                <option value="paradire-parameterized">
+                  Paradire PoC (Parameterized)
+                </option>
+                <option value="paradire-neo4j">Paradire PoC (Neo4j)</option>
+                <option value="paradire">Paradire PoC</option>
+                <option value="hl7r4">HL7 R4</option>
               </select>
             </label>
           </div>
@@ -209,8 +205,8 @@ export default function Home() {
                 ))}
             </div>
           </div>
-          <div className="flex h-[600px] w-[45%] flex-col space-y-2">
-            <div className="flex-1 border-2">
+          <div className="flex w-[45%] flex-col space-y-2">
+            <div className="max-h-[35%] flex-1 border-2">
               <Editor
                 defaultLanguage="yaml"
                 value={yaml}
@@ -221,13 +217,18 @@ export default function Home() {
                 }}
               />
             </div>
-            {/* <div className="flex-1 border-2">
-              <pre>
-                {JSON.stringify(rulesetToAvro(yaml, json_schema), null, 2)}
-              </pre>
-            </div> */}
-            <div className="flex-1 border-2">
-              <pre>{rulesToGraphQl(yaml, json_schema)}</pre>
+            <div className="max-h-[35%] flex-1 border-2">
+              <Editor
+                defaultLanguage="graphql"
+                value={rulesToGraphQl(yaml, json_schema)}
+                onChange={() => false}
+                options={{
+                  language: "graphql",
+                  minimap: { enabled: false },
+                  readOnly: true,
+                  domReadOnly: true,
+                }}
+              />
             </div>
           </div>
         </div>

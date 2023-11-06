@@ -8,11 +8,19 @@ import { useDebounce } from "@uidotdev/usehooks";
 import {
   XCircleIcon,
   WrenchScrewdriverIcon,
+  QuestionMarkCircleIcon,
+  ChevronUpIcon,
+  ChevronDownIcon,
 } from "@heroicons/react/24/outline";
 
+import {
+  dereference,
+  getFieldIfSelected,
+  isFieldSelected,
+  type ResourceTypeField,
+} from "@phac-aspc-dgg/schema-tools";
+
 import BoldedText from "./BoldedText";
-import { dereference } from "~/utils/schema";
-import { getFieldIfSelected, isFieldSelected } from "~/utils/ruleset";
 
 function getSubSelectedFields(
   selected: ResourceTypeField | undefined,
@@ -53,7 +61,7 @@ export default function ResourceType({
   const [_selectedFields, setSelectedFields] = useState<ResourceTypeField[]>(
     [],
   );
-  const [showFields, setShowFields] = useState(false);
+  const [showFields, setShowFields] = useState(true);
   const [_showDescriptions, setShowDescriptions] = useState(
     Boolean(showDescriptions),
   );
@@ -87,55 +95,33 @@ export default function ResourceType({
     [_fieldOptions, fields, name, onChange, selectedFields],
   );
 
-  const updateFormatFieldOptionHandler = useCallback(
-    (field: string) => (event: react.ChangeEvent<HTMLInputElement>) => {
-      const _thisFieldOptions = Object.assign({}, _fieldOptions[field], {
-        format: event.target.value || undefined,
-      });
+  const updateFieldOptionHandler = useCallback(
+    (field: string, property: "hash" | "format" | "unselectable") =>
+      (event: react.ChangeEvent<HTMLInputElement>) => {
+        const _thisFieldOptions = Object.assign({}, _fieldOptions[field], {
+          [property]:
+            (property === "hash" || property === "unselectable"
+              ? event.target.checked
+              : event.target.value) || undefined,
+        });
 
-      setFieldOptions(
-        Object.assign({}, _fieldOptions, {
-          [field]: _thisFieldOptions,
-        }),
-      );
+        setFieldOptions(
+          Object.assign({}, _fieldOptions, {
+            [field]: _thisFieldOptions,
+          }),
+        );
 
-      const changes = fields.filter(namedFieldFilter(field)).concat(
-        !Object.values(_thisFieldOptions).every((el) => el === undefined)
-          ? {
-              [field]: _thisFieldOptions,
-            }
-          : field,
-      );
+        const changes = fields.filter(namedFieldFilter(field)).concat(
+          !Object.values(_thisFieldOptions).every((el) => el === undefined)
+            ? {
+                [field]: _thisFieldOptions,
+              }
+            : field,
+        );
 
-      if (!selectedFields) setSelectedFields(changes);
-      if (onChange) onChange(name, changes);
-    },
-    [_fieldOptions, fields, name, onChange, selectedFields],
-  );
-
-  const updateHashFieldOptionHandler = useCallback(
-    (field: string) => (event: react.ChangeEvent<HTMLInputElement>) => {
-      const _thisFieldOptions = Object.assign({}, _fieldOptions[field], {
-        hash: event.target.checked || undefined,
-      });
-
-      setFieldOptions(
-        Object.assign({}, _fieldOptions, {
-          [field]: _thisFieldOptions,
-        }),
-      );
-
-      const changes = fields.filter(namedFieldFilter(field)).concat(
-        !Object.values(_thisFieldOptions).every((el) => el === undefined)
-          ? {
-              [field]: _thisFieldOptions,
-            }
-          : field,
-      );
-
-      if (!selectedFields) setSelectedFields(changes);
-      if (onChange) onChange(name, changes);
-    },
+        if (!selectedFields) setSelectedFields(changes);
+        if (onChange) onChange(name, changes);
+      },
     [_fieldOptions, fields, name, onChange, selectedFields],
   );
 
@@ -210,7 +196,7 @@ export default function ResourceType({
           </button>
         </div>
       )}
-      <p className="max-w-sm p-2 text-sm text-gray-500">
+      <p className="p-2 text-sm text-gray-500">
         {referenced_schema.description}
       </p>
       <div className="flex justify-center">
@@ -219,7 +205,11 @@ export default function ResourceType({
           onClick={toggleShowFields}
           disabled={disabled}
         >
-          {showFields ? "Hide" : "Select"} fields
+          {showFields ? (
+            <ChevronUpIcon className="h-5 w-5" />
+          ) : (
+            <ChevronDownIcon className="h-5 w-5" />
+          )}
         </button>
       </div>
       <div className={`ml-3 mr-3 mt-3 ${!showFields && "hidden"}`}>
@@ -327,24 +317,55 @@ export default function ResourceType({
                           <h5 className="border-b-2 border-t-2 font-bold">
                             Options
                           </h5>
+                          <label className="flex text-sm">
+                            <input
+                              type="checkbox"
+                              className="mr-2"
+                              onChange={updateFieldOptionHandler(
+                                field,
+                                "unselectable",
+                              )}
+                              checked={Boolean(fieldConf?.unselectable)}
+                            />
+                            Unselectable
+                          </label>
+
                           {(isDate || isDateTime) && (
-                            <label className="flex items-center space-x-3 p-1">
+                            <label className="flex flex-col space-y-1 p-1">
+                              <div className="flex items-center space-x-2">
+                                <h5 className="text-xs font-bold">
+                                  Date format
+                                </h5>
+                                <a
+                                  href="https://www.npmjs.com/package/dateformat#mask-options"
+                                  target="dgg-ui-help"
+                                  className="p-1 text-slate-600"
+                                >
+                                  <QuestionMarkCircleIcon className="h-5 w-5" />
+                                </a>
+                              </div>
                               <input
                                 type="text"
-                                placeholder="Expose using date format (example: YYYY)"
+                                placeholder="Expose using date format (example: yyyy)"
                                 className="flex-1 border-[1px] border-black p-1"
-                                onChange={updateFormatFieldOptionHandler(field)}
+                                onChange={updateFieldOptionHandler(
+                                  field,
+                                  "format",
+                                )}
                                 value={fieldConf?.format ?? ""}
                               />
                             </label>
                           )}
                           {isString && (
-                            <label className="flex">
+                            <label className="flex text-sm">
                               <input
                                 type="checkbox"
                                 className="mr-2"
-                                onChange={updateHashFieldOptionHandler(field)}
-                                checked={fieldConf?.hash}
+                                onChange={updateFieldOptionHandler(
+                                  field,
+                                  "hash",
+                                )}
+                                checked={Boolean(fieldConf?.hash)}
                               />
                               Apply one way hash
                             </label>

@@ -12,11 +12,15 @@
   "license": "ISC",
   "type": "module",
   "dependencies": {
-    "@apidevtools/json-schema-ref-parser": "^11.1.0",
     "@apollo/server": "^4.9.4",
+    "@graphql-tools/schema": "^10.0.0",
+    "@graphql-tools/utils": "^10.0.8",
+    "@kafkajs/confluent-schema-registry": "^3.3.0",
     "@neo4j/graphql": "^4.4.0",
+    "dateformat": "^5.0.3",
     "graphql": "^16.8.1",
     "graphql-parse-resolve-info": "^4.13.0",
+    "kafkajs": "^2.2.4",
     "neo4j-driver": "^5.14.0",
     "yaml": "^2.3.3"
   },

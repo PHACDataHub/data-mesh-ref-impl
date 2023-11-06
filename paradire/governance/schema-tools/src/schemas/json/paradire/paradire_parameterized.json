@@ -1,0 +1,70 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "id": "https://github.com/PHACDataHub/data-mesh-ref-impl/paradire/0.1",
+  "description": "Paradire PoC Schema",
+  "discriminator": {
+    "propertyName": "resourceType",
+    "mapping": {
+      "TopKImmunization": "#/definitions/TopKImmunization"
+    }
+  },
+  "entrypoints": {
+    "TopKImmunization": {
+      "items": { "$ref": "#/definitions/TopKImmunization" },
+      "type": ["array", "null"],
+      "arguments": "#/definitions/TopKImmunizationRequest"
+    }
+  },
+  "definitions": {
+    "TopKImmunizationRequest": {
+      "description": "Federated query request for top K immunizations per pt.",
+      "properties": {
+        "k": {
+          "type": "integer",
+          "description": "Number of top immunizations."
+        }
+      },
+      "additionalProperties": false,
+      "required": []
+    },
+    "TopKImmunization": {
+      "description": "Top K Immunization federated query result",
+      "properties": {
+        "request_id": {
+          "description": "Unique ID of a Fererated Analytics Request.",
+          "type": "string"
+        },
+        "zip": {
+          "description": "Patient's zip code",
+          "type": "string"
+        },
+        "code": {
+          "type": "string",
+          "description": "Immunization code from CVX"
+        },
+        "count": {
+          "type": "integer",
+          "description": "The number of immunizations of the immunization code per the zip code."
+        },
+        "pt": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "The pt."
+        },
+        "timestamp": {
+          "type": "number",
+          "description": "Timestamp when this record is produced."
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "request_id",
+        "code",
+        "count",
+        "timestamp"
+      ]
+    }
+  }
+}
