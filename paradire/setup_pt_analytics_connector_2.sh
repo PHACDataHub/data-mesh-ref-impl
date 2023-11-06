@@ -15,7 +15,7 @@ connect_port=${CONNECT_PORT}
 curl -X POST http://${connect_host}:${connect_port}/connectors \
   -H 'Content-Type:application/json' \
   -H 'Accept:application/json' \
-  -d @analytics/connectors/event_sink_connector.json
+  -d @analytics/connectors/event_sink_connector_2.json
 echo
 
 # List the current connector instances
