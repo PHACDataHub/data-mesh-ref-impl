@@ -1,0 +1,17 @@
+{"request_id": "fed_request_city_org_patient-1"}|{"request_id": "fed_request_city_org_patient-1", "request_type": "fed_request_city_org_patient", "city": "Toronto"}
+{"request_id": "fed_request_city_org_patient-2"}|{"request_id": "fed_request_city_org_patient-2", "request_type": "fed_request_city_org_patient", "city": "Brampton"}
+{"request_id": "fed_request_city_org_patient_visit-1"}|{"request_id": "fed_request_city_org_patient_visit-1", "request_type": "fed_request_city_org_patient_visit", "city": "Toronto"}
+{"request_id": "fed_request_city_org_patient_visit-2"}|{"request_id": "fed_request_city_org_patient_visit-2", "request_type": "fed_request_city_org_patient_visit", "city": "Brampton"}
+{"request_id": "fed_request_city_year_top_proc-1"}|{"request_id": "fed_request_city_year_top_proc-1", "request_type": "fed_request_city_year_top_proc", "city": "Mississauga", "procedure_1": "171207006", "procedure_2": "430193006", "procedure_3": "710841007"}
+{"request_id": "fed_request_city_year_top_proc-2"}|{"request_id": "fed_request_city_year_top_proc-2", "request_type": "fed_request_city_year_top_proc", "city": "Toronto", "procedure_1": "715252007", "procedure_2": "386516004", "procedure_3": "698560000"}
+{"request_id": "fed_request_patient_cvx_org-1"}|{"request_id": "fed_request_patient_cvx_org-1", "request_type": "fed_request_patient_cvx_org", "code_list": {"string": "08,43,52,83"}, "term": null}
+{"request_id": "fed_request_patient_cvx_org-2"}|{"request_id": "fed_request_patient_cvx_org-2", "request_type": "fed_request_patient_cvx_org", "code_list": null, "term": {"string": "COVID"}}
+{"request_id": "fed_request_patient_cvx_org-3"}|{"request_id": "fed_request_patient_cvx_org-3", "request_type": "fed_request_patient_cvx_org", "code_list": null, "term": null}
+{"request_id": "fed_request_pt_org_med-1"}|{"request_id": "fed_request_pt_org_med-1", "request_type": "fed_request_pt_org_med", "state": {"string": "ON"}}
+{"request_id": "fed_request_pt_org_med-2"}|{"request_id": "fed_request_pt_org_med-2", "request_type": "fed_request_pt_org_med", "state": null}
+{"request_id": "fed_request_top_k_immunization-1"}|{"request_id": "fed_request_top_k_immunization-1", "request_type": "fed_request_top_k_immunization", "k": {"int": 10}}
+{"request_id": "fed_request_top_k_immunization-2"}|{"request_id": "fed_request_top_k_immunization-2", "request_type": "fed_request_top_k_immunization", "k": null}
+{"request_id": "fed_request_zip_immunization-1"}|{"request_id": "fed_request_zip_immunization-1", "request_type": "fed_request_zip_immunization""city": {"string": "Toronto"}}
+{"request_id": "fed_request_zip_immunization-2"}|{"request_id": "fed_request_zip_immunization-2", "request_type": "fed_request_zip_immunization""city": {"string": "Brampton"}}
+{"request_id": "fed_request_zip_immunization-3"}|{"request_id": "fed_request_zip_immunization-3", "request_type": "fed_request_zip_immunization""city": null}
+{"request_id": "fed_request_vaccination_record-1"}|{"request_id": "fed_request_vaccination_record-1", "request_type": "fed_request_vaccination_record"}

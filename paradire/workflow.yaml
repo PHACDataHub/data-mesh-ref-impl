@@ -2,21 +2,44 @@ main:
     steps:
         - acg_f2pt:
             consumer:
-                broker_host: ${BROKER_HOST}
-                broker_port: ${BROKER_EXTERNAL_PORT}
-                schema_registry_host: ${SCHEMA_REGISTRY_HOST}
-                schema_registry_port: ${SCHEMA_REGISTRY_PORT}
+                broker_host: ${F_BROKER_HOST}
+                broker_port: ${F_BROKER_EXTERNAL_PORT}
+                schema_registry_host: ${F_SCHEMA_REGISTRY_HOST}
+                schema_registry_port: ${F_SCHEMA_REGISTRY_PORT}
                 poll_time: 1.0
-                consumer_group_id: keyphrase_extractor
+                consumer_group_id: acg_f2pt
                 auto_offset_reset: earliest
                 source_topic:
-                    - incoming-articles:
-                        avro_key_schema_file: incoming-article-key.avsc
-                        avro_val_schema_file: incoming-article-val.avsc
+                    - fed_request:
+                        avro_key_schema_file: fed_request_key.avsc
+                        avro_val_schema_file: fed_request_val.avsc
             worker:
-                language: en
-                processors: tokenize,pos,lemma,constituency,ner
-                ner_packages: anatem,bc5cdr,bc4chemd,bionlp13cg,jnlpba,linnaeus,ncbi_disease,s800,i2b2,radiology
+                request_identifier: request_type
+                request_converter: 
+                    - fed_request_city_org_patient:
+                        key: request_id
+                        val: request_id,city
+                    - fed_request_city_org_patient_visit:
+                        key: request_id
+                        val: request_id,city
+                    - fed_request_city_year_top_proc:
+                        key: request_id
+                        val: request_id,city,procedure_1,procedure_2,procedure_3
+                    - fed_request_patient_cvx_org:
+                        key: request_id
+                        val: request_id,code_list,term
+                    - fed_request_pt_org_med:
+                        key: request_id
+                        val: request_id,state
+                    - fed_request_top_k_immunization:
+                        key: request_id
+                        val: request_id,k
+                    - fed_request_zip_immunization:
+                        key: request_id
+                        val: request_id,city
+                    - fed_request_vaccination_record:
+                        key: request_id
+                        val: request_id
             producer:
                 broker_host: ${BROKER_HOST}
                 broker_port: ${BROKER_EXTERNAL_PORT}
@@ -24,10 +47,28 @@ main:
                 schema_registry_port: ${SCHEMA_REGISTRY_PORT}
                 poll_time: 0.0
                 destination_topic:
-                    - extracted-don-entities:
-                        avro_key_schema_file: ext-cnt-key.avsc
-                        avro_val_schema_file: ext-cnt-val.avsc
-                    - extracted-doc-entities:
-                        avro_key_schema_file: ext-cnt-key.avsc
-                        avro_val_schema_file: ext-cnt-val.avsc
+                    - fed_request_city_org_patient:
+                        avro_key_schema_file: fed_request_city_org_patient_key.avsc
+                        avro_val_schema_file: fed_request_city_org_patient_val.avsc
+                    - fed_request_city_org_patient_visit:
+                        avro_key_schema_file: fed_request_city_org_patient_visit_key.avsc
+                        avro_val_schema_file: fed_request_city_org_patient_visit_val.avsc
+                    - fed_request_city_year_top_proc:
+                        avro_key_schema_file: fed_request_city_year_top_proc_key.avsc
+                        avro_val_schema_file: fed_request_city_year_top_proc_val.avsc
+                    - fed_request_patient_cvx_org:
+                        avro_key_schema_file: fed_request_patient_cvx_org_key.avsc
+                        avro_val_schema_file: fed_request_patient_cvx_org_val.avsc
+                    - fed_request_pt_org_med:
+                        avro_key_schema_file: fed_request_pt_org_med_key.avsc
+                        avro_val_schema_file: fed_request_pt_org_med_val.avsc
+                    - fed_request_top_k_immunization:
+                        avro_key_schema_file: fed_request_top_k_immunization_key.avsc
+                        avro_val_schema_file: fed_request_top_k_immunization_val.avsc
+                    - fed_request_zip_immunization:
+                        avro_key_schema_file: fed_request_zip_immunization_key.avsc
+                        avro_val_schema_file: fed_request_zip_immunization_val.avsc
+                    - fed_request_vaccination_record:
+                        avro_key_schema_file: fed_request_vaccination_record_key.avsc
+                        avro_val_schema_file: fed_request_vaccination_record_val.avsc
             next: end

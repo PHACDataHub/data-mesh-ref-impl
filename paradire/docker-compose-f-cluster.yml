@@ -31,10 +31,10 @@ services:
     hostname: zookeeper
     container_name: zookeeper
     networks:
-      - f_backend
+      - f-backend
       - f2pt:
-        aliases:
-          f_zookeeper
+          aliases:
+            - f-zookeeper
 
     ports:
       - ${ZOOKEEPER_CLIENT_PORT}:2181
@@ -58,10 +58,10 @@ services:
     depends_on:
       - zookeeper
     networks:
-      - f_backend
+      - f-backend
       - f2pt:
-        aliases:
-          f_zookeeper
+          aliases:
+            - f-broke4
     ports:
       - ${BROKER_EXTERNAL_PORT}:${BROKER_EXTERNAL_PORT}
       - ${BROKER_LOCAL_PORT}:${BROKER_LOCAL_PORT}
@@ -100,10 +100,10 @@ services:
       - zookeeper
       - broker
     networks:
-      - f_backend
+      - f-backend
       - f2pt:
-        aliases:
-          f_zookeeper
+          aliases:
+            - f-broke2
     ports:
       - ${BROKER2_EXTERNAL_PORT}:${BROKER2_EXTERNAL_PORT}
       - ${BROKER2_LOCAL_PORT}:${BROKER2_LOCAL_PORT}
@@ -141,10 +141,10 @@ services:
       - zookeeper
       - broker
     networks:
-      - f_backend
+      - f-backend
       - f2pt:
-        aliases:
-          f_zookeeper
+          aliases:
+            - f-broke3
     ports:
       - ${BROKER3_EXTERNAL_PORT}:${BROKER3_EXTERNAL_PORT}
       - ${BROKER3_LOCAL_PORT}:${BROKER3_LOCAL_PORT}
@@ -182,10 +182,10 @@ services:
       - zookeeper
       - broker
     networks:
-      - f_backend
+      - f-backend
       - f2pt:
-        aliases:
-          f_zookeeper
+          aliases:
+            - f-broke4
     ports:
       - ${BROKER4_EXTERNAL_PORT}:${BROKER4_EXTERNAL_PORT}
       - ${BROKER4_LOCAL_PORT}:${BROKER4_LOCAL_PORT}
@@ -223,10 +223,10 @@ services:
       - zookeeper
       - broker
     networks:
-      - f_backend
+      - f-backend
       - f2pt:
-        aliases:
-          f_zookeeper
+          aliases:
+            - f-schema-registry
     ports:
       - ${SCHEMA_REGISTRY_PORT}:8081
     environment:
@@ -251,7 +251,7 @@ services:
       - broker
       - schema-registry
     networks:
-      - f_backend
+      - f-backend
     ports:
       - ${CONNECT_PORT}:8083
     environment:
@@ -312,7 +312,7 @@ services:
       - broker
       - connect
     networks:
-      - f_backend
+      - f-backend
     ports:
       - ${KSQLDB_PORT}:8088
     environment:
@@ -349,7 +349,7 @@ services:
       - connect
       - ksqldb-server
     networks:
-      - f_backend
+      - f-backend
     entrypoint: /bin/sh
     tty: true
     volumes:
@@ -367,7 +367,7 @@ services:
       - broker
       - schema-registry
     networks:
-      - f_backend
+      - f-backend
     ports:
       - ${REST_PROXY_PORT}:8082
     environment:
@@ -389,7 +389,7 @@ services:
     ports:
       - ${KAFKA_UI_PORT}:8080
     networks:
-      - f_backend
+      - f-backend
     depends_on:
       - zookeeper
       - broker
@@ -421,7 +421,7 @@ services:
       - schema-registry
       - connect
     networks:
-      - f_backend
+      - f-backend
     entrypoint: [ '/bin/sh', '-c' ]
     command: |
       "
@@ -468,7 +468,7 @@ services:
     hostname: neo4j
     container_name: neo4j
     networks:
-      - f_backend
+      - f-backend
     ports:
       - ${NEO4J_HTTP_PORT}:7474
       - ${NEO4J_HTTPS_PORT}:7473
@@ -512,7 +512,7 @@ services:
     depends_on:
       - neo4j
     networks:
-      - f_backend
+      - f-backend
     ports:
       - ${NEODASH_PORT}:5005
     environment:
@@ -538,7 +538,7 @@ services:
     depends_on:
       - neo4j
     networks:
-      - f_backend
+      - f-backend
     ports:
       - ${NEODASH_DESIGNER_PORT}:5005
     restart: always
@@ -567,7 +567,7 @@ services:
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - ON_DEMAND_RECORD_COUNT=10000
     networks:
-      - f_backend
+      - f-backend
     volumes:
       - $PWD/postgres/postgres/data:/var/lib/postgresql/data
     restart: always
@@ -575,12 +575,12 @@ services:
 ################################################################################
 #
 # networks
-# - f_backend: local network for the cluster
+# - f-backend: local network for the cluster
 # - f2pt: exposed network to all ACGs (from PT clusters)
 #
 ################################################################################
 networks:
-  f_backend:
-    name: f_backend
+  f-backend:
+    name: f-backend
   f2pt:
     name: f2pt

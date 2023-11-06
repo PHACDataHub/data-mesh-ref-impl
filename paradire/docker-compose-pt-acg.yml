@@ -46,8 +46,9 @@ services:
       # - $PWD/nlp-tasks/keyphrase-extractor/cache:/root/stanza_resources
       - $PWD/analytics/events:/data/
     networks:
-      - backend
-    # restart: always
+      - pt-backend
+      - f2pt
+    restart: always
 
   ####################
   # acg_pt2f
@@ -83,16 +84,20 @@ services:
       # - $PWD/nlp-tasks/keyphrase-extractor/cache:/root/stanza_resources
       - $PWD/analytics/events:/data/
     networks:
-      - backend
-    # restart: always
+      - pt-backend
+      - f2pt
+    restart: always
 
 ################################################################################
 #
 # networks
-# - backend
+# - pt-backend
 #
 ################################################################################
 networks:
-  backend:
-    name: backend
+  pt-backend:
+    name: pt-backend
+    external: true
+  f2pt:
+    name: f2pt
     external: true

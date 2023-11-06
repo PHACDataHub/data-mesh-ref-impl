@@ -31,7 +31,7 @@ services:
     hostname: zookeeper
     container_name: zookeeper
     networks:
-      - pt_backend
+      - pt-backend
     ports:
       - ${ZOOKEEPER_CLIENT_PORT}:2181
     environment:
@@ -54,7 +54,7 @@ services:
     depends_on:
       - zookeeper
     networks:
-      - pt_backend
+      - pt-backend
     ports:
       - ${BROKER_EXTERNAL_PORT}:${BROKER_EXTERNAL_PORT}
       - ${BROKER_LOCAL_PORT}:${BROKER_LOCAL_PORT}
@@ -93,7 +93,7 @@ services:
       - zookeeper
       - broker
     networks:
-      - pt_backend
+      - pt-backend
     ports:
       - ${BROKER2_EXTERNAL_PORT}:${BROKER2_EXTERNAL_PORT}
       - ${BROKER2_LOCAL_PORT}:${BROKER2_LOCAL_PORT}
@@ -131,7 +131,7 @@ services:
       - zookeeper
       - broker
     networks:
-      - pt_backend
+      - pt-backend
     ports:
       - ${BROKER3_EXTERNAL_PORT}:${BROKER3_EXTERNAL_PORT}
       - ${BROKER3_LOCAL_PORT}:${BROKER3_LOCAL_PORT}
@@ -169,7 +169,7 @@ services:
       - zookeeper
       - broker
     networks:
-      - pt_backend
+      - pt-backend
     ports:
       - ${BROKER4_EXTERNAL_PORT}:${BROKER4_EXTERNAL_PORT}
       - ${BROKER4_LOCAL_PORT}:${BROKER4_LOCAL_PORT}
@@ -207,7 +207,7 @@ services:
       - zookeeper
       - broker
     networks:
-      - pt_backend
+      - pt-backend
     ports:
       - ${SCHEMA_REGISTRY_PORT}:8081
     environment:
@@ -232,7 +232,7 @@ services:
       - broker
       - schema-registry
     networks:
-      - pt_backend
+      - pt-backend
     ports:
       - ${CONNECT_PORT}:8083
     environment:
@@ -293,7 +293,7 @@ services:
       - broker
       - connect
     networks:
-      - pt_backend
+      - pt-backend
     ports:
       - ${KSQLDB_PORT}:8088
     environment:
@@ -330,7 +330,7 @@ services:
       - connect
       - ksqldb-server
     networks:
-      - pt_backend
+      - pt-backend
     entrypoint: /bin/sh
     tty: true
     volumes:
@@ -348,7 +348,7 @@ services:
       - broker
       - schema-registry
     networks:
-      - pt_backend
+      - pt-backend
     ports:
       - ${REST_PROXY_PORT}:8082
     environment:
@@ -370,7 +370,7 @@ services:
     ports:
       - ${KAFKA_UI_PORT}:8080
     networks:
-      - pt_backend
+      - pt-backend
     depends_on:
       - zookeeper
       - broker
@@ -402,7 +402,7 @@ services:
       - schema-registry
       - connect
     networks:
-      - pt_backend
+      - pt-backend
     entrypoint: [ '/bin/sh', '-c' ]
     command: |
       "
@@ -467,7 +467,7 @@ services:
     hostname: neo4j
     container_name: neo4j
     networks:
-      - pt_backend
+      - pt-backend
     ports:
       - ${NEO4J_HTTP_PORT}:7474
       - ${NEO4J_HTTPS_PORT}:7473
@@ -511,7 +511,7 @@ services:
     depends_on:
       - neo4j
     networks:
-      - pt_backend
+      - pt-backend
     ports:
       - ${NEODASH_PORT}:5005
     environment:
@@ -537,7 +537,7 @@ services:
     depends_on:
       - neo4j
     networks:
-      - pt_backend
+      - pt-backend
     ports:
       - ${NEODASH_DESIGNER_PORT}:5005
     restart: always
@@ -566,7 +566,7 @@ services:
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - ON_DEMAND_RECORD_COUNT=10000
     networks:
-      - pt_backend
+      - pt-backend
     volumes:
       - $PWD/postgres/postgres/data:/var/lib/postgresql/data
     restart: always
@@ -597,7 +597,7 @@ services:
   #     NEXTAUTH_SECRET: ${NEXTAUTH_SECRET}
 
   #   networks:
-  #     - pt_backend
+  #     - pt-backend
   #   restart: always
 
   # ####################
@@ -614,15 +614,15 @@ services:
   #   ports:
   #     - ${GATEWAY_PORT}:4000
   #   networks:
-  #     - pt_backend
+  #     - pt-backend
   #   restart: always
 
 ################################################################################
 #
 # networks
-# - pt_backend
+# - pt-backend
 #
 ################################################################################
 networks:
-  pt_backend:
-    name: pt_backend
+  pt-backend:
+    name: pt-backend
