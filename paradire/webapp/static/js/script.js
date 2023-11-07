@@ -5,7 +5,8 @@ let healthCheckInterval;
 
 function checkServerStatus() {
     if (isUploading) {
-        return;  // Skip the health check if data is being uploaded
+        console.log("Upload in progress, skipping health check.");
+        return; 
     }
 
     $.ajax({
@@ -49,9 +50,9 @@ $('#upload-form').on('submit', function(e) {
             isUploading = false;
             $('#uploading-spinner').addClass('d-none');  // Hide the spinner
             $('#uploading-province').empty(); // Clear the content of #uploading-province
-            
+
             console.log("AJAX success:", response); // Debugging
-            
+
             response.results.forEach(function(result) {
                 if (result.status === 'success') {
                     $('#uploading-province').append($('<div>').text('Data uploaded successfully for ' + result.province + '.'));
@@ -67,7 +68,7 @@ $('#upload-form').on('submit', function(e) {
             isUploading = false;
             $('#uploading-spinner').addClass('d-none');  // Hide the spinner
             $('#uploading-province').text('An error occurred: ' + error);
-            
+
             console.error("AJAX error:", error); // Debugging
 
             // Resume the health check after an error
