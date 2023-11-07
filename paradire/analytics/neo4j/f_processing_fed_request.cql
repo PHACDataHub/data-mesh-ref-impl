@@ -57,8 +57,8 @@ CREATE (n:VaccinationRecord)
 //
 CREATE (n:ZipImmunization)
     SET n.request_id = event.request_id,
-        n.city = event.city,
-        n.zip = event.zip,
+        n.patient_city = event.patient_city,
+        n.patient_zip = event.patient_zip,
         n.immunization_count = event.immunization_count, 
         n.pt = event.pt,
         n.timestamp = event.timestamp
@@ -73,9 +73,9 @@ CREATE (n:ZipImmunization)
 //
 CREATE (n:TopKImmunization)
     SET n.request_id = event.request_id,
-        n.zip = event.zip,
-        n.code = event.code,
-        n.count = event.count, 
+        n.patient_zip = event.patient_zip,
+        n.immunization_code = event.immunization_code,
+        n.immunization_count = event.immunization_count, 
         n.pt = event.pt,
         n.timestamp = event.timestamp
 //
@@ -110,7 +110,7 @@ CREATE (n:PatientCvxOrg)
 //
 CREATE (n:CityYearTopProc)
     SET n.request_id = event.request_id,
-        n.city = event.city,
+        n.organization_city = event.organization_city,
         n.year = event.year,
         n.procedure_1 = event.procedure_1,
         n.procedure_2 = event.procedure_2,
@@ -128,10 +128,10 @@ CREATE (n:CityYearTopProc)
 //
 CREATE (n:PtOrgMed)
     SET n.request_id = event.request_id,
-        n.city = event.city,
-        n.state = event.state,
-        n.name = event.name,
-        n.count = event.count,
+        n.organization_city = event.organization_city,
+        n.organization_state = event.organization_state,
+        n.organization_name = event.organization_name,
+        n.medication_count = event.medication_count,
         n.pt = event.pt,
         n.timestamp = event.timestamp
 //
@@ -145,9 +145,9 @@ CREATE (n:PtOrgMed)
 //
 CREATE (n:CityOrgPatient)
     SET n.request_id = event.request_id,
-        n.city = event.city,
-        n.name = event.name,
-        n.count = event.count, 
+        n.organization_city = event.organization_city,
+        n.organization_name = event.organization_name,
+        n.patient_count = event.patient_count, 
         n.pt = event.pt,
         n.timestamp = event.timestamp
 //
@@ -161,10 +161,10 @@ CREATE (n:CityOrgPatient)
 //
 CREATE (n:CityOrgPatientVisit)
     SET n.request_id = event.request_id,
-        n.city = event.city,
-        n.name = event.name,
+        n.organization_city = event.organization_city,
+        n.organization_name = event.organization_name,
         n.patient_id = event.patient_id,
-        n.count = event.count, 
+        n.encounter_count = event.encounter_count, 
         n.pt = event.pt,
         n.timestamp = event.timestamp
 //

@@ -4,7 +4,7 @@
     "namespace": "io.confluent.connect.avro",
     "fields": [
         {"name": "request_id", "type": "string", "doc": "Unique ID of a Fererated Analytics Request."},
-        {"name": "city", "type": "string", "doc": "Organization's address city"},
+        {"name": "organization_city", "type": "string", "doc": "Organization's address city"},
         {"name": "year", "type": "int", "doc": "The year"},
         {"name": "procedure_1", "type": "int", "doc": "Number of time the first procedure perfomed"},
         {"name": "procedure_2", "type": "int", "doc": "Number of time the second procedure perfomed"},

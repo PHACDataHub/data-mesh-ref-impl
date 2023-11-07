@@ -23,6 +23,6 @@
         "neo4j.encryption.enabled": false,
         "topic": "fed_response_city_org_patient_visit",
         "neo4j.source.type":"QUERY",
-        "neo4j.source.query": "MATCH (record:CityOrgPatientVisit) WHERE record.timestamp > $lastCheck RETURN record.request_id AS request_id, record.city AS city, record.name AS name, record.patient_id AS patient_id, record.count AS count, record.timestamp AS timestamp"
+        "neo4j.source.query": "MATCH (record:CityOrgPatientVisit) WHERE record.timestamp > $lastCheck RETURN record.request_id AS request_id, record.organization_city AS organization_city, record.organization_name AS organization_name, record.patient_id AS patient_id, record.encounter_count AS encounter_count, record.timestamp AS timestamp"
     }
 }

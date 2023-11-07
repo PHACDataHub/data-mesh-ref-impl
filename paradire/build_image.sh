@@ -5,7 +5,7 @@ valid_images="acg_f2pt acg_pt2f"
 if [ $# -lt 6 ] || [ -z "$(echo ${valid_images} | grep $1)" ]; then
     echo "Usage: ./build_image.sh <image_name> <step_name> <yaml_file> <workflow_name> <python_requirements_file> <avro_directory> <test_argument>"
     echo "   where image_name is one of: ${valid_images}"
-    echo "Example: ./build_image.sh acg_f2pt acg_f2pt workflow.yaml main analytics/dockerized/acg_worker-requirements.txt analytics/event /data/fed_request.avro"
+    echo "Example: ./build_image.sh acg_f2pt acg_f2pt workflow.yaml main analytics/dockerized/acg_worker-requirements.txt analytics/event /data"
     exit
 fi
 

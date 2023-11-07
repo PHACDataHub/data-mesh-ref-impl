@@ -23,6 +23,6 @@
         "neo4j.encryption.enabled": false,
         "topic": "fed_response_zip_immunization",
         "neo4j.source.type":"QUERY",
-        "neo4j.source.query": "MATCH (record:ZipImmunization) WHERE record.timestamp > $lastCheck RETURN record.request_id AS request_id, record.city AS city, record.zip AS zip, record.immunization_count AS immunization_count, record.timestamp AS timestamp"
+        "neo4j.source.query": "MATCH (record:ZipImmunization) WHERE record.timestamp > $lastCheck RETURN record.request_id AS request_id, record.patient_city AS patient_city, record.patient_zip AS patient_zip, record.immunization_count AS immunization_count, record.timestamp AS timestamp"
     }
 }

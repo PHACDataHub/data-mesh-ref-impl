@@ -76,8 +76,8 @@ WITH event,
     'WITH city, zip, request_id, immunization_count
         CREATE (record:ZipImmunization)
             SET record.request_id = request_id,
-                record.city = city,
-                record.zip = zip,
+                record.patient_city = city,
+                record.patient_zip = zip,
                 record.immunization_count = immunization_count, 
                 record.timestamp = apoc.date.currentTimestamp()'
     AS batch_runner
@@ -91,8 +91,8 @@ MATCH (record:ZipImmunization)
     WHERE record.timestamp > $lastCheck
 RETURN
     record.request_id AS request_id,
-    record.city AS city,
-    record.zip AS zip,
+    record.patient_city AS patient_city,
+    record.patient_zip AS patient_zip,
     record.immunization_count AS immunization_count,
     record.timestamp AS timestamp;
 //
@@ -116,9 +116,9 @@ WITH event,
     'WITH zip, code, count, request_id
         CREATE (record:TopKImmunization)
             SET record.request_id = request_id,
-                record.zip = zip,
-                record.code = code,
-                record.count = count, 
+                record.patient_zip = zip,
+                record.immunization_code = code,
+                record.immunization_count = count, 
                 record.timestamp = apoc.date.currentTimestamp()'
     AS batch_runner
 WITH batch_producer, batch_runner
@@ -131,9 +131,9 @@ MATCH (record:TopKImmunization)
     WHERE record.timestamp > $lastCheck
 RETURN
     record.request_id AS request_id,
-    record.zip AS zip,
-    record.code AS code,
-    record.count AS count,
+    record.patient_zip AS patient_zip,
+    record.immunization_code AS immunization_code,
+    record.immunization_count AS immunization_count,
     record.timestamp AS timestamp;
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -215,7 +215,7 @@ WITH event,
     'WITH city, year, procedures, request_id
         CREATE (record:CityYearTopProc)
             SET record.request_id = request_id,
-                record.city = city,
+                record.organization_city = city,
                 record.year = year,
                 record.procedure_1 = SIZE([e IN procedures WHERE e.code = \"' + event.procedure_1 + '\"]),
                 record.procedure_2 = SIZE([e IN procedures WHERE e.code = \"' + event.procedure_2 + '\"]),
@@ -232,7 +232,7 @@ MATCH (record:CityYearTopProc)
     WHERE record.timestamp > $lastCheck
 RETURN
     record.request_id AS request_id,
-    record.city AS city,
+    record.organization_city AS organization_city,
     record.year AS year,
     record.procedure_1 AS procedure_1,
     record.procedure_2 AS procedure_2,
@@ -259,10 +259,10 @@ WITH event,
     'WITH organization, count, request_id
         CREATE (record:PtOrgMed)
             SET record.request_id = request_id,
-                record.city = organization.city,
-                record.state = organization.state,
-                record.name = organization.name,
-                record.count = count,
+                record.organization_city = organization.city,
+                record.organization_state = organization.state,
+                record.organization_name = organization.name,
+                record.medication_count = count,
                 record.timestamp = apoc.date.currentTimestamp()'
     AS batch_runner
 WITH batch_producer, batch_runner
@@ -275,10 +275,10 @@ MATCH (record:PtOrgMed)
     WHERE record.timestamp > $lastCheck
 RETURN
     record.request_id AS request_id,
-    record.state AS state,
-    record.city AS city,
-    record.name AS name,
-    record.count AS count,
+    record.storganization_stateate AS organization_state,
+    record.organization_city AS organization_city,
+    record.organization_name AS organization_name,
+    record.medication_count AS medication_count,
     record.timestamp AS timestamp;
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -301,9 +301,9 @@ WITH event,
     'WITH organization, count, request_id
         CREATE (record:CityOrgPatient)
             SET record.request_id = request_id,
-                record.city = organization.city,
-                record.name = organization.name,
-                record.count = count,
+                record.organization_city = organization.city,
+                record.organization_name = organization.name,
+                record.patient_count = count,
                 record.timestamp = apoc.date.currentTimestamp()'
     AS batch_runner
 WITH batch_producer, batch_runner
@@ -316,9 +316,9 @@ MATCH (record:CityOrgPatient)
     WHERE record.timestamp > $lastCheck
 RETURN
     record.request_id AS request_id,
-    record.city AS city,
-    record.name AS name,
-    record.count AS count,
+    record.organization_city AS organization_city,
+    record.organization_name AS organization_name,
+    record.patient_count AS patient_count,
     record.timestamp AS timestamp;
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -343,10 +343,10 @@ WITH event,
     'WITH organization, patient, count, request_id
         CREATE (record:CityOrgPatientVisit)
             SET record.request_id = request_id,
-                record.city = organization.city,
-                record.name = organization.name,
+                record.organization_city = organization.city,
+                record.organization_name = organization.name,
                 record.patient_id = patient.patient_id,
-                record.count = count,
+                record.encounter_count = count,
                 record.timestamp = apoc.date.currentTimestamp()'
     AS batch_runner
 WITH batch_producer, batch_runner
@@ -359,10 +359,10 @@ MATCH (record:CityOrgPatientVisit)
     WHERE record.timestamp > $lastCheck
 RETURN
     record.request_id AS request_id,
-    record.city AS city,
-    record.name AS name,
+    record.organization_city AS organization_city,
+    record.organization_name AS organization_name,
     record.patient_id AS patient_id,
-    record.count AS count,
+    record.encounter_count AS encounter_count,
     record.timestamp AS timestamp;
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

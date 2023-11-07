@@ -23,6 +23,6 @@
         "neo4j.encryption.enabled": false,
         "topic": "fed_response_top_k_immunization",
         "neo4j.source.type":"QUERY",
-        "neo4j.source.query": "MATCH (record:TopKImmunization) WHERE record.timestamp > $lastCheck RETURN record.request_id AS request_id, record.zip AS zip, record.code AS code, record.count AS count, record.timestamp AS timestamp"
+        "neo4j.source.query": "MATCH (record:TopKImmunization) WHERE record.timestamp > $lastCheck RETURN record.request_id AS request_id, record.patient_zip AS patient_zip, record.immunization_code AS immunization_code, record.immunization_count AS immunization_count, record.timestamp AS timestamp"
     }
 }

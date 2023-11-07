@@ -128,6 +128,10 @@ main:
                         avro_val_schema_file: fed_response_vaccination_record_val.avsc
             worker:
                 pt: ON
+                access_control:
+                  - to_transform: patient_birth_date
+                  - to_hash: patient_ethnicity
+                  - to_block: patient_address
             producer:
                 broker_host: ${F_BROKER_HOST}
                 broker_port: ${F_BROKER_EXTERNAL_PORT}
