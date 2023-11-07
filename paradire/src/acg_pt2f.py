@@ -12,8 +12,8 @@ class Worker(object):
                 self.transform_dict[transform_type] = [e.strip() for e in field_list.split(',')]
 
     def start(self):
-        pass
-        
+        print('Worker instance started.', flush=True)
+
     def process(self, in_topic, msg_key, msg_val):
         request_id = msg_key['request_id']
         

@@ -1,6 +1,7 @@
 {
     "type": "record",
-    "name": "fed_request_zip_immunization_val",
+    "name": "ConnectDefault",
+    "namespace": "io.confluent.connect.avro",
     "fields": [
         {"name": "request_id", "type": "string", "doc": "Unique ID of a Fererated Analytics Request."},
         {"name": "city", "type": ["null", "string"], "default": null, "doc": "City name of a Fererated Analytics Request."},

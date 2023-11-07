@@ -275,7 +275,7 @@ MATCH (record:PtOrgMed)
     WHERE record.timestamp > $lastCheck
 RETURN
     record.request_id AS request_id,
-    record.storganization_stateate AS organization_state,
+    record.organization_state AS organization_state,
     record.organization_city AS organization_city,
     record.organization_name AS organization_name,
     record.medication_count AS medication_count,

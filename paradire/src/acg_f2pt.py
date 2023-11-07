@@ -11,7 +11,7 @@ class Worker(object):
                 self.converter_dict[topic] = {'key': topic_config['key'], 'val': [e.strip() for e in topic_config['val'].split(',')]}
 
     def start(self):
-        pass
+        print('Worker instance started.', flush=True)
         
     def process(self, in_topic, msg_key, msg_val):
         request_id = msg_key['request_id']
