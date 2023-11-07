@@ -1,0 +1,157 @@
+{
+    "title": "Federal Analytics Platform",
+    "version": "2.3",
+    "settings": {
+      "pagenumber": 0,
+      "editable": true,
+      "fullscreenEnabled": false,
+      "parameters": {},
+      "theme": "light"
+    },
+    "pages": [
+      {
+        "title": "Patient distribution",
+        "reports": [
+          {
+            "id": "d59fae23-aa51-4bf1-a9f8-b36e498eea4f",
+            "title": "Response (fed_request_city_org_patient-1)",
+            "query": "MATCH (n:CityOrgPatient)\n  WHERE n.request_id = \"fed_request_city_org_patient-1\"\nRETURN [n.pt, n.organization_city, n.organization_name] AS name, n.patient_count AS count",
+            "width": 9,
+            "height": 4,
+            "x": 3,
+            "y": 0,
+            "type": "circlePacking",
+            "selection": {
+              "index": "name",
+              "value": "count",
+              "key": "(none)"
+            },
+            "settings": {
+              "autorun": false,
+              "refreshButtonEnabled": true,
+              "refreshRate": 0
+            },
+            "schema": []
+          },
+          {
+            "id": "51e5f545-cb56-4df0-902f-538e55301dea",
+            "title": "Request",
+            "query": "CREATE (record:FR_CityOrgPatient) \n    SET\n        record.request_id = \"fed_request_city_org_patient-1\",\n        record.city = \"Toronto\",\n        record.timestamp = apoc.date.currentTimestamp()\nRETURN \n  record.request_id AS request_id,\n  record.city AS city\n",
+            "width": 3,
+            "height": 1,
+            "x": 0,
+            "y": 0,
+            "type": "table",
+            "selection": {},
+            "settings": {
+              "columnWidths": "[15,5]",
+              "autorun": false,
+              "refreshButtonEnabled": true
+            },
+            "schema": []
+          }
+        ]
+      },
+      {
+        "title": "Patient visits",
+        "reports": [
+          {
+            "id": "eebd30d8-f6dd-4404-81c1-00b5be01ca13",
+            "title": "Request",
+            "query": "CREATE (record:FR_CityOrgPatientVisit) \n    SET\n        record.request_id = \"fed_request_city_org_patient_visit-1\",\n        record.city = \"Toronto\",\n        record.timestamp = apoc.date.currentTimestamp()\nRETURN \n  record.request_id AS request_id,\n  record.city AS city\n",
+            "width": 3,
+            "height": 2,
+            "x": 0,
+            "y": 0,
+            "type": "table",
+            "selection": {},
+            "settings": {
+              "columnWidths": "[15,5]",
+              "autorun": false,
+              "refreshButtonEnabled": true
+            }
+          },
+          {
+            "id": "24322ef3-6122-4919-96a5-96ffe78056f3",
+            "title": "Response (fed_request_city_org_patient_visit-1)",
+            "query": "MATCH (n:CityOrgPatientVisit)\n  WHERE n.request_id = 'fed_request_city_org_patient_visit-1'\nRETURN n.patient_id AS patient_id, n.encounter_count AS visits, n.organization_name AS organization, n.organization_city AS city\nORDER BY patient_id, city, organization\n\n\n",
+            "width": 9,
+            "height": 4,
+            "x": 3,
+            "y": 0,
+            "type": "table",
+            "selection": {},
+            "settings": {
+              "columnWidths": "[12,3,17,5]",
+              "autorun": false,
+              "refreshButtonEnabled": true
+            },
+            "schema": []
+          }
+        ]
+      },
+      {
+        "title": "New page",
+        "reports": [
+          {
+            "id": "155303a2-cc88-4797-806d-77136193fa82",
+            "title": "Request",
+            "query": "CREATE (record:FR_CityYearTopProc) \n    SET\n        record.request_id = \"fed_request_city_year_top_proc-1\",\n        record.city = \"Mississauga\",\n        record.procedure_1 = \"171207006\", \n        record.procedure_2 = \"430193006\", \n        record.procedure_3 = \"710841007\", \n        record.timestamp = apoc.date.currentTimestamp()\nRETURN record.city AS city, [record.procedure_1, record.procedure_2, record.procedure_3] AS procedures\n\n",
+            "width": 3,
+            "height": 2,
+            "x": 0,
+            "y": 0,
+            "type": "table",
+            "selection": {},
+            "settings": {
+              "columnWidths": "[5,15]",
+              "refreshButtonEnabled": true,
+              "autorun": false
+            }
+          },
+          {
+            "id": "c0461b09-df99-4823-bf98-2080c9d14acb",
+            "title": "Response",
+            "query": "MATCH (n:CityYearTopProc)\nRETURN n.year AS year, n.procedure_1 AS procedure_1, n.procedure_2 AS procedure_2, n.procedure_3 AS procedure_3 ORDER BY year\n\n\n",
+            "width": 9,
+            "height": 3,
+            "x": 3,
+            "y": 0,
+            "type": "line",
+            "selection": {
+              "x": "year",
+              "value": [
+                "procedure_1",
+                "procedure_2",
+                "procedure_3"
+              ]
+            },
+            "settings": {
+              "refreshButtonEnabled": true,
+              "autorun": false
+            },
+            "schema": []
+          }
+        ]
+      }
+    ],
+    "parameters": {},
+    "extensions": {
+      "active": true,
+      "activeReducers": [
+        "DASHBOARD/EXTENSIONS/QUERY_TRANSLATOR/"
+      ],
+      "advanced-charts": {
+        "active": true
+      },
+      "styling": {
+        "active": true
+      },
+      "actions": {
+        "active": true
+      },
+      "query-translator": {
+        "active": true
+      }
+    }
+  }
