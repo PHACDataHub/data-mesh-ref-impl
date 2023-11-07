@@ -6,7 +6,7 @@
         {"name": "request_id", "type": "string", "doc": "Unique ID of a Fererated Analytics Request."},
         {"name": "patient_zip", "type": ["null", "string"], "default": null, "doc": "Patient's zip code"},
         {"name": "immunization_code", "type": "string", "doc": "Immunization code from CVX"},
-        {"name": "immunization_count", "type": "int", "doc": "The number of immunizations of the immunization code per the zip code."},
+        {"name": "immunization_count", "type": "long", "doc": "The number of immunizations of the immunization code per the zip code."},
         {"name": "pt", "type": ["null", "string"], "default": null, "doc": "The pt."},
         {"name": "timestamp", "type": "long", "doc": "Timestamp when this record is produced."}
     ]

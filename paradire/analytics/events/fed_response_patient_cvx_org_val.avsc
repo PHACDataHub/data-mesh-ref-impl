@@ -9,7 +9,7 @@
         {"name": "patient_gender", "type": "string", "doc": "Gender. M is male, F is female"},
         {"name": "patient_zip", "type": ["null", "string"], "default": null, "doc": "Patient's zip code"},
         {"name": "code_list", "type": "string", "doc": "List of immunization codes from CVX. Comma separated"},
-        {"name": "immunization_count", "type": "int", "doc": "The number of immunizations."},
+        {"name": "immunization_count", "type": "long", "doc": "The number of immunizations."},
         {"name": "organization_name", "type": "string", "doc": "Name of the Organization."},
         {"name": "organization_zip", "type": ["null", "string"], "default": null, "doc": "Street address zip or postal code"},
         {"name": "pt", "type": ["null", "string"], "default": null, "doc": "The pt."},

@@ -33,7 +33,6 @@ class AvroClient(object):
                 self.set_ser_ctx(topic, topic_config, 'avro_val_schema_file', MessageField.VALUE, serializer)
 
     def set_ser_ctx(self, topic, topic_config, schema_type, msg_field, serializer):
-        # print(topic, topic_config, schema_type, msg_field)
         if schema_type in topic_config:
             avro_schema = read_avro_schema(topic_config, schema_type)
             self.topic_dict[topic][schema_type] = {
@@ -64,7 +63,7 @@ class AvroConsumer(AvroClient):
         self.topic_names = list(self.topic_dict.keys())
 
     def subscribe(self):
-        print(f"[SUBSCRIBE] {self.topic_names}")
+        print(f"[SUBSCRIBE] {self.topic_names}.", flush=True)
         self.consumer.subscribe(self.topic_names)
 
     def poll(self):
@@ -91,7 +90,7 @@ class AvroProducer(AvroClient):
         })
         self.setup_topics(config_section['destination_topic'], AvroSerializer)
         self.topic_names = list(self.topic_dict.keys())
-        print(f"[PRODUCE] {self.topic_names}")
+        print(f"[PRODUCE] {self.topic_names}.", flush=True)
 
     def produce(self, topic, msg_key, msg_val):
         self.producer.poll(self.poll_time)
