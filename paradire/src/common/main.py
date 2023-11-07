@@ -17,8 +17,6 @@ if __name__ == '__main__':
     yaml_file, workflow_name, step_name = sys.argv[1:4]
     config = load_step_config(yaml_file, workflow_name, step_name)
 
-    sleep(30)
-
     producer = AvroProducer(config['producer'])
     worker = Worker(config['worker'])
     consumer = AvroConsumer(config['consumer'])
@@ -39,11 +37,11 @@ if __name__ == '__main__':
             msg_key, msg_val = consumer.consume(msg)
             if msg_key is None and msg_val is None:
                 continue
-            print(f"{datetime.now().strftime('%m/%d/%Y, %H:%M:%S')} >>> [#{count}] [{msg_key}]", flush=True)
+            print(f"{datetime.now().strftime('%m/%d/%Y, %H:%M:%S')} >>> [#{count}] [{msg_key}] [{msg_val}]", flush=True)
 
             count += 1
             mapped_topic, msg_key, msg_val = worker.process(msg.topic(), msg_key, msg_val)
-            print(f"{datetime.now().strftime('%m/%d/%Y, %H:%M:%S')} <<< [#{count}] [{msg_key}]", flush=True)
+            print(f"{datetime.now().strftime('%m/%d/%Y, %H:%M:%S')} <<< [#{count}] [{msg_key}] [{msg_val}]", flush=True)
 
             if msg_key is None and msg_val is None:
                 continue
