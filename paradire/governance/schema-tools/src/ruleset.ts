@@ -12,6 +12,7 @@ import {
   GraphQLNonNull,
   GraphQLInputObjectType,
   GraphQLList,
+  GraphQLUnionType,
 } from "graphql";
 
 import { Document, parse } from "yaml";
@@ -126,6 +127,10 @@ export function isFieldSelected(field: string, fields: ResourceTypeField[]) {
   return Boolean(getFieldIfSelected(field, fields));
 }
 
+const isFieldSpecArray = (fieldSpec: JSONSchema6) =>
+  fieldSpec.type === "array" ||
+  (Array.isArray(fieldSpec.type) && fieldSpec.type.includes("array"));
+
 export function getFieldType(
   name: string,
   fieldSpec: JSONSchema6,
@@ -136,7 +141,7 @@ export function getFieldType(
 
   const reference =
     fieldSpec.$ref ??
-    (fieldSpec.type === "array" &&
+    (isFieldSpecArray(fieldSpec) &&
       fieldSpec.items &&
       (fieldSpec.items as { $ref: string }).$ref);
   if (reference) {
@@ -167,7 +172,10 @@ export function getFieldType(
   } else if (fieldSpec.format === "cartesian-point") {
     return ["cartesian-point", false, nullable];
   }
-  return [(fieldSpec.type as string) ?? "", false, nullable];
+  if (Array.isArray(fieldSpec.type)) {
+    return [(fieldSpec.type.find((t) => t !== "null")) ?? "", false, nullable];  
+  }
+  return [fieldSpec.type ?? "", false, nullable];
 }
 
 export const expandRuleset = (
@@ -261,16 +269,16 @@ const fieldSpecToGraphQlType = (
   if (!fieldSpec || typeof fieldSpec === "boolean")
     return [name, { type: GraphQLString }];
 
-  const a =
-    fieldSpec.type === "array"
-      ? (t: GraphQLScalarType | GraphQLObjectType) => new GraphQLList(t)
-      : (t: GraphQLScalarType | GraphQLObjectType) => t;
+  const a = isFieldSpecArray(fieldSpec)
+    ? (t: GraphQLScalarType | GraphQLObjectType) =>
+        new GraphQLList(new GraphQLNonNull(t))
+    : (t: GraphQLScalarType | GraphQLObjectType) => t;
 
   const [type, , nullable] = getFieldType(name, fieldSpec, schema);
 
   const n = nullable
-    ? (t: GraphQLScalarType | GraphQLObjectType) => t
-    : (t: GraphQLScalarType | GraphQLObjectType) => new GraphQLNonNull(t);
+    ? (t: GraphQLScalarType | GraphQLObjectType) => a(t)
+    : (t: GraphQLScalarType | GraphQLObjectType) => new GraphQLNonNull(a(t));
 
   let fieldName = name;
   if (typeof type === "string" && type.startsWith("#/definitions/")) {
@@ -289,11 +297,11 @@ const fieldSpecToGraphQlType = (
     return [
       `${fieldName}`,
       {
-        type: n(a(
+        type: n(
           typeDefs.find((t) => t.name === type.replace("#/definitions/", "")) ??
             typeDefs.find((t) => t.name === "FilterOut") ??
             GraphQLString
-        )),
+        ),
       },
     ];
   }
@@ -350,12 +358,11 @@ const fieldSpecToGraphQlType = (
     case "cartesian-point":
       tt = typeDefs.find((t) => t.name === "CartesianPoint") ?? GraphQLString;
       break;
-
     case "string":
     default:
       tt = GraphQLString;
   }
-  return [fieldName, { type: n(a(tt)) }];
+  return [fieldName, { type: n(tt) }];
 };
 
 export const rulesToGraphQl = (
@@ -452,61 +459,78 @@ export const rulesToGraphQl = (
 
   // If the schema has "entrypoints", then create those types and queries
   if (schema.entrypoints) {
-    typeDefs.push(
-      new GraphQLObjectType({
-        name: "Query",
-        description: "Query entrypoints",
-        fields: () =>
-          Object.fromEntries(
-            Object.entries(schema.entrypoints).map(([name, entry]) => {
-              const referenced_schema = dereference(entry.arguments, schema);
-              if (referenced_schema && typeof referenced_schema !== "boolean") {
-                const fields = Object.entries(referenced_schema.properties);
-                if (fields.length === 0) return;
-                const typeFields = Object.keys(
-                  referenced_schema?.properties ?? {}
-                ).map((name) => {
-                  return {
-                    name,
-                    fieldSpec:
-                      referenced_schema.properties &&
-                      referenced_schema.properties[name],
-                  };
-                });
-
-                const test = fieldSpecToGraphQlType(
-                  name,
-                  entry,
-                  {},
-                  schema,
-                  typeDefs,
-                  directives
-                );
-
-                return [
-                  name,
-                  {
-                    type: test[1].type,
-                    args: Object.fromEntries(
-                      typeFields.map(({ name, fieldSpec }) =>
-                        fieldSpecToGraphQlType(
-                          name,
-                          fieldSpec,
-                          {},
-                          schema,
-                          typeDefs,
-                          directives
-                        )
-                      )
-                    ),
-                  },
-                ];
-              }
-              return [];
-            })
-          ),
-      })
+    const allowed_entrypoints = Object.entries(schema.entrypoints).filter(
+      ([name, entry]) => {
+        if (
+          entry.items &&
+          typeof entry.items === "object" &&
+          "$ref" in entry.items
+        ) {
+          const output = entry.items.$ref;
+          return Boolean(selectedResourceTypes.find((r) => r.name === output));
+        } else if (entry.$ref) {
+          return Boolean(selectedResourceTypes.find((r) => r.name === entry.$ref));
+        }
+        return false;
+      }
     );
+    allowed_entrypoints.length > 0 &&
+      typeDefs.push(
+        new GraphQLObjectType({
+          name: "Subscription",
+          description: "Subscription entrypoints",
+          fields: () =>
+            Object.fromEntries(
+              allowed_entrypoints.map(([name, entry]) => {
+                const referenced_schema = dereference(entry.arguments, schema);
+                if (
+                  referenced_schema &&
+                  typeof referenced_schema !== "boolean"
+                ) {
+                  const typeFields = Object.keys(
+                    referenced_schema?.properties ?? {}
+                  ).map((name) => {
+                    return {
+                      name,
+                      fieldSpec:
+                        referenced_schema.properties &&
+                        referenced_schema.properties[name],
+                    };
+                  });
+
+                  const test = fieldSpecToGraphQlType(
+                    name,
+                    entry,
+                    {},
+                    schema,
+                    typeDefs,
+                    directives
+                  );
+
+                  return [
+                    name,
+                    {
+                      type: test[1].type,
+                      args: Object.fromEntries(
+                        typeFields.map(({ name, fieldSpec }) =>
+                          fieldSpecToGraphQlType(
+                            name,
+                            fieldSpec,
+                            {},
+                            schema,
+                            typeDefs,
+                            directives
+                          )
+                        )
+                      ),
+                    },
+                  ];
+                }
+                return [];
+              })
+            ),
+        })
+      );
   }
 
   const generated_schema = new GraphQLSchema({

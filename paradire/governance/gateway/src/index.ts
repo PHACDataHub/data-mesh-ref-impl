@@ -1,5 +1,11 @@
 import { ApolloServer, BaseContext } from "@apollo/server";
-import { startStandaloneServer } from "@apollo/server/standalone";
+import { expressMiddleware } from "@apollo/server/express4";
+import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHttpServer";
+import express from "express";
+import { createServer } from "http";
+import cors from "cors";
+import { WebSocketServer } from "ws";
+import { useServer } from "graphql-ws/lib/use/ws";
 
 import { Neo4jGraphQL } from "@neo4j/graphql";
 import { makeExecutableSchema } from "@graphql-tools/schema";
@@ -15,6 +21,8 @@ import {
 import { rulesToGraphQl, getSchema } from "@phac-aspc-dgg/schema-tools";
 
 import { dateDirective, hashDirective } from "./utils/directives.js";
+import { subscribeToTopic } from "./topic_generators.js";
+import { buildSchema } from "graphql";
 
 const for_neo4j = false;
 
@@ -29,11 +37,11 @@ const ruleset = `
 ruleset:
   version: 0.0.1
   resourceTypes:
-    - name: TopKImmunization
+    - name: CityOrgPatient
       fields:
         - request_id
-        - zip
-        - code
+        - city
+        - name
         - count
         - pt
         - timestamp
@@ -108,30 +116,99 @@ type Mutation {
             schema,
           });
 
-          url = (
-            await startStandaloneServer(server, {
-              listen: { port: 4000 },
-            })
-          ).url;
+          // url = (
+          //   await startStandaloneServer(server, {
+          //     listen: { port: 4000 },
+          //   })
+          // ).url;
         } else {
           // Kafka based test
-
-          const kafka_schema = typeDefs.concat(
-            dateDirectiveTypeDefs,
-            hashDirectiveTypeDefs,
-            `
-input TopKImmunizationRequest {
-  k: Int!
-}
-
-type Query {
-  TopKImmunization(k: Int): [TopKImmunization!]!
-}`
-          ).replace(/.*@selectable.*/g, "");
+          const kafka_schema = typeDefs
+            .concat(
+              dateDirectiveTypeDefs,
+              hashDirectiveTypeDefs,
+              "\ntype Query { noop: String }\n"
+            )
+            .replace(/.*@selectable.*/g, "");
 
           console.log("============ KAFKA SCHEMA ============");
           console.log(kafka_schema);
           console.log("======================================");
+
+          const subscription_types = Object.keys(
+            buildSchema(kafka_schema).getSubscriptionType().getFields()
+          );
+
+          const subscription_topic_map = await Promise.all(
+            [
+              {
+                name: "CityOrgPatient",
+                topic: {
+                  request: "fed_request_city_org_patient",
+                  response: "fed_response_city_org_patient",
+                },
+              },
+              {
+                name: "CityOrgPatientVisit",
+                topic: {
+                  request: "fed_request_city_org_patient_visit",
+                  response: "fed_response_city_org_patient_visit",
+                },
+              },
+              {
+                name: "CityYearTopProcedure",
+                topic: {
+                  request: "fed_request_city_year_top_proc",
+                  response: "fed_response_city_year_top_proc",
+                },
+              },
+              {
+                name: "PatientCvxOrg",
+                topic: {
+                  request: "fed_request_patient_cvx_org",
+                  response: "fed_response_patient_cvx_org",
+                },
+              },
+              {
+                name: "PtOrgMed",
+                topic: {
+                  request: "fed_request_pt_org_med",
+                  response: "fed_response_pt_org_med",
+                },
+              },
+              {
+                name: "TopKImmunization",
+                topic: {
+                  request: "fed_request_top_k_immunization",
+                  response: "fed_response_top_k_immunization",
+                },
+              },
+              {
+                name: "VaccinationRecord",
+                topic: {
+                  request: "fed_request_vaccination_record",
+                  response: "fed_response_vaccination_record",
+                },
+              },
+              {
+                name: "ZipImmunization",
+                topic: {
+                  request: "fed_request_zip_immunization",
+                  response: "fed_response_zip_immunization",
+                },
+              },
+            ]
+              .filter(({ name }) => subscription_types.includes(name))
+              .map(
+                async (sub) =>
+                  await subscribeToTopic({
+                    name: sub.name,
+                    topic: sub.topic,
+                    kafka,
+                    registry,
+                  })
+              )
+          );
 
           const resolvers = {
             Mutation: {
@@ -149,56 +226,9 @@ type Query {
                 return "Ok";
               },
             },
-            Query: {
-              TopKImmunization: async (_, args: { k?: number }) => {
-                const topk_key_schema_id = 39;
-                const topk_value_schema_id = 40;
-                const request_id = (Math.random() + 1)
-                  .toString(36)
-                  .substring(2);
+            Subscription: Object.fromEntries(subscription_topic_map),
 
-                const consumer = kafka.consumer({ groupId: "fed-analytics" });
-                await consumer.connect();
-                await consumer.subscribe({
-                  topic: "fed_response_top_k_immunization",
-                });
-
-                const response = new Promise((resolve, reject) => {
-                  const records: any[] = [];
-                  let timer = setTimeout(() => reject(), 30000);
-                  consumer.run({
-                    eachMessage: async ({ topic, partition, message }) => {
-                      const key = await registry.decode(message.key);
-                      if (key.request_id === request_id) {
-                        clearTimeout(timer);
-                        const value = await registry.decode(message.value);
-                        records.push(value);
-                        timer = setTimeout(() => resolve(records), 500);
-                      }
-                    },
-                  });
-                });
-
-                const producer = kafka.producer({
-                  allowAutoTopicCreation: true,
-                });
-                await producer.connect();
-                const requestMessage = {
-                  key: await registry.encode(topk_key_schema_id, {
-                    request_id,
-                  }),
-                  value: await registry.encode(topk_value_schema_id, {
-                    request_id,
-                    k: args.k,
-                  }),
-                };
-                await producer.send({
-                  topic: "fed_request_top_k_immunization",
-                  messages: [requestMessage],
-                });
-                return response;
-              },
-            },
+            Query: {},
           };
 
           const schema = hashDirectiveTransformer(
@@ -207,17 +237,58 @@ type Query {
             )
           );
 
+          const app = express();
+          const httpServer = createServer(app);
+
           server = new ApolloServer({
             schema,
+            plugins: [
+              ApolloServerPluginDrainHttpServer({ httpServer }),
+              {
+                async serverWillStart() {
+                  return {
+                    async drainServer() {
+                      await serverCleanup.dispose();
+                      subscription_topic_map.forEach(async ([, sub]) => {
+                        if (typeof sub === "object") await sub.dispose();
+                      });
+                      console.log("disposed.");
+                    },
+                  };
+                },
+              },
+            ],
           });
 
-          url = (
-            await startStandaloneServer(server, {
-              listen: { port: 4000 },
+          // Creating the WebSocket server
+          const wsServer = new WebSocketServer({
+            // This is the `httpServer` we created in a previous step.
+            server: httpServer,
+            // Pass a different path here if app.use
+            // serves expressMiddleware at a different path
+            path: "/",
+          });
+
+          // Hand in the schema we just created and have the
+          // WebSocketServer start listening.
+          const serverCleanup = useServer({ schema }, wsServer);
+
+          await server.start();
+
+          app.use(
+            "/",
+            cors<cors.CorsRequest>(),
+            express.json(),
+            expressMiddleware(server, {
+              context: async ({ req }) => ({ token: req.headers.token }),
             })
-          ).url;
+          );
+
+          await new Promise<void>((resolve) =>
+            httpServer.listen({ port: 4000 }, resolve)
+          );
         }
-        console.log(`🚀  Server ready at: ${url}`);
+        console.log(`🚀  Server ready at: http://localhost:4000`);
       } catch (e) {
         console.error(e);
       }
