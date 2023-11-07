@@ -4,8 +4,8 @@ from utils import to_json_str
 class Worker(object):
     def __init__(self, config):
         self.config = config
-        self.pt = config['pt']
-        self.access_control = config['access_control']
+        self.pt = self.config['pt']
+        self.access_control = self.config['access_control']
         self.transform_dict = dict()
         for transform_instruction in self.access_control:
             for transform_type, field_list in transform_instruction.items():

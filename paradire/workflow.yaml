@@ -127,7 +127,7 @@ main:
                         avro_key_schema_file: fed_response_vaccination_record_key.avsc
                         avro_val_schema_file: fed_response_vaccination_record_val.avsc
             worker:
-                pt: ON
+                pt: "ON"
                 access_control:
                   - to_transform: patient_birth_date
                   - to_hash: patient_ethnicity
