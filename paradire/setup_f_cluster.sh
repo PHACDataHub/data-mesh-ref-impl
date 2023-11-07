@@ -1,6 +1,6 @@
 #!/bin/bash
 
-F_KAFKA_CLUSTER_IP=$(ip route get 8.8.8.8 | grep -oP 'src \K[^ ]+')
+F_KAFKA_CLUSTER_IP=$(curl --silent ifconfig.me)
 
 ./scripts/prepare_dot_env.sh $F_KAFKA_CLUSTER_IP $F_KAFKA_CLUSTER_IP
 

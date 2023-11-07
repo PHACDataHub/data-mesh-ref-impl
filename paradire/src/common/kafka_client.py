@@ -33,6 +33,7 @@ class AvroClient(object):
                 self.set_ser_ctx(topic, topic_config, 'avro_val_schema_file', MessageField.VALUE, serializer)
 
     def set_ser_ctx(self, topic, topic_config, schema_type, msg_field, serializer):
+        print(topic, topic_config, schema_type, msg_field)
         if schema_type in topic_config:
             avro_schema = read_avro_schema(topic_config, schema_type)
             self.topic_dict[topic][schema_type] = {
