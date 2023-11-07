@@ -1,15 +1,20 @@
 #!/bin/bash
 
-# Check and install necessary tools
-command -v parallel >/dev/null 2>&1 || { echo >&2 "GNU Parallel is not installed. Installing..."; sudo apt-get install -y parallel; }
-command -v jq >/dev/null 2>&1 || { echo >&2 "jq is not installed. Installing..."; sudo apt-get install -y jq; }
+# Store usage message in a variable
+USAGE="Usage: $0 <output_dir> <province_or_territory_abbreviation>
+where province_or_territory_abbreviation is one of:${valid_pt}
+Example: $0 output_dir AB"
+
+# Check and install necessary tools only if they're not present
+for tool in parallel jq; do
+    command -v $tool >/dev/null 2>&1 || { echo >&2 "$tool is not installed. Installing..."; sudo apt-get install -y $tool; }
+done
 
 valid_pt=" AB BC MB NB NL NS NT NU ON PE QC SK YT "
 
+# Check for script arguments and echo usage message if not correct
 if [ $# -ne 2 ]; then
-    echo "Usage: $0 <output_dir> <province_or_territory_abbreviation>"
-    echo "   where province_or_territory_abbreviation is one of:${valid_pt}"
-    echo "Example: $0 output_dir AB"
+    echo "$USAGE"
     exit 1
 fi
 
@@ -29,12 +34,13 @@ upload_file() {
     if [[ "$response" == *"informational"* ]]; then
         echo "Successfully uploaded $file."
     else
-        echo "Failed to upload $file. Server response: $response"
+        echo "Failed to upload $file."
     fi
 }
 
 export -f upload_file
 
+# Upload files
 echo "Starting uploads..."
 find "$output_dir/$pt/fhir/" -type f -name "*.json" ! -name "hospitalInformation*" ! -name "practitionerInformation*"  | parallel -j 16 upload_file {}
 echo "Upload process completed!"
