@@ -1,9 +1,17 @@
 import { create } from "zustand";
 
 import {
+  type ResourceTypeSelection,
   ruleSetToSelectedResourceTypes,
   selectedResourceTypesToRuleSet,
-} from "./utils/ruleset";
+} from "@phac-aspc-dgg/schema-tools";
+
+interface GovernanceUIStore {
+  selectedResourceTypes: ResourceTypeSelection[];
+  setSelectedResourceTypes: (selected: ResourceTypeSelection[]) => void;
+  yaml: string;
+  setYaml: (yaml: string) => void;
+}
 
 export const useDataGovernance = create<GovernanceUIStore>((set) => ({
   selectedResourceTypes: [],
