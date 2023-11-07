@@ -4,6 +4,7 @@
     "fields": [
         {"name": "request_id", "type": "string", "doc": "Unique ID of a Fererated Analytics Request."},
         {"name": "code_list", "type": ["null", "string"], "default": null, "doc": "List of immunization codes from CVX. Comma separated"},
-        {"name": "term", "type": ["null", "string"], "default": null, "doc": "Term in the description"}
+        {"name": "term", "type": ["null", "string"], "default": null, "doc": "Term in the description"},
+        {"name": "timestamp", "type": "long", "doc": "Timestamp when this record is produced."}        
     ]
 }

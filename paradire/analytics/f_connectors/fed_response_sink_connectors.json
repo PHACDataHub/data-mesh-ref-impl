@@ -1,5 +1,5 @@
 {
-    "name": "fed_response_sink_connector",
+    "name": "fed_response_sink_connectors",
     "config": {
         "_comment": "Sink configuration for responses to Federated Analytics Requests from PT Analytics Platform",
         "connector.class": "streams.kafka.connect.sink.Neo4jSinkConnector",

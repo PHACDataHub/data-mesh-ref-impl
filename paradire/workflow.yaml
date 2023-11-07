@@ -10,36 +10,56 @@ main:
                 consumer_group_id: acg_f2pt
                 auto_offset_reset: earliest
                 source_topic:
-                    - fed_request:
-                        avro_key_schema_file: fed_request_key.avsc
-                        avro_val_schema_file: fed_request_val.avsc
+                    - fed_request_city_org_patient:
+                        avro_key_schema_file: fed_request_city_org_patient_key.avsc
+                        avro_val_schema_file: fed_request_city_org_patient_val.avsc
+                    - fed_request_city_org_patient_visit:
+                        avro_key_schema_file: fed_request_city_org_patient_visit_key.avsc
+                        avro_val_schema_file: fed_request_city_org_patient_visit_val.avsc
+                    - fed_request_city_year_top_proc:
+                        avro_key_schema_file: fed_request_city_year_top_proc_key.avsc
+                        avro_val_schema_file: fed_request_city_year_top_proc_val.avsc
+                    - fed_request_patient_cvx_org:
+                        avro_key_schema_file: fed_request_patient_cvx_org_key.avsc
+                        avro_val_schema_file: fed_request_patient_cvx_org_val.avsc
+                    - fed_request_pt_org_med:
+                        avro_key_schema_file: fed_request_pt_org_med_key.avsc
+                        avro_val_schema_file: fed_request_pt_org_med_val.avsc
+                    - fed_request_top_k_immunization:
+                        avro_key_schema_file: fed_request_top_k_immunization_key.avsc
+                        avro_val_schema_file: fed_request_top_k_immunization_val.avsc
+                    - fed_request_zip_immunization:
+                        avro_key_schema_file: fed_request_zip_immunization_key.avsc
+                        avro_val_schema_file: fed_request_zip_immunization_val.avsc
+                    - fed_request_vaccination_record:
+                        avro_key_schema_file: fed_request_vaccination_record_key.avsc
+                        avro_val_schema_file: fed_request_vaccination_record_val.avsc
             worker:
-                request_identifier: request_type
                 request_converter: 
                     - fed_request_city_org_patient:
                         key: request_id
-                        val: request_id,city
+                        val: request_id,city,timestamp
                     - fed_request_city_org_patient_visit:
                         key: request_id
-                        val: request_id,city
+                        val: request_id,city,timestamp
                     - fed_request_city_year_top_proc:
                         key: request_id
-                        val: request_id,city,procedure_1,procedure_2,procedure_3
+                        val: request_id,city,procedure_1,procedure_2,procedure_3,timestamp
                     - fed_request_patient_cvx_org:
                         key: request_id
-                        val: request_id,code_list,term
+                        val: request_id,code_list,term,timestamp
                     - fed_request_pt_org_med:
                         key: request_id
-                        val: request_id,state
+                        val: request_id,state,timestamp
                     - fed_request_top_k_immunization:
                         key: request_id
-                        val: request_id,k
+                        val: request_id,k,timestamp
                     - fed_request_zip_immunization:
                         key: request_id
-                        val: request_id,city
+                        val: request_id,city,timestamp
                     - fed_request_vaccination_record:
                         key: request_id
-                        val: request_id
+                        val: request_id,timestamp
             producer:
                 broker_host: ${BROKER_HOST}
                 broker_port: ${BROKER_EXTERNAL_PORT}

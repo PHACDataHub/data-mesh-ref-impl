@@ -2,6 +2,7 @@
     "type": "record",
     "name": "fed_request_vaccination_record_val",
     "fields": [
-        {"name": "request_id", "type": "string", "doc": "Unique ID of a Fererated Analytics Request."}
+        {"name": "request_id", "type": "string", "doc": "Unique ID of a Fererated Analytics Request."},
+        {"name": "timestamp", "type": "long", "doc": "Timestamp when this record is produced."}
     ]
 }

@@ -1,2 +1,2 @@
-{"request_id": "fed_request_city_org_patient_visit-1"}|{"request_id": "fed_request_city_org_patient_visit-1", "city": "Toronto"}
-{"request_id": "fed_request_city_org_patient_visit-2"}|{"request_id": "fed_request_city_org_patient_visit-2", "city": "Brampton"}
+{"request_id": "fed_request_city_org_patient_visit-1"}|{"request_id": "fed_request_city_org_patient_visit-1", "city": "Toronto", "timestamp": 1699312649}
+{"request_id": "fed_request_city_org_patient_visit-2"}|{"request_id": "fed_request_city_org_patient_visit-2", "city": "Brampton", "timestamp": 1699312649}

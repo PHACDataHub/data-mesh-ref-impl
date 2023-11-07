@@ -16,9 +16,8 @@ class Worker(object):
         
     def process(self, in_topic, msg_key, msg_val):
         request_id = msg_key['request_id']
-        request_type = msg_val['request_type']
         
-        topic_name = request_type
+        topic_name = in_topic
         key = msg_key
         val = {k: msg_val[k] for k in self.converter_dict[topic_name]['val']}
         

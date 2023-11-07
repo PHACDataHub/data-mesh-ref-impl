@@ -1,7 +1,0 @@
-{
-    "type": "record",
-    "name": "fed_request_key",
-    "fields": [
-        {"name": "request_id", "type": "string", "doc": "Unique ID of a Fererated Analytics Request."}
-    ]
-}

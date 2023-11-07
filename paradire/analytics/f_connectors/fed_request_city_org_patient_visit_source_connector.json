@@ -1,5 +1,5 @@
 {
-    "name": "fed_request_source_connector",
+    "name": "fed_request_city_org_patient_visit_source_connector",
     "config": {
         "_comment": "Source configuration of requests for Federated Analytics Request (going to PT Analytics Platform)",
         "connector.class": "streams.kafka.connect.source.Neo4jSourceConnector",
@@ -21,8 +21,8 @@
         "neo4j.streaming.from": "ALL",
         "neo4j.enforce.schema": true,
         "neo4j.encryption.enabled": false,
-        "topic": "fed_request",
+        "topic": "fed_request_city_org_patient_visit",
         "neo4j.source.type":"QUERY",
-        "neo4j.source.query": "MATCH (record:FedRequest) WHERE record.timestamp > $lastCheck RETURN record.request_id AS request_id, record.request_type AS request_type, record.city AS city, record.code_list AS code_list, record.k AS k, record.procedure_1 AS procedure_1, record.procedure_2 AS procedure_2, record.procedure_3 AS procedure_3, record.state AS state, record.term AS term, record.timestamp AS timestamp"
+        "neo4j.source.query": "MATCH (record:FedRequest) WHERE record.timestamp > $lastCheck RETURN record.request_id AS request_id, record.city AS city, record.timestamp AS timestamp"
     }
 }
