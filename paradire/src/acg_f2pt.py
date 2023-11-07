@@ -23,7 +23,7 @@ class Worker(object):
         topic_name = in_topic
         key = msg_key
         val = {k: msg_val[k] for k in self.converter_dict[topic_name]['val']}
-        for k in self.converter_dict[topic]['empty2null']:
+        for k in self.converter_dict[topic_name]['empty2null']:
             if val[k] == '':
                 val[k] = None
         
