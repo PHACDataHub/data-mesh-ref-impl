@@ -23,6 +23,6 @@
         "neo4j.encryption.enabled": false,
         "topic": "fed_request_patient_cvx_org",
         "neo4j.source.type":"QUERY",
-        "neo4j.source.query": "MATCH (record:FR_PatientCvxOrg) WHERE record.timestamp > $lastCheck RETURN record.request_id AS request_id, CASE WHEN record.code_list IS NOT NULL THEN record.code_list ELSE NULL END AS code_list, CASE WHEN record.term IS NOT NULL THEN record.term ELSE NULL END  AS term, record.timestamp AS timestamp"
+        "neo4j.source.query": "MATCH (record:FR_PatientCvxOrg) WHERE record.timestamp > $lastCheck RETURN record.request_id AS request_id, CASE WHEN record.code_list IS NOT NULL THEN record.code_list ELSE '' END AS code_list, CASE WHEN record.code_list IS NOT NULL THEN record.term ELSE '' END AS term, record.timestamp AS timestamp"
     }
 }

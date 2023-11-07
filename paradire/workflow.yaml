@@ -48,15 +48,19 @@ main:
                     - fed_request_patient_cvx_org:
                         key: request_id
                         val: request_id,code_list,term,timestamp
+                        empty2null: code_list,term
                     - fed_request_pt_org_med:
                         key: request_id
                         val: request_id,state,timestamp
+                        empty2null: state
                     - fed_request_top_k_immunization:
                         key: request_id
                         val: request_id,k,timestamp
+                        empty2null: k
                     - fed_request_zip_immunization:
                         key: request_id
                         val: request_id,city,timestamp
+                        empty2null: city
                     - fed_request_vaccination_record:
                         key: request_id
                         val: request_id,timestamp

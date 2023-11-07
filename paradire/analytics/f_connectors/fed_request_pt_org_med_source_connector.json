@@ -23,6 +23,6 @@
         "neo4j.encryption.enabled": false,
         "topic": "fed_request_pt_org_med",
         "neo4j.source.type":"QUERY",
-        "neo4j.source.query": "MATCH (record:FR_PtOrgMed) WHERE record.timestamp > $lastCheck RETURN record.request_id AS request_id, record.state AS state, record.timestamp AS timestamp"
+        "neo4j.source.query": "MATCH (record:FR_PtOrgMed) WHERE record.timestamp > $lastCheck RETURN record.request_id AS request_id, CASE WHEN record.state IS NOT NULL THEN record.state ELSE '' END AS state, record.timestamp AS timestamp"
     }
 }

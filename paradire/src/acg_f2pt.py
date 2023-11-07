@@ -8,7 +8,11 @@ class Worker(object):
         self.converter_dict = dict()
         for request_map in self.request_converter:
             for topic, topic_config in request_map.items():
-                self.converter_dict[topic] = {'key': topic_config['key'], 'val': [e.strip() for e in topic_config['val'].split(',')]}
+                self.converter_dict[topic] = {
+                    'key': topic_config['key'], 
+                    'val': [e.strip() for e in topic_config['val'].split(',')],
+                    'empty2null': topic_config['empty2null'].split(',') if 'empty2null' in topic_config else None
+                }
 
     def start(self):
         print('Worker instance started.', flush=True)
@@ -19,6 +23,9 @@ class Worker(object):
         topic_name = in_topic
         key = msg_key
         val = {k: msg_val[k] for k in self.converter_dict[topic_name]['val']}
+        for k in self.converter_dict[topic]['empty2null']:
+            if val[k] == '':
+                val[k] = None
         
         return topic_name, key, val
 
