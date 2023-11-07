@@ -2,7 +2,7 @@
     "title": "Federal Analytics Platform",
     "version": "2.3",
     "settings": {
-      "pagenumber": 0,
+      "pagenumber": 3,
       "editable": true,
       "fullscreenEnabled": false,
       "parameters": {},
@@ -129,6 +129,47 @@
             "settings": {
               "refreshButtonEnabled": true,
               "autorun": false
+            },
+            "schema": []
+          }
+        ]
+      },
+      {
+        "title": "New page",
+        "reports": [
+          {
+            "id": "41308c4b-8137-467b-a832-6db38b2819d8",
+            "title": "Request",
+            "query": "CREATE (record:FR_PatientCvxOrg) \n    SET\n        record.request_id = \"fed_request_patient_cvx_org-1\",\n        record.code_list = \"08,43,52,83\", \n        record.term = NULL, \n        record.timestamp = apoc.date.currentTimestamp()\nRETURN\n  record.code_list AS code_list,\n  record.term AS term\n\n\n",
+            "width": 3,
+            "height": 2,
+            "x": 0,
+            "y": 0,
+            "type": "table",
+            "selection": {},
+            "settings": {
+              "autorun": false,
+              "refreshButtonEnabled": true
+            }
+          },
+          {
+            "id": "4931084a-3802-46a2-80e7-39dd880c554c",
+            "title": "Responses",
+            "query": "MATCH (n:PatientCvxOrg)\n  WHERE n.request_id = 'fed_request_patient_cvx_org-2'\nWITH DISTINCT(n.patient_zip) AS zip, n.immunization_count AS count, n.code_list AS code_list\nRETURN zip, count, code_list ORDER BY zip\n\n\n\n\n",
+            "width": 9,
+            "height": 2,
+            "x": 3,
+            "y": 0,
+            "type": "bar",
+            "selection": {
+              "index": "zip",
+              "value": "count",
+              "key": "code_list"
+            },
+            "settings": {
+              "autorun": false,
+              "refreshButtonEnabled": true,
+              "showOptionalSelections": true
             },
             "schema": []
           }
