@@ -7,7 +7,7 @@
 CREATE (n:VaccinationRecord)
     SET n.request_id = event.request_id,
         n.immunization_date = event.immunization_date,
-        n.immunization_code = event.immunization_description
+        n.immunization_code = event.immunization_code
         n.immunization_description = event.immunization_description,
         n.organization_name = event.organization_name,
         n.organization_zip = event.organization_zip,
