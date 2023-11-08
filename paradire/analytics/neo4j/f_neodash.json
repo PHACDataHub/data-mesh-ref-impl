@@ -2,7 +2,7 @@
     "title": "Federal Analytics Platform",
     "version": "2.3",
     "settings": {
-      "pagenumber": 5,
+      "pagenumber": 0,
       "editable": true,
       "fullscreenEnabled": false,
       "parameters": {},
@@ -10,11 +10,172 @@
     },
     "pages": [
       {
+        "title": "Stream",
+        "reports": [
+          {
+            "id": "4ddaf4e2-6a2d-41a2-9adb-aa91e19fd364",
+            "title": "Request",
+            "query": "CREATE (record:FR_VaccinationRecord) \n    SET\n        record.request_id = \"fed_request_vaccination_record-1\",\n        record.timestamp = apoc.date.currentTimestamp()\nRETURN record.request_id AS request_id",
+            "width": 3,
+            "height": 2,
+            "x": 0,
+            "y": 0,
+            "type": "table",
+            "selection": {},
+            "settings": {
+              "autorun": false,
+              "refreshButtonEnabled": true
+            },
+            "schema": []
+          },
+          {
+            "id": "ef883cc2-5352-42db-aabd-4c22e80b5e91",
+            "title": "(Random 1000 data points of the) Immunization stream",
+            "query": "MATCH (n:VaccinationRecord)\n  WHERE n.request_id = 'fed_request_vaccination_record-1'\nRETURN\n  SUBSTRING(n.immunization_date,0,10) AS date, \n  n.immunization_code AS cvx,\n  n.immunization_description AS description,\n  n.organization_name AS at,\n  n.encounter_description AS encounter ,\n  n.encounter_code AS code,\n  SUBSTRING(n.patient_id, 0, 8) AS patient,\n  n.patient_address AS addr,\n  n.patient_age AS age,\n  n.patient_zip AS zip,\n  n.patient_gender AS g,\n  n.patient_race AS race,\n  SUBSTRING(n.patient_ethnicity,0, 3) AS ethn\n  SKIP TOINTEGER(RAND() * 1000) + 1 LIMIT 1000\n\n\n",
+            "width": 9,
+            "height": 3,
+            "x": 3,
+            "y": 0,
+            "type": "table",
+            "selection": {},
+            "settings": {
+              "autorun": false,
+              "refreshButtonEnabled": true,
+              "columnWidths": "[7,2,10,20,15,5,4,3,2,2,2,4,5]"
+            }
+          }
+        ]
+      },
+      {
+        "title": "Top 10 Immunizations",
+        "reports": [
+          {
+            "id": "dcf7da20-5eea-4539-a1d1-ef13d39b165e",
+            "title": "Request",
+            "query": "CREATE (record:FR_TopKImmunization) \n    SET\n        record.request_id = \"fed_request_top_k_immunization-1\",\n        record.k = 10, \n        record.timestamp = apoc.date.currentTimestamp()\nRETURN\n  record.k AS k\n\n",
+            "width": 3,
+            "height": 2,
+            "x": 0,
+            "y": 0,
+            "type": "table",
+            "selection": {},
+            "settings": {
+              "autorun": false,
+              "refreshButtonEnabled": true
+            }
+          },
+          {
+            "id": "5c560540-1afa-48b8-a8ab-0242aeb643bf",
+            "title": "Responses",
+            "query": "MATCH (n:TopKImmunization)\n  WHERE n.request_id = \"fed_request_top_k_immunization-1\"\nRETURN n.patient_zip AS zip, n.immunization_count AS immunization_count, n.immunization_code AS immunization_code ORDER BY zip\n",
+            "width": 9,
+            "height": 3,
+            "x": 3,
+            "y": 0,
+            "type": "bar",
+            "selection": {
+              "index": "zip",
+              "value": "immunization_count",
+              "key": "immunization_code"
+            },
+            "settings": {
+              "showOptionalSelections": true,
+              "autorun": false,
+              "legend": true,
+              "colors": "paired",
+              "refreshButtonEnabled": true
+            },
+            "schema": []
+          }
+        ]
+      },
+      {
+        "title": "Immunizations per zip",
+        "reports": [
+          {
+            "id": "27a71daf-cd4d-439b-819a-a4ef8e6f1285",
+            "title": "Request",
+            "query": "CREATE (record:FR_ZipImmunization) \n    SET\n        record.request_id = \"fed_request_zip_immunization-3\",\n        record.city = \"\",\n        record.timestamp = apoc.date.currentTimestamp()\nRETURN\n  record.city AS city\n",
+            "width": 3,
+            "height": 2,
+            "x": 0,
+            "y": 0,
+            "type": "table",
+            "selection": {},
+            "settings": {
+              "autorun": false,
+              "refreshButtonEnabled": true
+            }
+          },
+          {
+            "id": "824812d6-bf22-4b8e-9c48-53a5f67beebd",
+            "title": "Responses",
+            "query": "MATCH (n:ZipImmunization)\n  WHERE n.request_id = 'fed_request_zip_immunization-3'\nRETURN n.patient_zip AS zip, n.immunization_count AS immunization_count\n\n\n",
+            "width": 9,
+            "height": 3,
+            "x": 3,
+            "y": 0,
+            "type": "pie",
+            "selection": {
+              "index": "zip",
+              "value": "immunization_count",
+              "key": "(none)"
+            },
+            "settings": {
+              "autorun": false,
+              "refreshButtonEnabled": true
+            },
+            "schema": []
+          }
+        ]
+      },
+      {
+        "title": "CVXs per zip",
+        "reports": [
+          {
+            "id": "41308c4b-8137-467b-a832-6db38b2819d8",
+            "title": "Request",
+            "query": "CREATE (record:FR_PatientCvxOrg) \n    SET\n        record.request_id = \"fed_request_patient_cvx_org-1\",\n        record.code_list = \"08,43,52,83\", \n        record.term = NULL, \n        record.timestamp = apoc.date.currentTimestamp()\nRETURN\n  record.code_list AS code_list,\n  record.term AS term\n\n\n",
+            "width": 3,
+            "height": 2,
+            "x": 0,
+            "y": 0,
+            "type": "table",
+            "selection": {},
+            "settings": {
+              "autorun": false,
+              "refreshButtonEnabled": true
+            }
+          },
+          {
+            "id": "4931084a-3802-46a2-80e7-39dd880c554c",
+            "title": "Responses",
+            "query": "MATCH (n:PatientCvxOrg)\n  WHERE n.request_id = 'fed_request_patient_cvx_org-1'\nWITH DISTINCT(n.patient_zip) AS zip, n.immunization_count AS count, n.code_list AS code_list\nRETURN zip, count, code_list ORDER BY zip\n\n\n\n\n",
+            "width": 9,
+            "height": 2,
+            "x": 3,
+            "y": 0,
+            "type": "bar",
+            "selection": {
+              "index": "zip",
+              "value": "count",
+              "key": "code_list"
+            },
+            "settings": {
+              "autorun": false,
+              "refreshButtonEnabled": true,
+              "showOptionalSelections": true
+            },
+            "schema": []
+          }
+        ]
+      },
+      {
         "title": "Patient distribution",
         "reports": [
           {
             "id": "d59fae23-aa51-4bf1-a9f8-b36e498eea4f",
-            "title": "Response (fed_request_city_org_patient-1)",
+            "title": "Responses",
             "query": "MATCH (n:CityOrgPatient)\n  WHERE n.request_id = \"fed_request_city_org_patient-1\"\nRETURN [n.pt, n.organization_city, n.organization_name] AS name, n.patient_count AS count",
             "width": 9,
             "height": 4,
@@ -73,7 +234,7 @@
           },
           {
             "id": "24322ef3-6122-4919-96a5-96ffe78056f3",
-            "title": "Response (fed_request_city_org_patient_visit-1)",
+            "title": "Responses",
             "query": "MATCH (n:CityOrgPatientVisit)\n  WHERE n.request_id = 'fed_request_city_org_patient_visit-1'\nRETURN n.patient_id AS patient_id, n.encounter_count AS visits, n.organization_name AS organization, n.organization_city AS city\nORDER BY patient_id, city, organization\n\n\n",
             "width": 9,
             "height": 4,
@@ -91,7 +252,47 @@
         ]
       },
       {
-        "title": "New page",
+        "title": "Medications by org",
+        "reports": [
+          {
+            "id": "1fbd1976-7085-400e-82c7-d2818892fff7",
+            "title": "Request",
+            "query": "CREATE (record:FR_PtOrgMed) \n    SET\n        record.request_id = \"fed_request_pt_org_med-1\",\n        record.state = \"ON\", \n        record.timestamp = apoc.date.currentTimestamp()\nRETURN \n  record.state AS province\n\n",
+            "width": 3,
+            "height": 2,
+            "x": 0,
+            "y": 0,
+            "type": "table",
+            "selection": {},
+            "settings": {
+              "autorun": false,
+              "refreshButtonEnabled": true
+            }
+          },
+          {
+            "id": "1970e47d-721a-4175-bb45-fdfbcbcce833",
+            "title": "Responses",
+            "query": "MATCH (n:PtOrgMed)\n  WHERE n.request_id = \"fed_request_pt_org_med-1\"\nRETURN [n.organization_city, n.organization_name] AS name, n.medication_count AS count\n",
+            "width": 9,
+            "height": 3,
+            "x": 3,
+            "y": 0,
+            "type": "sunburst",
+            "selection": {
+              "index": "name",
+              "value": "count",
+              "key": "(none)"
+            },
+            "settings": {
+              "autorun": false,
+              "refreshButtonEnabled": true
+            },
+            "schema": []
+          }
+        ]
+      },
+      {
+        "title": "Procedures performed",
         "reports": [
           {
             "id": "155303a2-cc88-4797-806d-77136193fa82",
@@ -111,7 +312,7 @@
           },
           {
             "id": "c0461b09-df99-4823-bf98-2080c9d14acb",
-            "title": "Response",
+            "title": "Responses",
             "query": "MATCH (n:CityYearTopProc)\nRETURN n.year AS year, n.procedure_1 AS procedure_1, n.procedure_2 AS procedure_2, n.procedure_3 AS procedure_3 ORDER BY year\n\n\n",
             "width": 9,
             "height": 3,
@@ -135,121 +336,21 @@
         ]
       },
       {
-        "title": "New page",
+        "title": "Reset",
         "reports": [
           {
-            "id": "41308c4b-8137-467b-a832-6db38b2819d8",
-            "title": "Request",
-            "query": "CREATE (record:FR_PatientCvxOrg) \n    SET\n        record.request_id = \"fed_request_patient_cvx_org-1\",\n        record.code_list = \"08,43,52,83\", \n        record.term = NULL, \n        record.timestamp = apoc.date.currentTimestamp()\nRETURN\n  record.code_list AS code_list,\n  record.term AS term\n\n\n",
+            "id": "9107b1e5-7769-46c5-aa95-25410bcd59da",
+            "title": "Reset",
+            "query": "MATCH (n) \n  WHERE NOT('_Neodash_Dashboard' IN LABELS(n))\nDELETE n\n\n",
             "width": 3,
             "height": 2,
             "x": 0,
             "y": 0,
-            "type": "table",
+            "type": "value",
             "selection": {},
             "settings": {
               "autorun": false,
               "refreshButtonEnabled": true
-            }
-          },
-          {
-            "id": "4931084a-3802-46a2-80e7-39dd880c554c",
-            "title": "Responses",
-            "query": "MATCH (n:PatientCvxOrg)\n  WHERE n.request_id = 'fed_request_patient_cvx_org-1'\nWITH DISTINCT(n.patient_zip) AS zip, n.immunization_count AS count, n.code_list AS code_list\nRETURN zip, count, code_list ORDER BY zip\n\n\n\n\n",
-            "width": 9,
-            "height": 2,
-            "x": 3,
-            "y": 0,
-            "type": "bar",
-            "selection": {
-              "index": "zip",
-              "value": "count",
-              "key": "code_list"
-            },
-            "settings": {
-              "autorun": false,
-              "refreshButtonEnabled": true,
-              "showOptionalSelections": true
-            },
-            "schema": []
-          }
-        ]
-      },
-      {
-        "title": "New page",
-        "reports": [
-          {
-            "id": "1fbd1976-7085-400e-82c7-d2818892fff7",
-            "title": "Request",
-            "query": "CREATE (record:FR_PtOrgMed) \n    SET\n        record.request_id = \"fed_request_pt_org_med-1\",\n        record.state = \"ON\", \n        record.timestamp = apoc.date.currentTimestamp()\nRETURN \n  record.state AS province\n\n",
-            "width": 3,
-            "height": 2,
-            "x": 0,
-            "y": 0,
-            "type": "table",
-            "selection": {},
-            "settings": {
-              "autorun": false,
-              "refreshButtonEnabled": true
-            }
-          },
-          {
-            "id": "1970e47d-721a-4175-bb45-fdfbcbcce833",
-            "title": "Response",
-            "query": "MATCH (n:PtOrgMed)\n  WHERE n.request_id = \"fed_request_pt_org_med-1\"\nRETURN [n.organization_city, n.organization_name] AS name, n.medication_count AS count\n",
-            "width": 9,
-            "height": 3,
-            "x": 3,
-            "y": 0,
-            "type": "sunburst",
-            "selection": {
-              "index": "name",
-              "value": "count",
-              "key": "(none)"
-            },
-            "settings": {
-              "autorun": false,
-              "refreshButtonEnabled": true
-            },
-            "schema": []
-          }
-        ]
-      },
-      {
-        "title": "New page",
-        "reports": [
-          {
-            "id": "dcf7da20-5eea-4539-a1d1-ef13d39b165e",
-            "title": "Request",
-            "query": "CREATE (record:FR_TopKImmunization) \n    SET\n        record.request_id = \"fed_request_top_k_immunization-1\",\n        record.k = 10, \n        record.timestamp = apoc.date.currentTimestamp()\nRETURN\n  record.k AS k\n\n",
-            "width": 3,
-            "height": 2,
-            "x": 0,
-            "y": 0,
-            "type": "table",
-            "selection": {},
-            "settings": {
-              "autorun": false,
-              "refreshButtonEnabled": true
-            }
-          },
-          {
-            "id": "5c560540-1afa-48b8-a8ab-0242aeb643bf",
-            "title": "Response",
-            "query": "MATCH (n:TopKImmunization)\n  WHERE n.request_id = \"fed_request_top_k_immunization-1\"\nRETURN n.patient_zip AS zip, n.immunization_count AS immunization_count, n.immunization_code AS immunization_code\n",
-            "width": 9,
-            "height": 3,
-            "x": 3,
-            "y": 0,
-            "type": "bar",
-            "selection": {
-              "index": "zip",
-              "value": "immunization_count",
-              "key": "immunization_code"
-            },
-            "settings": {
-              "showOptionalSelections": true,
-              "autorun": false
             },
             "schema": []
           }
