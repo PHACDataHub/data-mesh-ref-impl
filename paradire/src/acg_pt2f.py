@@ -17,12 +17,12 @@ class Worker(object):
     def process(self, in_topic, msg_key, msg_val):
         request_id = msg_key['request_id']
         
-        topic_name = in_topic
+        out_topic = in_topic
         key = msg_key
         val = {k: None if v is None else self.tranform(k, v) for k, v in msg_val.items()}
         val['pt'] = self.pt
         
-        return in_topic, key, val
+        return out_topic, key, val
 
     def tranform(self, field, value):
         if field in self.transform_dict['to_transform']:

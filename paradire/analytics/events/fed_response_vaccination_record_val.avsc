@@ -14,7 +14,7 @@
         {"name": "encounter_description", "type": "string", "doc": "Description of the encounter"},
         {"name": "patient_id", "type": "string", "doc": "Primary Key. Unique Identifier of the patient - UUID"},
         {"name": "patient_address", "type": "string", "doc": "Patient's street address without commas or newlines"},
-        {"name": "patient_age", "type": "int", "doc": "The age of the Patient"},
+        {"name": "patient_age", "type": "long", "doc": "The age of the Patient"},
         {"name": "patient_zip", "type": ["null", "string"], "default": null, "doc": "Patient's zip code"},
         {"name": "patient_gender", "type": "string", "doc": "Gender. M is male, F is female"},
         {"name": "patient_race", "type": "string", "doc": "Description of the patient's primary race"},

@@ -20,14 +20,16 @@ class Worker(object):
     def process(self, in_topic, msg_key, msg_val):
         request_id = msg_key['request_id']
         
-        topic_name = in_topic
+        out_topic = in_topic
         key = msg_key
-        val = {k: msg_val[k] for k in self.converter_dict[topic_name]['val']}
-        for k in self.converter_dict[topic_name]['empty2null']:
-            if val[k] == '':
-                val[k] = None
+        val = {k: msg_val[k] for k in self.converter_dict[out_topic]['val']}
+
+        if self.converter_dict[out_topic]['empty2null']:
+            for k in self.converter_dict[out_topic]['empty2null']:
+                if val[k] == '':
+                    val[k] = None
         
-        return topic_name, key, val
+        return out_topic, key, val
 
 
 if __name__ == '__main__':
