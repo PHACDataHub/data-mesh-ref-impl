@@ -382,3 +382,13 @@ WITH n, patient, encounter
     MERGE (n)-[:PROCEDURE_OF_PATIENT]->(patient)
     MERGE (n)-[:PROCEDURE_OF_ENCOUNTER]->(encounter)
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+CREATE (n:Symptom {patient_id: event.patient_id})
+    SET n.race = event.race,
+        n.ethnicity = event.ethnicity,
+        n.gender = event.gender,
+        n.age_begin = event.age_begin,
+        n.age_end = event.age_end,
+        n.pathology = event.pathology,
+        n.num_symptoms = event.num_symptoms,
+        n.symptoms = event.symptoms
+////////////////////////////////////////////////////////////////////////////////////////////////////

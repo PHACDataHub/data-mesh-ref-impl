@@ -9,13 +9,9 @@ set -e
 # fi
 
 if [ -z "$1" ]; then
-    echo "Usage: ./convert_ehr_to_avro.sh <csv_dir> <avro_dir>"
-    echo "Example: ./convert_ehr_to_avro.sh ~/synthea/ca_spp/AB/csv/2023_10_19T18_15_33Z data"
+    echo "Usage: ./convert_ehr_to_avro.sh <schema_folder> <csv_folder> <symptoms_folder> <avro_folder>"
+    echo "Example: ./convert_ehr_to_avro.sh governance/events ~/synthea/bc_spp/BC/csv/2023_11_08T15_35_59Z ~/synthea/bc_spp/BC/symptoms/csv/2023_11_08T15_36_00Z data"
     exit 1
 fi
 
-if [ ! -d "data" ]; then
-    mkdir data
-fi
-
-python src/csv2avro.py governance/events $1 data
+python src/csv2avro.py $@

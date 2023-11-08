@@ -429,6 +429,7 @@ services:
       kafka-topics --bootstrap-server broker:${BROKER_INTERNAL_PORT} --create --if-not-exists --topic procedures --replication-factor ${REPLICATION_FACTOR} --partitions ${PARTITIONS}
       kafka-topics --bootstrap-server broker:${BROKER_INTERNAL_PORT} --create --if-not-exists --topic providers --replication-factor ${REPLICATION_FACTOR} --partitions ${PARTITIONS}
       kafka-topics --bootstrap-server broker:${BROKER_INTERNAL_PORT} --create --if-not-exists --topic supplies --replication-factor ${REPLICATION_FACTOR} --partitions ${PARTITIONS}
+      kafka-topics --bootstrap-server broker:${BROKER_INTERNAL_PORT} --create --if-not-exists --topic symptoms --replication-factor ${REPLICATION_FACTOR} --partitions ${PARTITIONS}
       kafka-topics --bootstrap-server broker:${BROKER_INTERNAL_PORT} --create --if-not-exists --topic fed_request_city_org_patient --replication-factor ${REPLICATION_FACTOR} --partitions ${PARTITIONS}
       kafka-topics --bootstrap-server broker:${BROKER_INTERNAL_PORT} --create --if-not-exists --topic fed_request_city_org_patient_visit --replication-factor ${REPLICATION_FACTOR} --partitions ${PARTITIONS}
       kafka-topics --bootstrap-server broker:${BROKER_INTERNAL_PORT} --create --if-not-exists --topic fed_request_city_year_top_proc --replication-factor ${REPLICATION_FACTOR} --partitions ${PARTITIONS}

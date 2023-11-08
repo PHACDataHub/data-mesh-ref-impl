@@ -570,3 +570,21 @@ CREATE INDEX request_id_fr_city_org_patient_visit IF NOT EXISTS FOR (n:FR_CityOr
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// Creating constraints and indexes for Symptom entities
+//
+CREATE INDEX patient_id_symptom IF NOT EXISTS FOR (n:Symptom) ON (n.patient_id);
+
+CREATE TEXT INDEX race_symptom IF NOT EXISTS FOR (n:Symptom) ON (n.race);
+CREATE TEXT INDEX ethnicity_symptom IF NOT EXISTS FOR (n:Symptom) ON (n.ethnicity);
+CREATE TEXT INDEX gender_symptom IF NOT EXISTS FOR (n:Symptom) ON (n.gender);
+
+CREATE INDEX age_begin_patient IF NOT EXISTS FOR (n:Symptom) ON (n.age_begin);
+CREATE INDEX age_end_patient IF NOT EXISTS FOR (n:Symptom) ON (n.age_end);
+
+CREATE TEXT INDEX pathology_symptom IF NOT EXISTS FOR (n:Symptom) ON (n.pathology);
+CREATE TEXT INDEX num_symptoms_symptom IF NOT EXISTS FOR (n:Symptom) ON (n.num_symptoms);
+CREATE TEXT INDEX symptoms IF NOT EXISTS FOR (n:Symptom) ON (n.symptoms);
+//
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
