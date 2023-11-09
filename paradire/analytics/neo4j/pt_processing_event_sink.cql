@@ -291,6 +291,7 @@ MERGE (n:Patient {patient_id: event.patient_id})
         n.city = event.city,
         n.county = event.county,
         n.fips = event.fips,
+        n.state = event.state,
         n.zip = event.zip,
         n.location = POINT({latitude: event.lat, longitude: event.lon}),
         n.healthcare_expenses = event.healthcare_expenses,
