@@ -204,6 +204,7 @@ CREATE TEXT INDEX procedure_code_imaging_study IF NOT EXISTS FOR (n:ImagingStudy
 // patient_id is used for identifying Patient entity, then establishing a IMMUNIZATION_OF_PATIENT relation
 // encounter_id is used for identifying Encounter entity, then establishing a IMMUNIZATION_OF_ENCOUNTER relation
 
+CREATE INDEX date_immunization IF NOT EXISTS FOR (n:Immunization) ON (n.date);
 CREATE TEXT INDEX code_immunization IF NOT EXISTS FOR (n:Immunization) ON (n.code);
 CREATE FULLTEXT INDEX description_immunization IF NOT EXISTS FOR (n:Immunization) ON EACH [n.description];
 CREATE INDEX base_cost_immunization IF NOT EXISTS FOR (n:Immunization) ON (n.base_cost);
@@ -586,5 +587,13 @@ CREATE INDEX age_end_patient IF NOT EXISTS FOR (n:Symptom) ON (n.age_end);
 CREATE TEXT INDEX pathology_symptom IF NOT EXISTS FOR (n:Symptom) ON (n.pathology);
 CREATE TEXT INDEX num_symptoms_symptom IF NOT EXISTS FOR (n:Symptom) ON (n.num_symptoms);
 CREATE TEXT INDEX symptoms IF NOT EXISTS FOR (n:Symptom) ON (n.symptoms);
+//
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// Creating Fed request simulation params
+//
+CREATE INDEX current_far_1 IF NOT EXISTS FOR (n:FAR_1) ON (n.current);
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

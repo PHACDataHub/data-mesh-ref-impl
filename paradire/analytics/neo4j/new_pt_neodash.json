@@ -1,0 +1,891 @@
+{
+    "title": "PT Analytics Platform",
+    "version": "2.3",
+    "settings": {
+      "pagenumber": 13,
+      "editable": true,
+      "fullscreenEnabled": false,
+      "parameters": {
+        "neodash_patient_name": "",
+        "neodash_patient_name_display": "",
+        "neodash_procedure_year_start": "2010",
+        "neodash_procedure_year_end": "2022",
+        "neodash_provider_name": "Truman805 Crona259",
+        "neodash_provider_name_display": "Truman805 Crona259",
+        "neodash_procedure_description": "Chest X-ray",
+        "neodash_procedure_description_display": "Chest X-ray",
+        "neodash_procedure_description_1": "Depression screening (procedure)",
+        "neodash_procedure_description_1_display": "Depression screening (procedure)",
+        "neodash_organization_name": "Bulimia Anorexia Nervosa Association (Bana)",
+        "neodash_organization_name_display": "Bulimia Anorexia Nervosa Association (Bana)",
+        "neodash_procedure_description_2": "Medication Reconciliation (procedure)",
+        "neodash_procedure_description_2_display": "Medication Reconciliation (procedure)",
+        "neodash_procedure_description_3": "Assessment of anxiety (procedure)",
+        "neodash_procedure_description_3_display": "Assessment of anxiety (procedure)",
+        "neodash_organization_zip": "L3R 4Z8",
+        "neodash_organization_zip_display": "L3R 4Z8",
+        "neodash_organization_city": "Mississauga",
+        "neodash_organization_city_display": "Mississauga",
+        "neodash_organization_city_2": "Toronto",
+        "neodash_organization_city_2_display": "Toronto",
+        "neodash_organization_city_3": "Toronto",
+        "neodash_organization_city_3_display": "Toronto",
+        "neodash_province": "British Columbia",
+        "neodash_city": "",
+        "neodash_end_date": {
+          "year": 2021,
+          "month": 4,
+          "day": 1
+        },
+        "neodash_start_date": {
+          "year": 2021,
+          "month": 1,
+          "day": 1
+        },
+        "neodash_patient_state": "",
+        "neodash_patient_state_display": "",
+        "neodash_patient_city": [],
+        "neodash_patient_city_display": [],
+        "neodash_patient_zip": [],
+        "neodash_patient_zip_display": [],
+        "neodash_immunization_code": [
+          "207",
+          "208"
+        ],
+        "neodash_immunization_code_display": [
+          "207",
+          "208"
+        ],
+        "neodash_period_length": "3",
+        "neodash_months": "1",
+        "neodash_number_of_periods": "4",
+        "undefined": {
+          "year": 2020,
+          "month": 1,
+          "day": 2
+        }
+      },
+      "theme": "light",
+      "downloadImageEnabled": true,
+      "queryTimeLimit": 300
+    },
+    "pages": [
+      {
+        "title": "Table",
+        "reports": [
+          {
+            "id": "15ae8773-2e34-4ded-9aae-9482254ffc3d",
+            "title": "(10 random) Patients",
+            "query": "MATCH (p:Patient) RETURN p.first + ' ' + p.last AS name , TOSTRING(p.birth_date) AS birth_date, p.gender AS gender, p.race AS race, p.ethnicity AS ethnicity, p.birth_place AS birth_place, p.address AS address, p.zip AS zip, p.city AS city, p.healthcare_coverage AS healthcare_coverage, p.income AS income SKIP TOINTEGER(RAND() * 10) + 1 LIMIT 10\n\n\n",
+            "width": 12,
+            "height": 4,
+            "x": 0,
+            "y": 1,
+            "type": "table",
+            "selection": {},
+            "settings": {
+              "compact": false,
+              "columnWidths": "[10, 5, 3, 3, 5, 9, 10, 3, 10, 7, 5]",
+              "refreshButtonEnabled": true,
+              "fullscreenEnabled": true,
+              "allowDownload": true,
+              "downloadImageEnabled": true
+            }
+          }
+        ]
+      },
+      {
+        "title": "Immunizations",
+        "reports": [
+          {
+            "id": "d22ed1bf-eb70-42f7-84e6-d9e47e0ad539",
+            "title": "100 (random) Immunizations",
+            "query": "MATCH (immunization:Immunization)\nWITH immunization SKIP TOINTEGER(RAND() * 100) + 1 LIMIT 100\nWITH immunization ORDER BY immunization.date ASC\n  MATCH (organization:Organization)-[]-(encounter:Encounter)-[:IMMUNIZATION_OF_ENCOUNTER]-(immunization)-[:IMMUNIZATION_OF_PATIENT]-(patient:Patient)\nWITH immunization, organization, encounter, patient\nRETURN\n  SUBSTRING(TOSTRING(immunization.date), 0, 10) AS date,\n  immunization.code AS code,\n  immunization.description AS description,\n  SUBSTRING(organization.name, 0, 50) AS organization,\n  encounter.description AS encounter_description,\n  SUBSTRING(patient.patient_id, 0, 8) AS patient_id,\n  2023 - patient.birth_date.year AS age,\n  patient.zip AS zip,\n  patient.gender AS gender\n",
+            "width": 12,
+            "height": 3,
+            "x": 0,
+            "y": 0,
+            "type": "table",
+            "selection": {},
+            "settings": {
+              "columnWidths": "[4,2,11,16,11,3,2,2,2]"
+            }
+          }
+        ]
+      },
+      {
+        "title": "Graph",
+        "reports": [
+          {
+            "id": "7ec468f6-ef06-4743-8e97-73304d66f4bf",
+            "title": "A (random) Patient's immunizations at encounters with providers and organizations",
+            "query": "MATCH (patient:Patient) \nWITH patient SKIP TOINTEGER(RAND() * 10) + 1 LIMIT 1\n  MATCH (patient)-[r1]-(encounter:Encounter)-[r2]-(organization:Organization), \n    (encounter)-[r3]-(provider:Provider), \n    (encounter)-[r4]-(immunization:Immunization),\n    (encounter)-[r5]-(payer:Payer)\nRETURN patient, r1, encounter, r2, organization, r3, provider, r4, immunization, r5, payer",
+            "width": 12,
+            "height": 4,
+            "x": 0,
+            "y": 0,
+            "type": "graph",
+            "selection": {
+              "Patient": "first",
+              "ENCOUNTER_OF_PATIENT": "(label)",
+              "Encounter": "description",
+              "ENCOUNTER_OF_ORGANIZATION": "(label)",
+              "Organization": "name",
+              "ENCOUNTER_OF_PROVIDER": "(label)",
+              "Provider": "name",
+              "IMMUNIZATION_OF_ENCOUNTER": "(label)",
+              "Immunization": "description",
+              "ENCOUNTER_OF_PAYER": "(label)",
+              "Payer": "name"
+            },
+            "settings": {
+              "enableEditing": true,
+              "showPropertiesOnHover": true,
+              "allowDownload": true,
+              "refreshButtonEnabled": true,
+              "fullscreenEnabled": true,
+              "nodeColorScheme": "paired",
+              "downloadImageEnabled": true,
+              "rightClickToExpandNodes": true
+            },
+            "schema": [
+              [
+                "Patient",
+                "income",
+                "zip",
+                "address",
+                "last",
+                "ethnicity",
+                "race",
+                "gender",
+                "city",
+                "healthcare_expenses",
+                "birth_date",
+                "county",
+                "birth_place",
+                "ssn",
+                "healthcare_coverage",
+                "patient_id",
+                "location",
+                "first"
+              ],
+              [
+                "ENCOUNTER_OF_PATIENT"
+              ],
+              [
+                "Encounter",
+                "code",
+                "payer_coverage",
+                "stop",
+                "start",
+                "description",
+                "encounter_class",
+                "total_claim_cost",
+                "encounter_id",
+                "base_encounter_cost"
+              ],
+              [
+                "ENCOUNTER_OF_ORGANIZATION"
+              ],
+              [
+                "Organization",
+                "zip",
+                "revenue",
+                "address",
+                "phone",
+                "city",
+                "organization_id",
+                "name",
+                "location",
+                "utilization",
+                "state"
+              ],
+              [
+                "ENCOUNTER_OF_PROVIDER"
+              ],
+              [
+                "Provider",
+                "zip",
+                "speciality",
+                "address",
+                "encounters",
+                "gender",
+                "city",
+                "procedures",
+                "name",
+                "provider_id",
+                "location",
+                "state"
+              ],
+              [
+                "IMMUNIZATION_OF_ENCOUNTER"
+              ],
+              [
+                "Immunization",
+                "date",
+                "code",
+                "base_cost",
+                "description"
+              ],
+              [
+                "ENCOUNTER_OF_PAYER"
+              ],
+              [
+                "Payer",
+                "covered_encounters",
+                "address",
+                "city",
+                "covered_procedures",
+                "uncovered_immunizations",
+                "amount_uncovered",
+                "covered_immunizations",
+                "amount_covered",
+                "revenue",
+                "ownership",
+                "uncovered_medications",
+                "name",
+                "uncovered_procedures",
+                "covered_medications",
+                "payer_id",
+                "uncovered_encounters",
+                "member_months",
+                "unique_customers",
+                "qols_avg"
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Pie Chart",
+        "reports": [
+          {
+            "id": "8e85c1a2-0183-45bb-bde5-3c56d125452c",
+            "title": "Immunization count per zip code",
+            "query": "MATCH (n:Patient)-[r]-(i:Immunization)\nRETURN DISTINCT(n.zip) AS zip, COUNT(i) AS immunization_count\n\n\n\n\n",
+            "width": 12,
+            "height": 4,
+            "x": 0,
+            "y": 0,
+            "type": "pie",
+            "selection": {
+              "index": "zip",
+              "value": "immunization_count",
+              "key": "(none)"
+            },
+            "settings": {
+              "frozen": false,
+              "nodePositions": {},
+              "fullscreenEnabled": true,
+              "refreshButtonEnabled": true,
+              "downloadImageEnabled": true
+            },
+            "schema": []
+          }
+        ]
+      },
+      {
+        "title": "Bar Chart (stacked)",
+        "reports": [
+          {
+            "id": "c4b769c9-340c-4665-9f78-a2437e5d3801",
+            "title": "Top 5 immunizations per zip",
+            "query": "MATCH (immunization:Immunization)\nWITH DISTINCT(immunization.code) AS code, COUNT(immunization) AS count ORDER BY count DESC LIMIT 5\nWITH COLLECT(code) AS codes\n  MATCH (patient:Patient)-[]-(immunization:Immunization)\n    WHERE immunization.code IN codes\nRETURN patient.zip AS zip, COUNT(immunization) AS count, immunization.code AS code\n",
+            "width": 12,
+            "height": 4,
+            "x": 0,
+            "y": 0,
+            "type": "bar",
+            "selection": {
+              "index": "zip",
+              "value": "count",
+              "key": "code"
+            },
+            "settings": {
+              "groupMode": "stacked",
+              "downloadImageEnabled": true,
+              "fullscreenEnabled": true,
+              "refreshButtonEnabled": true,
+              "barValues": true,
+              "legend": true,
+              "showOptionalSelections": true,
+              "colors": "paired",
+              "positionLabel": "off"
+            },
+            "schema": []
+          }
+        ]
+      },
+      {
+        "title": "Bar Chart",
+        "reports": [
+          {
+            "id": "95a53e78-6f98-4069-8fe0-1cee90ca3c2d",
+            "title": "Encounters with symptom (SNOMED-CT 185345009) per provider in 2021",
+            "query": "MATCH (e:Encounter)-[r]-(p:Provider)\n  WHERE e.code = \"185345009\" AND e.start > DATETIME('2020-01-01T00:00:00Z') AND e.stop < DATETIME('2021-01-01T00:00:00Z')\nRETURN DISTINCT(p.name), COUNT(e) AS encounter_count\n",
+            "width": 12,
+            "height": 4,
+            "x": 0,
+            "y": 0,
+            "type": "bar",
+            "selection": {
+              "index": "(p.name)",
+              "value": "encounter_count",
+              "key": "(none)"
+            },
+            "settings": {
+              "barValues": true,
+              "refreshButtonEnabled": true,
+              "fullscreenEnabled": true,
+              "downloadImageEnabled": true
+            },
+            "schema": []
+          }
+        ]
+      },
+      {
+        "title": "Map",
+        "reports": [
+          {
+            "id": "9f3d49c1-ec80-416f-9169-3762915f41d2",
+            "title": "Vaccination administrations in Ontario",
+            "query": "MATCH (p:Patient)\nWITH p\n  MATCH (p)-[r1]-(i:Immunization)-[r2]-(e:Encounter)-[r3]-(o:Organization)\nWITH DISTINCT([p, o]) AS po, COUNT(*) AS count\nWITH po[0] AS p, po[1] AS o, count\nWITH p, o, count, \n  apoc.create.vRelationship(p,'ADMINISTERED_BY',{count: count}, o) AS rel\nRETURN p, rel, o\n",
+            "width": 12,
+            "height": 4,
+            "x": 0,
+            "y": 0,
+            "type": "map",
+            "selection": {
+              "Patient": "first",
+              "ADMINISTERED_BY": "(label)",
+              "Organization": "name"
+            },
+            "settings": {
+              "defaultNodeSize": "small"
+            },
+            "schema": [
+              [
+                "Patient",
+                "income",
+                "zip",
+                "address",
+                "last",
+                "ethnicity",
+                "race",
+                "gender",
+                "city",
+                "healthcare_expenses",
+                "birth_date",
+                "county",
+                "birth_place",
+                "ssn",
+                "healthcare_coverage",
+                "patient_id",
+                "location",
+                "first",
+                "prefix",
+                "marital",
+                "passport",
+                "drivers",
+                "maiden",
+                "death_date",
+                "suffix"
+              ],
+              [
+                "ADMINISTERED_BY",
+                "count"
+              ],
+              [
+                "Organization",
+                "zip",
+                "revenue",
+                "address",
+                "phone",
+                "city",
+                "organization_id",
+                "name",
+                "location",
+                "utilization",
+                "state"
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Line Chart",
+        "reports": [
+          {
+            "id": "1475ea53-c21a-4ef5-bb1d-20352cbc5a8e",
+            "title": "Numbers of procedures performed per type",
+            "query": "MATCH (organization:Organization {city: $neodash_organization_city})-[]-(:Encounter)-[]-(procedure:Procedure)\n  WHERE procedure.description IN [$neodash_procedure_description_1, $neodash_procedure_description_2, $neodash_procedure_description_3]\nWITH DISTINCT(procedure.start.year) AS year, COLLECT(DISTINCT(procedure)) AS pc\nWITH year, \nSIZE([e IN pc WHERE e.description = $neodash_procedure_description_1]) AS procedure_1, \nSIZE([e IN pc WHERE e.description = $neodash_procedure_description_2]) AS procedure_2,\nSIZE([e IN pc WHERE e.description = $neodash_procedure_description_3]) AS procedure_3\nRETURN year, procedure_1, procedure_2, procedure_3 ORDER BY year\n",
+            "width": 12,
+            "height": 3,
+            "x": 0,
+            "y": 1,
+            "type": "line",
+            "selection": {
+              "x": "year",
+              "value": [
+                "procedure_1",
+                "procedure_2",
+                "procedure_3"
+              ]
+            },
+            "settings": {
+              "legend": true,
+              "downloadImageEnabled": true,
+              "fullscreenEnabled": true,
+              "refreshButtonEnabled": true,
+              "colors": "paired"
+            },
+            "schema": []
+          },
+          {
+            "id": "a4a0a25b-0b91-47d2-b8fe-2aed418003f0",
+            "title": "Organizations in the city of",
+            "query": "MATCH (n:`Organization`) \nWHERE toLower(toString(n.`city`)) CONTAINS toLower($input) \nRETURN DISTINCT n.`city` as value,  n.`city` as display ORDER BY size(toString(value)) ASC LIMIT 5",
+            "width": 3,
+            "height": 1,
+            "x": 0,
+            "y": 0,
+            "type": "select",
+            "selection": {},
+            "settings": {
+              "type": "Node Property",
+              "entityType": "Organization",
+              "propertyType": "city",
+              "propertyTypeDisplay": "city",
+              "parameterName": "neodash_organization_city"
+            },
+            "schema": []
+          },
+          {
+            "id": "813c30fa-108a-4487-a9fd-a8ed79a95b56",
+            "title": "Procedure 1",
+            "query": "MATCH (n:`Procedure`) \nWHERE toLower(toString(n.`description`)) CONTAINS toLower($input) \nRETURN DISTINCT n.`description` as value,  n.`description` as display ORDER BY size(toString(value)) ASC LIMIT 5",
+            "width": 3,
+            "height": 1,
+            "x": 3,
+            "y": 0,
+            "type": "select",
+            "selection": {},
+            "settings": {
+              "type": "Node Property",
+              "entityType": "Procedure",
+              "propertyType": "description",
+              "propertyTypeDisplay": "description",
+              "parameterName": "neodash_procedure_description_1",
+              "id": "1"
+            },
+            "schema": []
+          },
+          {
+            "id": "1ef66bca-3fe8-4bb9-bb74-8f56efd4cbbc",
+            "title": "Procedure 2",
+            "query": "MATCH (n:`Procedure`) \nWHERE toLower(toString(n.`description`)) CONTAINS toLower($input) \nRETURN DISTINCT n.`description` as value,  n.`description` as display ORDER BY size(toString(value)) ASC LIMIT 5",
+            "width": 3,
+            "height": 1,
+            "x": 6,
+            "y": 0,
+            "type": "select",
+            "selection": {},
+            "settings": {
+              "type": "Node Property",
+              "entityType": "Procedure",
+              "propertyType": "description",
+              "propertyTypeDisplay": "description",
+              "parameterName": "neodash_procedure_description_2",
+              "id": "2"
+            },
+            "schema": []
+          },
+          {
+            "id": "c052cbc7-cb4d-4ef9-8574-5ec058a592df",
+            "title": "Procedure 3",
+            "query": "MATCH (n:`Procedure`) \nWHERE toLower(toString(n.`description`)) CONTAINS toLower($input) \nRETURN DISTINCT n.`description` as value,  n.`description` as display ORDER BY size(toString(value)) ASC LIMIT 5",
+            "width": 3,
+            "height": 1,
+            "x": 9,
+            "y": 0,
+            "type": "select",
+            "selection": {},
+            "settings": {
+              "type": "Node Property",
+              "entityType": "Procedure",
+              "propertyType": "description",
+              "propertyTypeDisplay": "description",
+              "parameterName": "neodash_procedure_description_3",
+              "id": "3"
+            },
+            "schema": []
+          }
+        ]
+      },
+      {
+        "title": "Sunburst Chart",
+        "reports": [
+          {
+            "id": "98045ccb-64e0-45b4-9363-3bd4906b31e4",
+            "title": "Ontario distribution of medications (city - zip - organization)",
+            "query": "MATCH (organization:Organization)-[]-(:Encounter)-[]-(medication:Medication)\nRETURN [organization.city, SUBSTRING(organization.zip, 0, 3), organization.name] AS name, COUNT(medication) AS count\n\n",
+            "width": 12,
+            "height": 4,
+            "x": 0,
+            "y": 0,
+            "type": "sunburst",
+            "selection": {
+              "index": "name",
+              "value": "count",
+              "key": "(none)"
+            },
+            "settings": {
+              "colors": "paired",
+              "refreshButtonEnabled": true,
+              "fullscreenEnabled": true,
+              "downloadImageEnabled": true
+            },
+            "schema": []
+          }
+        ]
+      },
+      {
+        "title": "Circle Packing",
+        "reports": [
+          {
+            "id": "5291fdf9-1831-436b-906d-65468515c761",
+            "title": "Patient distribution (city - zip - organization)",
+            "query": "MATCH (organization:Organization {city: $neodash_organization_city})-[]-(:Encounter)-[]-(patient:Patient)\nRETURN [organization.city, SUBSTRING(organization.zip, 0, 3), organization.name] AS name, COUNT(patient) AS count\n\n\n\n\n",
+            "width": 9,
+            "height": 4,
+            "x": 3,
+            "y": 0,
+            "type": "circlePacking",
+            "selection": {
+              "index": "name",
+              "value": "count",
+              "key": "(none)"
+            },
+            "settings": {
+              "colors": "accent",
+              "fullscreenEnabled": true,
+              "refreshButtonEnabled": true,
+              "downloadImageEnabled": true,
+              "autorun": true,
+              "showLabels": true
+            },
+            "schema": []
+          },
+          {
+            "id": "a606ae16-18d2-4b87-8ab7-47dce073ca3d",
+            "title": "City",
+            "query": "MATCH (n:`Organization`) \nWHERE toLower(toString(n.`city`)) CONTAINS toLower($input) \nRETURN DISTINCT n.`city` as value,  n.`city` as display ORDER BY size(toString(value)) ASC LIMIT 5",
+            "width": 3,
+            "height": 2,
+            "x": 0,
+            "y": 0,
+            "type": "select",
+            "selection": {},
+            "settings": {
+              "type": "Node Property",
+              "entityType": "Organization",
+              "propertyType": "city",
+              "propertyTypeDisplay": "city",
+              "parameterName": "neodash_organization_city"
+            },
+            "schema": []
+          }
+        ]
+      },
+      {
+        "title": "Treemap",
+        "reports": [
+          {
+            "id": "eb64d563-92c9-4c6f-9821-4f30f8d34b75",
+            "title": "Procedures performed (city - zip - organization)",
+            "query": "MATCH (organization:Organization {city: $neodash_organization_city_2})-[]-(:Encounter)-[]-(procedure:Procedure)\nRETURN [organization.city, SUBSTRING(organization.zip, 0, 3), organization.name] AS name, COUNT(procedure) AS count\n\n\n\n\n\n\n\n",
+            "width": 10,
+            "height": 4,
+            "x": 2,
+            "y": 0,
+            "type": "treeMap",
+            "selection": {
+              "index": "name",
+              "value": "count",
+              "key": "(none)"
+            },
+            "settings": {
+              "fullscreenEnabled": true,
+              "refreshButtonEnabled": true,
+              "downloadImageEnabled": true
+            },
+            "schema": []
+          },
+          {
+            "id": "f59b73a9-3a49-4c80-ae96-9fe8ff2f0e02",
+            "title": "City",
+            "query": "MATCH (n:`Organization`) \nWHERE toLower(toString(n.`city`)) CONTAINS toLower($input) \nRETURN DISTINCT n.`city` as value,  n.`city` as display ORDER BY size(toString(value)) ASC LIMIT 5",
+            "width": 2,
+            "height": 2,
+            "x": 0,
+            "y": 0,
+            "type": "select",
+            "selection": {},
+            "settings": {
+              "type": "Node Property",
+              "entityType": "Organization",
+              "propertyType": "city",
+              "propertyTypeDisplay": "city",
+              "parameterName": "neodash_organization_city_2",
+              "id": "2"
+            },
+            "schema": []
+          }
+        ]
+      },
+      {
+        "title": "Sankey Chart",
+        "reports": [
+          {
+            "id": "5833dd78-2b23-4f96-a3c6-26c38e36c98e",
+            "title": "Patient visits per organizations",
+            "query": "MATCH (organization:Organization {city: $neodash_organization_city_3})-[r1]-(encounter:Encounter)-[r2]-(patient:Patient)\nWITH DISTINCT([organization, patient]) AS op, COUNT(*) AS count\nWITH op[0] AS organization, op[1] AS patient, count\nWITH patient, organization, count,\n  apoc.create.vRelationship(patient,'REGISTERED_AT',{count: count}, organization) AS rel\nRETURN patient, rel, organization\n",
+            "width": 10,
+            "height": 4,
+            "x": 2,
+            "y": 0,
+            "type": "sankey",
+            "selection": {
+              "Patient": "first",
+              "Organization": "name"
+            },
+            "settings": {
+              "legend": false,
+              "labelProperty": "count",
+              "fullscreenEnabled": true,
+              "refreshButtonEnabled": true,
+              "downloadImageEnabled": true
+            },
+            "schema": []
+          },
+          {
+            "id": "84aa8d90-f43b-4842-a681-3a0fddac1a13",
+            "title": "City",
+            "query": "MATCH (n:`Organization`) \nWHERE toLower(toString(n.`city`)) CONTAINS toLower($input) \nRETURN DISTINCT n.`city` as value,  n.`city` as display ORDER BY size(toString(value)) ASC LIMIT 5",
+            "width": 2,
+            "height": 2,
+            "x": 0,
+            "y": 0,
+            "type": "select",
+            "selection": {},
+            "settings": {
+              "type": "Node Property",
+              "entityType": "Organization",
+              "propertyType": "city",
+              "propertyTypeDisplay": "city",
+              "parameterName": "neodash_organization_city_3",
+              "id": "3"
+            },
+            "schema": []
+          }
+        ]
+      },
+      {
+        "title": "OpenAI-generated Query",
+        "reports": [
+          {
+            "id": "d4bf8b5b-38bd-4ca4-944e-009f1b1f23cd",
+            "title": "How many Patients are there per zip?",
+            "query": "MATCH (p:Patient) \nRETURN p.zip as Zip_Code, count(p) as Number_of_Patients",
+            "width": 12,
+            "height": 3,
+            "x": 0,
+            "y": 0,
+            "type": "bar",
+            "selection": {
+              "index": "Zip_Code",
+              "value": "Number_of_Patients",
+              "key": "(none)"
+            },
+            "settings": {},
+            "schema": []
+          }
+        ]
+      },
+      {
+        "title": "FAR 1",
+        "reports": [
+          {
+            "id": "03ad1539-42c6-48c7-acb8-9d1f805e6690",
+            "title": "Start date",
+            "query": "RETURN true;",
+            "width": 2,
+            "height": 1,
+            "x": 6,
+            "y": 0,
+            "type": "select",
+            "selection": {},
+            "settings": {
+              "type": "Date Picker"
+            },
+            "schema": []
+          },
+          {
+            "id": "505018ed-5bd2-4b0b-aa4a-531fe2a65780",
+            "title": "Period (months)",
+            "query": "RETURN true;",
+            "width": 2,
+            "height": 1,
+            "x": 8,
+            "y": 0,
+            "type": "select",
+            "selection": {},
+            "settings": {
+              "type": "Free Text",
+              "entityType": "period_length",
+              "parameterName": "neodash_period_length"
+            },
+            "schema": []
+          },
+          {
+            "id": "c5c66081-c3b3-4d58-85fc-47541f7948f0",
+            "title": "CVXs",
+            "query": "MATCH (n:`Immunization`) \nWHERE toLower(toString(n.`code`)) CONTAINS toLower($input) \nRETURN DISTINCT n.`code` as value,  n.`code` as display ORDER BY size(toString(value)) ASC LIMIT 5",
+            "width": 2,
+            "height": 1,
+            "x": 0,
+            "y": 0,
+            "type": "select",
+            "selection": {},
+            "settings": {
+              "type": "Node Property",
+              "entityType": "Immunization",
+              "multiSelector": true,
+              "propertyType": "code",
+              "propertyTypeDisplay": "code",
+              "parameterName": "neodash_immunization_code"
+            },
+            "schema": []
+          },
+          {
+            "id": "e7f79bb8-a53e-43b5-a8ba-0e50deaa5196",
+            "title": "Period",
+            "query": "MERGE (far:FAR_1)\n  ON CREATE SET far.current = 1\n  ON MATCH SET far.current = CASE WHEN far.current < TOINTEGER($neodash_number_of_periods) THEN far.current + 1 ELSE 1 END\nRETURN $neodash_start_date AS start_date, $neodash_start_date + DURATION({months: far.current * TOINTEGER($neodash_period_length)}) AS end_date, far.current AS current",
+            "width": 4,
+            "height": 1,
+            "x": 2,
+            "y": 0,
+            "type": "table",
+            "selection": {},
+            "settings": {
+              "type": "Node Property",
+              "entityType": "Patient",
+              "propertyType": "zip",
+              "propertyTypeDisplay": "zip",
+              "parameterName": "neodash_patient_zip",
+              "multiSelector": true,
+              "refreshButtonEnabled": true,
+              "refreshRate": 0
+            },
+            "schema": []
+          },
+          {
+            "id": "4f24011e-7ee9-42ed-8419-1819c6dc82eb",
+            "title": "Number of periods",
+            "query": "RETURN true;",
+            "width": 2,
+            "height": 1,
+            "x": 10,
+            "y": 0,
+            "type": "select",
+            "selection": {},
+            "settings": {
+              "type": "Free Text",
+              "entityType": "number_of_periods",
+              "parameterName": "neodash_number_of_periods"
+            },
+            "schema": []
+          },
+          {
+            "id": "5cc7a34e-58f4-46aa-ae85-acc8cdeed9ab",
+            "title": "Percentage of vaccinated population per zip code for the Period above",
+            "query": "MATCH (far: FAR_1)\nWITH far\n  MATCH (patient:Patient)\nWITH far, patient\n  MATCH (patient)-[]-(immunization:Immunization)\nWITH DISTINCT(patient) AS patient, COLLECT(immunization) AS immunizations, far\nWITH far, patient, REDUCE(l=0, e IN immunizations | \n  CASE WHEN \n      e.code IN $neodash_immunization_code AND \n      DATE(e.date) >= $neodash_start_date AND \n      DATE(e.date) <= $neodash_start_date + DURATION({months: far.current * TOINTEGER($neodash_period_length)})\n  THEN l + 1 ELSE l END) AS immunization_count\nWITH \n  DISTINCT(patient.zip) AS zip, \n  CASE immunization_count WHEN 2 THEN 'Fully vaccinated' WHEN 1 THEN 'One-dosed' ELSE 'Unvaccinated' END AS status, \n  COUNT(*) AS patient_count\nWITH zip, patient_count, status\n  MATCH (patient:Patient {zip: zip})\nWITH zip, patient_count, COUNT(patient) AS zip_patient_count, status\nRETURN zip, ROUND(patient_count*100.0 / zip_patient_count) AS percent, status\n\n\n",
+            "width": 12,
+            "height": 3,
+            "x": 0,
+            "y": 1,
+            "type": "bar",
+            "selection": {
+              "index": "zip",
+              "value": "percent",
+              "key": "status"
+            },
+            "settings": {
+              "refreshButtonEnabled": true,
+              "showOptionalSelections": true,
+              "barValues": true,
+              "styleRules": [
+                {
+                  "field": "status",
+                  "condition": "=",
+                  "value": "Unvaccinated",
+                  "customization": "bar color",
+                  "customizationValue": "red"
+                },
+                {
+                  "field": "status",
+                  "condition": "=",
+                  "value": "One-dosed",
+                  "customization": "bar color",
+                  "customizationValue": "orange"
+                },
+                {
+                  "field": "status",
+                  "condition": "=",
+                  "value": "Fully vaccinated",
+                  "customization": "bar color",
+                  "customizationValue": "green"
+                }
+              ]
+            },
+            "schema": []
+          }
+        ]
+      }
+    ],
+    "parameters": {},
+    "extensions": {
+      "active": true,
+      "activeReducers": [
+        "DASHBOARD/EXTENSIONS/QUERY_TRANSLATOR/"
+      ],
+      "advanced-charts": {
+        "active": true
+      },
+      "styling": {
+        "active": true
+      },
+      "actions": {
+        "active": true
+      },
+      "query-translator": {
+        "active": true,
+        "modelProvider": "OpenAI",
+        "settings": {
+          "modelType": "gpt-4-0613"
+        },
+        "lastMessages": {
+          "0": {
+            "8e85c1a2-0183-45bb-bde5-3c56d125452c": "How many Patients are there?"
+          },
+          "1": {
+            "92b6ed72-5695-4cbe-ae19-3c89e8b9d1a0": "How many patients are there?"
+          },
+          "11": {
+            "5c3a6aa3-1d75-41b0-875e-61e8409b4446": "How many Patients are there per Zip?",
+            "d4bf8b5b-38bd-4ca4-944e-009f1b1f23cd": "How many Patients are there per zip?"
+          }
+        }
+      }
+    }
+  }
