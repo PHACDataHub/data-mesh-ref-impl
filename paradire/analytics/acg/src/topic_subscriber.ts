@@ -1,10 +1,21 @@
+/**
+ * Utility function to bind a set of request and response topics to a graphql
+ * operation that transforms the payload according to the governance ruleset.
+ */
 import { type SchemaRegistry } from "@kafkajs/confluent-schema-registry";
 import { Partitioners, type Kafka } from "kafkajs";
 
 import { PubSub } from "graphql-subscriptions";
 
+// In-memory queue to move messages from kafka consumer to graphql resolver.
 const pubsub = new PubSub();
 
+/**
+ * Create an object suitable to pass to GraphQLSchema.resolvers via
+ * Object.fromEntries.
+ * @param param0 
+ * @returns 
+ */
 export const subscribeToTopic = async ({
   name,
   topic,
@@ -20,18 +31,22 @@ export const subscribeToTopic = async ({
   registry: { pt: SchemaRegistry; federal: SchemaRegistry };
   pt: string;
 }) => {
-  // Grab the avro schema ids from the registry server
+
+  // Grab the avro schema ids from the registry server used to convert federal
+  // request messages to PT request messages.
   const pt_key_schema_id = await registry.pt.getLatestSchemaId(
     subject?.key ?? `${topic.request}-key`
   );
   const pt_value_schema_id = await registry.pt.getLatestSchemaId(
     subject?.value ?? `${topic.request}-value`
   );
+  // Grab the avro schema ids from the registry server used to convert PT
+  // responses to federal responses.
   const fed_key_schema_id = await registry.federal.getLatestSchemaId(
-    subject?.key ?? `${topic.request}-key`
+    subject?.key ?? `${topic.response}-key`
   );
   const fed_value_schema_id = await registry.federal.getLatestSchemaId(
-    subject?.value ?? `${topic.request}-value`
+    subject?.value ?? `${topic.response}-value`
   );
 
   // Create a producer to forward requests from the federal analytics platform
@@ -50,26 +65,30 @@ export const subscribeToTopic = async ({
   });
   await fed_consumer.run({
     eachMessage: async ({ message }) => {
-      const key = await registry.federal.decode(message.key);
-      const value = await registry.federal.decode(message.value);
-      // Generate a avro message that will be sent to the request topic.
-      const forwardMessage = {
-        key: await registry.pt.encode(pt_key_schema_id, key),
-        value: await registry.pt.encode(pt_value_schema_id, value),
-      };
-      // Send the message received from the federal analytics platform to the
-      // to the PT platform.
-      console.debug(`[${name}] sending request to PT.`);
-      await pt_producer.send({
-        topic: topic.request,
-        messages: [forwardMessage],
-      });
+      // This method is fired every time a federal analytics request is sent.
+      // It will convert the message and send it as-is to the PT.
+      if (message.key && message.value) {
+        const key = await registry.federal.decode(message.key);
+        const value = await registry.federal.decode(message.value);
+        // Generate a avro message that will be sent to the request topic.
+        const forwardMessage = {
+          key: await registry.pt.encode(pt_key_schema_id, key),
+          value: await registry.pt.encode(pt_value_schema_id, value),
+        };
+        // Send the message received from the federal analytics platform to the
+        // to the PT platform.
+        console.debug(`[${name}] sending request to PT.`);
+        await pt_producer.send({
+          topic: topic.request,
+          messages: [forwardMessage],
+        });
+      }
     },
   });
 
   // Create a producer to forward responses from the PT to the federal
   // analytics platform.
-  const fed_producer = kafka.pt.producer({
+  const fed_producer = kafka.federal.producer({
     allowAutoTopicCreation: true,
     createPartitioner: Partitioners.DefaultPartitioner,
   });
@@ -84,9 +103,15 @@ export const subscribeToTopic = async ({
   });
   await pt_consumer.run({
     eachMessage: async ({ message }) => {
-      const value = await registry.pt.decode(message.value);
-      console.debug(`[${name}] sending response to graphql pipeline`);
-      pubsub.publish(name, { ...value, pt });
+      // When the PT creates a response, this method will send the information
+      // via our in-memory queue to the graphql resolver to apply any governance
+      // rules required.  It also adds a "PT" field to every response matching
+      // the configured value.
+      if (message.value) {
+        const value = await registry.pt.decode(message.value);
+        console.debug(`[${name}] - ${value.request_id} - sending response to graphql pipeline`);
+        pubsub.publish(name, { ...value, pt });
+      }
     },
   });
 
@@ -94,6 +119,8 @@ export const subscribeToTopic = async ({
     name,
     {
       dispose: async function () {
+        // Meant to be called prior to exiting the application to cleanly
+        // disconnect from both kafkas.
         console.log(`[${name}] Disconnecting kafka consumers.`);
         await pt_consumer.disconnect();
         await fed_consumer.disconnect();
@@ -102,11 +129,17 @@ export const subscribeToTopic = async ({
         await pt_producer.disconnect();
       },
       resolve: () => {
+        // Returns an async iterator that graphql will emit every time a result
+        // is available; via the @stream directive.
         return pubsub.asyncIterator(name);
       },
       send_to_fed: async (value: { request_id: string }) => {
         // Generate a avro message that will be sent to the response topic on
-        // the federal side
+        // the federal analytics platform.
+        // At this point, the data has been processed and all governance rules
+        // have been applied.
+        console.log(`[${name}] - ${value.request_id} - send_to_fed - processing request.`);
+        try {
         const forwardMessage = {
           key: await registry.federal.encode(fed_key_schema_id, {
             request_id: value.request_id,
@@ -115,11 +148,14 @@ export const subscribeToTopic = async ({
         };
         // Send the message received from the PT platform and processed by
         // the graphql pipeline to the federal analytics platform.
-        console.debug(`[${name}] forwarding response to federal`);
+        console.debug(`[${name}] - ${value.request_id} - forwarding response to federal`);
         await fed_producer.send({
           topic: topic.response,
           messages: [forwardMessage],
         });
+        } catch (e) {
+          console.error(e);
+        }
       },
     },
   ];

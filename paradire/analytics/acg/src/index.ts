@@ -3,7 +3,7 @@ import { SchemaRegistry } from "@kafkajs/confluent-schema-registry";
 
 import { rulesToGraphQl, getSchema } from "@phac-aspc-dgg/schema-tools";
 
-import { dateDirective, hashDirective } from "./directives.js";
+import { blankDirective, dateDirective, hashDirective } from "./directives.js";
 
 import {
   BROKER_HOST,
@@ -35,6 +35,9 @@ const { dateDirectiveTypeDefs, dateDirectiveTransformer } =
 const { hashDirectiveTypeDefs, hashDirectiveTransformer } =
   hashDirective("hash");
 
+const { blankDirectiveTypeDefs, blankDirectiveTransformer } =
+  blankDirective("blank");
+
 const ruleset = `
 ruleset:
   version: 0.0.1
@@ -42,10 +45,10 @@ ruleset:
     - name: CityOrgPatient
       fields:
         - request_id
-        - city
-        - name:
-            hash: true
-        - count
+        - organization_city
+        - organization_name
+        - patient_count:
+            blank: true
         - pt
         - timestamp
 `;
@@ -80,7 +83,8 @@ const typeDefs = rulesToGraphQl(ruleset, paradire_schema)
     "directive @defer(if: Boolean, label: String) on FRAGMENT_SPREAD | INLINE_FRAGMENT\n",
     "directive @stream(if: Boolean, label: String, initialCount: Int = 0) on FIELD\n",
     dateDirectiveTypeDefs,
-    hashDirectiveTypeDefs
+    hashDirectiveTypeDefs,
+    blankDirectiveTypeDefs
   );
 
 console.log("----- Loading server using schema -----");
@@ -89,14 +93,14 @@ console.log("=======================================");
 
 const tmp_schema = buildSchema(typeDefs);
 
-const fields = tmp_schema.getQueryType().getFields();
+const fields = tmp_schema.getQueryType()?.getFields() || [];
 const query_types = Object.keys(fields);
 
-const get_fields = (type: GraphQLOutputType, out = []) => {
+const get_fields = (type: GraphQLOutputType, out: string[] = []) => {
   if ("ofType" in type) {
     get_fields(type.ofType, out);
-  } else if ("astNode" in type && "fields" in type.astNode) {
-    type.astNode.fields.forEach((f) => {
+  } else if ("astNode" in type && type.astNode && "fields" in type.astNode) {
+    type.astNode.fields?.forEach((f) => {
       out.push(f.name.value);
     });
   }
@@ -105,7 +109,7 @@ const get_fields = (type: GraphQLOutputType, out = []) => {
 
 const get_default = (arg: GraphQLArgument) => {
   if (arg.defaultValue) return arg.defaultValue;
-  let type: string;
+  let type = "";
   if ("ofType" in arg.type) {
     if ("name" in arg.type.ofType) {
       type = arg.type.ofType.name;
@@ -157,11 +161,13 @@ const query_topic_map = await Promise.all(
 );
 
 const schema = hashDirectiveTransformer(
-  dateDirectiveTransformer(
-    makeExecutableSchema({
-      typeDefs,
-      resolvers: { Query: Object.fromEntries(query_topic_map) },
-    })
+  blankDirectiveTransformer(
+    dateDirectiveTransformer(
+      makeExecutableSchema({
+        typeDefs,
+        resolvers: { Query: Object.fromEntries(query_topic_map) },
+      })
+    )
   )
 );
 
@@ -198,13 +204,20 @@ for (const topic of query_topic_map) {
         } else if (listener.body.kind === "incremental") {
           for await (const result of listener.body.subsequentResults) {
             if ("incremental" in result) {
-              result.incremental.forEach((inc) => {
+              result.incremental?.forEach((inc) => {
                 if ("items" in inc && Array.isArray(inc.items)) {
                   inc.items.forEach(async (item) => {
+                    console.debug(
+                      `[${name}] - ${item.request_id} - received data from graphql`
+                    );
                     await resolver.send_to_fed(item);
                   });
                 }
               });
+            } else {
+              if ("completed" in result && Array.isArray(result.completed)) {
+                result.completed.forEach((c) => console.log(c.errors));
+              }
             }
           }
         } else {
