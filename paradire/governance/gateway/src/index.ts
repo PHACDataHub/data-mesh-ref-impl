@@ -12,11 +12,7 @@ import { makeExecutableSchema } from "@graphql-tools/schema";
 import neo4j from "neo4j-driver";
 
 import { Kafka } from "kafkajs";
-import {
-  SchemaRegistry,
-  SchemaType,
-  avdlToAVSCAsync,
-} from "@kafkajs/confluent-schema-registry";
+import { SchemaRegistry } from "@kafkajs/confluent-schema-registry";
 
 import { rulesToGraphQl, getSchema } from "@phac-aspc-dgg/schema-tools";
 
@@ -249,9 +245,9 @@ type Mutation {
                   return {
                     async drainServer() {
                       await serverCleanup.dispose();
-                      subscription_topic_map.forEach(async ([, sub]) => {
-                        if (typeof sub === "object") await sub.dispose();
-                      });
+                      for (const x of subscription_topic_map) {
+                        if (typeof x[1] === "object") await x[1].dispose();
+                      }
                       console.log("disposed.");
                     },
                   };

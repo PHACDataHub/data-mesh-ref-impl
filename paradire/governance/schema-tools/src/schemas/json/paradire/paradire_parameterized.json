@@ -17,7 +17,10 @@
   },
   "entrypoints": {
     "CityOrgPatient": {
-      "$ref": "#/definitions/CityOrgPatient",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/CityOrgPatient"
+      },
       "arguments": "#/definitions/CityOrgPatientRequest"
     },
     "CityOrgPatientVisit": {
@@ -54,10 +57,7 @@
       "description": "Federated query request for city org patient.",
       "properties": {
         "city": {
-          "type": [
-            "string",
-            "null"
-          ],
+          "type": "string",
           "description": "The city"
         }
       },
@@ -70,7 +70,7 @@
       "description": "Federated query request for city org patient visit.",
       "properties": {
         "city": {
-          "type": ["null", "string"],
+          "type": "string",
           "description": "The city"
         }
       },
@@ -149,7 +149,10 @@
       "description": "Federated query request for top K immunizations per pt.",
       "properties": {
         "k": {
-          "type": ["integer", "null"],
+          "type": [
+            "integer",
+            "null"
+          ],
           "description": "Number of top immunizations."
         }
       },
@@ -183,21 +186,21 @@
           "description": "Unique ID of a Fererated Analytics Request.",
           "type": "string"
         },
-        "city": {
+        "organization_city": {
           "description": "Organization's city",
           "type": [
             "string",
             "null"
           ]
         },
-        "name": {
+        "organization_name": {
           "type": [
             "string",
             "null"
           ],
           "description": "Organization's name"
         },
-        "count": {
+        "patient_count": {
           "type": "integer",
           "description": "The number of patients of this organization."
         },

@@ -24,6 +24,7 @@ export type ResourceTypeFieldOptions = {
   hash?: boolean;
   format?: string;
   unselectable?: boolean;
+  blank?: boolean;
 };
 
 export type ResourceTypeField =
@@ -324,6 +325,13 @@ const fieldSpecToGraphQlType = (
       directives,
     });
   }
+  if (options.blank) {
+    fieldName = addFieldDirective({
+      field: fieldName,
+      directive: `@blank`,
+      directives,
+    });
+  }
   if (options.unselectable) {
     fieldName = addFieldDirective({
       field: fieldName,
@@ -367,7 +375,8 @@ const fieldSpecToGraphQlType = (
 
 export const rulesToGraphQl = (
   yaml: string,
-  schema: JSONSchema6ForParadire
+  schema: JSONSchema6ForParadire,
+  subscriptions?: boolean
 ) => {
   if (!yaml) return "";
   const selectedResourceTypes = expandRuleset(
@@ -477,8 +486,8 @@ export const rulesToGraphQl = (
     allowed_entrypoints.length > 0 &&
       typeDefs.push(
         new GraphQLObjectType({
-          name: "Subscription",
-          description: "Subscription entrypoints",
+          name: subscriptions ? "Subscription" : "Query",
+          description: "Entrypoints",
           fields: () =>
             Object.fromEntries(
               allowed_entrypoints.map(([name, entry]) => {

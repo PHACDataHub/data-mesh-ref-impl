@@ -1,0 +1,48 @@
+{
+  "name": "acg",
+  "version": "0.0.1",
+  "description": "Access Control Gateway",
+  "main": "index.js",
+  "scripts": {
+    "compile": "tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/PHACDataHub/data-mesh-ref-impl.git"
+  },
+  "dependencies": {
+    "@apollo/server": "^4.9.4",
+    "@graphql-tools/schema": "^10.0.0",
+    "@graphql-tools/utils": "^10.0.8",
+    "@kafkajs/confluent-schema-registry": "^3.3.0",
+    "dateformat": "^5.0.3",
+    "dotenv": "^16.3.1",
+    "graphql": "^17.0.0-alpha.3",
+    "graphql-parse-resolve-info": "^4.13.0",
+    "graphql-subscriptions": "^2.0.0",
+    "kafkajs": "^2.2.4",
+    "yaml": "^2.3.3"
+  },
+  "type": "module",
+  "devDependencies": {
+    "@types/node": "^20.8.7",
+    "typescript": "^5.2.2"
+  },
+  "keywords": [
+    "access",
+    "control",
+    "gateway",
+    "graphql",
+    "federated",
+    "data",
+    "analytics",
+    "health",
+    "canada"
+  ],
+  "author": "Luc Belliveau",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/PHACDataHub/data-mesh-ref-impl/issues"
+  },
+  "homepage": "https://github.com/PHACDataHub/data-mesh-ref-impl#readme"
+}
