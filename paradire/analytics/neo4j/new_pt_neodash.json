@@ -1,8 +1,8 @@
 {
-    "title": "PT Analytics Platform",
+    "title": "PT Analytics Platform (British Columbia)",
     "version": "2.3",
     "settings": {
-      "pagenumber": 1,
+      "pagenumber": 3,
       "editable": true,
       "fullscreenEnabled": false,
       "parameters": {
@@ -72,7 +72,7 @@
     },
     "pages": [
       {
-        "title": "FAR 1",
+        "title": "FAR 1: Vaccination Status",
         "reports": [
           {
             "id": "03ad1539-42c6-48c7-acb8-9d1f805e6690",
@@ -129,7 +129,7 @@
           {
             "id": "e7f79bb8-a53e-43b5-a8ba-0e50deaa5196",
             "title": "Period",
-            "query": "MERGE (far:FAR_1)\n  ON CREATE SET far.current = 1\n  ON MATCH SET far.current = CASE WHEN far.current < TOINTEGER($neodash_number_of_periods) THEN far.current + 1 ELSE 1 END\nRETURN $neodash_start_date AS start_date, $neodash_start_date + DURATION({months: far.current * TOINTEGER($neodash_period_length)}) AS end_date, far.current AS current",
+            "query": "MERGE (far:FAR_1)\n  ON CREATE SET far.current = 0\n  ON MATCH SET far.current = CASE WHEN far.current < TOINTEGER($neodash_number_of_periods) THEN far.current + 1 ELSE 0 END\nRETURN $neodash_start_date AS start_date, $neodash_start_date + DURATION({months: far.current * TOINTEGER($neodash_period_length)}) AS end_date, far.current AS current",
             "width": 4,
             "height": 1,
             "x": 2,
@@ -249,7 +249,7 @@
           },
           {
             "id": "86f385fb-67dd-45c0-858b-880cfa402475",
-            "title": "Young children missing vaccination schedule",
+            "title": "Heat map - Young children missing vaccination schedule",
             "query": "WITH \n    ['03', '08', '20', '21', '49', '83', '114', '115', '119', '133'] AS cvx_codes\n    MATCH (patient:Patient) \n        WHERE \n          patient.death_date IS NULL AND \n          patient.birth_date + DURATION({months: 48}) >= DATE()\nWITH patient, cvx_codes\n    MATCH (patient)-[]-(immunization:Immunization)\n        WHERE immunization.code IN cvx_codes\nWITH DISTINCT(patient) AS patient, cvx_codes, COLLECT(immunization.code) AS codes\nWITH patient, [e IN cvx_codes WHERE NOT(e IN codes)] AS probable_missing_doses,\n    apoc.map.fromPairs([['03', 6], ['08', 6], ['20', 18], ['21', 12], ['49', 18], ['83', 18], ['114', 2], ['115', 48], ['119', 4], ['133', 4]]) AS cvx_maps\nWITH patient, cvx_maps, REDUCE(l=[], e IN probable_missing_doses | CASE WHEN patient.birth_date + DURATION({months: apoc.map.get(cvx_maps, e)}) < DATE() THEN l + [e] ELSE l END) AS missing_doses\nWITH patient, missing_doses\n  WHERE SIZE(missing_doses) > 0\nRETURN patient AS patient, DURATION.inMonths(patient.birth_date, DATE()).months AS age, patient.zip AS zip, missing_doses\n",
             "width": 9,
             "height": 5,
@@ -307,404 +307,103 @@
               "compact": true
             },
             "schema": []
+          },
+          {
+            "id": "4f265733-12d6-4add-be83-865d2167cb54",
+            "title": "Location - Young children missing vaccination schedule",
+            "query": "WITH \n    ['03', '08', '20', '21', '49', '83', '114', '115', '119', '133'] AS cvx_codes\n    MATCH (patient:Patient) \n        WHERE \n          patient.death_date IS NULL AND \n          patient.birth_date + DURATION({months: 48}) >= DATE()\nWITH patient, cvx_codes\n    MATCH (patient)-[]-(immunization:Immunization)\n        WHERE immunization.code IN cvx_codes\nWITH DISTINCT(patient) AS patient, cvx_codes, COLLECT(immunization.code) AS codes\nWITH patient, [e IN cvx_codes WHERE NOT(e IN codes)] AS probable_missing_doses,\n    apoc.map.fromPairs([['03', 6], ['08', 6], ['20', 18], ['21', 12], ['49', 18], ['83', 18], ['114', 2], ['115', 48], ['119', 4], ['133', 4]]) AS cvx_maps\nWITH patient, cvx_maps, REDUCE(l=[], e IN probable_missing_doses | CASE WHEN patient.birth_date + DURATION({months: apoc.map.get(cvx_maps, e)}) < DATE() THEN l + [e] ELSE l END) AS missing_doses\nWITH patient, missing_doses\n  WHERE SIZE(missing_doses) > 0\nRETURN patient AS patient, DURATION.inMonths(patient.birth_date, DATE()).months AS age, patient.zip AS zip, missing_doses\n",
+            "width": 12,
+            "height": 5,
+            "x": 0,
+            "y": 5,
+            "type": "map",
+            "selection": {
+              "Patient": "first"
+            },
+            "settings": {
+              "clusterMarkers": true,
+              "layerType": "markers",
+              "separateOverlappingMarkers": true,
+              "defaultNodeSize": "small"
+            },
+            "schema": [
+              [
+                "Patient",
+                "income",
+                "zip",
+                "address",
+                "race",
+                "ethnicity",
+                "gender",
+                "last",
+                "healthcare_expenses",
+                "city",
+                "birth_date",
+                "county",
+                "birth_place",
+                "fips",
+                "ssn",
+                "healthcare_coverage",
+                "patient_id",
+                "location",
+                "state",
+                "first"
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "title": "FAR 3 - Travel distance",
+        "reports": [
+          {
+            "id": "406de899-7155-4e34-82d8-45570b5039f5",
+            "title": "Average travel distance to get vaccinated",
+            "query": "MATCH (patient:Patient)-[]-(:Immunization)-[]-(:Encounter)-[]-(organization:Organization)\nWITH patient.zip AS zip, POINT.DISTANCE(patient.location, organization.location) AS distance, organization.name AS organization\nWITH DISTINCT([zip, organization]) AS zip_org, SUM(distance)/COUNT(distance) AS distance_avg\nRETURN zip_org AS path, ROUND(distance_avg/1000) AS distance\n\n\n",
+            "width": 12,
+            "height": 4,
+            "x": 0,
+            "y": 0,
+            "type": "treeMap",
+            "selection": {
+              "index": "path",
+              "value": "distance",
+              "key": "(none)"
+            },
+            "settings": {
+              "mapDrillDown": true,
+              "borderWidth": 1,
+              "refreshButtonEnabled": false
+            },
+            "schema": []
+          }
+        ]
+      },
+      {
+        "title": "FAR 5 - Vaccination Records",
+        "reports": [
+          {
+            "id": "08515114-4351-44fa-829b-4a90bc3959f4",
+            "title": "Random consecutive 1000 events in the stream of vaccination records",
+            "query": "MATCH (immunization:Immunization)\nWITH immunization SKIP TOINTEGER(RAND() * 100) + 1 LIMIT 1000\nWITH immunization ORDER BY immunization.date ASC\n  MATCH (organization:Organization)-[]-(encounter:Encounter)-[]-(immunization)-[]-(patient:Patient)\nWITH immunization, organization, encounter, patient\nRETURN\n  SUBSTRING(TOSTRING(immunization.date), 0, 10) AS date,\n  immunization.code AS cvx,\n  immunization.description AS cvx_description,\n  SUBSTRING(organization.name, 0, 50) AS organization,\n  encounter.description AS encounter,\n  encounter.code AS snomet_ct,\n  SUBSTRING(patient.patient_id, 0, 8) AS patient_id,\n  immunization.date.year - patient.birth_date.year AS age,\n  patient.address AS address,\n  patient.zip AS zip,\n  patient.gender AS gender,\n  patient.race AS race,\n  patient.ethnicity AS ethn\n  ORDER BY date",
+            "width": 12,
+            "height": 4,
+            "x": 0,
+            "y": 0,
+            "type": "table",
+            "selection": {},
+            "settings": {
+              "refreshButtonEnabled": true,
+              "allowDownload": true,
+              "columnWidths": "[7, 2, 15, 15, 15, 5, 5, 2, 15, 2, 3, 3, 5]"
+            }
           }
         ]
       }
     ],
     "parameters": {},
     "extensions": {
-      "active": true,{
-        "title": "PT Analytics Platform (British Columbia)",
-        "version": "2.3",
-        "settings": {
-          "pagenumber": 1,
-          "editable": true,
-          "fullscreenEnabled": false,
-          "parameters": {
-            "neodash_patient_name": "",
-            "neodash_patient_name_display": "",
-            "neodash_procedure_year_start": "2010",
-            "neodash_procedure_year_end": "2022",
-            "neodash_provider_name": "Truman805 Crona259",
-            "neodash_provider_name_display": "Truman805 Crona259",
-            "neodash_procedure_description": "Chest X-ray",
-            "neodash_procedure_description_display": "Chest X-ray",
-            "neodash_procedure_description_1": "Depression screening (procedure)",
-            "neodash_procedure_description_1_display": "Depression screening (procedure)",
-            "neodash_organization_name": "Bulimia Anorexia Nervosa Association (Bana)",
-            "neodash_organization_name_display": "Bulimia Anorexia Nervosa Association (Bana)",
-            "neodash_procedure_description_2": "Medication Reconciliation (procedure)",
-            "neodash_procedure_description_2_display": "Medication Reconciliation (procedure)",
-            "neodash_procedure_description_3": "Assessment of anxiety (procedure)",
-            "neodash_procedure_description_3_display": "Assessment of anxiety (procedure)",
-            "neodash_organization_zip": "L3R 4Z8",
-            "neodash_organization_zip_display": "L3R 4Z8",
-            "neodash_organization_city": "Mississauga",
-            "neodash_organization_city_display": "Mississauga",
-            "neodash_organization_city_2": "Toronto",
-            "neodash_organization_city_2_display": "Toronto",
-            "neodash_organization_city_3": "Toronto",
-            "neodash_organization_city_3_display": "Toronto",
-            "neodash_province": "British Columbia",
-            "neodash_city": "",
-            "neodash_end_date": {
-              "year": 2021,
-              "month": 4,
-              "day": 1
-            },
-            "neodash_start_date": {
-              "year": 2021,
-              "month": 1,
-              "day": 1
-            },
-            "neodash_patient_state": "",
-            "neodash_patient_state_display": "",
-            "neodash_patient_city": [],
-            "neodash_patient_city_display": [],
-            "neodash_patient_zip": [],
-            "neodash_patient_zip_display": [],
-            "neodash_immunization_code": [
-              "207",
-              "208"
-            ],
-            "neodash_immunization_code_display": [
-              "207",
-              "208"
-            ],
-            "neodash_period_length": "3",
-            "neodash_months": "1",
-            "neodash_number_of_periods": "4",
-            "undefined": {
-              "year": 2020,
-              "month": 1,
-              "day": 2
-            },
-            "neodash_cvx_codes": "03,08,20,21,49,83,114,115,119,133"
-          },
-          "theme": "light",
-          "downloadImageEnabled": true,
-          "queryTimeLimit": 300
-        },
-        "pages": [
-          {
-            "title": "FAR 1",
-            "reports": [
-              {
-                "id": "03ad1539-42c6-48c7-acb8-9d1f805e6690",
-                "title": "Start date",
-                "query": "RETURN true;",
-                "width": 2,
-                "height": 1,
-                "x": 6,
-                "y": 0,
-                "type": "select",
-                "selection": {},
-                "settings": {
-                  "type": "Date Picker"
-                },
-                "schema": []
-              },
-              {
-                "id": "505018ed-5bd2-4b0b-aa4a-531fe2a65780",
-                "title": "Period (months)",
-                "query": "RETURN true;",
-                "width": 2,
-                "height": 1,
-                "x": 8,
-                "y": 0,
-                "type": "select",
-                "selection": {},
-                "settings": {
-                  "type": "Free Text",
-                  "entityType": "period_length",
-                  "parameterName": "neodash_period_length"
-                },
-                "schema": []
-              },
-              {
-                "id": "c5c66081-c3b3-4d58-85fc-47541f7948f0",
-                "title": "CVXs",
-                "query": "MATCH (n:`Immunization`) \nWHERE toLower(toString(n.`code`)) CONTAINS toLower($input) \nRETURN DISTINCT n.`code` as value,  n.`code` as display ORDER BY size(toString(value)) ASC LIMIT 5",
-                "width": 2,
-                "height": 1,
-                "x": 0,
-                "y": 0,
-                "type": "select",
-                "selection": {},
-                "settings": {
-                  "type": "Node Property",
-                  "entityType": "Immunization",
-                  "multiSelector": true,
-                  "propertyType": "code",
-                  "propertyTypeDisplay": "code",
-                  "parameterName": "neodash_immunization_code"
-                },
-                "schema": []
-              },
-              {
-                "id": "e7f79bb8-a53e-43b5-a8ba-0e50deaa5196",
-                "title": "Period",
-                "query": "MERGE (far:FAR_1)\n  ON CREATE SET far.current = 1\n  ON MATCH SET far.current = CASE WHEN far.current < TOINTEGER($neodash_number_of_periods) THEN far.current + 1 ELSE 1 END\nRETURN $neodash_start_date AS start_date, $neodash_start_date + DURATION({months: far.current * TOINTEGER($neodash_period_length)}) AS end_date, far.current AS current",
-                "width": 4,
-                "height": 1,
-                "x": 2,
-                "y": 0,
-                "type": "table",
-                "selection": {},
-                "settings": {
-                  "type": "Node Property",
-                  "entityType": "Patient",
-                  "propertyType": "zip",
-                  "propertyTypeDisplay": "zip",
-                  "parameterName": "neodash_patient_zip",
-                  "multiSelector": true,
-                  "refreshButtonEnabled": true,
-                  "refreshRate": 0
-                },
-                "schema": []
-              },
-              {
-                "id": "4f24011e-7ee9-42ed-8419-1819c6dc82eb",
-                "title": "Number of periods",
-                "query": "RETURN true;",
-                "width": 2,
-                "height": 1,
-                "x": 10,
-                "y": 0,
-                "type": "select",
-                "selection": {},
-                "settings": {
-                  "type": "Free Text",
-                  "entityType": "number_of_periods",
-                  "parameterName": "neodash_number_of_periods"
-                },
-                "schema": []
-              },
-              {
-                "id": "5cc7a34e-58f4-46aa-ae85-acc8cdeed9ab",
-                "title": "Percentage of vaccinated population per zip code for the Period above",
-                "query": "MATCH (far: FAR_1)\nWITH far\n  MATCH (patient:Patient)\nWITH far, patient\n  MATCH (patient)-[]-(immunization:Immunization)\nWITH DISTINCT(patient) AS patient, COLLECT(immunization) AS immunizations, far\nWITH far, patient, REDUCE(l=0, e IN immunizations | \n  CASE WHEN \n      e.code IN $neodash_immunization_code AND \n      DATE(e.date) >= $neodash_start_date AND \n      DATE(e.date) <= $neodash_start_date + DURATION({months: far.current * TOINTEGER($neodash_period_length)})\n  THEN l + 1 ELSE l END) AS immunization_count\nWITH \n  DISTINCT(patient.zip) AS zip, \n  CASE immunization_count WHEN 2 THEN 'Fully vaccinated' WHEN 1 THEN 'One-dosed' ELSE 'Unvaccinated' END AS status, \n  COUNT(*) AS patient_count\nWITH zip, patient_count, status\n  MATCH (patient:Patient {zip: zip})\nWITH zip, patient_count, COUNT(patient) AS zip_patient_count, status\nRETURN zip, ROUND(patient_count*100.0 / zip_patient_count) AS percent, status\n\n\n",
-                "width": 12,
-                "height": 3,
-                "x": 0,
-                "y": 1,
-                "type": "bar",
-                "selection": {
-                  "index": "zip",
-                  "value": "percent",
-                  "key": "status"
-                },
-                "settings": {
-                  "refreshButtonEnabled": true,
-                  "showOptionalSelections": true,
-                  "barValues": true,
-                  "styleRules": [
-                    {
-                      "field": "status",
-                      "condition": "=",
-                      "value": "Unvaccinated",
-                      "customization": "bar color",
-                      "customizationValue": "red"
-                    },
-                    {
-                      "field": "status",
-                      "condition": "=",
-                      "value": "One-dosed",
-                      "customization": "bar color",
-                      "customizationValue": "orange"
-                    },
-                    {
-                      "field": "status",
-                      "condition": "=",
-                      "value": "Fully vaccinated",
-                      "customization": "bar color",
-                      "customizationValue": "green"
-                    }
-                  ]
-                },
-                "schema": []
-              }
-            ]
-          },
-          {
-            "title": "FAR 2 - Vaccination Schedule",
-            "reports": [
-              {
-                "id": "03d4227b-016b-406e-84d4-e655d242f9ab",
-                "title": "What are these CVXs",
-                "query": "WITH ['03', '08', '20', '21', '49', '83', '114', '115', '119', '133'] AS cvx_codes\n  UNWIND cvx_codes AS cvx\nWITH cvx\n  MATCH (immunization:Immunization {code: cvx}) \nWITH DISTINCT(cvx), COLLECT(immunization.description) AS descriptions,\n  apoc.map.fromPairs([['03', 6], ['08', 6], ['20', 18], ['21', 12], ['49', 18], ['83', 18], ['114', 2], ['115', 48], ['119', 4], ['133', 4]]) AS cvx_maps\nRETURN cvx, descriptions[0] AS description, apoc.map.get(cvx_maps, cvx) AS months ORDER BY cvx\n\n\n\n\n",
-                "width": 3,
-                "height": 2,
-                "x": 0,
-                "y": 3,
-                "type": "table",
-                "selection": {},
-                "settings": {
-                  "columnWidths": "[3, 10, 3]",
-                  "compact": true
-                }
-              },
-              {
-                "id": "4c847151-1085-47ce-bf24-9cf0732550e5",
-                "title": "CVXs",
-                "query": "RETURN true;",
-                "width": 3,
-                "height": 1,
-                "x": 0,
-                "y": 0,
-                "type": "select",
-                "selection": {},
-                "settings": {
-                  "type": "Free Text",
-                  "defaultValue": "03,08,20,21,49,83,114,115,119,133",
-                  "entityType": "cvx_codes",
-                  "parameterName": "neodash_cvx_codes"
-                },
-                "schema": []
-              },
-              {
-                "id": "86f385fb-67dd-45c0-858b-880cfa402475",
-                "title": "Heat map - Young children missing vaccination schedule",
-                "query": "WITH \n    ['03', '08', '20', '21', '49', '83', '114', '115', '119', '133'] AS cvx_codes\n    MATCH (patient:Patient) \n        WHERE \n          patient.death_date IS NULL AND \n          patient.birth_date + DURATION({months: 48}) >= DATE()\nWITH patient, cvx_codes\n    MATCH (patient)-[]-(immunization:Immunization)\n        WHERE immunization.code IN cvx_codes\nWITH DISTINCT(patient) AS patient, cvx_codes, COLLECT(immunization.code) AS codes\nWITH patient, [e IN cvx_codes WHERE NOT(e IN codes)] AS probable_missing_doses,\n    apoc.map.fromPairs([['03', 6], ['08', 6], ['20', 18], ['21', 12], ['49', 18], ['83', 18], ['114', 2], ['115', 48], ['119', 4], ['133', 4]]) AS cvx_maps\nWITH patient, cvx_maps, REDUCE(l=[], e IN probable_missing_doses | CASE WHEN patient.birth_date + DURATION({months: apoc.map.get(cvx_maps, e)}) < DATE() THEN l + [e] ELSE l END) AS missing_doses\nWITH patient, missing_doses\n  WHERE SIZE(missing_doses) > 0\nRETURN patient AS patient, DURATION.inMonths(patient.birth_date, DATE()).months AS age, patient.zip AS zip, missing_doses\n",
-                "width": 9,
-                "height": 5,
-                "x": 3,
-                "y": 0,
-                "type": "map",
-                "selection": {
-                  "Patient": "first"
-                },
-                "settings": {
-                  "clusterMarkers": true,
-                  "layerType": "heatmap",
-                  "separateOverlappingMarkers": true,
-                  "defaultNodeSize": "small"
-                },
-                "schema": [
-                  [
-                    "Patient",
-                    "income",
-                    "zip",
-                    "address",
-                    "race",
-                    "ethnicity",
-                    "gender",
-                    "last",
-                    "healthcare_expenses",
-                    "city",
-                    "birth_date",
-                    "county",
-                    "birth_place",
-                    "fips",
-                    "ssn",
-                    "healthcare_coverage",
-                    "patient_id",
-                    "location",
-                    "state",
-                    "first"
-                  ]
-                ]
-              },
-              {
-                "id": "ae3fd19d-dc5b-4b48-88cd-7b5be4f45027",
-                "title": "Children",
-                "query": "WITH \n    ['03', '08', '20', '21', '49', '83', '114', '115', '119', '133'] AS cvx_codes\n    MATCH (patient:Patient) \n        WHERE \n          patient.death_date IS NULL AND \n          patient.birth_date + DURATION({months: 48}) >= DATE()\nWITH patient, cvx_codes\n    MATCH (patient)-[]-(immunization:Immunization)\n        WHERE immunization.code IN cvx_codes\nWITH DISTINCT(patient) AS patient, cvx_codes, COLLECT(immunization.code) AS codes\nWITH patient, [e IN cvx_codes WHERE NOT(e IN codes)] AS probable_missing_doses,\n    apoc.map.fromPairs([['03', 6], ['08', 6], ['20', 18], ['21', 12], ['49', 18], ['83', 18], ['114', 2], ['115', 48], ['119', 4], ['133', 4]]) AS cvx_maps\nWITH patient, cvx_maps, REDUCE(l=[], e IN probable_missing_doses | CASE WHEN patient.birth_date + DURATION({months: apoc.map.get(cvx_maps, e)}) < DATE() THEN l + [e] ELSE l END) AS missing_doses\nWITH patient, missing_doses\n  WHERE SIZE(missing_doses) > 0\nRETURN patient.first AS patient, DURATION.inMonths(patient.birth_date, DATE()).months AS age, patient.zip AS zip, missing_doses\n",
-                "width": 3,
-                "height": 2,
-                "x": 0,
-                "y": 1,
-                "type": "table",
-                "selection": {},
-                "settings": {
-                  "clusterMarkers": true,
-                  "layerType": "heatmap",
-                  "columnWidths": "[4,2,2,5]",
-                  "compact": true
-                },
-                "schema": []
-              },
-              {
-                "id": "4f265733-12d6-4add-be83-865d2167cb54",
-                "title": "Location - Young children missing vaccination schedule",
-                "query": "WITH \n    ['03', '08', '20', '21', '49', '83', '114', '115', '119', '133'] AS cvx_codes\n    MATCH (patient:Patient) \n        WHERE \n          patient.death_date IS NULL AND \n          patient.birth_date + DURATION({months: 48}) >= DATE()\nWITH patient, cvx_codes\n    MATCH (patient)-[]-(immunization:Immunization)\n        WHERE immunization.code IN cvx_codes\nWITH DISTINCT(patient) AS patient, cvx_codes, COLLECT(immunization.code) AS codes\nWITH patient, [e IN cvx_codes WHERE NOT(e IN codes)] AS probable_missing_doses,\n    apoc.map.fromPairs([['03', 6], ['08', 6], ['20', 18], ['21', 12], ['49', 18], ['83', 18], ['114', 2], ['115', 48], ['119', 4], ['133', 4]]) AS cvx_maps\nWITH patient, cvx_maps, REDUCE(l=[], e IN probable_missing_doses | CASE WHEN patient.birth_date + DURATION({months: apoc.map.get(cvx_maps, e)}) < DATE() THEN l + [e] ELSE l END) AS missing_doses\nWITH patient, missing_doses\n  WHERE SIZE(missing_doses) > 0\nRETURN patient AS patient, DURATION.inMonths(patient.birth_date, DATE()).months AS age, patient.zip AS zip, missing_doses\n",
-                "width": 12,
-                "height": 5,
-                "x": 0,
-                "y": 5,
-                "type": "map",
-                "selection": {
-                  "Patient": "first"
-                },
-                "settings": {
-                  "clusterMarkers": true,
-                  "layerType": "markers",
-                  "separateOverlappingMarkers": true,
-                  "defaultNodeSize": "small"
-                },
-                "schema": [
-                  [
-                    "Patient",
-                    "income",
-                    "zip",
-                    "address",
-                    "race",
-                    "ethnicity",
-                    "gender",
-                    "last",
-                    "healthcare_expenses",
-                    "city",
-                    "birth_date",
-                    "county",
-                    "birth_place",
-                    "fips",
-                    "ssn",
-                    "healthcare_coverage",
-                    "patient_id",
-                    "location",
-                    "state",
-                    "first"
-                  ]
-                ]
-              }
-            ]
-          }
-        ],
-        "parameters": {},
-        "extensions": {
-          "active": true,
-          "activeReducers": [
-            "DASHBOARD/EXTENSIONS/QUERY_TRANSLATOR/"
-          ],
-          "advanced-charts": {
-            "active": true
-          },
-          "styling": {
-            "active": true
-          },
-          "actions": {
-            "active": true
-          },
-          "query-translator": {
-            "active": true,
-            "modelProvider": "OpenAI",
-            "settings": {
-              "modelType": "gpt-4-0613"
-            },
-            "lastMessages": {
-              "0": {
-                "8e85c1a2-0183-45bb-bde5-3c56d125452c": "How many Patients are there?"
-              },
-              "1": {
-                "92b6ed72-5695-4cbe-ae19-3c89e8b9d1a0": "How many patients are there?"
-              },
-              "11": {
-                "5c3a6aa3-1d75-41b0-875e-61e8409b4446": "How many Patients are there per Zip?",
-                "d4bf8b5b-38bd-4ca4-944e-009f1b1f23cd": "How many Patients are there per zip?"
-              }
-            }
-          }
-        }
-      }
+      "active": true,
       "activeReducers": [
         "DASHBOARD/EXTENSIONS/QUERY_TRANSLATOR/"
       ],
