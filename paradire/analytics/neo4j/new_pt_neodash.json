@@ -2,7 +2,7 @@
     "title": "PT Analytics Platform (British Columbia)",
     "version": "2.3",
     "settings": {
-      "pagenumber": 3,
+      "pagenumber": 0,
       "editable": true,
       "fullscreenEnabled": false,
       "parameters": {
@@ -376,6 +376,100 @@
               "refreshButtonEnabled": false
             },
             "schema": []
+          }
+        ]
+      },
+      {
+        "title": "FAR 4 - Vaccination traffic",
+        "reports": [
+          {
+            "id": "fc028ea0-5e67-4a6f-a2d7-fcab04e59eee",
+            "title": "Random 10 patients and their vaccinations by organizations",
+            "query": "MATCH (patient:Patient) \nWITH patient SKIP TOINTEGER(RAND() * 100) + 1 LIMIT 10\nMATCH (organization:Organization)-[]-(:Encounter)-[]-(immunization:Immunization)-[]-(patient:Patient)\nWITH DISTINCT([organization, patient]) AS op, COUNT(*) AS count\nWITH op[0] AS organization, op[1] AS patient, count\nWITH patient, organization, count, apoc.create.vRelationship(patient,'REGISTERED_AT',{count: count}, organization) AS rel\nRETURN patient, rel, organization",
+            "width": 12,
+            "height": 4,
+            "x": 0,
+            "y": 0,
+            "type": "sankey",
+            "selection": {
+              "Patient": "first",
+              "Organization": "name"
+            },
+            "settings": {
+              "layout": "horizontal",
+              "refreshButtonEnabled": true,
+              "legend": false,
+              "interactive": true,
+              "labelProperty": "count"
+            },
+            "schema": []
+          },
+          {
+            "id": "9b09d1ca-a1d4-4f6d-a3cd-32fee87beffd",
+            "title": "Patient travel for COVID vaccinations",
+            "query": "MATCH (patient:Patient) \nMATCH (organization:Organization)-[]-(:Encounter)-[]-(immunization:Immunization)-[]-(patient:Patient)\n  WHERE immunization.code IN ['207', '208']\nWITH DISTINCT([organization, patient]) AS op, COUNT(*) AS count\nWITH op[0] AS organization, op[1] AS patient, count\nWITH patient, organization, count, apoc.create.vRelationship(patient,'REGISTERED_AT',{count: count}, organization) AS rel\nRETURN patient, rel, organization",
+            "width": 12,
+            "height": 4,
+            "x": 0,
+            "y": 4,
+            "type": "map",
+            "selection": {
+              "Patient": "(no label)",
+              "REGISTERED_AT": "(label)",
+              "Organization": "name"
+            },
+            "settings": {
+              "defaultNodeSize": "small",
+              "clusterMarkers": true
+            },
+            "schema": [
+              [
+                "Patient",
+                "income",
+                "zip",
+                "address",
+                "ethnicity",
+                "gender",
+                "race",
+                "last",
+                "healthcare_expenses",
+                "city",
+                "prefix",
+                "birth_date",
+                "county",
+                "birth_place",
+                "fips",
+                "ssn",
+                "marital",
+                "passport",
+                "healthcare_coverage",
+                "patient_id",
+                "location",
+                "state",
+                "drivers",
+                "first",
+                "maiden",
+                "suffix",
+                "death_date"
+              ],
+              [
+                "REGISTERED_AT",
+                "count"
+              ],
+              [
+                "Organization",
+                "zip",
+                "revenue",
+                "address",
+                "phone",
+                "city",
+                "organization_id",
+                "name",
+                "location",
+                "utilization",
+                "state"
+              ]
+            ]
           }
         ]
       },
