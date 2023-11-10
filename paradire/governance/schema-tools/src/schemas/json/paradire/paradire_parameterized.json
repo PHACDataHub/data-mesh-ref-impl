@@ -24,31 +24,52 @@
       "arguments": "#/definitions/CityOrgPatientRequest"
     },
     "CityOrgPatientVisit": {
-      "$ref": "#/definitions/CityOrgPatientVisit",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/CityOrgPatientVisit"
+      },
       "arguments": "#/definitions/CityOrgPatientVisitRequest"
     },
     "CityYearTopProcedure": {
-      "$ref": "#/definitions/CityYearTopProcedure",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/CityYearTopProcedure"
+      },
       "arguments": "#/definitions/CityYearTopProcedureRequest"
     },
     "PatientCvxOrg": {
-      "$ref": "#/definitions/PatientCvxOrg",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/PatientCvxOrg"
+      },
       "arguments": "#/definitions/PatientCvxOrgRequest"
     },
     "PtOrgMed": {
-      "$ref": "#/definitions/PtOrgMed",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/PtOrgMed"
+      },
       "arguments": "#/definitions/PtOrgMedRequest"
     },
     "TopKImmunization": {
-      "$ref": "#/definitions/TopKImmunization",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/TopKImmunization"
+      },
       "arguments": "#/definitions/TopKImmunizationRequest"
     },
     "VaccinationRecord": {
-      "$ref": "#/definitions/VaccinationRecord",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/VaccinationRecord"
+      },
       "arguments": "#/definitions/VaccinationRecordRequest"
     },
     "ZipImmunization": {
-      "$ref": "#/definitions/ZipImmunization",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/ZipImmunization"
+      },
       "arguments": "#/definitions/ZipImmunizationRequest"
     }
   },
@@ -283,7 +304,7 @@
           "type": "string",
           "description": "Unique ID of a Fererated Analytics Request."
         },
-        "city": {
+        "organization_city": {
           "type": "string",
           "description": "Organization's address city"
         },
@@ -402,7 +423,7 @@
           "type": "string",
           "description": "Unique ID of a Fererated Analytics Request."
         },
-        "state": {
+        "organization_state": {
           "type": [
             "null",
             "string"
@@ -410,7 +431,7 @@
           "default": null,
           "description": "Organization's state"
         },
-        "city": {
+        "organization_city": {
           "type": [
             "null",
             "string"
@@ -418,7 +439,7 @@
           "default": null,
           "description": "Organization's city"
         },
-        "name": {
+        "organization_name": {
           "type": [
             "null",
             "string"
@@ -426,7 +447,7 @@
           "default": null,
           "description": "Organization's name"
         },
-        "count": {
+        "medication_count": {
           "type": "integer",
           "description": "The number of medications by this organization."
         },
@@ -593,11 +614,11 @@
           "type": "string",
           "description": "Unique ID of a Fererated Analytics Request."
         },
-        "city": {
+        "patient_city": {
           "type": "string",
           "description": "Patient's address city"
         },
-        "zip": {
+        "patient_zip": {
           "type": [
             "null",
             "string"

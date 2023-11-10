@@ -1,8 +1,16 @@
+/**
+ * GraphQL Directives responsible for data transformations
+ */
 import { GraphQLSchema, defaultFieldResolver } from "graphql";
 import { MapperKind, getDirective, mapSchema } from "@graphql-tools/utils";
 
 import dateFormat from "dateformat";
 
+/**
+ * Convert a date to string using the provided format.
+ * @param directiveName Name of graphql directive
+ * @returns 
+ */
 export function dateDirective(directiveName: string) {
   return {
     dateDirectiveTypeDefs:
@@ -28,6 +36,11 @@ export function dateDirective(directiveName: string) {
   };
 }
 
+/**
+ * One way hash
+ * @param directiveName Name of graphql directive
+ * @returns 
+ */
 export function hashDirective(directiveName: string) {
   return {
     hashDirectiveTypeDefs: "directive @hash on FIELD_DEFINITION\n",
@@ -63,6 +76,12 @@ export function hashDirective(directiveName: string) {
   };
 }
 
+/**
+ * Fields with this directive are returned but their values are empty strings
+ * when the type is string, -1 for integers
+ * @param directiveName Name of directive
+ * @returns 
+ */
 export function blankDirective(directiveName: string) {
   return {
     blankDirectiveTypeDefs: "directive @blank on FIELD_DEFINITION\n",
@@ -87,9 +106,10 @@ export function blankDirective(directiveName: string) {
                 case "String":
                   return "";
                 case "Int":
+                case "Float":
                   return -1;
               }
-              return undefined;
+              return null;
             };
           }
           return fieldConfig;
