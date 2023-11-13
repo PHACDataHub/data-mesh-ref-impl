@@ -1,13 +1,12 @@
 #!/bin/bash
 
-F_KAFKA_CLUSTER_IP=$(curl --silent ifconfig.me)
-
-./scripts/prepare_dot_env.sh $F_KAFKA_CLUSTER_IP $F_KAFKA_CLUSTER_IP
-
 if [ -d "kafka-ce/zk" ]; then
     echo "The cluster is already setup ❌";
     exit 1
 fi
+
+./scripts/prepare_dot_env.sh
+
 ./scripts/create_volumes.sh zookeeper kafka-ce/zk/data kafka-ce/zk/txn-logs
 ./scripts/create_volumes.sh brokers kafka-ce/broker/data kafka-ce/broker2/data kafka-ce/broker3/data kafka-ce/broker4/data
 ./scripts/create_volumes.sh schema-registry kafka-ce/schema-registry/data
