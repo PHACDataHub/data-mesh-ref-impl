@@ -23,7 +23,7 @@ export type ResourceTypeFieldOptions = {
   fields?: ResourceTypeField[];
   hash?: boolean;
   format?: string;
-  unselectable?: boolean;
+  hidden?: boolean;
   blank?: boolean;
 };
 
@@ -332,7 +332,7 @@ const fieldSpecToGraphQlType = (
       directives,
     });
   }
-  if (options.unselectable) {
+  if (options.hidden) {
     fieldName = addFieldDirective({
       field: fieldName,
       directive: `@selectable(onRead: false, onAggregate: false)`,

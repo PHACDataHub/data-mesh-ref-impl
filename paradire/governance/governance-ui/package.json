@@ -26,6 +26,7 @@
     "@types/json-schema": "^7.0.14",
     "@uidotdev/usehooks": "^2.4.1",
     "graphql": "^16.8.1",
+    "kafkajs": "^2.2.4",
     "next": "^13.5.4",
     "next-auth": "^4.23.0",
     "react": "18.2.0",

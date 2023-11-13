@@ -6,8 +6,6 @@ import { type JSONSchema6 } from "json-schema";
 import { useDebounce } from "@uidotdev/usehooks";
 
 import {
-  XCircleIcon,
-  WrenchScrewdriverIcon,
   QuestionMarkCircleIcon,
   ChevronUpIcon,
   ChevronDownIcon,
@@ -65,6 +63,7 @@ export default function ResourceType({
   const [_showDescriptions, setShowDescriptions] = useState(
     Boolean(showDescriptions),
   );
+  const [subFieldKey, setSubFieldKey] = useState("key");
   const fields = selectedFields ?? _selectedFields;
   const [filter, setFilter] = useState("");
   const debouncedFilter = useDebounce(filter, 300);
@@ -96,11 +95,13 @@ export default function ResourceType({
   );
 
   const updateFieldOptionHandler = useCallback(
-    (field: string, property: "hash" | "format" | "unselectable") =>
+    (field: string, property: "hash" | "format" | "hidden" | "blank") =>
       (event: react.ChangeEvent<HTMLInputElement>) => {
         const _thisFieldOptions = Object.assign({}, _fieldOptions[field], {
           [property]:
-            (property === "hash" || property === "unselectable"
+            (property === "hash" ||
+            property === "hidden" ||
+            property === "blank"
               ? event.target.checked
               : event.target.value) || undefined,
         });
@@ -153,6 +154,9 @@ export default function ResourceType({
 
   const showDescriptionChangeHandler = useCallback(() => {
     setShowDescriptions(!_showDescriptions);
+    setSubFieldKey(
+      `sub-field-${(Math.random() + 1).toString(36).substring(7)}`,
+    );
   }, [_showDescriptions]);
 
   const showOptionsClickHandler = useCallback(
@@ -182,10 +186,10 @@ export default function ResourceType({
       className={`border-2 pb-2 ${disabled && "opacity-40"}`}
       aria-disabled={disabled}
     >
-      {!parentReferences && (
-        <div className="flex justify-between bg-blue-100 p-1">
-          <h3 className="text-xl">{name}</h3>
-          <button
+      {(!parentReferences || true) && (
+        <div className="flex justify-between space-x-2 bg-blue-100 p-1">
+          <h3 className="flex-1 text-xl">{name}</h3>
+          {/*<button
             className="text-red-500 disabled:opacity-25"
             title="Remove from rule-set"
             data-name={name}
@@ -193,66 +197,68 @@ export default function ResourceType({
             disabled={disabled}
           >
             <XCircleIcon className="h-5 w-5" />
+          </button>*/}
+          {showFields && (
+            <>
+              <div className="relative">
+                <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                  <svg
+                    className="h-4 w-4 text-gray-500 dark:text-gray-400"
+                    aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 20 20"
+                  >
+                    <path
+                      stroke="currentColor"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
+                    />
+                  </svg>
+                </div>
+                <input
+                  type="search"
+                  className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2 pl-10 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-25 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+                  placeholder="Filter field list..."
+                  required
+                  value={filter}
+                  onChange={filterChangeHandler}
+                  disabled={disabled}
+                />
+              </div>
+              <div className="mt-2">
+                <label>
+                  <input
+                    type="checkbox"
+                    checked={_showDescriptions}
+                    onChange={showDescriptionChangeHandler}
+                    className="mr-3"
+                  />
+                  Desc
+                </label>
+              </div>
+            </>
+          )}
+
+          <button
+            className="rounded border-[1px] border-slate-400 bg-slate-200 p-2 disabled:opacity-25"
+            onClick={toggleShowFields}
+            disabled={disabled}
+          >
+            {showFields ? (
+              <ChevronUpIcon className="h-5 w-5" />
+            ) : (
+              <ChevronDownIcon className="h-5 w-5" />
+            )}
           </button>
         </div>
       )}
       <p className="p-2 text-sm text-gray-500">
         {referenced_schema.description}
       </p>
-      <div className="flex justify-center">
-        <button
-          className="rounded bg-slate-200 p-2 disabled:opacity-25"
-          onClick={toggleShowFields}
-          disabled={disabled}
-        >
-          {showFields ? (
-            <ChevronUpIcon className="h-5 w-5" />
-          ) : (
-            <ChevronDownIcon className="h-5 w-5" />
-          )}
-        </button>
-      </div>
       <div className={`ml-3 mr-3 mt-3 ${!showFields && "hidden"}`}>
-        <form className="mb-5 mt-5">
-          <div className="relative">
-            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-              <svg
-                className="h-4 w-4 text-gray-500 dark:text-gray-400"
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 20 20"
-              >
-                <path
-                  stroke="currentColor"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
-                />
-              </svg>
-            </div>
-            <input
-              type="search"
-              className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-4 pl-10 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-25 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-              placeholder="Filter field list..."
-              required
-              value={filter}
-              onChange={filterChangeHandler}
-              disabled={disabled}
-            />
-          </div>
-          <div className="mt-2">
-            <label>
-              <input
-                type="checkbox"
-                checked={_showDescriptions}
-                onChange={showDescriptionChangeHandler}
-              />{" "}
-              Show field descriptions
-            </label>
-          </div>
-        </form>
         <div className="max-h-[500px] overflow-auto border-[1px] p-1">
           {referenced_schema.properties &&
             Object.entries(referenced_schema.properties)
@@ -294,13 +300,7 @@ export default function ResourceType({
                     key={field}
                     className="flex space-x-3 p-1 odd:bg-slate-100"
                   >
-                    <input
-                      type="checkbox"
-                      checked={Boolean(checked)}
-                      value={field}
-                      onChange={fieldToggleHandler}
-                    />
-                    <div className="flex-1">
+                    <div className="flex flex-1 flex-col items-start justify-center">
                       <h4 className="text-lg">
                         <BoldedText text={field} bold={debouncedFilter} />
                       </h4>
@@ -312,69 +312,9 @@ export default function ResourceType({
                           />
                         </p>
                       )}
-                      {showOptions.includes(field) && (
-                        <div className="">
-                          <h5 className="border-b-2 border-t-2 font-bold">
-                            Options
-                          </h5>
-                          <label className="flex text-sm">
-                            <input
-                              type="checkbox"
-                              className="mr-2"
-                              onChange={updateFieldOptionHandler(
-                                field,
-                                "unselectable",
-                              )}
-                              checked={Boolean(fieldConf?.unselectable)}
-                            />
-                            Unselectable
-                          </label>
-
-                          {(isDate || isDateTime) && (
-                            <label className="flex flex-col space-y-1 p-1">
-                              <div className="flex items-center space-x-2">
-                                <h5 className="text-xs font-bold">
-                                  Date format
-                                </h5>
-                                <a
-                                  href="https://www.npmjs.com/package/dateformat#mask-options"
-                                  target="dgg-ui-help"
-                                  className="p-1 text-slate-600"
-                                >
-                                  <QuestionMarkCircleIcon className="h-5 w-5" />
-                                </a>
-                              </div>
-                              <input
-                                type="text"
-                                placeholder="Expose using date format (example: yyyy)"
-                                className="flex-1 border-[1px] border-black p-1"
-                                onChange={updateFieldOptionHandler(
-                                  field,
-                                  "format",
-                                )}
-                                value={fieldConf?.format ?? ""}
-                              />
-                            </label>
-                          )}
-                          {isString && (
-                            <label className="flex text-sm">
-                              <input
-                                type="checkbox"
-                                className="mr-2"
-                                onChange={updateFieldOptionHandler(
-                                  field,
-                                  "hash",
-                                )}
-                                checked={Boolean(fieldConf?.hash)}
-                              />
-                              Apply one way hash
-                            </label>
-                          )}
-                        </div>
-                      )}
-
                       {checked && ref && (
                         <ResourceType
+                          key={subFieldKey}
                           name={field}
                           schema={schema}
                           reference={ref}
@@ -387,14 +327,58 @@ export default function ResourceType({
                         />
                       )}
                     </div>
-                    <div className="pt-2">
-                      <button
-                        value={field}
-                        onClick={showOptionsClickHandler}
-                        className="rounded border-2 bg-green-200 p-2 text-slate-800"
-                      >
-                        <WrenchScrewdriverIcon className="h-5 w-5" />
-                      </button>
+                    <div className="flex flex-col border-2 bg-slate-50 p-1">
+                      <label className="flex text-sm">
+                        <input
+                          type="checkbox"
+                          className="mr-2"
+                          onChange={updateFieldOptionHandler(
+                            field,
+                            "hidden",
+                          )}
+                          checked={Boolean(fieldConf?.hidden)}
+                        />
+                        Hidden
+                      </label>
+                      {(isDate || isDateTime) && (
+                        <label className="flex flex-col space-y-1 p-1">
+                          <div className="flex items-center space-x-2">
+                            <h5 className="text-xs font-bold">Date format</h5>
+                            <a
+                              href="https://www.npmjs.com/package/dateformat#mask-options"
+                              target="dgg-ui-help"
+                              className="p-1 text-slate-600"
+                            >
+                              <QuestionMarkCircleIcon className="h-5 w-5" />
+                            </a>
+                          </div>
+                          <input
+                            type="text"
+                            placeholder="Expose using date format (example: yyyy)"
+                            className="flex-1 border-[1px] border-black p-1"
+                            onChange={updateFieldOptionHandler(field, "format")}
+                            value={fieldConf?.format ?? ""}
+                          />
+                        </label>
+                      )}
+                      <label className="flex text-sm">
+                        <input
+                          type="checkbox"
+                          className="mr-2"
+                          onChange={updateFieldOptionHandler(field, "hash")}
+                          checked={Boolean(fieldConf?.hash)}
+                        />
+                        Apply one way hash
+                      </label>
+                      <label className="flex text-sm">
+                        <input
+                          type="checkbox"
+                          className="mr-2"
+                          onChange={updateFieldOptionHandler(field, "blank")}
+                          checked={Boolean(fieldConf?.blank)}
+                        />
+                        Blank
+                      </label>{" "}
                     </div>
                   </label>
                 );

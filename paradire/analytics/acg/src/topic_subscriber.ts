@@ -13,8 +13,8 @@ const pubsub = new PubSub();
 /**
  * Create an object suitable to pass to GraphQLSchema.resolvers via
  * Object.fromEntries.
- * @param param0 
- * @returns 
+ * @param param0
+ * @returns
  */
 export const subscribeToTopic = async ({
   name,
@@ -31,7 +31,6 @@ export const subscribeToTopic = async ({
   registry: { pt: SchemaRegistry; federal: SchemaRegistry };
   pt: string;
 }) => {
-
   // Grab the avro schema ids from the registry server used to convert federal
   // request messages to PT request messages.
   const pt_key_schema_id = await registry.pt.getLatestSchemaId(
@@ -109,8 +108,10 @@ export const subscribeToTopic = async ({
       // the configured value.
       if (message.value) {
         const value = await registry.pt.decode(message.value);
-        console.debug(`[${name}] - ${value.request_id} - sending response to graphql pipeline`);
-        pubsub.publish(name, { ...value, pt });
+        console.debug(
+          `[${name}] - ${value.request_id} - sending response to graphql pipeline`
+        );
+        await pubsub.publish(name, { ...value, pt });
       }
     },
   });
@@ -127,6 +128,8 @@ export const subscribeToTopic = async ({
         console.log(`[${name}] Disconnecting kafka producers.`);
         await fed_producer.disconnect();
         await pt_producer.disconnect();
+        console.log(`[${name}] Ending async iterator.`);
+        await pubsub.publish(name, { completed: true });
       },
       resolve: () => {
         // Returns an async iterator that graphql will emit every time a result
@@ -138,21 +141,26 @@ export const subscribeToTopic = async ({
         // the federal analytics platform.
         // At this point, the data has been processed and all governance rules
         // have been applied.
-        console.log(`[${name}] - ${value.request_id} - send_to_fed - processing request.`);
+        console.log(
+          `[${name}] - ${value.request_id} - send_to_fed - processing request.`
+        );
         try {
-        const forwardMessage = {
-          key: await registry.federal.encode(fed_key_schema_id, {
-            request_id: value.request_id,
-          }),
-          value: await registry.federal.encode(fed_value_schema_id, value),
-        };
-        // Send the message received from the PT platform and processed by
-        // the graphql pipeline to the federal analytics platform.
-        console.debug(`[${name}] - ${value.request_id} - forwarding response to federal`);
-        await fed_producer.send({
-          topic: topic.response,
-          messages: [forwardMessage],
-        });
+          const forwardMessage = {
+            key: await registry.federal.encode(fed_key_schema_id, {
+              request_id: value.request_id,
+            }),
+            value: await registry.federal.encode(fed_value_schema_id, value),
+          };
+          // Send the message received from the PT platform and processed by
+          // the graphql pipeline to the federal analytics platform.
+          console.debug(
+            `[${name}] - ${value.request_id} - forwarding response to federal`
+          );
+          await fed_producer.connect();
+          await fed_producer.send({
+            topic: topic.response,
+            messages: [forwardMessage],
+          });
         } catch (e) {
           console.error(e);
         }

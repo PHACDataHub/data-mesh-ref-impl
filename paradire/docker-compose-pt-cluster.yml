@@ -574,6 +574,43 @@ services:
 
 ################################################################################
 #
+# Access control gateway
+# - acg
+#
+################################################################################
+
+  ####################
+  # acg
+  ####################
+  acg:
+    build:
+      context: .
+      dockerfile: analytics/acg/Dockerfile
+    container_name: acg
+    environment:
+      - BROKER_HOST=broker
+      - BROKER_INTERNAL_PORT=${BROKER_INTERNAL_PORT}
+      - BROKER2_HOST=broker2
+      - BROKER2_INTERNAL_PORT=${BROKER2_INTERNAL_PORT}
+      - BROKER3_HOST=broker3
+      - BROKER3_INTERNAL_PORT=${BROKER3_INTERNAL_PORT}
+      - BROKER4_HOST=broker4
+      - BROKER4_INTERNAL_PORT=${BROKER4_INTERNAL_PORT}
+      - SCHEMA_REGISTRY_HOST=schema-registry
+      - SCHEMA_REGISTRY_PORT=${SCHEMA_REGISTRY_PORT}
+      - F_BROKER_HOST=${F_BROKER_HOST}
+      - F_BROKER_EXTERNAL_PORT=${F_BROKER_EXTERNAL_PORT}
+      - F_SCHEMA_REGISTRY_HOST=${F_SCHEMA_REGISTRY_HOST}
+      - F_SCHEMA_REGISTRY_PORT=${F_SCHEMA_REGISTRY_PORT}
+      - PT=${PT}
+
+    networks:
+      - backend
+    restart: always
+
+
+################################################################################
+#
 # Data governance services
 # - governance-ui
 # - gateway (GraphQl query endpoint)

@@ -5,6 +5,7 @@ import type react from "react";
 import { useCallback, useRef, useState, useMemo, useEffect } from "react";
 
 import BoldedText from "./BoldedText";
+import { type ResourceTypeSelection } from "@phac-aspc-dgg/schema-tools";
 
 export default function ResourceTypeAutoComplete({
   mapping,

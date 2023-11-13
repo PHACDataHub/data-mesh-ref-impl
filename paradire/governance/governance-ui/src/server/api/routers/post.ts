@@ -1,10 +1,30 @@
+import { Kafka, Partitioners } from "kafkajs";
 import { z } from "zod";
+
+import { env } from "~/env.mjs";
 
 import {
   createTRPCRouter,
   protectedProcedure,
   publicProcedure,
 } from "~/server/api/trpc";
+
+// Connection to PT kafka
+const kafka_pt = new Kafka({
+  clientId: "dag",
+  brokers: [`${env.BROKER_HOST}:${env.BROKER_LOCAL_PORT}`],
+});
+
+const pt_producer = kafka_pt.producer({
+  allowAutoTopicCreation: true,
+  createPartitioner: Partitioners.DefaultPartitioner,
+});
+await pt_producer.connect();
+
+// const pt_consumer = kafka_pt.consumer({ groupId: "governance-ui"});
+// await pt_consumer.connect();
+
+const topic = "acg_ruleset_config";
 
 export const postRouter = createTRPCRouter({
   hello: publicProcedure
@@ -13,6 +33,24 @@ export const postRouter = createTRPCRouter({
       return {
         greeting: `Hello ${input.text}`,
       };
+    }),
+
+  updateAcg: publicProcedure
+    .input(z.object({ ruleset: z.string() }))
+    .mutation(async ({ input }) => {
+      const hashBuffer = await crypto.subtle.digest(
+        "SHA-256",
+        new TextEncoder().encode(input.ruleset),
+      );
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      const key = hashArray
+        .map((b) => b.toString(16).padStart(2, "0"))
+        .join("");
+
+      return pt_producer.send({
+        topic,
+        messages: [{ key, value: input.ruleset }],
+      });
     }),
 
   create: protectedProcedure

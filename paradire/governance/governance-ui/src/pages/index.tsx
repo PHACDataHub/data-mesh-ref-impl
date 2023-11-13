@@ -1,5 +1,5 @@
 import type react from "react";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 import Head from "next/head";
 
@@ -21,6 +21,7 @@ import {
 } from "@phac-aspc-dgg/schema-tools";
 
 import { env } from "~/env.mjs";
+import { api } from "~/utils/api";
 
 const client = new ApolloClient({
   uri: `http://${env.NEXT_PUBLIC_PUBLIC_IP ?? "localhost"}:${
@@ -36,12 +37,15 @@ const UpdateRulesetMutation = gql`
 `;
 
 export default function Home() {
-  const [selectedSchema, setSelectedSchema] =
-    useState<SchemaType>("paradire-parameterized");
+  const [selectedSchema, setSelectedSchema] = useState<SchemaType>(
+    "paradire-parameterized",
+  );
 
   const { yaml, setYaml, selectedResourceTypes, setSelectedResourceTypes } =
     useDataGovernance();
 
+  const updateAcg = api.post.updateAcg.useMutation();
+  
   const changeSelectedResourceTypesHandler = useCallback(
     (changes: ResourceTypeSelection[]) => {
       setSelectedResourceTypes(changes);
@@ -51,9 +55,9 @@ export default function Home() {
 
   const removeSelectedResourceHandler = useCallback(
     (name: string) => () => {
-      setSelectedResourceTypes(
-        selectedResourceTypes.filter((f) => f.name !== name),
-      );
+      // setSelectedResourceTypes(
+      //   selectedResourceTypes.filter((f) => f.name !== name),
+      // );
     },
     [selectedResourceTypes, setSelectedResourceTypes],
   );
@@ -111,19 +115,27 @@ export default function Home() {
           .filter(
             ([field]) => !field.startsWith("_") && field !== "resourceType",
           )
-          .map(([field]) => field);
+          .map(([field]) => ({ [field]: { blank: true } }));
 
         return { name, selectedFields, ref: ref as string };
       }),
     );
   }, [json_schema, setSelectedResourceTypes]);
 
+  useEffect(() => {
+    console.log("-- schema changed --");
+    addEverythingClickHandler();
+  }, [addEverythingClickHandler, json_schema]);
+
   const applyClickHandler = useCallback(async () => {
-    await client.mutate({
-      mutation: UpdateRulesetMutation,
-      variables: { yaml },
-    });
-  }, [yaml]);
+    // await client.mutate({
+    //   mutation: UpdateRulesetMutation,
+    //   variables: { yaml },
+    // });
+    const data = updateAcg.mutate({ ruleset: yaml });
+    console.log(data);
+
+  }, [updateAcg, yaml]);
 
   return (
     <>
@@ -143,8 +155,8 @@ export default function Home() {
             </h1>
             <h2 className="text-3xl">-- a crude interface --</h2>
           </div>
-          <div className="flex ">
-            <label className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
+          <div className="flex items-end space-x-8">
+            <label className="block text-sm font-medium text-gray-900 dark:text-white">
               <h3 className="text-lg">Schema</h3>
               <select
                 className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
@@ -159,30 +171,17 @@ export default function Home() {
                 <option value="hl7r4">HL7 R4</option>
               </select>
             </label>
+            <button
+              className="rounded bg-green-500 p-2 text-slate-50"
+              onClick={applyClickHandler}
+            >
+              Apply
+            </button>
           </div>
         </div>
 
         <div className="flex space-x-2 pt-5">
           <div className="flex-1">
-            <ResourceTypeAutoComplete
-              selectedResourceTypes={selectedResourceTypes}
-              onChange={changeSelectedResourceTypesHandler}
-              mapping={json_schema.discriminator.mapping}
-            />
-            <div className="flex justify-between">
-              <button
-                className="rounded bg-blue-500 p-2 text-slate-50"
-                onClick={addEverythingClickHandler}
-              >
-                Add everything!
-              </button>
-              <button
-                className="rounded bg-green-500 p-2 text-slate-50"
-                onClick={applyClickHandler}
-              >
-                Apply
-              </button>
-            </div>
             <div className="flex flex-col space-x-2 space-y-2">
               <div />
               {Object.entries(json_schema.discriminator.mapping)
@@ -206,6 +205,7 @@ export default function Home() {
             </div>
           </div>
           <div className="flex w-[45%] flex-col space-y-2">
+            <div />
             <div className="max-h-[35%] flex-1 border-2">
               <Editor
                 defaultLanguage="yaml"

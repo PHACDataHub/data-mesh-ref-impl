@@ -1,0 +1,157 @@
+ruleset:
+  version: 0.0.1
+  resourceTypes:
+    - name: CityOrgPatient
+      fields:
+        - request_id:
+            blank: true
+        - organization_city:
+            blank: true
+        - organization_name:
+            blank: true
+        - patient_count:
+            blank: true
+        - pt:
+            blank: true
+        - timestamp:
+            blank: true
+    - name: CityOrgPatientVisit
+      fields:
+        - request_id:
+            blank: true
+        - city:
+            blank: true
+        - name:
+            blank: true
+        - patient_id:
+            blank: true
+        - count:
+            blank: true
+        - pt:
+            blank: true
+        - timestamp:
+            blank: true
+    - name: CityYearTopProcedure
+      fields:
+        - request_id:
+            blank: true
+        - city:
+            blank: true
+        - year:
+            blank: true
+        - procedure_1:
+            blank: true
+        - procedure_2:
+            blank: true
+        - procedure_3:
+            blank: true
+        - pt:
+            blank: true
+        - timestamp:
+            blank: true
+    - name: PatientCvxOrg
+      fields:
+        - request_id:
+            blank: true
+        - patient_id:
+            blank: true
+        - patient_birth_date:
+            blank: true
+        - patient_gender:
+            blank: true
+        - patient_zip:
+            blank: true
+        - code_list:
+            blank: true
+        - immunization_count:
+            blank: true
+        - organization_name:
+            blank: true
+        - organization_zip:
+            blank: true
+        - pt:
+            blank: true
+        - timestamp:
+            blank: true
+    - name: PtOrgMed
+      fields:
+        - request_id:
+            blank: true
+        - organization_state:
+            blank: true
+        - organization_city:
+            blank: true
+        - organization_name:
+            blank: true
+        - medication_count:
+            blank: true
+        - pt:
+            blank: true
+        - timestamp:
+            blank: true
+    - name: TopKImmunization
+      fields:
+        - request_id:
+            blank: true
+        - zip:
+            blank: true
+        - code:
+            blank: true
+        - count:
+            blank: true
+        - pt:
+            blank: true
+        - timestamp:
+            blank: true
+    - name: VaccinationRecord
+      fields:
+        - request_id:
+            blank: true
+        - immunization_date:
+            blank: true
+        - immunization_code:
+            blank: true
+        - immunization_description:
+            blank: true
+        - organization_name:
+            blank: true
+        - organization_zip:
+            blank: true
+        - encounter_class:
+            blank: true
+        - encounter_code:
+            blank: true
+        - encounter_description:
+            blank: true
+        - patient_id:
+            blank: true
+        - patient_address:
+            blank: true
+        - patient_age:
+            blank: true
+        - patient_zip:
+            blank: true
+        - patient_gender:
+            blank: true
+        - patient_race:
+            blank: true
+        - patient_ethnicity:
+            blank: true
+        - pt:
+            blank: true
+        - timestamp:
+            blank: true
+    - name: ZipImmunization
+      fields:
+        - request_id:
+            blank: true
+        - city:
+            blank: true
+        - zip:
+            blank: true
+        - immunization_count:
+            blank: true
+        - pt:
+            blank: true
+        - timestamp:
+            blank: true
