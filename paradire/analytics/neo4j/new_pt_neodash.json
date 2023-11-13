@@ -62,7 +62,7 @@
         "undefined": {
           "year": 2020,
           "month": 1,
-          "day": 2
+          "day": 1
         },
         "neodash_cvx_codes": "03,08,20,21,49,83,114,115,119,133"
       },
@@ -144,7 +144,8 @@
               "parameterName": "neodash_patient_zip",
               "multiSelector": true,
               "refreshButtonEnabled": true,
-              "refreshRate": 0
+              "refreshRate": 0,
+              "autorun": false
             },
             "schema": []
           },
@@ -168,7 +169,7 @@
           {
             "id": "5cc7a34e-58f4-46aa-ae85-acc8cdeed9ab",
             "title": "Percentage of vaccinated population per zip code for the Period above",
-            "query": "MATCH (far: FAR_1)\nWITH far\n  MATCH (patient:Patient)\nWITH far, patient\n  MATCH (patient)-[]-(immunization:Immunization)\nWITH DISTINCT(patient) AS patient, COLLECT(immunization) AS immunizations, far\nWITH far, patient, REDUCE(l=0, e IN immunizations | \n  CASE WHEN \n      e.code IN $neodash_immunization_code AND \n      DATE(e.date) >= $neodash_start_date AND \n      DATE(e.date) <= $neodash_start_date + DURATION({months: far.current * TOINTEGER($neodash_period_length)})\n  THEN l + 1 ELSE l END) AS immunization_count\nWITH \n  DISTINCT(patient.zip) AS zip, \n  CASE immunization_count WHEN 2 THEN 'Fully vaccinated' WHEN 1 THEN 'One-dosed' ELSE 'Unvaccinated' END AS status, \n  COUNT(*) AS patient_count\nWITH zip, patient_count, status\n  MATCH (patient:Patient {zip: zip})\nWITH zip, patient_count, COUNT(patient) AS zip_patient_count, status\nRETURN zip, ROUND(patient_count*100.0 / zip_patient_count) AS percent, status\n\n\n",
+            "query": "MATCH (far: FAR_1)\nWITH far\n  MATCH (patient:Patient)\nWITH far, patient\n  OPTIONAL MATCH (patient)-[]-(immunization:Immunization)\nWITH DISTINCT(patient) AS patient, COLLECT(immunization) AS immunizations, far\nWITH far, patient, REDUCE(l=0, e IN immunizations | \n  CASE WHEN \n      e.code IN $neodash_immunization_code AND \n      DATE(e.date) >= $neodash_start_date AND \n      DATE(e.date) <= $neodash_start_date + DURATION({months: far.current * TOINTEGER($neodash_period_length)})\n  THEN l + 1 ELSE l END) AS immunization_count\nWITH \n  DISTINCT(patient.zip) AS zip, \n  CASE WHEN immunization_count >= 2 THEN 'Fully vaccinated' WHEN immunization_count = 1 THEN 'One-dosed' ELSE 'Unvaccinated' END AS status, \n  COUNT(*) AS patient_count\nWITH zip, patient_count, status\n  MATCH (patient:Patient {zip: zip})\nWITH zip, patient_count, COUNT(patient) AS zip_patient_count, status\nRETURN zip, ROUND(patient_count*10000.0 / zip_patient_count)/100.0 AS percent, status\n\n\n",
             "width": 12,
             "height": 3,
             "x": 0,
