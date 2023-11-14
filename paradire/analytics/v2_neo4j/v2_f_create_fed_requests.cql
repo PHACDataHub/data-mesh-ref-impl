@@ -92,7 +92,7 @@ CREATE (n:FAR_4)
 //
 CREATE (n:FAR_4)
     SET
-        n.request_id = 'far_4-1',
+        n.request_id = 'far_4-2',
         n.cvx_list = '43,52',
         n.pt_list = 'AB,BC,MB,NB,NL,NT,NS,NU,ON,PE,QC,SK,YT',
         n.timestamp = apoc.date.currentTimestamp(),
