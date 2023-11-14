@@ -23,6 +23,6 @@
         "neo4j.encryption.enabled": false,
         "topic": "far_1",
         "neo4j.source.type":"QUERY",
-        "neo4j.source.query": "MATCH (entity:FAR_1) WHERE entity.timestamp > $lastCheck RETURN entity.request_id AS request_id, entity.covid_cvx_list AS covid_cvx_list, entity.start_date AS start_date, entity.period_length AS period_length, entity.number_of_periods AS number_of_periods, entity.pt_list AS pt_list, entity.timestamp AS timestamp, entity.doc AS doc"
+        "neo4j.source.query": "MATCH (entity:FAR_1) WHERE entity.timestamp > $lastCheck RETURN entity.request_id AS request_id, entity.covid_cvx_list AS covid_cvx_list, entity.start_date AS start_date, entity.end_date AS end_date, entity.pt_list AS pt_list, entity.timestamp AS timestamp, entity.doc AS doc"
     }
 }
