@@ -38,7 +38,7 @@ echo ''
 ./scripts/get_schema_registry_config.sh
 
 for item in {1..9}
-# for item in 1
+# for item in $1
 do
     request_topic=far_${item}
 

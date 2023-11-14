@@ -26,8 +26,7 @@ schema_registry_port=${SCHEMA_REGISTRY_PORT}
 
 event_dir=${curr_dir}/analytics/v2_events
 
-# for item in {1..9}
-for item in $1
+for item in {1..9}
 do
     request_topic=far_${item}
 
@@ -41,8 +40,7 @@ done
 
 ./scripts/delete_connector.sh fas_sink_connectors
 
-# for item in {1..9}
-for item in $1
+for item in {1..9}
 do
     response_topic=fas_${item}
 

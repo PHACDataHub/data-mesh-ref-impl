@@ -11,6 +11,7 @@ MATCH (entity:FAR_1)
 RETURN
     entity.request_id AS request_id,
     entity.covid_cvx_list AS covid_cvx_list,
+    entity.start_date AS start_date,
     entity.period_length AS period_length,
     entity.number_of_periods AS number_of_periods,
     entity.pt_list AS pt_list,
