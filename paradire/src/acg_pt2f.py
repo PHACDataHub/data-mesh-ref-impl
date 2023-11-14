@@ -1,7 +1,5 @@
 from utils import to_json_str
-import uuid
-
-NAMESPACE='https://www.canada.ca/en/public-health.html'
+import base64
 
 
 class Worker(object):
@@ -31,7 +29,7 @@ class Worker(object):
         if field in self.transform_dict['to_reduce']:
             return str(value)[0:4]
         if field in self.transform_dict['to_hash']:
-            return uuid.uuid5(NAMESPACE, value)[0:8]
+            return base64.b64encode(value.encode('ascii')).decode('ascii')
         if field in self.transform_dict['to_block']:
             return '*****'
         

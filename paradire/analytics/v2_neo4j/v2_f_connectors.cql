@@ -31,41 +31,44 @@ WITH
     request_id, pt, covid_cvx_list, start_date, period_length, number_of_periods
     UNWIND RANGE(0, number_of_periods -1) AS period
 WITH
-    request_id, pt, covid_cvx_list, 
-    start_date + DURATION({months: period * period_length}) AS period_start,
-    start_date + DURATION({months: (period + 1) * period_length}) AS period_end
+    request_id, pt, covid_cvx_list, start_date,
+    start_date + DURATION({months: (period + 1) * period_length}) AS end_date
     OPTIONAL MATCH (patient)-[]-(immunization:Immunization)
-        WHERE
-            immunization.code IN covid_cvx_list AND
-            DATE(immunization.date) >= period_start AND
-            DATE(immunization.date) <= period_end
 WITH
-    DISTINCT(patient) AS patient,
-    request_id, pt, period_start, period_end,
-    COUNT(immunization) AS immunization_count
+    DISTINCT(patient) AS patient, 
+    request_id, pt, start_date, end_date, covid_cvx_list,
+    COLLECT(immunization) AS immunizations
+WITH 
+    patient, request_id, pt, start_date, end_date, covid_cvx_list,
+    REDUCE(l=0, e IN immunizations | 
+    CASE WHEN 
+        e.code IN covid_cvx_list AND 
+        DATE(e.date) >= start_date AND 
+        DATE(e.date) <= end_date
+    THEN l + 1 ELSE l END) AS immunization_count
 WITH
     DISTINCT(patient.zip) AS patient_zip,
-    request_id, pt, period_start, period_end, 
+    request_id, pt, start_date, end_date,
     CASE
         WHEN immunization_count >= 2 THEN 'Fully vaccinated' 
         WHEN immunization_count = 1 THEN 'One-dosed' 
         ELSE 'Unvaccinated' END AS patient_status, 
     COUNT(*) AS status_count
 WITH
-    request_id, pt, period_start, period_end, patient_zip, patient_status, status_count
+    request_id, pt, start_date, end_date, patient_zip, patient_status, status_count
         MATCH (patient:Patient {zip: patient_zip})
 WITH 
-    request_id, pt, period_start, period_end, patient_zip, patient_status, status_count,
+    request_id, pt, start_date, end_date, patient_zip, patient_status, status_count,
     COUNT(patient) AS patient_count
 WITH
-    request_id, pt, period_start, period_end, patient_zip, patient_status, status_count, patient_count,
+    request_id, pt, start_date, end_date, patient_zip, patient_status, status_count, patient_count,
     ROUND(status_count*10000.0 / patient_count)/100.0 AS status_percent
     CREATE (n:FAS_1)
         SET
             n.request_id = request_id,
             n.pt = pt,
-            n.start_date = period_start,
-            n.end_date = period_end,
+            n.start_date = TOSTRING(start_date),
+            n.end_date = TOSTRING(end_date),
             n.patient_zip = patient_zip,
             n.patient_count = patient_count,
             n.patient_status = patient_status,
