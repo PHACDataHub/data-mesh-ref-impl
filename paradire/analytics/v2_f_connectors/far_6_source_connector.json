@@ -23,6 +23,6 @@
         "neo4j.encryption.enabled": false,
         "topic": "far_6",
         "neo4j.source.type":"QUERY",
-        "neo4j.source.query": "MATCH (entity:FAR_6) WHERE entity.timestamp > $lastCheck RETURN entity.request_id AS request_id, entity.code_list AS code_list, entity.pt_list AS pt_list, entity.timestamp AS timestamp, entity.doc AS doc"
+        "neo4j.source.query": "MATCH (entity:FAR_6) WHERE entity.timestamp > $lastCheck RETURN entity.request_id AS request_id, entity.pt_list AS pt_list, entity.timestamp AS timestamp, entity.doc AS doc"
     }
 }

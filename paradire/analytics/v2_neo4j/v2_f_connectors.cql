@@ -449,7 +449,6 @@ MATCH (entity:FAR_6)
     WHERE entity.timestamp > $lastCheck
 RETURN
     entity.request_id AS request_id,
-    entity.code_list AS code_list,
     entity.pt_list AS pt_list,
     entity.timestamp AS timestamp,
     entity.doc AS doc;
