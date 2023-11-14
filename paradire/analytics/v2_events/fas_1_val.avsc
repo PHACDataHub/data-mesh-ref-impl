@@ -2,7 +2,7 @@
     "type": "record",
     "name": "ConnectDefault",
     "namespace": "io.confluent.connect.avro",
-    "doc": "Name - Federated Analytics Response (FAS) for COVID vaccination status",
+    "doc": "COVIDVaccinationStatusResponse - COVID vaccination status showing quantities (count, percent) for each of statuses of COVID vaccinated patients per zip code.",
     "fields": [
         {"name": "request_id", "type": "string", "doc": "Unique ID of a Fererated Analytics Request."},
         {"name": "pt", "type": "string", "doc": "PT, where this response from, i.e. BC"},

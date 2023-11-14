@@ -2,7 +2,7 @@
     "type": "record",
     "name": "ConnectDefault",
     "namespace": "io.confluent.connect.avro",
-    "doc": "Name - Federated Analytics Request (FAR) for COVID vaccination status",
+    "doc": "COVIDVaccinationStatusRequest - Request for COVID vaccination status by a number of CVXs, within a period of time, and based on the number of doses depending on vaccine type.",
     "fields": [
         {"name": "request_id", "type": "string", "doc": "Unique ID of a Fererated Analytics Request"},
         {"name": "covid_cvx_list", "type": "string", "doc": "List of COVID CVX codes (comma-separated), i.e 207,208."},
