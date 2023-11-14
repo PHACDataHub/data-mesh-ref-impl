@@ -43,7 +43,7 @@ main:
                 request_converter: 
                     - far_1:
                         key: request_id
-                        val: request_id,covid_cvx_list,start_date,period_length,number_of_periods,pt_list,timestamp,doc
+                        val: request_id,covid_cvx_list,start_date,end_date,pt_list,timestamp,doc
                     - far_2:
                         key: request_id
                         val: request_id,cvx_maps,pt_list,timestamp,doc
