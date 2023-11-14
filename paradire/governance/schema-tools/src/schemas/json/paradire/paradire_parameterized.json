@@ -1,407 +1,166 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "id": "https://github.com/PHACDataHub/data-mesh-ref-impl/paradire/0.1",
-  "description": "Paradire PoC Schema",
+  "id": "https://github.com/PHACDataHub/data-mesh-ref-impl/paradire/federal/0.1",
+  "description": "Federal paradire PoC data model",
   "discriminator": {
     "propertyName": "resourceType",
     "mapping": {
-      "CityOrgPatient": "#/definitions/CityOrgPatient",
-      "CityOrgPatientVisit": "#/definitions/CityOrgPatientVisit",
-      "CityYearTopProcedure": "#/definitions/CityYearTopProcedure",
-      "PatientCvxOrg": "#/definitions/PatientCvxOrg",
-      "PtOrgMed": "#/definitions/PtOrgMed",
-      "TopKImmunization": "#/definitions/TopKImmunization",
-      "VaccinationRecord": "#/definitions/VaccinationRecord",
-      "ZipImmunization": "#/definitions/ZipImmunization"
+      "fas_1": "#/definitions/fas_1",
+      "fas_2": "#/definitions/fas_2",
+      "fas_3": "#/definitions/fas_3",
+      "fas_4": "#/definitions/fas_4",
+      "fas_5": "#/definitions/fas_5",
+      "fas_6": "#/definitions/fas_6",
+      "fas_7": "#/definitions/fas_7",
+      "fas_8": "#/definitions/fas_8",
+      "fas_9": "#/definitions/fas_9"
     }
   },
   "entrypoints": {
-    "CityOrgPatient": {
+    "fas_1": {
       "type": "array",
       "items": {
-        "$ref": "#/definitions/CityOrgPatient"
+        "$ref": "#/definitions/fas_1"
       },
-      "arguments": "#/definitions/CityOrgPatientRequest"
+      "arguments": "#/definitions/far_1"
     },
-    "CityOrgPatientVisit": {
+    "fas_2": {
       "type": "array",
       "items": {
-        "$ref": "#/definitions/CityOrgPatientVisit"
+        "$ref": "#/definitions/fas_2"
       },
-      "arguments": "#/definitions/CityOrgPatientVisitRequest"
+      "arguments": "#/definitions/far_2"
     },
-    "CityYearTopProcedure": {
+    "fas_3": {
       "type": "array",
       "items": {
-        "$ref": "#/definitions/CityYearTopProcedure"
+        "$ref": "#/definitions/fas_3"
       },
-      "arguments": "#/definitions/CityYearTopProcedureRequest"
+      "arguments": "#/definitions/far_3"
     },
-    "PatientCvxOrg": {
+    "fas_4": {
       "type": "array",
       "items": {
-        "$ref": "#/definitions/PatientCvxOrg"
+        "$ref": "#/definitions/fas_4"
       },
-      "arguments": "#/definitions/PatientCvxOrgRequest"
+      "arguments": "#/definitions/far_4"
     },
-    "PtOrgMed": {
+    "fas_5": {
       "type": "array",
       "items": {
-        "$ref": "#/definitions/PtOrgMed"
+        "$ref": "#/definitions/fas_5"
       },
-      "arguments": "#/definitions/PtOrgMedRequest"
+      "arguments": "#/definitions/far_5"
     },
-    "TopKImmunization": {
+    "fas_6": {
       "type": "array",
       "items": {
-        "$ref": "#/definitions/TopKImmunization"
+        "$ref": "#/definitions/fas_6"
       },
-      "arguments": "#/definitions/TopKImmunizationRequest"
+      "arguments": "#/definitions/far_6"
     },
-    "VaccinationRecord": {
+    "fas_7": {
       "type": "array",
       "items": {
-        "$ref": "#/definitions/VaccinationRecord"
+        "$ref": "#/definitions/fas_7"
       },
-      "arguments": "#/definitions/VaccinationRecordRequest"
+      "arguments": "#/definitions/far_7"
     },
-    "ZipImmunization": {
+    "fas_8": {
       "type": "array",
       "items": {
-        "$ref": "#/definitions/ZipImmunization"
+        "$ref": "#/definitions/fas_8"
       },
-      "arguments": "#/definitions/ZipImmunizationRequest"
+      "arguments": "#/definitions/far_8"
+    },
+    "fas_9": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/fas_9"
+      },
+      "arguments": "#/definitions/far_9"
     }
   },
   "definitions": {
-    "CityOrgPatientRequest": {
-      "description": "Federated query request for city org patient.",
-      "properties": {
-        "city": {
-          "type": "string",
-          "description": "The city"
-        }
-      },
-      "additionalProperties": false,
-      "required": [
-        "city"
-      ]
-    },
-    "CityOrgPatientVisitRequest": {
-      "description": "Federated query request for city org patient visit.",
-      "properties": {
-        "city": {
-          "type": "string",
-          "description": "The city"
-        }
-      },
-      "additionalProperties": false,
-      "required": [
-        "city"
-      ]
-    },
-    "CityYearTopProcedureRequest": {
-      "description": "Federated query request for city top procedures.",
-      "properties": {
-        "city": {
-          "type": "string",
-          "description": "The city"
-        },
-        "procedure_1": {
-          "type": "string",
-          "description": "Code of the first procedure"
-        },
-        "procedure_2": {
-          "type": "string",
-          "description": "Code of the second procedure"
-        },
-        "procedure_3": {
-          "type": "string",
-          "description": "Code of the third procedure"
-        }
-      },
-      "additionalProperties": false,
-      "required": [
-        "city",
-        "procedure_1",
-        "procedure_2",
-        "procedure_3"
-      ]
-    },
-    "PatientCvxOrgRequest": {
-      "description": "Federated query request for city patient cvx org.",
-      "properties": {
-        "code_list": {
-          "type": [
-            "null",
-            "string"
-          ],
-          "default": null,
-          "description": "List of immunization codes from CVX. Comma separated"
-        },
-        "term": {
-          "type": [
-            "null",
-            "string"
-          ],
-          "default": null,
-          "description": "Term in the description"
-        }
-      },
-      "additionalProperties": false,
-      "required": []
-    },
-    "PtOrgMedRequest": {
-      "description": "Federated query request for pt org med.",
-      "properties": {
-        "state": {
-          "type": [
-            "null",
-            "string"
-          ],
-          "default": null,
-          "description": "The state"
-        }
-      },
-      "additionalProperties": false,
-      "required": []
-    },
-    "TopKImmunizationRequest": {
-      "description": "Federated query request for top K immunizations per pt.",
-      "properties": {
-        "k": {
-          "type": [
-            "integer",
-            "null"
-          ],
-          "description": "Number of top immunizations."
-        }
-      },
-      "additionalProperties": false,
-      "required": []
-    },
-    "VaccinationRecordRequest": {
-      "description": "Federated query request for vaccination records",
-      "properties": {},
-      "additionalProperties": false,
-      "required": []
-    },
-    "ZipImmunizationRequest": {
-      "description": "Federated query request for zip immunization.",
-      "properties": {
-        "city": {
-          "type": [
-            "string",
-            "null"
-          ],
-          "description": "The city"
-        }
-      },
-      "additionalProperties": false,
-      "required": []
-    },
-    "CityOrgPatient": {
-      "description": "City org patient",
+    "far_1": {
       "properties": {
         "request_id": {
-          "description": "Unique ID of a Fererated Analytics Request.",
-          "type": "string"
+          "type": "string",
+          "description": "Unique ID of a Fererated Analytics Request"
         },
-        "organization_city": {
-          "description": "Organization's city",
-          "type": [
-            "string",
-            "null"
-          ]
+        "covid_cvx_list": {
+          "type": "string",
+          "description": "List of COVID CVX codes (comma-separated), i.e 207,208."
         },
-        "organization_name": {
-          "type": [
-            "string",
-            "null"
-          ],
-          "description": "Organization's name"
+        "start_date": {
+          "type": "string",
+          "description": "Date (YYYY-MM-DD) as string."
         },
-        "patient_count": {
-          "type": "integer",
-          "description": "The number of patients of this organization."
+        "end_date": {
+          "type": "string",
+          "description": "Date (YYYY-MM-DD) as string."
         },
-        "pt": {
-          "type": [
-            "string",
-            "null"
-          ],
-          "description": "The pt."
+        "pt_list": {
+          "type": "string",
+          "description": "List of PTs (comma-separated), where this request is sent, i.e BC,ON,QC."
         },
         "timestamp": {
           "type": "number",
-          "description": "Timestamp when this record is produced."
+          "description": "Timestamp when this record is produced"
+        },
+        "doc": {
+          "type": "string",
+          "description": "Description of this request"
         }
       },
       "additionalProperties": false,
       "required": [
         "request_id",
-        "code",
-        "count",
-        "timestamp"
+        "covid_cvx_list",
+        "start_date",
+        "end_date",
+        "pt_list",
+        "timestamp",
+        "doc"
       ]
     },
-    "CityOrgPatientVisit": {
-      "description": "City org patient visit",
+    "fas_1": {
       "properties": {
         "request_id": {
           "type": "string",
           "description": "Unique ID of a Fererated Analytics Request."
-        },
-        "city": {
-          "type": [
-            "null",
-            "string"
-          ],
-          "default": null,
-          "description": "Organization's city"
-        },
-        "name": {
-          "type": [
-            "null",
-            "string"
-          ],
-          "default": null,
-          "description": "Organization's name"
-        },
-        "patient_id": {
-          "type": "string",
-          "description": "Primary Key. Unique Identifier of the patient - UUID"
-        },
-        "count": {
-          "type": "integer",
-          "description": "The number of visits of the patient to this organization."
         },
         "pt": {
-          "type": [
-            "null",
-            "string"
-          ],
-          "default": null,
-          "description": "The pt."
-        },
-        "timestamp": {
-          "type": "number",
-          "description": "Timestamp when this record is produced."
-        }
-      },
-      "additionalProperties": false,
-      "required": [
-        "request_id",
-        "patient_id",
-        "count",
-        "timestamp"
-      ]
-    },
-    "CityYearTopProcedure": {
-      "description": "City year top procedure",
-      "properties": {
-        "request_id": {
           "type": "string",
-          "description": "Unique ID of a Fererated Analytics Request."
+          "description": "PT, where this response from, i.e. BC"
         },
-        "organization_city": {
+        "start_date": {
           "type": "string",
-          "description": "Organization's address city"
+          "description": "Date (YYYY-MM-DD) as string."
         },
-        "year": {
-          "type": "integer",
-          "description": "The year"
-        },
-        "procedure_1": {
-          "type": "integer",
-          "description": "Number of time the first procedure perfomed"
-        },
-        "procedure_2": {
-          "type": "integer",
-          "description": "Number of time the second procedure perfomed"
-        },
-        "procedure_3": {
-          "type": "integer",
-          "description": "Number of time the third procedure perfomed"
-        },
-        "pt": {
-          "type": [
-            "null",
-            "string"
-          ],
-          "default": null,
-          "description": "The pt."
-        },
-        "timestamp": {
-          "type": "number",
-          "description": "Timestamp when this record is produced."
-        }
-      },
-      "additionalProperties": false,
-      "required": [
-        "request_id",
-        "city",
-        "year",
-        "procedure_1",
-        "procedure_2",
-        "procedure_3",
-        "timestamp"
-      ]
-    },
-    "PatientCvxOrg": {
-      "description": "City org patient visit",
-      "properties": {
-        "request_id": {
+        "end_date": {
           "type": "string",
-          "description": "Unique ID of a Fererated Analytics Request."
-        },
-        "patient_id": {
-          "type": "string",
-          "description": "Primary Key. Unique Identifier of the patient - UUID"
-        },
-        "patient_birth_date": {
-          "type": "string",
-          "description": "The date the patient was born - Date (YYYY-MM-DD)"
-        },
-        "patient_gender": {
-          "type": "string",
-          "description": "Gender. M is male, F is female"
+          "description": "Date (YYYY-MM-DD) as string."
         },
         "patient_zip": {
-          "type": [
-            "null",
-            "string"
-          ],
-          "default": null,
-          "description": "Patient's zip code"
-        },
-        "code_list": {
           "type": "string",
-          "description": "List of immunization codes from CVX. Comma separated"
+          "description": "Reduced zip code (first three characters)."
         },
-        "immunization_count": {
-          "type": "integer",
-          "description": "The number of immunizations."
+        "patient_count": {
+          "type": "number",
+          "description": "The total number of vaccinated patients, with in the zipcode"
         },
-        "organization_name": {
+        "patient_status": {
           "type": "string",
-          "description": "Name of the Organization."
+          "description": "The status of patient: Unvaccinated (0 doses), One-dosed, or Fully vaccinated (2 doses)."
         },
-        "organization_zip": {
-          "type": [
-            "null",
-            "string"
-          ],
-          "default": null,
-          "description": "Street address zip or postal code"
+        "status_count": {
+          "type": "number",
+          "description": "The total number of vaccinated patients, for single status type, with in the zipcode"
         },
-        "pt": {
-          "type": [
-            "null",
-            "string"
-          ],
-          "default": null,
-          "description": "The pt."
+        "status_percent": {
+          "type": "number",
+          "description": "status_count/patient_count * 100% with two digits after decimal point, i.e. 64.35"
         },
         "timestamp": {
           "type": "number",
@@ -411,53 +170,70 @@
       "additionalProperties": false,
       "required": [
         "request_id",
-        "patient_id",
-        "count",
+        "pt",
+        "start_date",
+        "end_date",
+        "patient_zip",
+        "patient_count",
+        "patient_status",
+        "status_count",
+        "status_percent",
         "timestamp"
       ]
     },
-    "PtOrgMed": {
-      "description": "City org patient visit",
+    "far_2": {
+      "properties": {
+        "request_id": {
+          "type": "string",
+          "description": "Unique ID of a Fererated Analytics Request"
+        },
+        "cvx_maps": {
+          "type": "string",
+          "description": "Map of CVX-to-limit (in months)."
+        },
+        "pt_list": {
+          "type": "string",
+          "description": "List of PTs (comma-separated), where this request is sent, i.e BC,ON,QC."
+        },
+        "timestamp": {
+          "type": "number",
+          "description": "Timestamp when this record is produced"
+        },
+        "doc": {
+          "type": "string",
+          "description": "Description of this request"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "request_id",
+        "cvx_maps",
+        "pt_list",
+        "timestamp",
+        "doc"
+      ]
+    },
+    "fas_2": {
       "properties": {
         "request_id": {
           "type": "string",
           "description": "Unique ID of a Fererated Analytics Request."
         },
-        "organization_state": {
-          "type": [
-            "null",
-            "string"
-          ],
-          "default": null,
-          "description": "Organization's state"
-        },
-        "organization_city": {
-          "type": [
-            "null",
-            "string"
-          ],
-          "default": null,
-          "description": "Organization's city"
-        },
-        "organization_name": {
-          "type": [
-            "null",
-            "string"
-          ],
-          "default": null,
-          "description": "Organization's name"
-        },
-        "medication_count": {
-          "type": "integer",
-          "description": "The number of medications by this organization."
-        },
         "pt": {
-          "type": [
-            "null",
-            "string"
-          ],
-          "default": null,
-          "description": "The pt."
+          "type": "string",
+          "description": "PT, where this response from, i.e. BC"
+        },
+        "patient_zip": {
+          "type": "string",
+          "description": "Reduced zip code (first three characters)."
+        },
+        "patient_count": {
+          "type": "number",
+          "description": "The total number of vaccinated patients, with in the zipcode"
+        },
+        "missing_doses": {
+          "type": "string",
+          "description": "The missing doses"
         },
         "timestamp": {
           "type": "number",
@@ -467,56 +243,187 @@
       "additionalProperties": false,
       "required": [
         "request_id",
-        "patient_id",
-        "count",
+        "pt",
+        "patient_zip",
+        "patient_count",
+        "missing_doses",
         "timestamp"
       ]
     },
-    "TopKImmunization": {
-      "description": "Top K Immunization federated query result",
+    "far_3": {
       "properties": {
         "request_id": {
-          "description": "Unique ID of a Fererated Analytics Request.",
-          "type": "string"
-        },
-        "zip": {
-          "description": "Patient's zip code",
-          "type": "string"
-        },
-        "code": {
           "type": "string",
-          "description": "Immunization code from CVX"
+          "description": "Unique ID of a Fererated Analytics Request"
         },
-        "count": {
-          "type": "integer",
-          "description": "The number of immunizations of the immunization code per the zip code."
+        "cvx_list": {
+          "type": "string",
+          "description": "List of CVX codes (comma-separated), i.e 207,208"
         },
-        "pt": {
-          "type": [
-            "string",
-            "null"
-          ],
-          "description": "The pt."
+        "pt_list": {
+          "type": "string",
+          "description": "List of PTs (comma-separated), where this request is sent, i.e BC,ON,QC."
         },
         "timestamp": {
           "type": "number",
-          "description": "Timestamp when this record is produced."
+          "description": "Timestamp when this record is produced"
+        },
+        "doc": {
+          "type": "string",
+          "description": "Description of this request"
         }
       },
       "additionalProperties": false,
       "required": [
         "request_id",
-        "code",
-        "count",
-        "timestamp"
+        "cvx_list",
+        "pt_list",
+        "timestamp",
+        "doc"
       ]
     },
-    "VaccinationRecord": {
-      "description": "City org patient visit",
+    "fas_3": {
       "properties": {
         "request_id": {
           "type": "string",
           "description": "Unique ID of a Fererated Analytics Request."
+        },
+        "pt": {
+          "type": "string",
+          "description": "PT, where this response from, i.e. BC"
+        },
+        "patient_zip": {
+          "type": "string",
+          "description": "Reduced zip code (first three characters) of patients"
+        },
+        "organization_name": {
+          "type": "string",
+          "description": "Name of the organization which provides vaccination"
+        },
+        "average_distance": {
+          "type": "number",
+          "description": "Average travel distance in kilometres."
+        },
+        "timestamp": {
+          "type": "number",
+          "description": "Timestamp when this record is produced."
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "request_id",
+        "pt",
+        "patient_zip",
+        "organization_name",
+        "average_distance",
+        "timestamp"
+      ]
+    },
+    "far_4": {
+      "properties": {
+        "request_id": {
+          "type": "string",
+          "description": "Unique ID of a Fererated Analytics Request"
+        },
+        "cvx_list": {
+          "type": "string",
+          "description": "List of CVX codes (comma-separated), i.e 207,208"
+        },
+        "pt_list": {
+          "type": "string",
+          "description": "List of PTs (comma-separated), where this request is sent, i.e BC,ON,QC."
+        },
+        "timestamp": {
+          "type": "number",
+          "description": "Timestamp when this record is produced"
+        },
+        "doc": {
+          "type": "string",
+          "description": "Description of this request"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "request_id",
+        "cvx_list",
+        "pt_list",
+        "timestamp",
+        "doc"
+      ]
+    },
+    "fas_4": {
+      "properties": {
+        "request_id": {
+          "type": "string",
+          "description": "Unique ID of a Fererated Analytics Request."
+        },
+        "pt": {
+          "type": "string",
+          "description": "PT, where this response from, i.e. BC"
+        },
+        "patient_zip": {
+          "type": "string",
+          "description": "Reduced zip code (first three characters) of patients"
+        },
+        "organization_name": {
+          "type": "string",
+          "description": "Name of the organization which provides vaccination"
+        },
+        "vaccination_count": {
+          "type": "number",
+          "description": "The number of vaccinations."
+        },
+        "timestamp": {
+          "type": "number",
+          "description": "Timestamp when this record is produced."
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "request_id",
+        "pt",
+        "patient_zip",
+        "organization_name",
+        "vaccination_count",
+        "timestamp"
+      ]
+    },
+    "far_5": {
+      "properties": {
+        "request_id": {
+          "type": "string",
+          "description": "Unique ID of a Fererated Analytics Request."
+        },
+        "pt_list": {
+          "type": "string",
+          "description": "List of PTs (comma-separated), where this request is sent, i.e BC,ON,QC."
+        },
+        "timestamp": {
+          "type": "number",
+          "description": "Timestamp when this record is produced."
+        },
+        "doc": {
+          "type": "string",
+          "description": "Description of this request"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "request_id",
+        "pt_list",
+        "timestamp",
+        "doc"
+      ]
+    },
+    "fas_5": {
+      "properties": {
+        "request_id": {
+          "type": "string",
+          "description": "Unique ID of a Fererated Analytics Request."
+        },
+        "pt": {
+          "type": "string",
+          "description": "PT, where this response from, i.e. BC"
         },
         "immunization_date": {
           "type": "string",
@@ -562,16 +469,16 @@
           "type": "string",
           "description": "Patient's street address without commas or newlines"
         },
-        "patient_age": {
-          "type": "integer",
-          "description": "The age of the Patient"
+        "patient_birth_date": {
+          "type": "string",
+          "description": "The birth date of the Patient"
+        },
+        "patient_alive": {
+          "type": "boolean",
+          "description": "If the patient is alive"
         },
         "patient_zip": {
-          "type": [
-            "null",
-            "string"
-          ],
-          "default": null,
+          "type": "string",
           "description": "Patient's zip code"
         },
         "patient_gender": {
@@ -586,14 +493,6 @@
           "type": "string",
           "description": "Description of the patient's primary ethnicity"
         },
-        "pt": {
-          "type": [
-            "null",
-            "string"
-          ],
-          "default": null,
-          "description": "The pt."
-        },
         "timestamp": {
           "type": "number",
           "description": "Timestamp when this record is produced."
@@ -602,41 +501,70 @@
       "additionalProperties": false,
       "required": [
         "request_id",
+        "pt",
+        "immunization_date",
+        "immunization_code",
+        "immunization_description",
+        "organization_name",
+        "organization_zip",
+        "encounter_class",
+        "encounter_code",
+        "encounter_description",
         "patient_id",
-        "count",
+        "patient_address",
+        "patient_birth_date",
+        "patient_alive",
+        "patient_zip",
+        "patient_gender",
+        "patient_race",
+        "patient_ethnicity",
         "timestamp"
       ]
     },
-    "ZipImmunization": {
-      "description": "City org patient visit",
+    "far_6": {
+      "properties": {
+        "request_id": {
+          "type": "string",
+          "description": "Unique ID of a Fererated Analytics Request"
+        },
+        "pt_list": {
+          "type": "string",
+          "description": "List of PTs (comma-separated), where this request is sent, i.e BC,ON,QC."
+        },
+        "timestamp": {
+          "type": "number",
+          "description": "Timestamp when this record is produced"
+        },
+        "doc": {
+          "type": "string",
+          "description": "Description of this request"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "request_id",
+        "pt_list",
+        "timestamp",
+        "doc"
+      ]
+    },
+    "fas_6": {
       "properties": {
         "request_id": {
           "type": "string",
           "description": "Unique ID of a Fererated Analytics Request."
         },
-        "patient_city": {
-          "type": "string",
-          "description": "Patient's address city"
-        },
-        "patient_zip": {
-          "type": [
-            "null",
-            "string"
-          ],
-          "default": null,
-          "description": "Patient's zip code"
-        },
-        "immunization_count": {
-          "type": "integer",
-          "description": "The number of immunizations per the zip code."
-        },
         "pt": {
-          "type": [
-            "null",
-            "string"
-          ],
-          "default": null,
-          "description": "The pt."
+          "type": "string",
+          "description": "PT, where this response from, i.e. BC"
+        },
+        "condition_description": {
+          "type": "string",
+          "description": "Description as in condition.description"
+        },
+        "condition_count": {
+          "type": "number",
+          "description": "Number of conditions with description"
         },
         "timestamp": {
           "type": "number",
@@ -646,8 +574,201 @@
       "additionalProperties": false,
       "required": [
         "request_id",
-        "patient_id",
-        "count",
+        "pt",
+        "condition_description",
+        "condition_count",
+        "timestamp"
+      ]
+    },
+    "far_7": {
+      "properties": {
+        "request_id": {
+          "type": "string",
+          "description": "Unique ID of a Fererated Analytics Request"
+        },
+        "pt_list": {
+          "type": "string",
+          "description": "List of PTs (comma-separated), where this request is sent, i.e BC,ON,QC."
+        },
+        "timestamp": {
+          "type": "number",
+          "description": "Timestamp when this record is produced"
+        },
+        "doc": {
+          "type": "string",
+          "description": "Description of this request"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "request_id",
+        "pt_list",
+        "timestamp",
+        "doc"
+      ]
+    },
+    "fas_7": {
+      "properties": {
+        "request_id": {
+          "type": "string",
+          "description": "Unique ID of a Fererated Analytics Request."
+        },
+        "pt": {
+          "type": "string",
+          "description": "PT, where this response from, i.e. BC"
+        },
+        "medication_reason_description": {
+          "type": "string",
+          "description": "Description as in medication.reason_description"
+        },
+        "medication_reason_count": {
+          "type": "number",
+          "description": "Number of medication reasons with description"
+        },
+        "timestamp": {
+          "type": "number",
+          "description": "Timestamp when this record is produced."
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "request_id",
+        "pt",
+        "medication_reason_description",
+        "medication_reason_count",
+        "timestamp"
+      ]
+    },
+    "far_8": {
+      "properties": {
+        "request_id": {
+          "type": "string",
+          "description": "Unique ID of a Fererated Analytics Request"
+        },
+        "pt_list": {
+          "type": "string",
+          "description": "List of PTs (comma-separated), where this request is sent, i.e BC,ON,QC."
+        },
+        "timestamp": {
+          "type": "number",
+          "description": "Timestamp when this record is produced"
+        },
+        "doc": {
+          "type": "string",
+          "description": "Description of this request"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "request_id",
+        "pt_list",
+        "timestamp",
+        "doc"
+      ]
+    },
+    "fas_8": {
+      "properties": {
+        "request_id": {
+          "type": "string",
+          "description": "Unique ID of a Fererated Analytics Request."
+        },
+        "pt": {
+          "type": "string",
+          "description": "PT, where this response from, i.e. BC"
+        },
+        "procedure_description": {
+          "type": "string",
+          "description": "Description as in procedure.description"
+        },
+        "procedure_count": {
+          "type": "number",
+          "description": "Number of procedures with description"
+        },
+        "timestamp": {
+          "type": "number",
+          "description": "Timestamp when this record is produced."
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "request_id",
+        "pt",
+        "procedure_description",
+        "procedure_count",
+        "timestamp"
+      ]
+    },
+    "far_9": {
+      "properties": {
+        "request_id": {
+          "type": "string",
+          "description": "Unique ID of a Fererated Analytics Request"
+        },
+        "cvx_maps": {
+          "type": "string",
+          "description": "Map of CVX-to-limit (in months)."
+        },
+        "pt_list": {
+          "type": "string",
+          "description": "List of PTs (comma-separated), where this request is sent, i.e BC,ON,QC."
+        },
+        "timestamp": {
+          "type": "number",
+          "description": "Timestamp when this record is produced"
+        },
+        "doc": {
+          "type": "string",
+          "description": "Description of this request"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "request_id",
+        "cvx_maps",
+        "pt_list",
+        "timestamp",
+        "doc"
+      ]
+    },
+    "fas_9": {
+      "properties": {
+        "request_id": {
+          "type": "string",
+          "description": "Unique ID of a Fererated Analytics Request."
+        },
+        "pt": {
+          "type": "string",
+          "description": "PT, where this response from, i.e. BC"
+        },
+        "patient_zip": {
+          "type": "string",
+          "description": "Reduced zip code (first three characters)."
+        },
+        "patient_count": {
+          "type": "number",
+          "description": "The total number of vaccinated patients, with in the zipcode"
+        },
+        "missing_doses": {
+          "type": "string",
+          "description": "The missing doses"
+        },
+        "organization_list": {
+          "type": "string",
+          "description": "List of organizations, visited by patients, administring such missing doses."
+        },
+        "timestamp": {
+          "type": "number",
+          "description": "Timestamp when this record is produced."
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "request_id",
+        "pt",
+        "patient_zip",
+        "patient_count",
+        "missing_doses",
+        "organization_list",
         "timestamp"
       ]
     }
