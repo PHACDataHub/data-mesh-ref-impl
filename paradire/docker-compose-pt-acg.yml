@@ -26,7 +26,7 @@ services:
         - BASE_IMAGE=python:3.11
         - PYTHON_REQUIREMENTS=analytics/dockerized/acg_worker-requirements.txt
         - AVRO_DIR=analytics/events
-        - WORKFLOW_FILE=workflow.yaml
+        - WORKFLOW_FILE=v2_workflow.yaml
         - WORKFLOW_NAME=main
         - STEP_NAME=acg_f2pt
     # shm_size: '1gb'
@@ -62,7 +62,7 @@ services:
         - BASE_IMAGE=python:3.11
         - PYTHON_REQUIREMENTS=analytics/dockerized/acg_worker-requirements.txt
         - AVRO_DIR=analytics/events
-        - WORKFLOW_FILE=workflow.yaml
+        - WORKFLOW_FILE=v2_workflow.yaml
         - WORKFLOW_NAME=main
         - STEP_NAME=acg_pt2f
     # shm_size: '1gb'

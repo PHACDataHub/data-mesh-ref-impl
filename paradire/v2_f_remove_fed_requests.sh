@@ -55,3 +55,8 @@ done
 ./scripts/list_connectors.sh
 ./scripts/list_subjects.sh
 ./scripts/list_topics.sh
+
+echo 'Removing federated request in the Analytics Pipeline ...'
+sudo cp analytics/v2_neo4j/v2_cleanup_entities.cql neo4j/import/.
+docker exec -u ${NEO4J_USERNAME} --interactive --tty  neo4j cypher-shell -u ${NEO4J_USERNAME} -p ${NEO4J_PASSWORD} --file /import/v2_cleanup_entities.cql
+echo 'Constraints and indexes are created ✅'
