@@ -46,7 +46,7 @@ services:
     #   - $PWD/analytics/events:/data/
     networks:
       - backend
-    # restart: always
+    restart: always
 
   ####################
   # acg_pt2f
@@ -82,7 +82,7 @@ services:
     #   - $PWD/analytics/events:/data/
     networks:
       - backend
-    # restart: always
+    restart: always
 
 ################################################################################
 #

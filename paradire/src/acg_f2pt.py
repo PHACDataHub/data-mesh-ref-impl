@@ -5,10 +5,11 @@ class Worker(object):
     def __init__(self, config):
         self.config = config
         self.pt = self.config['pt']
+        self.pt_selector = self.config['pt_selector']
         self.converter_dict = dict()
         for request_map in self.config['request_converter']:
             for topic, topic_config in request_map.items():
-                self.converter_dict[topic]{ 
+                self.converter_dict[topic] = { 
                     'key': topic_config['key'],
                     'val': [e.strip() for e in topic_config['val'].split(',')]
                 }
