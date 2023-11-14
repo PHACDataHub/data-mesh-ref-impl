@@ -9,8 +9,7 @@ CREATE (n:FAR_1)
         n.request_id = 'far_1-1',
         n.covid_cvx_list = '207,208',
         n.start_date = '2021-01-01', 
-        n.period_length = 3,
-        n.number_of_periods = 4,
+        n.end_date = '2021-04-01', 
         n.pt_list = 'BC',
         n.timestamp = apoc.date.currentTimestamp(),
         n.doc = 'BC only: COVID-19 monovalent Moderna adult (12+ yrs) vaccine, 1st/2nd dosage.';
@@ -20,8 +19,7 @@ CREATE (n:FAR_1)
         n.request_id = 'far_1-2',
         n.covid_cvx_list = '207,208',
         n.start_date = '2021-01-01', 
-        n.period_length = 3,
-        n.number_of_periods = 4,
+        n.end_date = '2021-04-01', 
         n.pt_list = 'AB,BC,MB,NB,NL,NT,NS,NU,ON,PE,QC,SK,YT',
         n.timestamp = apoc.date.currentTimestamp(),
         n.doc = 'All PTs: COVID-19 monovalent Moderna adult (12+ yrs) vaccine, 1st/2nd dosage.';
