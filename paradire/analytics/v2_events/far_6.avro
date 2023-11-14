@@ -1,0 +1,2 @@
+{"request_id": "far_6-1"}|{"request_id": "far_6-1", "pt_list": "BC", "timestamp": 1699312649, "doc": "BC only: Statistics for requested conditions"}
+{"request_id": "far_6-2"}|{"request_id": "far_6-2", "pt_list": "AB,BC,MB,NB,NL,NT,NS,NU,ON,PE,QC,SK,YT", "timestamp": 1699312649, "doc": "All PTs: Statistics for requested conditions"}

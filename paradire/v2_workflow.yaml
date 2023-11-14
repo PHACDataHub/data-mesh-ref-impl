@@ -1,0 +1,183 @@
+main:
+    steps:
+        - acg_f2pt:
+            consumer:
+                broker_host: ${F_BROKER_HOST}
+                broker_port: ${F_BROKER_EXTERNAL_PORT}
+                schema_registry_host: ${F_SCHEMA_REGISTRY_HOST}
+                schema_registry_port: ${F_SCHEMA_REGISTRY_PORT}
+                poll_time: 1.0
+                consumer_group_id: acg_f2pt
+                auto_offset_reset: earliest
+                source_topic:
+                    - far_1:
+                        avro_key_schema_file: far_1_key.avsc
+                        avro_val_schema_file: far_1_val.avsc
+                    - far_2:
+                        avro_key_schema_file: far_2_key.avsc
+                        avro_val_schema_file: far_2_val.avsc
+                    - far_3:
+                        avro_key_schema_file: far_3_key.avsc
+                        avro_val_schema_file: far_3_val.avsc
+                    - far_4:
+                        avro_key_schema_file: far_4_key.avsc
+                        avro_val_schema_file: far_4_val.avsc
+                    - far_5:
+                        avro_key_schema_file: far_5_key.avsc
+                        avro_val_schema_file: far_5_val.avsc
+                    - far_6:
+                        avro_key_schema_file: far_6_key.avsc
+                        avro_val_schema_file: far_6_val.avsc
+                    - far_7:
+                        avro_key_schema_file: far_7_key.avsc
+                        avro_val_schema_file: far_7_val.avsc
+                    - far_8:
+                        avro_key_schema_file: far_8_key.avsc
+                        avro_val_schema_file: far_8_val.avsc
+                    - far_9:
+                        avro_key_schema_file: far_9_key.avsc
+                        avro_val_schema_file: far_9_val.avsc
+            worker:
+                pt: ${PT}
+                pt_selector: pt_list
+                request_converter: 
+                    - far_1:
+                        key: request_id
+                        val: request_id,covid_cvx_list,start_date,period_length,number_of_periods,pt_list,timestamp,doc
+                    - far_2:
+                        key: request_id
+                        val: request_id,cvx_maps,pt_list,timestamp,doc
+                    - far_3:
+                        key: request_id
+                        val: request_id,cvx_list,pt_list,timestamp,doc
+                    - far_4:
+                        key: request_id
+                        val: request_id,cvx_list,pt_list,timestamp,doc
+                    - far_5:
+                        key: request_id
+                        val: request_id,pt_list,timestamp,doc
+                    - far_6:
+                        key: request_id
+                        val: request_id,code_list,pt_list,timestamp,doc
+                    - far_7:
+                        key: request_id
+                        val: request_id,pt_list,timestamp,doc
+                    - far_8:
+                        key: request_id
+                        val: request_id,pt_list,timestamp,doc
+                    - far_9:
+                        key: request_id
+                        val: request_id,cvx_maps,pt_list,timestamp,doc
+            producer:
+                broker_host: ${BROKER_HOST}
+                broker_port: ${BROKER_EXTERNAL_PORT}
+                schema_registry_host: ${SCHEMA_REGISTRY_HOST}
+                schema_registry_port: ${SCHEMA_REGISTRY_PORT}
+                poll_time: 0.0
+                destination_topic:
+                    - far_1:
+                        avro_key_schema_file: far_1_key.avsc
+                        avro_val_schema_file: far_1_val.avsc
+                    - far_2:
+                        avro_key_schema_file: far_2_key.avsc
+                        avro_val_schema_file: far_2_val.avsc
+                    - far_3:
+                        avro_key_schema_file: far_3_key.avsc
+                        avro_val_schema_file: far_3_val.avsc
+                    - far_4:
+                        avro_key_schema_file: far_4_key.avsc
+                        avro_val_schema_file: far_4_val.avsc
+                    - far_5:
+                        avro_key_schema_file: far_5_key.avsc
+                        avro_val_schema_file: far_5_val.avsc
+                    - far_6:
+                        avro_key_schema_file: far_6_key.avsc
+                        avro_val_schema_file: far_6_val.avsc
+                    - far_7:
+                        avro_key_schema_file: far_7_key.avsc
+                        avro_val_schema_file: far_7_val.avsc
+                    - far_8:
+                        avro_key_schema_file: far_8_key.avsc
+                        avro_val_schema_file: far_8_val.avsc
+                    - far_9:
+                        avro_key_schema_file: far_9_key.avsc
+                        avro_val_schema_file: far_9_val.avsc
+            next: end
+        - acg_pt2f:
+            consumer:
+                broker_host: ${BROKER_HOST}
+                broker_port: ${BROKER_EXTERNAL_PORT}
+                schema_registry_host: ${SCHEMA_REGISTRY_HOST}
+                schema_registry_port: ${SCHEMA_REGISTRY_PORT}
+                poll_time: 1.0
+                consumer_group_id: acg_pt2f
+                auto_offset_reset: earliest
+                source_topic:
+                    - fas_1:
+                        avro_key_schema_file: fas_1_key.avsc
+                        avro_val_schema_file: fas_1_val.avsc
+                    - fas_2:
+                        avro_key_schema_file: fas_2_key.avsc
+                        avro_val_schema_file: fas_2_val.avsc
+                    - fas_3:
+                        avro_key_schema_file: fas_3_key.avsc
+                        avro_val_schema_file: fas_3_val.avsc
+                    - fas_4:
+                        avro_key_schema_file: fas_4_key.avsc
+                        avro_val_schema_file: fas_4_val.avsc
+                    - fas_5:
+                        avro_key_schema_file: fas_5_key.avsc
+                        avro_val_schema_file: fas_5_val.avsc
+                    - fas_6:
+                        avro_key_schema_file: fas_6_key.avsc
+                        avro_val_schema_file: fas_6_val.avsc
+                    - fas_7:
+                        avro_key_schema_file: fas_7_key.avsc
+                        avro_val_schema_file: fas_7_val.avsc
+                    - fas_8:
+                        avro_key_schema_file: fas_8_key.avsc
+                        avro_val_schema_file: fas_8_val.avsc
+                    - fas_9:
+                        avro_key_schema_file: fas_9_key.avsc
+                        avro_val_schema_file: fas_9_val.avsc
+            worker:
+                pt: ${PT}
+                access_control:
+                  - to_transform: patient_birth_date
+                  - to_hash: patient_ethnicity
+                  - to_block: patient_address
+            producer:
+                broker_host: ${F_BROKER_HOST}
+                broker_port: ${F_BROKER_EXTERNAL_PORT}
+                schema_registry_host: ${F_SCHEMA_REGISTRY_HOST}
+                schema_registry_port: ${F_SCHEMA_REGISTRY_PORT}
+                poll_time: 0.0
+                destination_topic:
+                    - fas_1:
+                        avro_key_schema_file: fas_1_key.avsc
+                        avro_val_schema_file: fas_1_val.avsc
+                    - fas_2:
+                        avro_key_schema_file: fas_2_key.avsc
+                        avro_val_schema_file: fas_2_val.avsc
+                    - fas_3:
+                        avro_key_schema_file: fas_3_key.avsc
+                        avro_val_schema_file: fas_3_val.avsc
+                    - fas_4:
+                        avro_key_schema_file: fas_4_key.avsc
+                        avro_val_schema_file: fas_4_val.avsc
+                    - fas_5:
+                        avro_key_schema_file: fas_5_key.avsc
+                        avro_val_schema_file: fas_5_val.avsc
+                    - fas_6:
+                        avro_key_schema_file: fas_6_key.avsc
+                        avro_val_schema_file: fas_6_val.avsc
+                    - fas_7:
+                        avro_key_schema_file: fas_7_key.avsc
+                        avro_val_schema_file: fas_7_val.avsc
+                    - fas_8:
+                        avro_key_schema_file: fas_8_key.avsc
+                        avro_val_schema_file: fas_8_val.avsc
+                    - fas_9:
+                        avro_key_schema_file: fas_9_key.avsc
+                        avro_val_schema_file: fas_9_val.avsc
+            next: end

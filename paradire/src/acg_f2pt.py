@@ -4,14 +4,13 @@ from utils import to_json_str
 class Worker(object):
     def __init__(self, config):
         self.config = config
-        self.request_converter = config['request_converter']
+        self.pt = self.config['pt']
         self.converter_dict = dict()
-        for request_map in self.request_converter:
+        for request_map in self.config['request_converter']:
             for topic, topic_config in request_map.items():
-                self.converter_dict[topic] = {
-                    'key': topic_config['key'], 
-                    'val': [e.strip() for e in topic_config['val'].split(',')],
-                    'empty2null': topic_config['empty2null'].split(',') if 'empty2null' in topic_config else None
+                self.converter_dict[topic]{ 
+                    'key': topic_config['key'],
+                    'val': [e.strip() for e in topic_config['val'].split(',')]
                 }
 
     def start(self):
@@ -20,15 +19,16 @@ class Worker(object):
     def process(self, in_topic, msg_key, msg_val):
         request_id = msg_key['request_id']
         
+        if self.pt not in msg_val[self.pt_selector].split(','):
+            print(f"{self.pt} is NOT in {msg_val[self.pt_selector]}")
+            return None, None, None
+
         out_topic = in_topic
         key = msg_key
         val = {k: msg_val[k] for k in self.converter_dict[out_topic]['val']}
-
-        if self.converter_dict[out_topic]['empty2null']:
-            for k in self.converter_dict[out_topic]['empty2null']:
-                if val[k] == '':
-                    val[k] = None
         
+        val[self.pt_selector] = self.pt
+
         return out_topic, key, val
 
 

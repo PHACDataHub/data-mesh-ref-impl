@@ -440,27 +440,126 @@ CREATE TEXT INDEX symptoms IF NOT EXISTS FOR (n:Symptom) ON (n.symptoms);
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
-// Creating constraints and indexes for VaccinationRecord entities
-//
-CREATE INDEX timestamp_vaccination_record IF NOT EXISTS FOR (n:VaccinationRecord) ON (n.timestamp);
-CREATE INDEX request_id_vaccination_record IF NOT EXISTS FOR (n:VaccinationRecord) ON (n.request_id);
-CREATE INDEX pt_vaccination_record IF NOT EXISTS FOR (n:VaccinationRecord) ON (n.pt);
-//
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
-// Creating constraints and indexes for FR_VaccinationRecord entities
-//
-CREATE INDEX timestamp_fr_vaccination_record IF NOT EXISTS FOR (n:FR_VaccinationRecord) ON (n.timestamp);
-CREATE INDEX request_id_fr_vaccination_record IF NOT EXISTS FOR (n:VaccinationRecord) ON (n.request_id);
-//
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
-// Creating Fed request simulation params
+// Creating Fed request simulation params for local PT
 //
 CREATE INDEX current_far_1 IF NOT EXISTS FOR (n:FAR_1) ON (n.current);
+//
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// Creating constraints and indexes for FAR_1 (request), FAS_1 (response) entities
+//
+CREATE INDEX timestamp_far_1 IF NOT EXISTS FOR (n:FAR_1) ON (n.timestamp);
+CREATE INDEX request_id_far_1 IF NOT EXISTS FOR (n:FAR_1) ON (n.request_id);
+//
+CREATE INDEX timestamp_fas_1 IF NOT EXISTS FOR (n:FAS_1) ON (n.timestamp);
+CREATE INDEX request_id_fas_1 IF NOT EXISTS FOR (n:FAS_1) ON (n.request_id);
+CREATE INDEX pt_id_fas_1 IF NOT EXISTS FOR (n:FAS_1) ON (n.pt);
+CREATE INDEX start_date_end_date_fas_1 IF NOT EXISTS FOR (n:FAS_1) ON (n.start_date, n.end_date);
+//
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// Creating constraints and indexes for FAR_2 (request), FAS_2 (response) entities
+//
+CREATE INDEX timestamp_far_2 IF NOT EXISTS FOR (n:FAR_2) ON (n.timestamp);
+CREATE INDEX request_id_far_2 IF NOT EXISTS FOR (n:FAR_2) ON (n.request_id);
+//
+CREATE INDEX timestamp_fas_2 IF NOT EXISTS FOR (n:FAS_2) ON (n.timestamp);
+CREATE INDEX request_id_fas_2 IF NOT EXISTS FOR (n:FAS_2) ON (n.request_id);
+CREATE INDEX pt_id_fas_2 IF NOT EXISTS FOR (n:FAS_2) ON (n.pt);
+//
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// Creating constraints and indexes for FAR_3 (request), FAS_3 (response) entities
+//
+CREATE INDEX timestamp_far_3 IF NOT EXISTS FOR (n:FAR_3) ON (n.timestamp);
+CREATE INDEX request_id_far_3 IF NOT EXISTS FOR (n:FAR_3) ON (n.request_id);
+//
+CREATE INDEX timestamp_fas_3 IF NOT EXISTS FOR (n:FAS_3) ON (n.timestamp);
+CREATE INDEX request_id_fas_3 IF NOT EXISTS FOR (n:FAS_3) ON (n.request_id);
+CREATE INDEX pt_id_fas_3 IF NOT EXISTS FOR (n:FAS_3) ON (n.pt);
+//
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// Creating constraints and indexes for FAR_4 (request), FAS_4 (response) entities
+//
+CREATE INDEX timestamp_far_4 IF NOT EXISTS FOR (n:FAR_4) ON (n.timestamp);
+CREATE INDEX request_id_far_4 IF NOT EXISTS FOR (n:FAR_4) ON (n.request_id);
+//
+CREATE INDEX timestamp_fas_4 IF NOT EXISTS FOR (n:FAS_4) ON (n.timestamp);
+CREATE INDEX request_id_fas_4 IF NOT EXISTS FOR (n:FAS_4) ON (n.request_id);
+CREATE INDEX pt_id_fas_4 IF NOT EXISTS FOR (n:FAS_4) ON (n.pt);
+//
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// Creating constraints and indexes for FAR_5 (request), FAS_5 (response) entities
+//
+CREATE INDEX timestamp_far_5 IF NOT EXISTS FOR (n:FAR_5) ON (n.timestamp);
+CREATE INDEX request_id_far_5 IF NOT EXISTS FOR (n:FAR_5) ON (n.request_id);
+//
+CREATE INDEX timestamp_fas_5 IF NOT EXISTS FOR (n:FAS_5) ON (n.timestamp);
+CREATE INDEX request_id_fas_5 IF NOT EXISTS FOR (n:FAS_5) ON (n.request_id);
+CREATE INDEX pt_id_fas_5 IF NOT EXISTS FOR (n:FAS_5) ON (n.pt);
+//
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// Creating constraints and indexes for FAR_6 (request), FAS_6 (response) entities
+//
+CREATE INDEX timestamp_far_6 IF NOT EXISTS FOR (n:FAR_6) ON (n.timestamp);
+CREATE INDEX request_id_far_6 IF NOT EXISTS FOR (n:FAR_6) ON (n.request_id);
+//
+CREATE INDEX timestamp_fas_6 IF NOT EXISTS FOR (n:FAS_6) ON (n.timestamp);
+CREATE INDEX request_id_fas_6 IF NOT EXISTS FOR (n:FAS_6) ON (n.request_id);
+CREATE INDEX pt_id_fas_6 IF NOT EXISTS FOR (n:FAS_6) ON (n.pt);
+//
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// Creating constraints and indexes for FAR_7 (request), FAS_7 (response) entities
+//
+CREATE INDEX timestamp_far_7 IF NOT EXISTS FOR (n:FAR_7) ON (n.timestamp);
+CREATE INDEX request_id_far_7 IF NOT EXISTS FOR (n:FAR_7) ON (n.request_id);
+//
+CREATE INDEX timestamp_fas_7 IF NOT EXISTS FOR (n:FAS_7) ON (n.timestamp);
+CREATE INDEX request_id_fas_7 IF NOT EXISTS FOR (n:FAS_7) ON (n.request_id);
+CREATE INDEX pt_id_fas_7 IF NOT EXISTS FOR (n:FAS_7) ON (n.pt);
+//
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// Creating constraints and indexes for FAR_8 (request), FAS_8 (response) entities
+//
+CREATE INDEX timestamp_far_8 IF NOT EXISTS FOR (n:FAR_8) ON (n.timestamp);
+CREATE INDEX request_id_far_8 IF NOT EXISTS FOR (n:FAR_8) ON (n.request_id);
+//
+CREATE INDEX timestamp_fas_8 IF NOT EXISTS FOR (n:FAS_8) ON (n.timestamp);
+CREATE INDEX request_id_fas_8 IF NOT EXISTS FOR (n:FAS_8) ON (n.request_id);
+CREATE INDEX pt_id_fas_8 IF NOT EXISTS FOR (n:FAS_8) ON (n.pt);
+//
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// Creating constraints and indexes for FAR_9 (request), FAS_9 (response) entities
+//
+CREATE INDEX timestamp_far_9 IF NOT EXISTS FOR (n:FAR_9) ON (n.timestamp);
+CREATE INDEX request_id_far_9 IF NOT EXISTS FOR (n:FAR_9) ON (n.request_id);
+//
+CREATE INDEX timestamp_fas_9 IF NOT EXISTS FOR (n:FAS_9) ON (n.timestamp);
+CREATE INDEX request_id_fas_9 IF NOT EXISTS FOR (n:FAS_9) ON (n.request_id);
+CREATE INDEX pt_id_fas_9 IF NOT EXISTS FOR (n:FAS_9) ON (n.pt);
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
