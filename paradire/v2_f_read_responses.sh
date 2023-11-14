@@ -2,6 +2,23 @@
 
 source .env
 
+broker_container_name=broker
+broker_internal_host=broker
+broker_internal_port=${BROKER_INTERNAL_PORT}
+
+connect_container=connect
+connect_host=${CONNECT_HOST}
+connect_port=${CONNECT_PORT}
+
+schema_registry_container=schema-registry
+schema_registry_internal_host=schema-registry
+schema_registry_local_host=localhost
+schema_registry_port=${SCHEMA_REGISTRY_PORT}
+
+event_dir=${curr_dir}/analytics/v2_events
+kafka_ce_schema_registry_data_dir=kafka-ce/schema-registry/data
+connector_dir=${curr_dir}/analytics/v2_pt_connectors
+
 timeout=10000
 
 for item in {1..9}
