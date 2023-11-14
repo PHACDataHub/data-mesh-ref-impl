@@ -1,3 +1,0 @@
-{"request_id": "fed_request_patient_cvx_org-1"}|{"request_id": "fed_request_patient_cvx_org-1", "code_list": {"string": "08,43,52,83"}, "term": null, "timestamp": 1699312649}
-{"request_id": "fed_request_patient_cvx_org-2"}|{"request_id": "fed_request_patient_cvx_org-2", "code_list": null, "term": {"string": "COVID"}, "timestamp": 1699312649}
-{"request_id": "fed_request_patient_cvx_org-3"}|{"request_id": "fed_request_patient_cvx_org-3", "code_list": null, "term": null, "timestamp": 1699312649}

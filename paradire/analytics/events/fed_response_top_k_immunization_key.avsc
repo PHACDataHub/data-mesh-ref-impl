@@ -1,8 +1,0 @@
-{
-    "type": "record",
-    "name": "ConnectDefault",
-    "namespace": "io.confluent.connect.avro",
-    "fields": [
-        {"name": "request_id", "type": "string", "doc": "Unique ID of a Fererated Analytics Request."}
-    ]
-}
