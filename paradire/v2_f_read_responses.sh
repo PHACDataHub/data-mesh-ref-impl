@@ -4,8 +4,8 @@ source .env
 
 timeout=10000
 
-for item in {1..9}
-# for item in 1
+# for item in {1..9}
+for item in $1
 do
     response_topic=fas_${item}
     

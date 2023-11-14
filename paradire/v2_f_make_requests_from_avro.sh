@@ -23,8 +23,8 @@ event_dir=${curr_dir}/analytics/v2_events
 kafka_ce_schema_registry_data_dir=kafka-ce/schema-registry/data
 connector_dir=${curr_dir}/analytics/v2_f_connectors
 
-for item in {1..9}
-# for item in 1
+# for item in {1..9}
+for item in $1
 do
     request_topic=far_${item}
 
