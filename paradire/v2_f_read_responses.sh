@@ -27,6 +27,10 @@ do
     
     consumer_group=${response_topic}
 
+    if [ $response_messages -gt 1000 ]; then
+        response_messages=1000
+    fi
+
     echo "Consume up to ${response_messages} messages from ${response_topic} ..." 
     docker exec -it ${schema_registry_container} kafka-avro-console-consumer  \
         --bootstrap-server ${broker_internal_host}:${broker_internal_port} \
