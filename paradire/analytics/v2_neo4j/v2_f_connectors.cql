@@ -12,8 +12,7 @@ RETURN
     entity.request_id AS request_id,
     entity.covid_cvx_list AS covid_cvx_list,
     entity.start_date AS start_date,
-    entity.period_length AS period_length,
-    entity.number_of_periods AS number_of_periods,
+    entity.end_date AS end_date,
     entity.pt_list AS pt_list,
     entity.timestamp AS timestamp,
     entity.doc AS doc;
@@ -24,16 +23,11 @@ WITH
     event.request_id AS request_id,
     SPLIT(event.covid_cvx_list, ',') AS covid_cvx_list,
     DATE(event.start_date) AS start_date,
-    event.period_length AS period_length,
-    event.number_of_periods AS number_of_periods,
+    DATE(event.end_date) AS end_date,
     event.pt_list AS pt
-WITH 
-    request_id, pt, covid_cvx_list, start_date, period_length, number_of_periods
-    UNWIND RANGE(0, number_of_periods -1) AS period
 WITH
-    request_id, pt, covid_cvx_list, start_date,
-    start_date + DURATION({months: (period + 1) * period_length}) AS end_date
-    OPTIONAL MATCH (patient)-[]-(immunization:Immunization)
+    request_id, pt, covid_cvx_list, start_date, end_date
+    OPTIONAL MATCH (patient:Patient)-[]-(immunization:Immunization)
 WITH
     DISTINCT(patient) AS patient, 
     request_id, pt, start_date, end_date, covid_cvx_list,
