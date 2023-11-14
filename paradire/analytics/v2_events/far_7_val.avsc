@@ -6,6 +6,6 @@
         {"name": "request_id", "type": "string", "doc": "Unique ID of a Fererated Analytics Request"},
         {"name": "pt_list", "type": "string", "doc": "List of PTs (comma-separated), where this request is sent, i.e BC,ON,QC."},
         {"name": "timestamp", "type": "long", "doc": "Timestamp when this record is produced"},
-        {"name": "doc", "type": "long", "doc": "Description of this request"}
+        {"name": "doc", "type": "string", "doc": "Description of this request"}
     ]
 }

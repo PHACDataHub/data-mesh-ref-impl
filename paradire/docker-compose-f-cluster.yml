@@ -426,7 +426,7 @@ services:
       kafka-topics --bootstrap-server broker:${BROKER_INTERNAL_PORT} --create --if-not-exists --topic fed_response_top_k_immunization --replication-factor ${REPLICATION_FACTOR} --partitions ${PARTITIONS}
       kafka-topics --bootstrap-server broker:${BROKER_INTERNAL_PORT} --create --if-not-exists --topic fed_response_zip_immunization --replication-factor ${REPLICATION_FACTOR} --partitions ${PARTITIONS}
       kafka-topics --bootstrap-server broker:${BROKER_INTERNAL_PORT} --create --if-not-exists --topic fed_response_vaccination_record --replication-factor ${REPLICATION_FACTOR} --partitions ${PARTITIONS}
-      
+
       echo -e 'Successfully created the following topics:'
       kafka-topics --bootstrap-server broker:${BROKER_INTERNAL_PORT} --list
       "

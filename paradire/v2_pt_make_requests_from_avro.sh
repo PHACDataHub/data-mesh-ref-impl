@@ -24,9 +24,10 @@ kafka_ce_schema_registry_data_dir=kafka-ce/schema-registry/data
 connector_dir=${curr_dir}/analytics/v2_pt_connectors
 
 for item in {1..9}
-# for item in 1
+# for item in $1
 do
     request_topic=far_${item}
+    echo ${request_topic}
 
     key_schema_id=$(curl --silent -X GET http://${schema_registry_local_host}:${schema_registry_port}/subjects/${request_topic}-key/versions/latest | jq .id)
     value_schema_id=$(curl --silent -X GET http://${schema_registry_local_host}:${schema_registry_port}/subjects/${request_topic}-value/versions/latest | jq .id)

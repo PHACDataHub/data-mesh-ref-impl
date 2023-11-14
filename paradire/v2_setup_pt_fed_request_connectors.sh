@@ -40,7 +40,7 @@ kafka_ce_schema_registry_data_dir=kafka-ce/schema-registry/data
 connector_dir=${curr_dir}/analytics/v2_pt_connectors
 
 for item in {1..9}
-# for item in 1
+# for item in $1
 do
     request_topic=far_${item}
 
@@ -57,7 +57,7 @@ do
 done
 
 for item in {1..9}
-# for item in 1
+# for item in $1
 do
     response_topic=fas_${item}
 
@@ -74,9 +74,11 @@ do
     echo $key_schema_id $value_schema_id
 done
 
-for response_topic in {1..9}
-# for response_topic in 1
+for item in {1..9}
+# for item in $1
 do
+    response_topic=fas_${item}
+    
     curl -X POST http://${connect_host}:${connect_port}/connectors \
     -H 'Content-Type:application/json' \
     -H 'Accept:application/json' \

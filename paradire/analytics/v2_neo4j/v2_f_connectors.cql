@@ -19,20 +19,25 @@ RETURN
 //
 // PAP: (sink connector) Kafka event -> Neo4j entity
 //
-WITH
+WITH 
     event.request_id AS request_id,
     SPLIT(event.covid_cvx_list, ',') AS covid_cvx_list,
-    DATE(even.start_date) AS start_date,
+    DATE(event.start_date) AS start_date,
     event.period_length AS period_length,
+    event.number_of_periods AS number_of_periods,
     event.pt_list AS pt
-    UNWIND RANGE(0, event.number_of_periods -1) AS period
+WITH 
+    request_id, pt, covid_cvx_list, start_date, period_length, number_of_periods
+    UNWIND RANGE(0, number_of_periods -1) AS period
 WITH
-    request_id, pt,
+    request_id, pt, covid_cvx_list, 
+    start_date + DURATION({months: period * period_length}) AS period_start,
+    start_date + DURATION({months: (period + 1) * period_length}) AS period_end
     OPTIONAL MATCH (patient)-[]-(immunization:Immunization)
         WHERE
             immunization.code IN covid_cvx_list AND
-            immunization.date >= start_date + DURATION({months: period * period_length}) AND
-            immunization.date <= start_date + DURATION({months: (period + 1) * period_length})
+            DATE(immunization.date) >= period_start AND
+            DATE(immunization.date) <= period_end
 WITH
     DISTINCT(patient) AS patient,
     request_id, pt, period_start, period_end,
@@ -49,7 +54,7 @@ WITH
     request_id, pt, period_start, period_end, patient_zip, patient_status, status_count
         MATCH (patient:Patient {zip: patient_zip})
 WITH 
-    request_id, pt, period_start, period_end, patient_zip, patient_status, status_count
+    request_id, pt, period_start, period_end, patient_zip, patient_status, status_count,
     COUNT(patient) AS patient_count
 WITH
     request_id, pt, period_start, period_end, patient_zip, patient_status, status_count, patient_count,
@@ -121,40 +126,34 @@ RETURN
 //
 WITH
     event.request_id AS request_id,
-    event.cvx_maps AS cvx_maps,
-    entity.pt_list AS pt
+    apoc.convert.fromJsonMap(event.cvx_maps) AS cvx_maps,
+    event.pt_list AS pt
 WITH
-    request_id, pt, cvx_maps, KEYS(cvx_maps) AS cvx_codes
+    request_id, pt, cvx_maps
         MATCH (patient:Patient)
+            WHERE
+                patient.birth_date + DURATION({months: 48}) < DATE() AND
+                patient.death_date IS NULL
 WITH 
     patient, request_id, pt, cvx_maps
         OPTIONAL MATCH (patient)-[]-(immunization:Immunization)
-            WHERE immunization.code IN cvx_codes
+            WHERE immunization.code IN KEYS(cvx_maps) AND 
+                patient.birth_date + DURATION({months: apoc.map.get(cvx_maps, immunization.code)}) > DATE(immunization.date)
 WITH 
-    DISTINCT(patient) AS patient, request_id, pt, cvx_maps, cvx_codes,
-    COLLECT([immunization.code, immunization.date]) AS immunizations
+    DISTINCT(patient) AS patient, request_id, pt, cvx_maps,
+    COLLECT(DISTINCT(immunization.code)) AS cvx_codes
 WITH 
-    patient, request_id, pt, cvx_codes,
-    REDUCE(codes=[], e IN immunizations | codes + [e[0]]) AS administered_codes,
-    REDUCE(codes=[], e IN immunizations |
-        CASE
-            WHEN patient.birth_date + DURATION({months: apoc.map.get(cvx_maps, e[0])}) < e[1]
-            THEN codes + [e[0]] ELSE codes END
-    ) AS missed_schedule_codes
-WITH
     patient, request_id, pt, 
-    [e IN cvx_codes WHERE NOT(e IN administered_codes)] + missed_schedule_codes
-    AS missing_doses
+    apoc.coll.disjunction(cvx_codes, KEYS(cvx_maps)) AS missing_codes
 WITH 
-    DISTINCT(patient.zip) AS patient_zip,
+    DISTINCT(patient.zip) AS patient_zip, 
     request_id, pt,
-    COUNT(*) AS patient_count,
-    COLLECT(missing_doses) AS list_of_missing_doses
-WITH
+    COUNT(patient) AS patient_count,
+    COLLECT(missing_codes) AS list_of_missing_codes
+WITH 
     request_id, pt, patient_zip, patient_count,
-    apoc.coll.sort(apoc.coll.toSet(apoc.coll.flatten(codes))) AS missing_doses
-WITH
-    request_id, pt, patient_zip, patient_count, missing_doses
+    apoc.convert.toSortedJsonMap(apoc.coll.frequenciesAsMap(apoc.coll.flatten(list_of_missing_codes))) AS missing_doses
+WITH request_id, pt, patient_zip, patient_count, missing_doses
     CREATE (n:FAS_2)
         SET
             n.request_id = request_id,
@@ -212,18 +211,18 @@ WITH
     SPLIT(event.cvx_list, ',') AS cvx_list,
     event.pt_list AS pt
 WITH
-    request_id, pt,
-    MATCH (patient:Patient)-[]-(:Immunization)-[]-(:Encounter)-[]-(organization:Organization)
-        WHERE immunization.code IN covid_cvx_list
+    request_id, pt, cvx_list
+    MATCH (patient:Patient)-[]-(immunization:Immunization)-[]-(:Encounter)-[]-(organization:Organization)
+        WHERE immunization.code IN cvx_list
 WITH
     request_id, pt,
     patient.zip AS zip,
-    POINT.DISTANCE(patient.location, organization.location) AS distance,
+    POINT.DISTANCE(patient.location, organization.location)/1000 AS distance,
     organization.name AS organization
 WITH
     DISTINCT([zip, organization]) AS zip_org,
     request_id, pt,
-    SUM(distance)/COUNT(distance) AS average_distance
+    ROUND(SUM(distance)/COUNT(distance)) AS average_distance
 WITH
     request_id, pt, 
     zip_org[0] AS patient_zip,
@@ -286,9 +285,9 @@ WITH
     SPLIT(event.cvx_list, ',') AS cvx_list,
     event.pt_list AS pt
 WITH
-    request_id, pt,
-    MATCH (patient:Patient)-[]-(:Immunization)-[]-(:Encounter)-[]-(organization:Organization)
-        WHERE immunization.code IN covid_cvx_list
+    request_id, pt, cvx_list
+    MATCH (patient:Patient)-[]-(immunization:Immunization)-[]-(:Encounter)-[]-(organization:Organization)
+        WHERE immunization.code IN cvx_list
 WITH
     DISTINCT([patient.zip, organization.name]) AS zip_org,
     request_id, pt,
@@ -349,40 +348,42 @@ RETURN
 //
 // PAP: (sink connector) Kafka event -> Neo4j entity
 //
-WITH
-    'MATCH (immunization:Immunization)
-	    WITH immunization ORDER BY immunization.date ASC
+WITH event
+CALL apoc.periodic.iterate('
+	WITH 
+        $event.request_id AS request_id,
+        $event.pt_list AS pt
+        MATCH (immunization:Immunization)
 	RETURN
-        immunization, \"' + event.request_id + '\" AS request_id, \"' + event.pt + '\" AS pt'
-    AS batch_producer,
-    'WITH immunization, request_id, pt
+        immunization, request_id, pt ORDER BY immunization.date ASC
+','
+	WITH immunization, request_id, pt
     	MATCH (organization:Organization)-[]-(encounter:Encounter)-[:IMMUNIZATION_OF_ENCOUNTER]-(immunization)-[:IMMUNIZATION_OF_PATIENT]-(patient:Patient)
 	WITH immunization, organization, encounter, patient, request_id, pt
-		CREATE (record:VaccinationRecord)
+		CREATE (n:FAS_5)
     		SET 
-                record.request_id = request_id,
-                record.pt = pt,
-    			record.immunization_date = TOSTRING(immunization.date),
-				record.immunization_code = immunization.code,
-				record.immunization_description = immunization.description,
-				record.organization_name = organization.name,
-				record.organization_zip = organization.zip,
-				record.encounter_class = encounter.encounter_class,
-				record.encounter_code = encounter.code,
-				record.encounter_description = encounter.description,
-				record.patient_id = patient.patient_id,
-				record.patient_address = patient.address,
-				record.patient_birth_date = TOSTRING(patient.birth_date),
-                record.patient_alive =  CASE WHEN patient.death_date IS NULL THEN TRUE ELSE FALSE END,
-				record.patient_zip = patient.zip,
-				record.patient_gender = patient.gender,
-				record.patient_race = patient.race,
-				record.patient_ethnicity = patient.ethnicity,
-				record.timestamp = apoc.date.currentTimestamp()'
-    AS batch_runner
-WITH batch_producer, batch_runner
-    CALL apoc.periodic.iterate(batch_producer, batch_runner, {batchSize:10000, parallel:true})
-        YIELD total RETURN total
+                n.request_id = request_id,
+                n.pt = pt,
+    			n.immunization_date = TOSTRING(immunization.date),
+				n.immunization_code = immunization.code,
+				n.immunization_description = immunization.description,
+				n.organization_name = organization.name,
+				n.organization_zip = organization.zip,
+				n.encounter_class = encounter.encounter_class,
+				n.encounter_code = encounter.code,
+				n.encounter_description = encounter.description,
+				n.patient_id = patient.patient_id,
+				n.patient_address = patient.address,
+				n.patient_birth_date = TOSTRING(patient.birth_date),
+                n.patient_alive =  CASE WHEN patient.death_date IS NULL THEN TRUE ELSE FALSE END,
+				n.patient_zip = patient.zip,
+				n.patient_gender = patient.gender,
+				n.patient_race = patient.race,
+				n.patient_ethnicity = patient.ethnicity,
+				n.timestamp = apoc.date.currentTimestamp()
+',
+{params: {event: event}, batchSize:10000, parallel:true})
+YIELD total RETURN total
 //
 // PAP: (source connector) Neo4j entity -> Kafka event
 //
@@ -520,8 +521,9 @@ WITH
 WITH
     request_id, pt
     MATCH (medication:Medication)
+        WHERE SIZE(medication.reason_description) > 0
 WITH
-    DISTINCT(medication.reason_description) AS medication_reason_description
+    DISTINCT(medication.reason_description) AS medication_reason_description,
     request_id, pt,
     COUNT(*) AS medication_reason_count
     CREATE (n:FAS_7)
@@ -578,8 +580,9 @@ WITH
 WITH
     request_id, pt
     MATCH (procedure:Procedure)
+        WHERE SIZE(procedure.description)> 0
 WITH
-    DISTINCT(procedure.description) AS procedure_description
+    DISTINCT(procedure.description) AS procedure_description,
     request_id, pt,
     COUNT(*) AS procedure_count
     CREATE (n:FAS_8)
@@ -632,61 +635,60 @@ RETURN
 //
 // PAP: (sink connector) Kafka event -> Neo4j entity
 //
-WITH
-    event.request_id AS request_id,
-    event.cvx_maps AS cvx_maps,
-    entity.pt_list AS pt
-WITH
-    request_id, pt, cvx_maps, KEYS(cvx_maps) AS cvx_codes
+WITH event
+CALL apoc.periodic.iterate('
+    WITH 
+        $event.request_id AS request_id,
+        apoc.convert.fromJsonMap($event.cvx_maps) AS cvx_maps,
+        $event.pt_list AS pt
         MATCH (patient:Patient)
-WITH 
-    patient, request_id, pt, cvx_maps
+            WHERE
+                patient.birth_date + DURATION({months: 48}) < DATE() AND
+                patient.death_date IS NULL
+    WITH 
+        patient, request_id, pt, cvx_maps
         OPTIONAL MATCH (patient)-[]-(immunization:Immunization)
-            WHERE immunization.code IN cvx_codes
-WITH 
-    DISTINCT(patient) AS patient, request_id, pt, cvx_maps, cvx_codes,
-    COLLECT([immunization.code, immunization.date]) AS immunizations
-WITH 
-    patient, request_id, pt, cvx_codes,
-    REDUCE(codes=[], e IN immunizations | codes + [e[0]]) AS administered_codes,
-    REDUCE(codes=[], e IN immunizations |
-        CASE
-            WHEN patient.birth_date + DURATION({months: apoc.map.get(cvx_maps, e[0])}) < e[1]
-            THEN codes + [e[0]] ELSE codes END
-    ) AS missed_schedule_codes
-WITH
-    patient, request_id, pt, 
-    [e IN cvx_codes WHERE NOT(e IN administered_codes)] + missed_schedule_codes
-    AS missing_doses
-WITH 
-    DISTINCT(patient.zip) AS patient_zip,
-    request_id, pt,
-    COUNT(*) AS patient_count,
-    COLLECT(missing_doses) AS list_of_missing_doses
-WITH
-    request_id, pt, patient_zip, patient_count,
-    apoc.coll.sort(apoc.coll.toSet(apoc.coll.flatten(codes))) AS missing_doses
-WITH
-    request_id, pt, patient_zip, patient_count, missing_doses
-    OPTIONAL MATCH (patient)-[]-(:Immunization)-[]-(:Encounter)-[]-(organization:Organization)
-        WHERE patient.zip = patient_zip
-WITH
-    request_id, pt, patient_zip, patient_count, missing_doses, COLLECT(DISTINCT(organization)) AS organizations
-WITH
-    request_id, pt, patient_zip, patient_count, missing_doses, organizations
-    OPTIONAL MATCH (immunization:Immunization)-[]-(:Encounter)-[]-(organization:Organization)
-        WHERE immunization.code IN missing_doses AND organization IN organizations
-WITH
-    request_id, pt, patient_zip, patient_count, missing_doses, COLLECT(DISTINCT(organization.name)) AS organization_list
-    CREATE (n:FAS_9)
-        SET
-            n.request_id = request_id,
-            n.pt = pt,
-            n.patient_zip = patient_zip,
-            n.patient_count = patient_count,
-            n.missing_doses = missing_doses,
-            n.organization_list = CASE WHEN SIZE(organization_list) > 0 THEN TOSTRING(apoc.coll.sort(organization_list)) ELSE '' END,
-            n.timestamp = apoc.date.currentTimestamp();
+            WHERE immunization.code IN KEYS(cvx_maps) AND 
+                patient.birth_date + DURATION({months: apoc.map.get(cvx_maps, immunization.code)}) > DATE(immunization.date)
+    WITH 
+        DISTINCT(patient) AS patient, request_id, pt, cvx_maps,
+        COLLECT(DISTINCT(immunization.code)) AS cvx_codes
+    WITH 
+        patient, request_id, pt, 
+        apoc.coll.disjunction(cvx_codes, KEYS(cvx_maps)) AS missing_codes
+    RETURN 
+        DISTINCT(patient.zip) AS patient_zip, 
+        request_id, pt,
+        COUNT(patient) AS patient_count,
+        COLLECT(missing_codes) AS list_of_missing_codes
+','
+    WITH 
+        request_id, pt, patient_zip, patient_count,
+        apoc.coll.toSet(apoc.coll.flatten(list_of_missing_codes)) AS missing_doses
+    WITH
+        request_id, pt, patient_zip, patient_count, missing_doses
+        OPTIONAL MATCH (patient)-[]-(:Immunization)-[]-(:Encounter)-[]-(organization:Organization)
+            WHERE patient.zip = patient_zip
+    WITH
+        request_id, pt, patient_zip, patient_count, missing_doses, COLLECT(DISTINCT(organization)) AS organizations
+    WITH
+        request_id, pt, patient_zip, patient_count, missing_doses, organizations
+        OPTIONAL MATCH (immunization:Immunization)-[]-(:Encounter)-[]-(organization:Organization)
+            WHERE immunization.code IN missing_doses AND organization IN organizations
+    WITH
+        request_id, pt, patient_zip, patient_count, missing_doses,  COLLECT(DISTINCT(organization.name)) AS organization_list
+        CREATE (n:FAS_9)
+            SET
+                n.request_id = request_id,
+                n.pt = pt,
+                n.patient_zip = patient_zip,
+                n.patient_count = patient_count,
+                n.missing_doses = CASE WHEN SIZE(missing_doses) > 0 THEN apoc.text.join(apoc.coll.sort(missing_doses),\",\") ELSE \"\" END,
+                n.organization_list = CASE WHEN SIZE(organization_list) > 0 THEN apoc.text.join(apoc.coll.sort(organization_list),\",\") ELSE \"\" END,
+                n.timestamp = apoc.date.currentTimestamp()
+',
+{params: {event: event}, batchSize:100, parallel:true})
+YIELD total RETURN total;
 //
 // PAP: (source connector) Neo4j entity -> Kafka event
 //

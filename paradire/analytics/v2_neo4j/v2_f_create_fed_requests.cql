@@ -8,7 +8,7 @@ CREATE (n:FAR_1)
     SET
         n.request_id = 'far_1-1',
         n.covid_cvx_list = '207,208',
-        n.start_date = '2020-01-01', 
+        n.start_date = '2021-01-01', 
         n.period_length = 3,
         n.number_of_periods = 4,
         n.pt_list = 'BC',
@@ -19,7 +19,7 @@ CREATE (n:FAR_1)
     SET
         n.request_id = 'far_1-2',
         n.covid_cvx_list = '207,208',
-        n.start_date = '2020-01-01', 
+        n.start_date = '2021-01-01', 
         n.period_length = 3,
         n.number_of_periods = 4,
         n.pt_list = 'AB,BC,MB,NB,NL,NT,NS,NU,ON,PE,QC,SK,YT',
@@ -37,7 +37,7 @@ CREATE (n:FAR_1)
 CREATE (n:FAR_2)
     SET 
         n.request_id = 'far_2-1',
-        n.cvx_maps = {"03": 6, "08": 6, "20": 18, "21": 12, "49": 18, "83": 18, "114": 2, "115": 48, "119": 4, "133": 4}, 
+        n.cvx_maps = '{"03": 6, "08": 6, "20": 18, "21": 12, "49": 18, "83": 18, "114": 2, "115": 48, "119": 4, "133": 4}', 
         n.pt_list = 'BC',
         n.timestamp = apoc.date.currentTimestamp(),
         n.doc = 'BC only: Young children missing vaccination schedule';
@@ -45,7 +45,7 @@ CREATE (n:FAR_2)
 CREATE (n:FAR_2)
     SET 
         n.request_id = 'far_2-2',
-        n.cvx_maps = {"03": 6, "08": 6, "20": 18, "21": 12, "49": 18, "83": 18, "114": 2, "115": 48, "119": 4, "133": 4}, 
+        n.cvx_maps = '{"03": 6, "08": 6, "20": 18, "21": 12, "49": 18, "83": 18, "114": 2, "115": 48, "119": 4, "133": 4}', 
         n.pt_list = 'AB,BC,MB,NB,NL,NT,NS,NU,ON,PE,QC,SK,YT',
         n.timestamp = apoc.date.currentTimestamp(),
         n.doc = 'All PT: Young children missing vaccination schedule';
@@ -190,7 +190,7 @@ CREATE (n:FAR_8)
 CREATE (n:FAR_9)
     SET 
         n.request_id = 'far_9-1',
-        n.cvx_maps = {"03": 6, "08": 6, "20": 18, "21": 12, "49": 18, "83": 18, "114": 2, "115": 48, "119": 4, "133": 4}, 
+        n.cvx_maps = '{"03": 6, "08": 6, "20": 18, "21": 12, "49": 18, "83": 18, "114": 2, "115": 48, "119": 4, "133": 4}', 
         n.pt_list = 'BC',
         n.timestamp = apoc.date.currentTimestamp(),
         n.doc = 'BC only: Young children missing vaccination schedule';
@@ -198,7 +198,7 @@ CREATE (n:FAR_9)
 CREATE (n:FAR_9)
     SET 
         n.request_id = 'far_9-2',
-        n.cvx_maps = {"03": 6, "08": 6, "20": 18, "21": 12, "49": 18, "83": 18, "114": 2, "115": 48, "119": 4, "133": 4}, 
+        n.cvx_maps = '{"03": 6, "08": 6, "20": 18, "21": 12, "49": 18, "83": 18, "114": 2, "115": 48, "119": 4, "133": 4}', 
         n.pt_list = 'AB,BC,MB,NB,NL,NT,NS,NU,ON,PE,QC,SK,YT',
         n.timestamp = apoc.date.currentTimestamp(),
         n.doc = 'All PT: Young children missing vaccination schedule';

@@ -58,7 +58,7 @@ main:
                         val: request_id,pt_list,timestamp,doc
                     - far_6:
                         key: request_id
-                        val: request_id,code_list,pt_list,timestamp,doc
+                        val: request_id,pt_list,timestamp,doc
                     - far_7:
                         key: request_id
                         val: request_id,pt_list,timestamp,doc
@@ -143,7 +143,7 @@ main:
             worker:
                 pt: ${PT}
                 access_control:
-                  - to_transform: patient_birth_date
+                  - to_reduce: patient_birth_date
                   - to_hash: patient_ethnicity
                   - to_block: patient_address
             producer:

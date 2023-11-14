@@ -1,4 +1,7 @@
 from utils import to_json_str
+import uuid
+
+NAMESPACE='https://www.canada.ca/en/public-health.html'
 
 
 class Worker(object):
@@ -25,12 +28,12 @@ class Worker(object):
         return out_topic, key, val
 
     def tranform(self, field, value):
-        if field in self.transform_dict['to_transform']:
+        if field in self.transform_dict['to_reduce']:
             return str(value)[0:4]
         if field in self.transform_dict['to_hash']:
-            return str(hash(value))
+            return uuid.uuid5(NAMESPACE, value)[0:8]
         if field in self.transform_dict['to_block']:
-            return 'XXX'
+            return '*****'
         
         return value
 

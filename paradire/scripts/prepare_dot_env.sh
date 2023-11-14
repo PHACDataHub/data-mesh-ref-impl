@@ -14,11 +14,13 @@ CURRENT_GID=$(id -g)
 VM_IP=$(ip route get 8.8.8.8 | grep -oP 'src \K[^ ]+')
 PUBLIC_IP=$(curl --silent ifconfig.me)
 
-if [ ! -z "$1" ]; then
+if [ -z "$1" ]; then
     PT=F
+else 
+    PT=$1
 fi
 
-LOCAL_KAFKA_CLUSTER_IP=${VM_IP}
+LOCAL_KAFKA_CLUSTER_IP=${PUBLIC_IP}
 
 if [ ! -z "$2" ]; then
     REMOTE_KAFKA_CLUSTER_IP=$2

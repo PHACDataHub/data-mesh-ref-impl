@@ -12,8 +12,8 @@ fi
 PT=$1
 
 if [ -z "$2" ]; then
-    echo WARNING: default IP of 10.162.0.35 is used for F cluster.
-    F_KAFKA_CLUSTER_IP=10.162.0.35
+    echo WARNING: default IP of 35.203.83.135 is used for F cluster.
+    F_KAFKA_CLUSTER_IP=35.203.83.135
 else
     F_KAFKA_CLUSTER_IP=$2
 fi
