@@ -16,7 +16,13 @@ export type JSONSchema6ForParadire = JSONSchema6 & {
     propertyName: string;
     mapping: Record<string, string>;
   };
-  entrypoints?: Record<string, JSONSchema6 & { arguments: string }>;
+  entrypoints?: Record<
+    string,
+    JSONSchema6 & {
+      arguments: string;
+      topics: { request: string; response: string };
+    }
+  >;
 };
 
 export const schemas: {

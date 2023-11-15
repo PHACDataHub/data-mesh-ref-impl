@@ -30,7 +30,7 @@ if (process.argv.includes("-h")) {
     "RegExp to use in [avro_directory] to identify responses.\n\t\t\tNote: Request matcher references are expressed as a dollar sign followed by a single digit ($1) and are used to pair requests with responses."
   );
   h("output_file", "JSON Schema filename (will overwrite any existing file.)");
-  h("-h", "\tDisplay this help message.")
+  h("-h", "\tDisplay this help message.");
   process.exit(0);
 }
 const [, , _dir, _request_match, _response_match, _output] = process.argv;
@@ -126,6 +126,8 @@ const avroFieldsToJsonSchemaProperties = (avro) => ({
     .map((f) => f.name),
 });
 
+// Construct an array of avro schema request and response pairs using the provided
+// matchers.
 const avro_schemas = fs
   .readdirSync(dir)
   .filter((n) => n.match(request_match) || n.match(grm))
@@ -146,30 +148,40 @@ const avro_schemas = fs
     return p;
   }, []);
 
+// Loop over each request/response pair and generate the corresponding JSON
+// schema definition.
 avro_schemas.forEach(({ request, response }) => {
   try {
+    // Parse the JSON files
     const avro_response = JSON.parse(fs.readFileSync(response).toString());
     const avro_request = JSON.parse(fs.readFileSync(request).toString());
+    const root_request = path.basename(request).replace("_val.avsc", "");
+    const root_response = path.basename(response).replace("_val.avsc", "");
+
+    // Extract the name and description for the doc string
+    // Convention is the name, followed by a space, followed by hyphen, followed
+    // by a space, followed by the description until the end of string.
     const { name: resourceType, description: responseDescription } =
-      getNameAndDescription(
-        avro_response,
-        path.basename(response).replace("_val.avsc", "")
-      );
+      getNameAndDescription(avro_response, root_response);
     const { name: resourceTypeRequest, description: requestDescription } =
-      getNameAndDescription(
-        avro_request,
-        path.basename(request).replace("_val.avsc", "")
-      );
+      getNameAndDescription(avro_request, root_request);
+
+    // Set the reference names
     const $ref = `#/definitions/${resourceType}`;
     const $ref_request = `#/definitions/${resourceTypeRequest}`;
-    schema_base.discriminator.mapping[resourceType] = $ref;
 
-    schema_base.entrypoints[resourceType] = {
+    // Create an "entrypoint" for the resource types.  This is a Paradire
+    // extension to JSON Schema and defines how data can be queried.
+    schema_base.entrypoints[resourceTypeRequest] = {
       type: "array",
       items: {
         $ref,
       },
       arguments: $ref_request,
+      topics: {
+        request: root_request,
+        response: root_response,
+      },
     };
 
     schema_base.definitions[resourceTypeRequest] = {
@@ -177,6 +189,7 @@ avro_schemas.forEach(({ request, response }) => {
       description: requestDescription,
     };
 
+    schema_base.discriminator.mapping[resourceType] = $ref;
     schema_base.definitions[resourceType] = {
       ...avroFieldsToJsonSchemaProperties(avro_response),
       description: responseDescription,

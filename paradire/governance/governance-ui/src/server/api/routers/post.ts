@@ -12,7 +12,7 @@ import {
 // Connection to PT kafka
 const kafka_pt = new Kafka({
   clientId: "dag",
-  brokers: [`${env.BROKER_HOST}:${env.BROKER_LOCAL_PORT}`],
+  brokers: [`${env.BROKER_HOST}:${env.BROKER_PORT}`],
 });
 
 const pt_producer = kafka_pt.producer({
