@@ -14,7 +14,6 @@ import {
 import {
   dereference,
   getFieldIfSelected,
-  isFieldSelected,
   type ResourceTypeField,
 } from "@phac-aspc-dgg/schema-tools";
 
@@ -44,7 +43,6 @@ export default function ResourceType({
   parentReferences,
   selectedFields,
   onChange,
-  onRemoveClick,
 }: {
   name: string;
   disabled?: boolean;
@@ -63,36 +61,35 @@ export default function ResourceType({
   const [_showDescriptions, setShowDescriptions] = useState(
     Boolean(showDescriptions),
   );
-  const [subFieldKey, setSubFieldKey] = useState("key");
   const fields = selectedFields ?? _selectedFields;
   const [filter, setFilter] = useState("");
   const debouncedFilter = useDebounce(filter, 300);
 
-  const [showOptions, setShowOptions] = useState<string[]>([]);
+  // const [showOptions, setShowOptions] = useState<string[]>([]);
   const [_fieldOptions, setFieldOptions] = useState<
     Record<string, { format?: string; hash?: boolean }>
   >({});
 
-  const fieldToggleHandler = useCallback(
-    (event: react.ChangeEvent<HTMLInputElement>) => {
-      let changes: ResourceTypeField[] = [];
-      if (isFieldSelected(event.target.value, fields)) {
-        changes = fields.filter(namedFieldFilter(event.target.value));
-      } else {
-        if (_fieldOptions[event.target.value]) {
-          changes = fields.concat({
-            [event.target.value]: { ..._fieldOptions[event.target.value] },
-          });
-        } else {
-          changes = fields.concat(event.target.value);
-        }
-      }
+  // const fieldToggleHandler = useCallback(
+  //   (event: react.ChangeEvent<HTMLInputElement>) => {
+  //     let changes: ResourceTypeField[] = [];
+  //     if (isFieldSelected(event.target.value, fields)) {
+  //       changes = fields.filter(namedFieldFilter(event.target.value));
+  //     } else {
+  //       if (_fieldOptions[event.target.value]) {
+  //         changes = fields.concat({
+  //           [event.target.value]: { ..._fieldOptions[event.target.value] },
+  //         });
+  //       } else {
+  //         changes = fields.concat(event.target.value);
+  //       }
+  //     }
 
-      if (!selectedFields) setSelectedFields(changes);
-      if (onChange) onChange(name, changes);
-    },
-    [_fieldOptions, fields, name, onChange, selectedFields],
-  );
+  //     if (!selectedFields) setSelectedFields(changes);
+  //     if (onChange) onChange(name, changes);
+  //   },
+  //   [_fieldOptions, fields, name, onChange, selectedFields],
+  // );
 
   const updateFieldOptionHandler = useCallback(
     (field: string, property: "hash" | "format" | "hidden" | "blank") =>
@@ -137,9 +134,9 @@ export default function ResourceType({
     [fields, name, onChange],
   );
 
-  const removeClickHandler = useCallback(() => {
-    onRemoveClick && onRemoveClick();
-  }, [onRemoveClick]);
+  // const removeClickHandler = useCallback(() => {
+  //   onRemoveClick && onRemoveClick();
+  // }, [onRemoveClick]);
 
   const toggleShowFields = useCallback(() => {
     setShowFields(!showFields);
@@ -154,22 +151,19 @@ export default function ResourceType({
 
   const showDescriptionChangeHandler = useCallback(() => {
     setShowDescriptions(!_showDescriptions);
-    setSubFieldKey(
-      `sub-field-${(Math.random() + 1).toString(36).substring(7)}`,
-    );
   }, [_showDescriptions]);
 
-  const showOptionsClickHandler = useCallback(
-    (event: react.MouseEvent<HTMLButtonElement>) => {
-      const field = event.currentTarget.value;
-      if (showOptions.includes(field)) {
-        setShowOptions(showOptions.filter((o) => o !== field));
-      } else {
-        setShowOptions(showOptions.concat(field));
-      }
-    },
-    [showOptions],
-  );
+  // const showOptionsClickHandler = useCallback(
+  //   (event: react.MouseEvent<HTMLButtonElement>) => {
+  //     const field = event.currentTarget.value;
+  //     if (showOptions.includes(field)) {
+  //       setShowOptions(showOptions.filter((o) => o !== field));
+  //     } else {
+  //       setShowOptions(showOptions.concat(field));
+  //     }
+  //   },
+  //   [showOptions],
+  // );
 
   const referenced_schema = dereference(reference, schema);
   if (!referenced_schema || typeof referenced_schema === "boolean")
@@ -289,11 +283,11 @@ export default function ResourceType({
 
                 const isDate = val.format === "date";
                 const isDateTime = val.format === "date-time";
-                const isString =
-                  !isDate &&
-                  !isDateTime &&
-                  (val.type === "string" ||
-                    (Array.isArray(val.type) && val.type.includes("string")));
+                // const isString =
+                //   !isDate &&
+                //   !isDateTime &&
+                //   (val.type === "string" ||
+                //     (Array.isArray(val.type) && val.type.includes("string")));
 
                 return (
                   <label
@@ -314,7 +308,6 @@ export default function ResourceType({
                       )}
                       {checked && ref && (
                         <ResourceType
-                          key={subFieldKey}
                           name={field}
                           schema={schema}
                           reference={ref}

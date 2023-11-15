@@ -10,7 +10,12 @@ import { Kafka } from "kafkajs";
 import { SchemaRegistry } from "@kafkajs/confluent-schema-registry";
 
 import { get_topic_map } from "./topic_map.js";
-import { blankDirective, dateDirective, hashDirective } from "./directives.js";
+import {
+  blankDirective,
+  dateDirective,
+  hashDirective,
+  topicDirective,
+} from "./directives.js";
 
 const { dateDirectiveTypeDefs, dateDirectiveTransformer } =
   dateDirective("date");
@@ -19,6 +24,8 @@ const { hashDirectiveTypeDefs, hashDirectiveTransformer } =
 
 const { blankDirectiveTypeDefs, blankDirectiveTransformer } =
   blankDirective("blank");
+
+const { topicDirectiveTypeDefs } = topicDirective();
 
 const paradire_schema = getSchema("paradire-parameterized");
 
@@ -36,7 +43,8 @@ export const create_graphql_schema = async (
       "directive @stream(if: Boolean, label: String, initialCount: Int = 0) on FIELD\n",
       dateDirectiveTypeDefs,
       hashDirectiveTypeDefs,
-      blankDirectiveTypeDefs
+      blankDirectiveTypeDefs,
+      topicDirectiveTypeDefs
     );
 
   console.log("----- Loading server using schema -----");
@@ -46,12 +54,7 @@ export const create_graphql_schema = async (
   const tmp_schema = buildSchema(typeDefs);
 
   const fields = tmp_schema.getQueryType()?.getFields() || [];
-  const query_topic_map = await get_topic_map(
-    kafka,
-    registry,
-    Object.keys(fields),
-    pt
-  );
+  const query_topic_map = await get_topic_map(kafka, registry, fields, pt);
 
   const get_fields = (type: GraphQLOutputType, out: string[] = []) => {
     if ("ofType" in type) {
@@ -76,6 +79,7 @@ export const create_graphql_schema = async (
       case "String":
         return '""';
       case "Int":
+      case "Float":
         return 1;
     }
     return `[[[--notimplemented-${type}--]]]`;

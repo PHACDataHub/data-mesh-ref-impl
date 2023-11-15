@@ -29,7 +29,7 @@ export const env = createEnv({
       process.env.VERCEL ? z.string() : z.string().url()
     ),
     BROKER_HOST: z.string(),
-    BROKER_LOCAL_PORT: z.number(),
+    BROKER_PORT: z.number(),
   },
 
   /**
@@ -55,7 +55,7 @@ export const env = createEnv({
     NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
     NEXTAUTH_URL: process.env.NEXTAUTH_URL,
     BROKER_HOST: process.env.BROKER_HOST,
-    BROKER_LOCAL_PORT: parseInt(process.env.BROKER_LOCAL_PORT ?? "INVALID", 10),
+    BROKER_PORT: parseInt(process.env.BROKER_PORT ?? "INVALID", 10),
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially

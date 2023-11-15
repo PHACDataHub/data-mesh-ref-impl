@@ -174,7 +174,7 @@ export function getFieldType(
     return ["cartesian-point", false, nullable];
   }
   if (Array.isArray(fieldSpec.type)) {
-    return [(fieldSpec.type.find((t) => t !== "null")) ?? "", false, nullable];  
+    return [fieldSpec.type.find((t) => t !== "null") ?? "", false, nullable];
   }
   return [fieldSpec.type ?? "", false, nullable];
 }
@@ -478,7 +478,9 @@ export const rulesToGraphQl = (
           const output = entry.items.$ref;
           return Boolean(selectedResourceTypes.find((r) => r.name === output));
         } else if (entry.$ref) {
-          return Boolean(selectedResourceTypes.find((r) => r.name === entry.$ref));
+          return Boolean(
+            selectedResourceTypes.find((r) => r.name === entry.$ref)
+          );
         }
         return false;
       }
@@ -507,8 +509,14 @@ export const rulesToGraphQl = (
                     };
                   });
 
-                  const test = fieldSpecToGraphQlType(
-                    name,
+                  const fieldName = addFieldDirective({
+                    field: name,
+                    directive: `@topic(request: "${entry.topics.request}", response: "${entry.topics.response}")`,
+                    directives,
+                  });
+
+                  const queryField = fieldSpecToGraphQlType(
+                    fieldName,
                     entry,
                     {},
                     schema,
@@ -517,9 +525,9 @@ export const rulesToGraphQl = (
                   );
 
                   return [
-                    name,
+                    fieldName,
                     {
-                      type: test[1].type,
+                      type: queryField[1].type,
                       args: Object.fromEntries(
                         typeFields.map(({ name, fieldSpec }) =>
                           fieldSpecToGraphQlType(

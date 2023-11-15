@@ -67,20 +67,27 @@ export const subscribeToTopic = async ({
       // This method is fired every time a federal analytics request is sent.
       // It will convert the message and send it as-is to the PT.
       if (message.key && message.value) {
-        const key = await registry.federal.decode(message.key);
         const value = await registry.federal.decode(message.value);
-        // Generate a avro message that will be sent to the request topic.
-        const forwardMessage = {
-          key: await registry.pt.encode(pt_key_schema_id, key),
-          value: await registry.pt.encode(pt_value_schema_id, value),
-        };
-        // Send the message received from the federal analytics platform to the
-        // to the PT platform.
-        console.debug(`[${name}] sending request to PT.`);
-        await pt_producer.send({
-          topic: topic.request,
-          messages: [forwardMessage],
-        });
+        // Generate a avro message that will be sent to the request topic
+        // if the request is appropriate for this PT.
+        if (
+          !("pt_list" in value) ||
+          (typeof value.pt_list === "string" &&
+            value.pt_list.toLowerCase().split(",").includes(pt.toLowerCase()))
+        ) {
+          const key = await registry.federal.decode(message.key);
+          const forwardMessage = {
+            key: await registry.pt.encode(pt_key_schema_id, key),
+            value: await registry.pt.encode(pt_value_schema_id, value),
+          };
+          // Send the message received from the federal analytics platform to the
+          // to the PT platform.
+          console.debug(`[${name}] sending request to PT.`);
+          await pt_producer.send({
+            topic: topic.request,
+            messages: [forwardMessage],
+          });
+        }
       }
     },
   });

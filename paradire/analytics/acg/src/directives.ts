@@ -9,7 +9,7 @@ import dateFormat from "dateformat";
 /**
  * Convert a date to string using the provided format.
  * @param directiveName Name of graphql directive
- * @returns 
+ * @returns
  */
 export function dateDirective(directiveName: string) {
   return {
@@ -39,7 +39,7 @@ export function dateDirective(directiveName: string) {
 /**
  * One way hash
  * @param directiveName Name of graphql directive
- * @returns 
+ * @returns
  */
 export function hashDirective(directiveName: string) {
   return {
@@ -80,7 +80,7 @@ export function hashDirective(directiveName: string) {
  * Fields with this directive are returned but their values are empty strings
  * when the type is string, -1 for integers
  * @param directiveName Name of directive
- * @returns 
+ * @returns
  */
 export function blankDirective(directiveName: string) {
   return {
@@ -104,7 +104,7 @@ export function blankDirective(directiveName: string) {
               if ("name" in fieldConfig.type) type = fieldConfig.type.name;
               switch (type) {
                 case "String":
-                  return "";
+                  return "**restricted**";
                 case "Int":
                 case "Float":
                   return -1;
@@ -115,5 +115,18 @@ export function blankDirective(directiveName: string) {
           return fieldConfig;
         },
       }),
+  };
+}
+
+/**
+ * The topic directive is used to inform the graphql engine which kafka topics
+ * a query should listen for and produce messages on.  There is no transformer.
+ * @param directiveName Name of graphql directive
+ * @returns
+ */
+export function topicDirective() {
+  return {
+    topicDirectiveTypeDefs:
+      "directive @topic(request: String!, response: String!) on FIELD_DEFINITION\n",
   };
 }

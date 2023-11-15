@@ -5,84 +5,121 @@
   "discriminator": {
     "propertyName": "resourceType",
     "mapping": {
-      "fas_1": "#/definitions/fas_1",
-      "fas_2": "#/definitions/fas_2",
-      "fas_3": "#/definitions/fas_3",
-      "fas_4": "#/definitions/fas_4",
-      "fas_5": "#/definitions/fas_5",
-      "fas_6": "#/definitions/fas_6",
-      "fas_7": "#/definitions/fas_7",
-      "fas_8": "#/definitions/fas_8",
-      "fas_9": "#/definitions/fas_9"
+      "COVIDVaccinationStatusResponse": "#/definitions/COVIDVaccinationStatusResponse",
+      "YoungChildrenMissingScheduleResponse": "#/definitions/YoungChildrenMissingScheduleResponse",
+      "AverageDistanceForVaccineResponse": "#/definitions/AverageDistanceForVaccineResponse",
+      "VaccinationByOrganizationResponse": "#/definitions/VaccinationByOrganizationResponse",
+      "VaccinationRecordStreamResponse": "#/definitions/VaccinationRecordStreamResponse",
+      "PatientConditionResponse": "#/definitions/PatientConditionResponse",
+      "ReasonForMedicationResponse": "#/definitions/ReasonForMedicationResponse",
+      "ProcedurePerformedResponse": "#/definitions/ProcedurePerformedResponse",
+      "YoungChildrenMissingScheduleExtendedResponse": "#/definitions/YoungChildrenMissingScheduleExtendedResponse"
     }
   },
   "entrypoints": {
-    "fas_1": {
+    "COVIDVaccinationStatusRequest": {
       "type": "array",
       "items": {
-        "$ref": "#/definitions/fas_1"
+        "$ref": "#/definitions/COVIDVaccinationStatusResponse"
       },
-      "arguments": "#/definitions/far_1"
+      "arguments": "#/definitions/COVIDVaccinationStatusRequest",
+      "topics": {
+        "request": "far_1",
+        "response": "fas_1"
+      }
     },
-    "fas_2": {
+    "YoungChildrenMissingScheduleRequest": {
       "type": "array",
       "items": {
-        "$ref": "#/definitions/fas_2"
+        "$ref": "#/definitions/YoungChildrenMissingScheduleResponse"
       },
-      "arguments": "#/definitions/far_2"
+      "arguments": "#/definitions/YoungChildrenMissingScheduleRequest",
+      "topics": {
+        "request": "far_2",
+        "response": "fas_2"
+      }
     },
-    "fas_3": {
+    "AverageDistanceForVaccineRequest": {
       "type": "array",
       "items": {
-        "$ref": "#/definitions/fas_3"
+        "$ref": "#/definitions/AverageDistanceForVaccineResponse"
       },
-      "arguments": "#/definitions/far_3"
+      "arguments": "#/definitions/AverageDistanceForVaccineRequest",
+      "topics": {
+        "request": "far_3",
+        "response": "fas_3"
+      }
     },
-    "fas_4": {
+    "VaccinationByOrganizationRequest": {
       "type": "array",
       "items": {
-        "$ref": "#/definitions/fas_4"
+        "$ref": "#/definitions/VaccinationByOrganizationResponse"
       },
-      "arguments": "#/definitions/far_4"
+      "arguments": "#/definitions/VaccinationByOrganizationRequest",
+      "topics": {
+        "request": "far_4",
+        "response": "fas_4"
+      }
     },
-    "fas_5": {
+    "VaccinationRecordStreamRequest": {
       "type": "array",
       "items": {
-        "$ref": "#/definitions/fas_5"
+        "$ref": "#/definitions/VaccinationRecordStreamResponse"
       },
-      "arguments": "#/definitions/far_5"
+      "arguments": "#/definitions/VaccinationRecordStreamRequest",
+      "topics": {
+        "request": "far_5",
+        "response": "fas_5"
+      }
     },
-    "fas_6": {
+    "PatientConditionRequest": {
       "type": "array",
       "items": {
-        "$ref": "#/definitions/fas_6"
+        "$ref": "#/definitions/PatientConditionResponse"
       },
-      "arguments": "#/definitions/far_6"
+      "arguments": "#/definitions/PatientConditionRequest",
+      "topics": {
+        "request": "far_6",
+        "response": "fas_6"
+      }
     },
-    "fas_7": {
+    "ReasonForMedicationRequest": {
       "type": "array",
       "items": {
-        "$ref": "#/definitions/fas_7"
+        "$ref": "#/definitions/ReasonForMedicationResponse"
       },
-      "arguments": "#/definitions/far_7"
+      "arguments": "#/definitions/ReasonForMedicationRequest",
+      "topics": {
+        "request": "far_7",
+        "response": "fas_7"
+      }
     },
-    "fas_8": {
+    "ProcedurePerformedRequest": {
       "type": "array",
       "items": {
-        "$ref": "#/definitions/fas_8"
+        "$ref": "#/definitions/ProcedurePerformedResponse"
       },
-      "arguments": "#/definitions/far_8"
+      "arguments": "#/definitions/ProcedurePerformedRequest",
+      "topics": {
+        "request": "far_8",
+        "response": "fas_8"
+      }
     },
-    "fas_9": {
+    "YoungChildrenMissingScheduleExtendedRequest": {
       "type": "array",
       "items": {
-        "$ref": "#/definitions/fas_9"
+        "$ref": "#/definitions/YoungChildrenMissingScheduleExtendedResponse"
       },
-      "arguments": "#/definitions/far_9"
+      "arguments": "#/definitions/YoungChildrenMissingScheduleExtendedRequest",
+      "topics": {
+        "request": "far_9",
+        "response": "fas_9"
+      }
     }
   },
   "definitions": {
-    "far_1": {
+    "COVIDVaccinationStatusRequest": {
+      "description": "Request for COVID vaccination status by a number of CVXs, within a period of time, and based on the number of doses depending on vaccine type.",
       "properties": {
         "request_id": {
           "type": "string",
@@ -124,7 +161,8 @@
         "doc"
       ]
     },
-    "fas_1": {
+    "COVIDVaccinationStatusResponse": {
+      "description": "COVID vaccination status showing quantities (count, percent) for each of statuses of COVID vaccinated patients per zip code.",
       "properties": {
         "request_id": {
           "type": "string",
@@ -181,7 +219,8 @@
         "timestamp"
       ]
     },
-    "far_2": {
+    "YoungChildrenMissingScheduleRequest": {
+      "description": "Request for information about young children missing required/recommended vaccination schedule for a number of specified vaccines.",
       "properties": {
         "request_id": {
           "type": "string",
@@ -213,7 +252,8 @@
         "doc"
       ]
     },
-    "fas_2": {
+    "YoungChildrenMissingScheduleResponse": {
+      "description": "The number of patients missing scheduled vaccines together with a set of (key - vaccine code, value - number of patients missed) pairs is provided per zip code.",
       "properties": {
         "request_id": {
           "type": "string",
@@ -250,7 +290,8 @@
         "timestamp"
       ]
     },
-    "far_3": {
+    "AverageDistanceForVaccineRequest": {
+      "description": "Request for information average distance to travel to get some of specified vaccines.",
       "properties": {
         "request_id": {
           "type": "string",
@@ -282,7 +323,8 @@
         "doc"
       ]
     },
-    "fas_3": {
+    "AverageDistanceForVaccineResponse": {
+      "description": "The average distance to travel based on the zip code of patients' address to the vaccine administering organizations.",
       "properties": {
         "request_id": {
           "type": "string",
@@ -319,7 +361,8 @@
         "timestamp"
       ]
     },
-    "far_4": {
+    "VaccinationByOrganizationRequest": {
+      "description": "Request for vaccination count by organizations for patients coming from the same zip code.",
       "properties": {
         "request_id": {
           "type": "string",
@@ -351,7 +394,8 @@
         "doc"
       ]
     },
-    "fas_4": {
+    "VaccinationByOrganizationResponse": {
+      "description": "The number of vaccinations by an organization for patients coming from the same zip code.",
       "properties": {
         "request_id": {
           "type": "string",
@@ -388,7 +432,8 @@
         "timestamp"
       ]
     },
-    "far_5": {
+    "VaccinationRecordStreamRequest": {
+      "description": "Request for stream of vaccination records with detailed information.",
       "properties": {
         "request_id": {
           "type": "string",
@@ -415,7 +460,8 @@
         "doc"
       ]
     },
-    "fas_5": {
+    "VaccinationRecordStreamResponse": {
+      "description": "Vaccination record stream, each record contain information about the patient, the vaccine, and its administration by an organization.",
       "properties": {
         "request_id": {
           "type": "string",
@@ -521,7 +567,8 @@
         "timestamp"
       ]
     },
-    "far_6": {
+    "PatientConditionRequest": {
+      "description": "Request for patient conditions as a key indicator.",
       "properties": {
         "request_id": {
           "type": "string",
@@ -548,7 +595,8 @@
         "doc"
       ]
     },
-    "fas_6": {
+    "PatientConditionResponse": {
+      "description": "Distribution of top 100 conditions (other than medication review due or screening for employment).",
       "properties": {
         "request_id": {
           "type": "string",
@@ -580,7 +628,8 @@
         "timestamp"
       ]
     },
-    "far_7": {
+    "ReasonForMedicationRequest": {
+      "description": "Request for information on medication prescribed. Only for the ones that are specifically noted.",
       "properties": {
         "request_id": {
           "type": "string",
@@ -607,7 +656,8 @@
         "doc"
       ]
     },
-    "fas_7": {
+    "ReasonForMedicationResponse": {
+      "description": "Distribution of top 100 reasons for medication (only the ones are specifically noted.)",
       "properties": {
         "request_id": {
           "type": "string",
@@ -639,7 +689,8 @@
         "timestamp"
       ]
     },
-    "far_8": {
+    "ProcedurePerformedRequest": {
+      "description": "Request for performed procedures by organizations.",
       "properties": {
         "request_id": {
           "type": "string",
@@ -666,7 +717,8 @@
         "doc"
       ]
     },
-    "fas_8": {
+    "ProcedurePerformedResponse": {
+      "description": "Distribution of top 100 procedures performed by organization.",
       "properties": {
         "request_id": {
           "type": "string",
@@ -698,7 +750,8 @@
         "timestamp"
       ]
     },
-    "far_9": {
+    "YoungChildrenMissingScheduleExtendedRequest": {
+      "description": "Request for additional information about young children missing required/recommended vaccination schedule for a number of specified vaccines.",
       "properties": {
         "request_id": {
           "type": "string",
@@ -730,7 +783,8 @@
         "doc"
       ]
     },
-    "fas_9": {
+    "YoungChildrenMissingScheduleExtendedResponse": {
+      "description": "The number of patients missing scheduled vaccines together with a set of (key: vaccine code, value: number of patients missed) pairs is provided per zip code. In addition, a list of organizations, some of which visited by the patients, provide the same vaccines missed by these patients.",
       "properties": {
         "request_id": {
           "type": "string",

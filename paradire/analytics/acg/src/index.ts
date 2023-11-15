@@ -17,6 +17,7 @@ import {
   BROKER2_HOST,
   BROKER3_HOST,
   BROKER4_HOST,
+  PT,
 } from "./config.js";
 
 import { create_graphql_schema } from "./graphql.js";
@@ -74,87 +75,99 @@ const ruleset = (await existsSync("./ruleset.yaml"))
   ? (await readFileSync("./ruleset.yaml")).toString()
   : false;
 
-if (typeof ruleset === "string") {
-  const { schema, query_topic_map, fields, get_default_query } =
-    await create_graphql_schema(
-      ruleset,
-      { pt: kafka_pt, federal: kafka_federal },
-      { pt: registry_pt, federal: registry_federal },
-      "NB"
-    );
+try {
+  if (typeof ruleset === "string") {
+    const { schema, query_topic_map, fields, get_default_query } =
+      await create_graphql_schema(
+        ruleset,
+        { pt: kafka_pt, federal: kafka_federal },
+        { pt: registry_pt, federal: registry_federal },
+        PT
+      );
 
-  // Create graphql pipeline
-  const server = new ApolloServer({
-    schema,
-    plugins: [
-      {
-        async serverWillStart() {
-          return {
-            async drainServer() {
-              // Make sure all kafka connections are terminated gracefully.
-              for (const x of query_topic_map) {
-                if (typeof x[1] === "object") await x[1].dispose();
-              }
-              await config_consumer.disconnect();
-            },
-          };
+    // Create graphql pipeline
+    const server = new ApolloServer({
+      schema,
+      plugins: [
+        {
+          async serverWillStart() {
+            return {
+              async drainServer() {
+                // Make sure all kafka connections are terminated gracefully.
+                for (const x of query_topic_map) {
+                  if (typeof x[1] === "object") await x[1].dispose();
+                }
+                await config_consumer.disconnect();
+              },
+            };
+          },
         },
-      },
-    ],
-  });
+      ],
+    });
 
-  console.log("Connected.");
+    console.log("Connected.");
 
-  let started = false;
+    let started = false;
 
-  // Link the kafka consumers with the graphql pipeline by using
-  // `executeOperation` to invoke queries with the @stream directive.  When
-  // responses are ready they are provided to the resolver via an in-memory queue.
-  for (const topic of query_topic_map) {
-    const [name, resolver] = topic;
-    if (typeof name === "string" && typeof resolver === "object") {
-      if (name in fields) {
-        new Promise(async () => {
-          const query = get_default_query(fields[name]);
-          const listener = await server.executeOperation({ query });
-          started = true;
-          if (listener.body.kind === "single") {
-            console.error("--- error ---");
-            console.log(listener.body.singleResult.errors);
-            process.exit();
-          } else if (listener.body.kind === "incremental") {
-            for await (const result of listener.body.subsequentResults) {
-              if ("incremental" in result) {
-                result.incremental?.forEach((inc) => {
-                  if ("items" in inc && Array.isArray(inc.items)) {
-                    inc.items.forEach(async (item) => {
-                      console.debug(
-                        `[${name}] - ${item.request_id} - received data from graphql`
-                      );
-                      await resolver.send_to_fed(item);
-                    });
+    // Link the kafka consumers with the graphql pipeline by using
+    // `executeOperation` to invoke queries with the @stream directive.  When
+    // responses are ready they are provided to the resolver via an in-memory queue.
+    for (const topic of query_topic_map) {
+      const [name, resolver] = topic;
+      if (typeof name === "string" && typeof resolver === "object") {
+        if (name in fields) {
+          new Promise(async () => {
+            const query = get_default_query(fields[name]);
+            console.log(`Executing query: ${query}`);
+            const listener = await server.executeOperation({ query });
+            started = true;
+            if (listener.body.kind === "single") {
+              console.error("--- error[124] ---");
+              console.log(JSON.stringify(listener.body.singleResult.errors, null, 2));
+              process.exit();
+            } else if (listener.body.kind === "incremental") {
+              for await (const result of listener.body.subsequentResults) {
+                if ("incremental" in result) {
+                  result.incremental?.forEach((inc) => {
+                    if ("items" in inc && Array.isArray(inc.items)) {
+                      inc.items.forEach(async (item) => {
+                        console.debug(
+                          `[${name}] - ${item.request_id} - received data from graphql`
+                        );
+                        await resolver.send_to_fed(item);
+                      });
+                    }
+                  });
+                } else {
+                  if (
+                    "completed" in result &&
+                    Array.isArray(result.completed)
+                  ) {
+                    result.completed.forEach((c) => console.log(c.errors));
                   }
-                });
-              } else {
-                if ("completed" in result && Array.isArray(result.completed)) {
-                  result.completed.forEach((c) => console.log(c.errors));
                 }
               }
+            } else {
+              console.error("--- error[150] ---");
+              console.log(listener);
+              process.exit();
             }
-          } else {
-            console.error("--- error ---");
-            console.log(listener);
-            process.exit();
-          }
-        });
+          });
+        }
       }
     }
+    console.log("Ready.");
+    await reload;
+    if (started) await server.stop();
+    process.exit(0);
   }
-  console.log("Ready.");
+} catch (e) {
+  console.error(e);
+  console.log("\nError loading ruleset, waiting for new one.");
   await reload;
-  if (started) await server.stop();
   process.exit(0);
-} else {
+
+} finally {
   console.log("\nNo ruleset configuration exists, waiting.");
   await reload;
   process.exit(0);

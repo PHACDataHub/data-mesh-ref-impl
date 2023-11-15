@@ -1,0 +1,107 @@
+version: "3.8"
+
+##############################################################################
+#
+# services
+#
+# - Uses .env for environment variables
+# - acg: Kafka worker for Access Gateway, connects to both PT and F
+# - governance-ui: UI to control what ACG allows through
+#
+##############################################################################
+
+services:
+
+################################################################################
+#
+# Access control gateway
+# - acg
+#
+################################################################################
+
+  ####################
+  # acg
+  ####################
+  acg:
+    build:
+      context: .
+      dockerfile: analytics/acg/Dockerfile
+    container_name: acg
+    environment:
+      - BROKER_HOST=broker
+      - BROKER_INTERNAL_PORT=${BROKER_INTERNAL_PORT}
+      - BROKER2_HOST=broker2
+      - BROKER2_INTERNAL_PORT=${BROKER2_INTERNAL_PORT}
+      - BROKER3_HOST=broker3
+      - BROKER3_INTERNAL_PORT=${BROKER3_INTERNAL_PORT}
+      - BROKER4_HOST=broker4
+      - BROKER4_INTERNAL_PORT=${BROKER4_INTERNAL_PORT}
+      - SCHEMA_REGISTRY_HOST=schema-registry
+      - SCHEMA_REGISTRY_PORT=${SCHEMA_REGISTRY_PORT}
+      - F_BROKER_HOST=${F_BROKER_HOST}
+      - F_BROKER_EXTERNAL_PORT=${F_BROKER_EXTERNAL_PORT}
+      - F_SCHEMA_REGISTRY_HOST=${F_SCHEMA_REGISTRY_HOST}
+      - F_SCHEMA_REGISTRY_PORT=${F_SCHEMA_REGISTRY_PORT}
+      - PT=${PT}
+
+    networks:
+      - backend
+    restart: always
+
+
+################################################################################
+#
+# Data governance services
+# - governance-ui
+# - gateway (GraphQl query endpoint)
+#
+################################################################################
+
+  # ####################
+  # # governance-ui
+  # ####################
+  governance-ui:
+    build:
+      context: .
+      dockerfile: ./governance/governance-ui/Dockerfile
+    container_name: governance-ui
+    ports:
+      - ${GOVERNANCE_UI_PORT}:3000
+    environment:
+      BROKER_HOST: broker
+      BROKER_PORT: ${BROKER_INTERNAL_PORT}
+      NEXT_PUBLIC_PUBLIC_IP: ${PUBLIC_IP}
+      NEXT_PUBLIC_GATEWAY_PORT: ${GATEWAY_PORT}
+      NEXTAUTH_SECRET: ${NEXTAUTH_SECRET}
+
+    networks:
+      - backend
+    restart: always
+
+  # ####################
+  # # gateway
+  # ####################
+  # gateway:
+  #   build:
+  #     context: governance/gateway
+  #   container_name: gateway
+  #   environment:
+  #     NEO4J_URL: bolt://neo4j
+  #     NEO4J_USERNAME: ${NEO4J_USERNAME}
+  #     NEO4J_PASSWORD: ${NEO4J_PASSWORD}
+  #   ports:
+  #     - ${GATEWAY_PORT}:4000
+  #   networks:
+  #     - backend
+  #   restart: always
+
+################################################################################
+#
+# networks
+# - backend
+#
+################################################################################
+networks:
+  backend:
+    name: backend
+    external: true

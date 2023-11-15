@@ -5,36 +5,18 @@ import Head from "next/head";
 
 import Editor from "@monaco-editor/react";
 
-import { ApolloClient, InMemoryCache, gql } from "@apollo/client";
-
 import ResourceType from "~/components/ResourceType";
 
-import ResourceTypeAutoComplete from "~/components/ResourceTypeAutoComplete";
 import { useDataGovernance } from "~/store";
 import {
   rulesToGraphQl,
   dereference,
   getSchema,
-  type ResourceTypeSelection,
   type ResourceTypeField,
   type SchemaType,
 } from "@phac-aspc-dgg/schema-tools";
 
-import { env } from "~/env.mjs";
 import { api } from "~/utils/api";
-
-const client = new ApolloClient({
-  uri: `http://${env.NEXT_PUBLIC_PUBLIC_IP ?? "localhost"}:${
-    env.NEXT_PUBLIC_GATEWAY_PORT ?? "4000"
-  }`,
-  cache: new InMemoryCache(),
-});
-
-const UpdateRulesetMutation = gql`
-  mutation UpdateRuleset($yaml: String!) {
-    updateRuleset(yaml: $yaml)
-  }
-`;
 
 export default function Home() {
   const [selectedSchema, setSelectedSchema] = useState<SchemaType>(
@@ -46,22 +28,6 @@ export default function Home() {
 
   const updateAcg = api.post.updateAcg.useMutation();
   
-  const changeSelectedResourceTypesHandler = useCallback(
-    (changes: ResourceTypeSelection[]) => {
-      setSelectedResourceTypes(changes);
-    },
-    [setSelectedResourceTypes],
-  );
-
-  const removeSelectedResourceHandler = useCallback(
-    (name: string) => () => {
-      // setSelectedResourceTypes(
-      //   selectedResourceTypes.filter((f) => f.name !== name),
-      // );
-    },
-    [selectedResourceTypes, setSelectedResourceTypes],
-  );
-
   const updateSelectedFieldsHandler = useCallback(
     (name: string, selectedFields: ResourceTypeField[]) => {
       setSelectedResourceTypes(
@@ -103,7 +69,7 @@ export default function Home() {
   const addEverythingClickHandler = useCallback(() => {
     setSelectedResourceTypes(
       Object.entries(json_schema.discriminator.mapping).map(([name, ref]) => {
-        const referenced_schema = dereference(ref as string, json_schema);
+        const referenced_schema = dereference(ref, json_schema);
         // if (!referenced_schema || typeof referenced_schema === "boolean")
         //   return undefined;
         const selectedFields = Object.entries(
@@ -117,7 +83,7 @@ export default function Home() {
           )
           .map(([field]) => ({ [field]: { blank: true } }));
 
-        return { name, selectedFields, ref: ref as string };
+        return { name, selectedFields, ref };
       }),
     );
   }, [json_schema, setSelectedResourceTypes]);
@@ -127,11 +93,7 @@ export default function Home() {
     addEverythingClickHandler();
   }, [addEverythingClickHandler, json_schema]);
 
-  const applyClickHandler = useCallback(async () => {
-    // await client.mutate({
-    //   mutation: UpdateRulesetMutation,
-    //   variables: { yaml },
-    // });
+  const applyClickHandler = useCallback(() => {
     const data = updateAcg.mutate({ ruleset: yaml });
     console.log(data);
 
@@ -190,11 +152,10 @@ export default function Home() {
                 )
                 .map(([key, ref]) => (
                   <ResourceType
-                    onRemoveClick={removeSelectedResourceHandler(key)}
                     key={key}
                     name={key}
                     schema={json_schema}
-                    reference={ref as string}
+                    reference={ref}
                     selectedFields={
                       selectedResourceTypes.find((e) => e.name === key)
                         ?.selectedFields ?? []
