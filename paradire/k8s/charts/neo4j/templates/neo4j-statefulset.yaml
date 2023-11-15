@@ -1,0 +1,79 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: neo4j-statefulset
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: neo4j-statefulset
+  template:
+    metadata:
+      labels:
+        app: neo4j-statefulset
+    spec:
+      enableServiceLinks: false
+      containers:
+      - name: neo4j
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        args:
+          - "neo4j"
+          - "start"
+          - "--verbose"
+        ports:
+        - name: http
+          containerPort: {{ .Values.service.httpPort }}
+        - name: https
+          containerPort: {{ .Values.service.httpsPort }}
+        - name: bolt
+          containerPort: {{ .Values.service.boltPort }}
+        livenessProbe:
+          exec:
+            command:
+            - /bin/sh
+            - -c
+            - >
+              /var/lib/neo4j/bin/cypher-shell -u ${NEO4J_USERNAME} -p ${NEO4J_PASSWORD} 
+              "MATCH () RETURN count(*) as count"
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 10
+          failureThreshold: 20
+        readinessProbe:
+            exec:
+              command:
+              - /bin/sh
+              - -c
+              - >
+                /var/lib/neo4j/bin/cypher-shell -u ${NEO4J_USERNAME} -p ${NEO4J_PASSWORD} 
+                "MATCH () RETURN count(*) as count"
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 10
+            successThreshold: 1
+            failureThreshold: 20
+        env:
+          - name: NEO4J_USERNAME
+            value: {{ .Values.neo4jCredentials.username | quote }}
+          - name: NEO4J_PASSWORD
+            value: {{ .Values.neo4jCredentials.password | quote }}
+          {{- range $key, $value := .Values.environment }}
+          - name: {{ $key }}
+            value: {{ $value | quote }}
+          {{- end }}
+        volumeMounts:
+          {{- range $key, $path := .Values.persistence.mounts }}
+          - name: {{ $key }}
+            mountPath: {{ $path }}
+          {{- end }}
+  volumeClaimTemplates:
+    {{- range $key, $path := .Values.persistence.mounts }}
+    - metadata:
+        name: {{ $key }}
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        resources:
+          requests:
+            storage: {{ $.Values.persistence.size }}
+    {{- end }}

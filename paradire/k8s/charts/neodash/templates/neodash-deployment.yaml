@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: neodash-deployment
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: neodash-deployment
+  template:
+    metadata:
+      labels:
+        app: neodash-deployment
+    spec:
+      containers:
+        - name: neodash
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          ports:
+            - containerPort: {{ .Values.service.targetPort }}
+          env:
+            - name: ssoEnabled
+              value: "{{ .Values.env.ssoEnabled }}"
+            - name: standalone
+              value: "{{ .Values.env.standalone }}"
+            - name: standaloneProtocol
+              value: "{{ .Values.env.standaloneProtocol }}"
+            - name: standaloneHost
+              value: "{{ .Values.env.standaloneHost }}"
+            - name: standalonePort
+              value: "{{ .Values.env.standalonePort }}"
+            - name: standaloneDatabase
+              value: "{{ .Values.env.standaloneDatabase }}"
+            - name: standaloneDashboardName
+              value: "{{ .Values.env.standaloneDashboardName }}"
+            - name: standaloneDashboardDatabase
+              value: "{{ .Values.env.standaloneDashboardDatabase }}"

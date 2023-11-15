@@ -1,0 +1,15 @@
+server:
+  image: "hapiproject/hapi:latest"
+  port: 8080
+  targetPort: 8080
+
+db:
+  image: "postgres"
+  postgresPassword: "admin"
+  postgresUser: "admin"
+  postgresDB: "hapi"
+  volumeMount: "/var/lib/postgresql/data" 
+  size: "1Gi"
+  port: 5432
+  targetPort: 5432
+  pgdata: "/var/lib/postgresql/data/random/"

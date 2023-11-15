@@ -19,18 +19,15 @@ cd ~/synthea
 # Start timer
 start_time=$(date +%s)
 
+# Check if upload_FHIR_data.sh has execute permissions, if not, grant them
+if [ ! -x upload_FHIR_data.sh ]; then
+    chmod +x upload_FHIR_data.sh
+fi
+
 # Execute the upload scripts
 echo "--------------------------"
-echo "Uploading hospital records..."
-./upload_hospitals.sh "$output_dir" "$pt"
-echo "--------------------------"
-
-echo "Uploading practitioner records..."
-./upload_practitioners.sh "$output_dir" "$pt"
-echo "--------------------------"
-
-echo "Uploading EHR records..."
-./upload_EHRs.sh "$output_dir" "$pt"
+echo "Uploading FHIR data..."
+./upload_FHIR_data.sh "$output_dir" "$pt"
 echo "--------------------------"
 
 # End timer

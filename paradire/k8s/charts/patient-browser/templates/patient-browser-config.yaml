@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: patient-browser-config
+data:
+  default.json5: |-
+    {{- .Files.Get "files/default.json5" | nindent 4 }}

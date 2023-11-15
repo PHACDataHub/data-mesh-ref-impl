@@ -1,0 +1,4 @@
+apiVersion: v2
+description: A Helm chart for Confluent Kafka Job on Kubernetes
+name: cp-kafka-job
+version: 0.1.0

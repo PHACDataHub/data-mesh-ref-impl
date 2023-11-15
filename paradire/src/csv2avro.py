@@ -1,8 +1,7 @@
-import avro.constants
 import avro.schema
 from avro.datafile import DataFileWriter
 from avro.io import DatumWriter
-
+import multiprocessing
 import os
 import sys
 
@@ -78,60 +77,69 @@ def convert_union(value, type_list):
     assert False, f"{value} cannot be converted into one of {type_list}."
 
 
-if __name__ == '__main__':
+def process_file(arguments):
+    entity, schema_folder, csv_folder, symptoms_folder, avro_folder = arguments
+    key_schema = avro.schema.parse(open(f"{schema_folder}/{entity}_key.avsc", "rb").read())
+    key_field_names = [field.name for field in key_schema.fields]
+    val_schema = avro.schema.parse(open(f"{schema_folder}/{entity}_val.avsc", "rb").read())
+
+    with open(f"{avro_folder}/{entity}.avro", "wt") as out_file:
+        file_name = f"{csv_folder}/{entity}.csv" if entity != 'symptoms' else f"{symptoms_folder}/{entity}.csv"
+        with open(file_name, "rt") as in_file:
+            line_count = 1
+            while True:
+                line = in_file.readline()
+                if entity == 'symptoms' and line_count == 1:
+                    line = in_file.readline()
+                if not line:
+                    break
+                line = line.strip()
+                key_items = []
+                val_items = []
+                for field, cell in zip(val_schema.fields, line.split(',')):
+                    if isinstance(field.type, avro.schema.PrimitiveSchema):
+                        item = f"\"{field.name}\": {convert_primitive(cell, field.type.fullname)}"
+                        val_items.append(item)
+                        if field.name in key_field_names:
+                            key_items.append(item)
+                    elif isinstance(field.type, avro.schema.UnionSchema):
+                        val_items.append(f"\"{field.name}\": {convert_union(cell, [schema.type for schema in field.type.schemas])}")
+                    else:
+                        assert False, f"Unknown field type {field.type.__class__.__name__}"
+                key = '{' + ', '.join(key_items) + '}'
+                val = '{' + ', '.join(val_items) + '}'
+                out_file.write(f"{key}|{val}\n")
+                line_count += 1
+    print(f"Processed {entity}")
+
+
+
+def main():
     if len(sys.argv) < 5:
         print("""
               Usage: python csv2avro.py <schema_folder> <csv_folder> <symptoms_folder> <avro_folder>
               Example: python csv2avro.py governance/events ~/synthea/bc_spp/BC/csv/2023_11_08T15_35_59Z ~/synthea/bc_spp/BC/symptoms/csv/2023_11_08T15_36_00Z
         """)
-        exit(1)
-    
+        sys.exit(1)
+
     schema_folder = os.path.abspath(sys.argv[1])
     csv_folder = os.path.abspath(sys.argv[2])
     symptoms_folder = os.path.abspath(sys.argv[3])
     avro_folder = os.path.abspath(sys.argv[4])
-    if not os.path.isdir(avro_folder):
-        os.mkdir(avro_folder)
-    
-    for entity in sorted(EHR_EVENTS):
-        print(entity)
 
-        key_schema = avro.schema.parse(open(f"{schema_folder}/{entity}_key.avsc", "rb").read())
-        key_field_names = [field.name for field in key_schema.fields]
-        val_schema = avro.schema.parse(open(f"{schema_folder}/{entity}_val.avsc", "rb").read())
-        
-        with open(f"{avro_folder}/{entity}.avro", "wt") as out_file:
-            file_name = f"{csv_folder}/{entity}.csv" if entity != 'symptoms' else f"{symptoms_folder}/{entity}.csv"
-            print(entity, file_name)
-            with open(file_name, "rt") as in_file:
-                
-                line_count = 1
-                while True:
-                    line = in_file.readline()
-                    
-                    if entity == 'symptoms' and line_count == 1:
-                        line = in_file.readline()
-                        
-                    if not line:
-                        break
-                    
-                    line  = line.strip()
-                    key_items = []
-                    val_items = []
-                    print(f"[{entity}] [{line_count}] {line}")
-                    for field, cell in zip(val_schema.fields, line.split(',')):
-                        if isinstance(field.type, avro.schema.PrimitiveSchema):
-                            item = f"\"{field.name}\": {convert_primitive(cell, field.type.fullname)}"
-                            val_items.append(item)
-                            if field.name in key_field_names:
-                                key_items.append(item)
-                        elif isinstance(field.type, avro.schema.UnionSchema):
-                            val_items.append(f"\"{field.name}\": {convert_union(cell, [schema.type for schema in field.type.schemas])}")
-                        else:
-                            assert False, f"Unknown field type {field.type.__class__.__name__}"
-                    
-                    key = '{' + ', '.join(key_items) + '}'
-                    val = '{' + ', '.join(val_items) + '}'
-                    out_file.write(f"{key}|{val}\n")
-                    
-                    line_count +=1
+    #The below function creates a multiprocessing pool with a number of processes 
+    #equal to the lesser of the number of CSV files or the number of CPU cores. 
+    #Each process will call the process_file function with the arguments for one CSV file. 
+    #After all processes have been started, the pool.map call will wait for them to finish.
+    tasks = [(entity, schema_folder, csv_folder, symptoms_folder, avro_folder) for entity in sorted(EHR_EVENTS)]
+
+    # Determine the number of processes to spawn
+    num_processes = min(len(tasks), multiprocessing.cpu_count())
+
+    # Create a pool of processes and map the tasks to the processes
+    with multiprocessing.Pool(processes=num_processes) as pool:
+        pool.map(process_file, tasks)
+
+
+if __name__ == '__main__':
+    main()

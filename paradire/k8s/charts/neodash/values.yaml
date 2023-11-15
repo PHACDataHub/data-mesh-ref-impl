@@ -1,0 +1,20 @@
+replicaCount: 1
+
+image:
+  repository: nielsdejong/neodash
+  tag: 2.3.5
+
+service:
+  type: LoadBalancer
+  port: 5005
+  targetPort: 5005
+
+env:
+  ssoEnabled: "false"
+  standalone: "true"
+  standaloneProtocol: "bolt"
+  standaloneHost: "localhost"
+  standalonePort: "7687"
+  standaloneDatabase: "neo4j"
+  standaloneDashboardName: "PT Analytics Platform"
+  standaloneDashboardDatabase: "neo4j"
