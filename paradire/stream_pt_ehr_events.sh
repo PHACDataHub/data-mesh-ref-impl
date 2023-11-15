@@ -1,8 +1,9 @@
 #!/bin/bash
 
+# Check if a data directory is provided or use 'data' as the default
 if [ -z "$1" ]; then
     if [ -d "data" ]; then
-        data_dir=data
+        data_dir="data"
     else
         echo "Usage: ./stream_pt_ehr_events.sh <data_dir>"
         echo "   where data_dir would be, e.g.: "
@@ -10,29 +11,28 @@ if [ -z "$1" ]; then
         exit 1
     fi
 else
-    data_dir=$1
+    data_dir="$1"
 fi
 
-# set -e
-
+# Set current working directory and other configurations
 curr_dir=$(pwd)
-avro_dir=${curr_dir}/governance/events
-kafka_ce_schema_registry_data_dir=kafka-ce/schema-registry/data
+avro_dir="${curr_dir}/governance/events"
+kafka_ce_schema_registry_data_dir="kafka-ce/schema-registry/data"
 source .env
 
-broker_container_name=broker
-broker_internal_host=broker
-broker_internal_port=${BROKER_INTERNAL_PORT}
+# Define Kafka and Schema Registry related variables
+broker_container_name="broker"
+broker_internal_host="broker"
+broker_internal_port="${BROKER_INTERNAL_PORT}"
 
-schema_registry_container=schema-registry
-schema_registry_internal_host=schema-registry
-schema_registry_local_host=localhost
-schema_registry_port=${SCHEMA_REGISTRY_PORT}
+schema_registry_container="schema-registry"
+schema_registry_local_host="localhost"
+schema_registry_port="${SCHEMA_REGISTRY_PORT}"
 
-echo "Check if avro is one of supported schema types ...";
+echo "Checking if AVRO is a supported schema type..."
 supported_types=$(./scripts/get_supported_schema_types.sh)
-echo $supported_types "are supported ✅";
-if [ -z "$(echo $supported_types} | grep AVRO)" ]; then
+echo "Supported types: ${supported_types} ✅"
+if [[ ! $supported_types =~ "AVRO" ]]; then
     echo 'AVRO is not supported ❌'
     exit 1
 else
@@ -40,32 +40,40 @@ else
 fi
 echo ''
 
+# List the current Schema Registry configuration and subjects
 ./scripts/get_schema_registry_config.sh
 ./scripts/list_subjects.sh
 
-for topic in allergies careplans claims claims_transactions conditions devices encounters imaging_studies immunizations medications observations organizations patient_expenses patients payer_transitions payers procedures providers supplies symptoms
-do
-    ./scripts/create_topic.sh ${topic}
+# Define the topics to process
+topics=(allergies careplans claims claims_transactions conditions devices encounters imaging_studies immunizations medications observations organizations patient_expenses patients payer_transitions payers procedures providers supplies symptoms)
 
-    ./scripts/create_subject.sh ${topic}-key ${avro_dir}/${topic}_key.avsc
-    ./scripts/create_subject.sh ${topic}-value ${avro_dir}/${topic}_val.avsc
+# Process each topic
+for topic in "${topics[@]}"; do
+    ./scripts/create_topic.sh "${topic}"
 
-    ./scripts/get_subject_info.sh ${topic}-key
-    ./scripts/get_subject_info.sh ${topic}-value
+    ./scripts/create_subject.sh "${topic}-key" "${avro_dir}/${topic}_key.avsc"
+    ./scripts/create_subject.sh "${topic}-value" "${avro_dir}/${topic}_val.avsc"
 
-    key_schema_id=$(curl --silent -X GET http://${schema_registry_local_host}:${schema_registry_port}/subjects/${topic}-key/versions/latest | jq .id)
-    value_schema_id=$(curl --silent -X GET http://${schema_registry_local_host}:${schema_registry_port}/subjects/${topic}-value/versions/latest | jq .id)
+    ./scripts/get_subject_info.sh "${topic}-key"
+    ./scripts/get_subject_info.sh "${topic}-value"
 
-    data_file=${topic}.avro
-    no_messages=$(cat $data_dir/$data_file | wc -l | tr -d ' ')
-    mv $data_dir/${data_file} ${kafka_ce_schema_registry_data_dir}/.
+    # Retrieve Schema IDs for both key and value
+    key_schema_id=$(curl --silent -X GET "http://${schema_registry_local_host}:${schema_registry_port}/subjects/${topic}-key/versions/latest" | jq .id)
+    value_schema_id=$(curl --silent -X GET "http://${schema_registry_local_host}:${schema_registry_port}/subjects/${topic}-value/versions/latest" | jq .id)
 
-    echo "Produce ${no_messages} messages ..." 
-    docker exec ${schema_registry_container} bash -c \
-        "kafka-avro-console-producer  --broker-list $broker_internal_host:$broker_internal_port --topic $topic --property key.separator='|' --property parse.key=true --property key.schema.id=$key_schema_id --property value.schema.id=$value_schema_id < /data/$data_file"
+    # Prepare data file and count the number of messages
+    data_file="${data_dir}/${topic}.avro"
+    no_messages=$(wc -l < "${data_file}" | tr -d ' ')
+    mv "${data_file}" "${kafka_ce_schema_registry_data_dir}/."
+
+    echo "Producing ${no_messages} messages for topic ${topic}..."
+    docker exec "${schema_registry_container}" bash -c \
+        "kafka-avro-console-producer --broker-list ${broker_internal_host}:${broker_internal_port} --topic ${topic} --property key.separator='|' --property parse.key=true --property key.schema.id=${key_schema_id} --property value.schema.id=${value_schema_id} < /data/${topic}.avro"
     echo ''
 
-    mv ${kafka_ce_schema_registry_data_dir}/${data_file} $data_dir/.
+    # Move the data file back to its original directory
+    mv "${kafka_ce_schema_registry_data_dir}/${topic}.avro" "${data_dir}/."
 done
 
+# List subjects at the end of the script
 ./scripts/list_subjects.sh

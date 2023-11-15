@@ -2,10 +2,12 @@
 
 # Configurations
 LOG_DIR="logs"
-mkdir -p "$LOG_DIR"  # Create the logs directory if it doesn't exist
+[ ! -d "$LOG_DIR" ] && mkdir -p "$LOG_DIR"
 LOG_FILE="$LOG_DIR/upload.log"
 SERVER_ADDRESS="http://localhost:8080"
 provinces="AB BC MB NB NL NS NT NU ON PE QC SK YT"
+output_dir="ca_spp"
+curr_dir=$(pwd)
 
 # Logging function
 log() {
@@ -55,7 +57,7 @@ for pt in "${selected_provinces[@]}"; do
     fi
 
     log "Generating data for $pt..."
-    ./generate_patient_population.sh "$record_count" "output_dir" "$pt"
+    ./generate_patient_population.sh "$record_count" "$output_dir" "$pt"
     
     if [[ $? -ne 0 ]]; then
         log "Error occurred while generating data for $pt. Skipping upload for this province."
@@ -63,13 +65,38 @@ for pt in "${selected_provinces[@]}"; do
     fi
 
     log "Uploading data for $pt..."
-    ./upload_pt_ehrs.sh "output_dir" "$pt"
+    ./upload_pt_ehrs.sh "$output_dir" "$pt"
     
     if [[ $? -ne 0 ]]; then
         log "Error occurred while uploading data for $pt."
     else
         log "Data for $pt uploaded successfully!"
     fi
+
+    log "Converting data to Avro for $pt..."
+
+    csv_base_path="$HOME/synthea/$output_dir/$pt/csv/*/"
+    symptoms_base_path="$HOME/synthea/$output_dir/$pt/symptoms/csv/*/"
+    avro_dir_path="data"
+    
+    ./convert_ehr_to_avro.sh "$(realpath $csv_base_path)" "$(realpath $symptoms_base_path)" "$avro_dir_path"
+
+    if [[ $? -ne 0 ]]; then
+        log "Error occurred while converting CSV data to Avro for $pt."
+    else
+        log "Data for $pt converted to Avro successfully!"
+    fi
+
+    log "Streaming to events for $pt..."
+    
+    ./stream_pt_ehr_events.sh "$avro_dir_path"
+
+    if [[ $? -ne 0 ]]; then
+        log "Error occurred while streaming the data for $pt."
+    else
+        log "Data for $pt is streamed successfully!"
+    fi
+    
 done
 
 log "All tasks completed!"

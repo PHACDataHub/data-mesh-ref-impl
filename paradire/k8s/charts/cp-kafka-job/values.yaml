@@ -1,0 +1,28 @@
+# Default values for cp-kafka-job.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+## Image Info
+## ref: https://hub.docker.com/r/confluentinc/cp-kafka/
+image: confluentinc/cp-kafka
+imageTag: 7.5.1
+replicationFactor: 1
+partitions: 4
+
+## You can list load balanced service endpoint, or list of all brokers (which is hard in K8s).  e.g.:
+## bootstrapServers: "PLAINTEXT://dozing-prawn-kafka-headless:9092"
+kafka:
+  bootstrapServers: ""
+
+## e.g. http://gnoble-panther-cp-schema-registry:8081
+cp-schema-registry:
+  url: ""
+
+## e.g. http://gnoble-panther-cp-schema-registry:8081
+cp-ksql-server:
+  url: ""
+
+## e.g. http://gnoble-panther-cp-schema-registry:8081ß
+cp-kafka-connect:
+  url: ""
+

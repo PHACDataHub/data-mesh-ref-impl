@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: hapi-fhir-svc
+  name: hapi-fhir-svc
+spec:
+  type: ClusterIP
+  ports:
+    - port: {{ .Values.server.port }}
+      targetPort: {{ .Values.server.targetPort }}
+      name: hapi-fhir-server
+  selector:
+    app: hapi-fhir-server
+status:
+  loadBalancer: {}

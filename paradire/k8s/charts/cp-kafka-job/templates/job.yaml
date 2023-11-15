@@ -1,0 +1,45 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ template "cp-kafka-job.fullname" . }}
+  labels:
+    app: {{ template "cp-kafka-job.name" . }}
+    chart: {{ template "cp-kafka-job.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  template:
+    metadata:
+      labels:
+        app: {{ template "cp-kafka-job.name" . }}
+    spec:
+      initContainers:
+      - name: check-kafka
+        image: "{{ .Values.image }}:{{ .Values.imageTag }}"
+        command: ["/bin/sh", "-c"]
+        args:
+        - |
+          # Check if Kafka is up by listing topics
+          until kafka-topics --bootstrap-server {{ template "cp-kafka-job.kafka.bootstrapServers" . }} --list; do
+            echo "Waiting for Kafka to be ready..."
+            sleep 5
+          done
+          echo "Kafka is ready."
+      containers:
+      - name: {{ template "cp-kafka-job.name" . }}
+        image: "{{ .Values.image }}:{{ .Values.imageTag }}"
+        command: ["/bin/sh", "-c"]
+        args:
+        - |
+          # list of topics
+          topics=("allergies" "careplans" "claims_transactions" "claims" "conditions" "devices" "encounters" "imaging_studies" "immunizations" "medications" "observations" "organizations" "patient_expenses" "patients" "payer_transitions" "payers" "procedures" "providers" "supplies" "symptoms" "fed_request_city_org_patient" "fed_request_city_org_patient_visit" "fed_request_city_year_top_proc" "fed_request_patient_cvx_org" "fed_request_pt_org_med" "fed_request_top_k_immunization" "fed_request_zip_immunization" "fed_request_vaccination_record" "fed_response_city_org_patient" "fed_response_city_org_patient_visit" "fed_response_city_year_top_proc" "fed_response_patient_cvx_org" "fed_response_pt_org_med" "fed_response_top_k_immunization" "fed_response_zip_immunization" "fed_response_vaccination_record")
+
+          # Iterate over each topic and create it
+          for topic in "${topics[@]}"; do
+            echo "Creating topic: $topic"
+            kafka-topics --bootstrap-server {{ template "cp-kafka-job.kafka.bootstrapServers" . }} --create --if-not-exists --topic $topic --replication-factor {{ $.Values.replicationFactor }} --partitions {{ $.Values.partitions }}
+          done
+
+          echo "Successfully created the following topics:"
+          kafka-topics --bootstrap-server {{ template "cp-kafka-job.kafka.bootstrapServers" . }} --list
+      restartPolicy: OnFailure
