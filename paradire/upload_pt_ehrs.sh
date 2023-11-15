@@ -27,7 +27,7 @@ fi
 # Execute the upload scripts
 echo "--------------------------"
 echo "Uploading FHIR data..."
-./upload_FHIR_data.sh "$output_dir" "$pt"
+./upload_FHIR_data.sh "$output_dir" "$pt" "http://localhost:8080/fhir"
 echo "--------------------------"
 
 # End timer

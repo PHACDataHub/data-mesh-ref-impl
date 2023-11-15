@@ -10,18 +10,19 @@ for tool in parallel jq; do
 done
 
 # Usage message
-USAGE="Usage: $0 <output_dir> <province_or_territory_abbreviation>
+USAGE="Usage: $0 <output_dir> <province_or_territory_abbreviation> <fihr_server_url>
 where province_or_territory_abbreviation is one of:${valid_pt}
-Example: $0 output_dir AB"
+Example: $0 output_dir AB http://localhost:8080/fhir"
 
 # Check for script arguments and echo usage message if not correct
-if [ $# -ne 2 ]; then
+if [ $# -ne 3 ]; then
     echo "$USAGE"
     exit 1
 fi
 
 output_dir=$1
 pt=$2
+fihr_server_url=$3
 
 # Check if pt is a valid province or territory
 if [[ ! "$valid_pt" =~ " $pt " ]]; then
@@ -32,7 +33,7 @@ fi
 # Upload function
 upload_file() {
     file="$1"
-    response=$(curl -s http://localhost:8080/fhir --data-binary "@$file" -H "Content-Type: application/fhir+json")
+    response=$(curl -s $fihr_server_url --data-binary "@$file" -H "Content-Type: application/fhir+json")
     if [[ "$response" == *"informational"* ]]; then
         echo "Successfully uploaded $file."
     else
