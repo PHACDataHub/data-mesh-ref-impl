@@ -65,7 +65,7 @@
           "day": 1
         },
         "neodash_cvx_codes": "03,08,20,21,49,83,114,115,119,133",
-        "neodash_pt_list": "BC,ON",
+        "neodash_pt_list": "AB,BC,MB,NB,NL,NT,NS,NU,ON,PE,QC,SK,YT",
         "neodash_far_1_covid_cvx_list": "207,208",
         "neodash_far_1_start_date": {
           "year": 2020,
@@ -192,7 +192,7 @@
           {
             "id": "87b45734-28a5-4407-9148-b54892341a1d",
             "title": "Send query to PTs",
-            "query": "MERGE (h:FAR_1_HELPER)\n  SET h.request_id = apoc.create.uuid()\nWITH h\n  CREATE (n:FAR_1)\n    SET\n      n.request_id = h.request_id,\n      n.covid_cvx_list = $neodash_far_1_covid_cvx_list,\n      n.start_date = TOSTRING($neodash_far_1_start_date),\n      n.end_date = TOSTRING($neodash_far_1_end_date),\n      n.pt_list = $neodash_pt_list,\n      n.timestamp = apoc.date.currentTimestamp(),\n      n.doc = 'BC,ON only: COVID-19 monovalent Moderna adult (12+ yrs) vaccine, 1st/2nd dosage.'\nRETURN n.request_id;\n",
+            "query": "MERGE (h:FAR_1_HELPER)\n  SET h.request_id = apoc.create.uuid()\nWITH h\n  CREATE (n:FAR_1)\n    SET\n      n.request_id = h.request_id,\n      n.covid_cvx_list = $neodash_far_1_covid_cvx_list,\n      n.start_date = TOSTRING($neodash_far_1_start_date),\n      n.end_date = TOSTRING($neodash_far_1_end_date),\n      n.pt_list = $neodash_pt_list,\n      n.timestamp = apoc.date.currentTimestamp(),\n      n.doc = 'All PTs: COVID-19 monovalent Moderna adult (12+ yrs) vaccine, 1st/2nd dosage.'\nRETURN n.request_id;\n",
             "width": 4,
             "height": 1,
             "x": 8,
@@ -257,7 +257,7 @@
           {
             "id": "436f4a2d-a06a-4381-ab2c-f684cdcfbc22",
             "title": "Query",
-            "query": "MERGE (h:FAR_2_HELPER)\n  SET h.request_id = apoc.create.uuid()\nWITH h\n  CREATE (n:FAR_2)\n    SET \n      n.request_id = h.request_id,\n      n.cvx_maps = '{\"03\": 6, \"08\": 6, \"20\": 18, \"21\": 12, \"49\": 18, \"83\": 18, \"114\": 2, \"115\": 48, \"119\": 4, \"133\": 4}', \n      n.pt_list = 'BC',\n      n.timestamp = apoc.date.currentTimestamp(),\n      n.doc = 'BC only: Young children missing vaccination schedule'\nRETURN n.request_id\n\n\n\n",
+            "query": "MERGE (h:FAR_2_HELPER)\n  SET h.request_id = apoc.create.uuid()\nWITH h\n  CREATE (n:FAR_2)\n    SET \n      n.request_id = h.request_id,\n      n.cvx_maps = '{\"03\": 6, \"08\": 6, \"20\": 18, \"21\": 12, \"49\": 18, \"83\": 18, \"114\": 2, \"115\": 48, \"119\": 4, \"133\": 4}', \n      n.pt_list = 'AB,BC,MB,NB,NL,NT,NS,NU,ON,PE,QC,SK,YT',\n      n.timestamp = apoc.date.currentTimestamp(),\n      n.doc = 'All PT: Young children missing vaccination schedule'\nRETURN n.request_id\n\n\n\n",
             "width": 2,
             "height": 1,
             "x": 4,
