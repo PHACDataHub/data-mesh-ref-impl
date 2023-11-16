@@ -1,6 +1,22 @@
+/**
+ * Access Control Gateway
+ * 
+ * This kafka worker implements property transformations based on a provided
+ * ruleset yaml file.  The ruleset can be reconfigured by posting a message
+ * to the `acg-config-connector` topic on the PT kafka cluster.
+ * 
+ * In this proof of concept, the ruleset is converted into a GraphQL Schema,
+ * transformations are specified as custom directives.  The following directives
+ * are (supported)[./directive.ts]:
+ *   - @date - transforms a date into a string using a format string
+ *   - @hash - performs a one way hash of the property
+ *   - @blank  - replaces the value with the word "** restricted **"
+ *   - @selectable - loosely based on neo4j - this removes the property entirely
+ *   - @topic - used to link queries and subscriptions to kafka
+ */
 import { Kafka } from "kafkajs";
 import { SchemaRegistry } from "@kafkajs/confluent-schema-registry";
-import { ApolloServer, BaseContext } from "@apollo/server";
+import { ApolloServer } from "@apollo/server";
 
 import {
   BROKER_HOST,
@@ -50,13 +66,13 @@ const registry_federal = new SchemaRegistry({
   host: `http://${F_SCHEMA_REGISTRY_HOST}:${F_SCHEMA_REGISTRY_PORT}`,
 });
 
+// Monitor `acg_ruleset_config` topic for ruleset changes
 const topic = "acg_ruleset_config";
 const config_consumer = kafka_pt.consumer({
   groupId: "acg-config-connector",
   allowAutoTopicCreation: true,
 });
 await config_consumer.connect();
-
 await config_consumer.subscribe({
   topic,
 });
@@ -65,12 +81,16 @@ const reload = new Promise<void>((resolve) => {
     eachMessage: async ({ message }) => {
       console.info("=== New ruleset configuration received ===");
       const ruleset = message.value.toString();
+      // When a new ruleset arrives, write to a file and exit.  The container
+      // restarts automatically.
       await writeFileSync("./ruleset.yaml", ruleset);
       resolve();
     },
   });
 });
 
+// Load the latest version of the ruleset spec from a file.
+// TODO: May just read it from the topic in the future.
 const ruleset = (await existsSync("./ruleset.yaml"))
   ? (await readFileSync("./ruleset.yaml")).toString()
   : false;
@@ -123,7 +143,9 @@ try {
             started = true;
             if (listener.body.kind === "single") {
               console.error("--- error[124] ---");
-              console.log(JSON.stringify(listener.body.singleResult.errors, null, 2));
+              console.log(
+                JSON.stringify(listener.body.singleResult.errors, null, 2)
+              );
               process.exit();
             } else if (listener.body.kind === "incremental") {
               for await (const result of listener.body.subsequentResults) {
@@ -143,7 +165,9 @@ try {
                     "completed" in result &&
                     Array.isArray(result.completed)
                   ) {
-                    result.completed.forEach((c) => console.log(c.errors));
+                    result.completed
+                      .filter((c) => typeof c !== "undefined")
+                      .forEach((c) => console.log(c.errors));
                   }
                 }
               }
@@ -166,7 +190,6 @@ try {
   console.log("\nError loading ruleset, waiting for new one.");
   await reload;
   process.exit(0);
-
 } finally {
   console.log("\nNo ruleset configuration exists, waiting.");
   await reload;

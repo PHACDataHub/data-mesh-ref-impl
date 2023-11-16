@@ -123,6 +123,8 @@ export const subscribeToTopic = async ({
     },
   });
 
+  let iterator: AsyncIterator<unknown, unknown, unknown>;
+
   return [
     name,
     {
@@ -135,13 +137,17 @@ export const subscribeToTopic = async ({
         console.log(`[${name}] Disconnecting kafka producers.`);
         await fed_producer.disconnect();
         await pt_producer.disconnect();
-        console.log(`[${name}] Ending async iterator.`);
-        await pubsub.publish(name, { completed: true });
+        
+        if (iterator) {
+          console.log(`[${name}] Ending async iterator.`);
+          iterator.return();
+        }
       },
       resolve: () => {
         // Returns an async iterator that graphql will emit every time a result
         // is available; via the @stream directive.
-        return pubsub.asyncIterator(name);
+        iterator = pubsub.asyncIterator(name);
+        return iterator;
       },
       send_to_fed: async (value: { request_id: string }) => {
         // Generate a avro message that will be sent to the response topic on
