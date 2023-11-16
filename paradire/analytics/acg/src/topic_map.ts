@@ -7,7 +7,7 @@ import { type GraphQLFieldMap } from "graphql";
 export const get_topic_map = (
   kafka: { pt: Kafka; federal: Kafka },
   registry: { pt: SchemaRegistry; federal: SchemaRegistry },
-  query_types: GraphQLFieldMap<unknown, unknown> | any[],
+  query_types: GraphQLFieldMap<unknown, unknown>,
   pt: string
 ) => {
   return Promise.all(

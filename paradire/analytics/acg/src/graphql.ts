@@ -53,7 +53,7 @@ export const create_graphql_schema = async (
 
   const tmp_schema = buildSchema(typeDefs);
 
-  const fields = tmp_schema.getQueryType()?.getFields() || [];
+  const fields = tmp_schema.getQueryType()?.getFields() || {};
   const query_topic_map = await get_topic_map(kafka, registry, fields, pt);
 
   const get_fields = (type: GraphQLOutputType, out: string[] = []) => {

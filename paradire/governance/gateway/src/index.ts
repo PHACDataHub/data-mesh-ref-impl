@@ -16,9 +16,14 @@ import { SchemaRegistry } from "@kafkajs/confluent-schema-registry";
 
 import { rulesToGraphQl, getSchema } from "@phac-aspc-dgg/schema-tools";
 
-import { dateDirective, hashDirective } from "./utils/directives.js";
+import {
+  blankDirective,
+  dateDirective,
+  hashDirective,
+  topicDirective,
+} from "./utils/directives.js";
 import { subscribeToTopic } from "./topic_generators.js";
-import { buildSchema } from "graphql";
+import { GraphQLFieldMap, buildSchema } from "graphql";
 
 const for_neo4j = false;
 
@@ -29,17 +34,101 @@ const { dateDirectiveTypeDefs, dateDirectiveTransformer } =
 const { hashDirectiveTypeDefs, hashDirectiveTransformer } =
   hashDirective("hash");
 
+const { blankDirectiveTypeDefs, blankDirectiveTransformer } =
+  blankDirective("blank");
+
+const { topicDirectiveTypeDefs } = topicDirective();
+
 const ruleset = `
 ruleset:
   version: 0.0.1
   resourceTypes:
-    - name: CityOrgPatient
+    - name: COVIDVaccinationStatusResponse
       fields:
         - request_id
-        - city
-        - name
-        - count
         - pt
+        - start_date
+        - end_date
+        - patient_zip
+        - patient_count
+        - patient_status
+        - status_count
+        - status_percent
+        - timestamp
+    - name: YoungChildrenMissingScheduleResponse
+      fields:
+        - request_id
+        - pt
+        - patient_zip
+        - patient_count
+        - missing_doses
+        - timestamp
+    - name: AverageDistanceForVaccineResponse
+      fields:
+        - request_id
+        - pt
+        - patient_zip
+        - organization_name
+        - average_distance
+        - timestamp
+    - name: VaccinationByOrganizationResponse
+      fields:
+        - request_id
+        - pt
+        - patient_zip
+        - organization_name
+        - vaccination_count
+        - timestamp
+    - name: VaccinationRecordStreamResponse
+      fields:
+        - request_id
+        - pt
+        - immunization_date
+        - immunization_code
+        - immunization_description
+        - organization_name
+        - organization_zip
+        - encounter_class
+        - encounter_code
+        - encounter_description
+        - patient_id
+        - patient_address
+        - patient_birth_date
+        - patient_alive
+        - patient_zip
+        - patient_gender
+        - patient_race
+        - patient_ethnicity
+        - timestamp
+    - name: PatientConditionResponse
+      fields:
+        - request_id
+        - pt
+        - condition_description
+        - condition_count
+        - timestamp
+    - name: ReasonForMedicationResponse
+      fields:
+        - request_id
+        - pt
+        - medication_reason_description
+        - medication_reason_count
+        - timestamp
+    - name: ProcedurePerformedResponse
+      fields:
+        - request_id
+        - pt
+        - procedure_description
+        - procedure_count
+        - timestamp
+    - name: YoungChildrenMissingScheduleExtendedResponse
+      fields:
+        - request_id
+        - pt
+        - patient_zip
+        - patient_count
+        - missing_doses
+        - organization_list
         - timestamp
 `;
 
@@ -65,7 +154,7 @@ const loadServer = async (yaml: string) => {
     await new Promise<void>(async (resolve) => {
       try {
         const typeDefs = `
-${rulesToGraphQl(yaml, current_schema)}
+${rulesToGraphQl(yaml, current_schema, true)}
 
 type Mutation {
   updateRuleset(yaml: String): String
@@ -81,7 +170,9 @@ type Mutation {
           const neoSchema = new Neo4jGraphQL({
             typeDefs: typeDefs.concat(
               dateDirectiveTypeDefs,
-              hashDirectiveTypeDefs
+              hashDirectiveTypeDefs,
+              blankDirectiveTypeDefs,
+              topicDirectiveTypeDefs
             ),
             driver,
             resolvers: {
@@ -102,8 +193,10 @@ type Mutation {
               },
             },
           });
-          const schema = hashDirectiveTransformer(
-            dateDirectiveTransformer(await neoSchema.getSchema())
+          const schema = blankDirectiveTransformer(
+            hashDirectiveTransformer(
+              dateDirectiveTransformer(await neoSchema.getSchema())
+            )
           );
 
           // The ApolloServer constructor requires two parameters: your schema
@@ -120,91 +213,80 @@ type Mutation {
         } else {
           // Kafka based test
           const kafka_schema = typeDefs
+            .replace(/.*@selectable.*/g, "")
             .concat(
+              `\n\n"""Directives"""\n`,
+              "directive @defer(if: Boolean, label: String) on FRAGMENT_SPREAD | INLINE_FRAGMENT\n",
+              "directive @stream(if: Boolean, label: String, initialCount: Int = 0) on FIELD\n",
               dateDirectiveTypeDefs,
               hashDirectiveTypeDefs,
-              "\ntype Query { noop: String }\n"
-            )
-            .replace(/.*@selectable.*/g, "");
+              blankDirectiveTypeDefs,
+              topicDirectiveTypeDefs
+            );
 
           console.log("============ KAFKA SCHEMA ============");
           console.log(kafka_schema);
           console.log("======================================");
 
-          const subscription_types = Object.keys(
-            buildSchema(kafka_schema).getSubscriptionType().getFields()
-          );
+          const get_resolver_map = async (
+            types: GraphQLFieldMap<unknown, unknown>,
+            resolverMethod: "resolve" | "subscribe",
+            timeout: number = 10
+          ) =>
+            await Promise.all(
+              Object.keys(types)
+                .map((k) => {
+                  // NOTICE: copied from ACG, to be moved to shared lib
+                  const directives = types[k]?.astNode?.directives;
+                  if (Array.isArray(directives)) {
+                    const topic = directives.find(
+                      (dir) => dir.name.value === "topic"
+                    );
+                    if (topic) {
+                      const request_arg = topic.arguments.find(
+                        (a) => a.name.value === "request"
+                      );
+                      const response_arg = topic.arguments.find(
+                        (a) => a.name.value === "response"
+                      );
+                      if (request_arg && response_arg) {
+                        return {
+                          name: k,
+                          topic: {
+                            request: request_arg.value.value,
+                            response: response_arg.value.value,
+                          },
+                        };
+                      }
+                    }
+                  }
+                  return false;
+                })
+                .filter((k) => typeof k !== "boolean")
+                .map(
+                  async (sub) =>
+                    typeof sub !== "boolean" &&
+                    (await subscribeToTopic({
+                      name: sub.name,
+                      topic: sub.topic,
+                      kafka,
+                      registry,
+                      resolverMethod,
+                      timeout: timeout * 1000,
+                    }))
+                )
+            );
 
-          const subscription_topic_map = await Promise.all(
-            [
-              {
-                name: "CityOrgPatient",
-                topic: {
-                  request: "fed_request_city_org_patient",
-                  response: "fed_response_city_org_patient",
-                },
-              },
-              {
-                name: "CityOrgPatientVisit",
-                topic: {
-                  request: "fed_request_city_org_patient_visit",
-                  response: "fed_response_city_org_patient_visit",
-                },
-              },
-              {
-                name: "CityYearTopProcedure",
-                topic: {
-                  request: "fed_request_city_year_top_proc",
-                  response: "fed_response_city_year_top_proc",
-                },
-              },
-              {
-                name: "PatientCvxOrg",
-                topic: {
-                  request: "fed_request_patient_cvx_org",
-                  response: "fed_response_patient_cvx_org",
-                },
-              },
-              {
-                name: "PtOrgMed",
-                topic: {
-                  request: "fed_request_pt_org_med",
-                  response: "fed_response_pt_org_med",
-                },
-              },
-              {
-                name: "TopKImmunization",
-                topic: {
-                  request: "fed_request_top_k_immunization",
-                  response: "fed_response_top_k_immunization",
-                },
-              },
-              {
-                name: "VaccinationRecord",
-                topic: {
-                  request: "fed_request_vaccination_record",
-                  response: "fed_response_vaccination_record",
-                },
-              },
-              {
-                name: "ZipImmunization",
-                topic: {
-                  request: "fed_request_zip_immunization",
-                  response: "fed_response_zip_immunization",
-                },
-              },
-            ]
-              .filter(({ name }) => subscription_types.includes(name))
-              .map(
-                async (sub) =>
-                  await subscribeToTopic({
-                    name: sub.name,
-                    topic: sub.topic,
-                    kafka,
-                    registry,
-                  })
-              )
-          );
+          const subscription_types = buildSchema(kafka_schema)
+            .getSubscriptionType()
+            .getFields();
+
+          const query_types = buildSchema(kafka_schema)
+            .getQueryType()
+            .getFields();
+
+          const query_topic_map = await get_resolver_map(query_types, "resolve");
+          const subscription_topic_map = await get_resolver_map(subscription_types, "subscribe", 30);
 
           const resolvers = {
             Mutation: {
@@ -223,8 +305,7 @@ type Mutation {
               },
             },
             Subscription: Object.fromEntries(subscription_topic_map),
-
-            Query: {},
+            Query: Object.fromEntries(query_topic_map),
           };
 
           const schema = hashDirectiveTransformer(

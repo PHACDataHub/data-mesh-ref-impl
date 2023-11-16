@@ -485,11 +485,14 @@ export const rulesToGraphQl = (
         return false;
       }
     );
-    allowed_entrypoints.length > 0 &&
-      typeDefs.push(
+    if (allowed_entrypoints.length > 0) {
+      const makeEntryPoint = (
+        entrypointName: string,
+        entrypointDescription: string
+      ) =>
         new GraphQLObjectType({
-          name: subscriptions ? "Subscription" : "Query",
-          description: "Entrypoints",
+          name: entrypointName,
+          description: entrypointDescription,
           fields: () =>
             Object.fromEntries(
               allowed_entrypoints.map(([name, entry]) => {
@@ -546,8 +549,13 @@ export const rulesToGraphQl = (
                 return [];
               })
             ),
-        })
-      );
+        });
+      typeDefs.push(makeEntryPoint("Query", "Query entrypoints"));
+      if (subscriptions)
+        typeDefs.push(
+          makeEntryPoint("Subscription", "Subscription entrypoints")
+        );
+    }
   }
 
   const generated_schema = new GraphQLSchema({

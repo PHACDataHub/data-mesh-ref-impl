@@ -181,7 +181,7 @@ export default function Home() {
             <div className="max-h-[35%] flex-1 border-2">
               <Editor
                 defaultLanguage="graphql"
-                value={rulesToGraphQl(yaml, json_schema)}
+                value={rulesToGraphQl(yaml, json_schema, true)}
                 onChange={() => false}
                 options={{
                   language: "graphql",

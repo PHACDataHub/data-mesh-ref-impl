@@ -26,11 +26,15 @@ export const subscribeToTopic = async ({
   kafka,
   registry,
   dispose,
+  resolverMethod,
+  timeout,
 }: {
   name: string;
   topic: { response: string; request: string };
   subject?: { key?: string; value?: string };
   kafka: Kafka;
+  resolverMethod: "resolve" | "subscribe";
+  timeout: number;
   registry: SchemaRegistry;
   dispose?: Promise<void>;
 }) => {
@@ -43,7 +47,7 @@ export const subscribeToTopic = async ({
   );
 
   // Create a consumer that will receive the stream of responses
-  const consumer = kafka.consumer({ groupId: name });
+  const consumer = kafka.consumer({ groupId: `gateway-${resolverMethod}-${name}` });
   await consumer.connect();
   await consumer.subscribe({
     topic: topic.response,
@@ -55,27 +59,25 @@ export const subscribeToTopic = async ({
     eachMessage: async ({ message }) => {
       const key = await registry.decode(message.key);
       const value = await registry.decode(message.value);
-      pubsub.publish(key.request_id, { [name]: value });
+      pubsub.publish(key.request_id, { [name]: [value] }); // TODO should check return type and not assume it's an array
     },
   });
 
   return [
     name,
     {
-      dispose: async function() {
+      dispose: async function () {
         console.log(`Cleaning up kafka consumer....`);
         await consumer.disconnect();
       },
-      subscribe: async function (_, args) {
+      [resolverMethod]: async function (_, args) {
         // Create a kafka producer
         const producer = kafka.producer({
           allowAutoTopicCreation: true,
           createPartitioner: Partitioners.DefaultPartitioner,
         });
         await producer.connect();
-
-        // Generate a random request_id to identify data
-        const request_id = (Math.random() + 1).toString(36).substring(2);
+        const request_id = args.request_id;
         // Generate a avro message that will be sent to the request topic.
         const requestMessage = {
           key: await registry.encode(key_schema_id, {
@@ -93,7 +95,20 @@ export const subscribeToTopic = async ({
           messages: [requestMessage],
         });
 
-        return pubsub.asyncIterator([request_id]);
+        if (resolverMethod === "subscribe") {
+          return pubsub.asyncIterator([request_id]);
+        }
+
+        return new Promise((resolve) => {
+          const ret = [];  // TODO: should check return type
+          let t = setTimeout(() => resolve(ret), timeout);
+          pubsub.subscribe(request_id, (msg) => {
+            clearTimeout(t);
+            t = setTimeout(() => resolve(ret), timeout);
+            console.log(msg);
+            ret.push(msg[name][0]);
+          })
+        })
       },
     },
   ];

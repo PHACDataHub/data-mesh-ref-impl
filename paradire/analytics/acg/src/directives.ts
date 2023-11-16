@@ -56,6 +56,9 @@ export function hashDirective(directiveName: string) {
             const { resolve = defaultFieldResolver } = fieldConfig;
             fieldConfig.resolve = async (source, args, context, info) => {
               const result = await resolve(source, args, context, info);
+              console.log('--- hash directive ---');
+              console.log(result);
+              console.log(typeof result);
               if (typeof result === "string") {
                 const hashBuffer = await crypto.subtle.digest(
                   "SHA-256",
