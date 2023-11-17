@@ -1,5 +1,4 @@
 import dotenv from "dotenv";
-import { existsSync, readFileSync } from "fs";
 import path from "path";
 
 dotenv.config({ path: path.resolve(process.cwd(), "../../.env") });

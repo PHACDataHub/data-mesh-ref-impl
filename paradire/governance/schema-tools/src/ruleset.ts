@@ -24,7 +24,7 @@ export type ResourceTypeFieldOptions = {
   hash?: boolean;
   format?: string;
   hidden?: boolean;
-  blank?: boolean;
+  restrict?: boolean;
 };
 
 export type ResourceTypeField =
@@ -325,10 +325,10 @@ const fieldSpecToGraphQlType = (
       directives,
     });
   }
-  if (options.blank) {
+  if (options.restrict) {
     fieldName = addFieldDirective({
       field: fieldName,
-      directive: `@blank`,
+      directive: `@restrict`,
       directives,
     });
   }

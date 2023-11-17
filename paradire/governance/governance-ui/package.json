@@ -25,6 +25,7 @@
     "@trpc/server": "^10.37.1",
     "@types/json-schema": "^7.0.14",
     "@uidotdev/usehooks": "^2.4.1",
+    "antd": "^5.11.1",
     "graphql": "^16.8.1",
     "kafkajs": "^2.2.4",
     "next": "^13.5.4",

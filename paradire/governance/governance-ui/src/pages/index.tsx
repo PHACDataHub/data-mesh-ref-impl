@@ -1,4 +1,3 @@
-import type react from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import Head from "next/head";
@@ -18,16 +17,30 @@ import {
 
 import { api } from "~/utils/api";
 
+import { Button, Select } from "antd";
+import { Layout, Menu } from "antd";
+
+const { Header, Content, Sider, Footer } = Layout;
+
 export default function Home() {
   const [selectedSchema, setSelectedSchema] = useState<SchemaType>(
     "paradire-parameterized",
+  );
+
+  const [activeResourceType, setActiveResourceType] = useState<string>("");
+
+  const activeResourceTypeSelectHandler = useCallback(
+    ({ key }: { key: string }) => {
+      setActiveResourceType(key);
+    },
+    [],
   );
 
   const { yaml, setYaml, selectedResourceTypes, setSelectedResourceTypes } =
     useDataGovernance();
 
   const updateAcg = api.post.updateAcg.useMutation();
-  
+
   const updateSelectedFieldsHandler = useCallback(
     (name: string, selectedFields: ResourceTypeField[]) => {
       setSelectedResourceTypes(
@@ -41,14 +54,14 @@ export default function Home() {
   );
 
   const selectedSchemaChangeHandler = useCallback(
-    (event: react.ChangeEvent<HTMLSelectElement>) => {
+    (value: string) => {
       if (
-        event.target.value === "hl7r4" ||
-        event.target.value === "paradire" ||
-        event.target.value === "paradire-parameterized" ||
-        event.target.value === "paradire-neo4j"
+        value === "hl7r4" ||
+        value === "paradire" ||
+        value === "paradire-parameterized" ||
+        value === "paradire-neo4j"
       ) {
-        setSelectedSchema(event.target.value);
+        setSelectedSchema(value);
         setSelectedResourceTypes([]);
       }
     },
@@ -81,7 +94,7 @@ export default function Home() {
           .filter(
             ([field]) => !field.startsWith("_") && field !== "resourceType",
           )
-          .map(([field]) => ({ [field]: { blank: true } }));
+          .map(([field]) => ({ [field]: { restrict: true } }));
 
         return { name, selectedFields, ref };
       }),
@@ -91,12 +104,14 @@ export default function Home() {
   useEffect(() => {
     console.log("-- schema changed --");
     addEverythingClickHandler();
+    setActiveResourceType(
+      Object.keys(json_schema.discriminator.mapping)[1] ?? "",
+    );
   }, [addEverythingClickHandler, json_schema]);
 
   const applyClickHandler = useCallback(() => {
     const data = updateAcg.mutate({ ruleset: yaml });
     console.log(data);
-
   }, [updateAcg, yaml]);
 
   return (
@@ -109,47 +124,60 @@ export default function Home() {
         />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className="flex min-h-screen flex-col p-10">
-        <div className="flex justify-between">
-          <div>
-            <h1 className="text-5xl font-extrabold tracking-tight">
-              Data Governance Gateway
-            </h1>
-            <h2 className="text-3xl">-- a crude interface --</h2>
-          </div>
-          <div className="flex items-end space-x-8">
-            <label className="block text-sm font-medium text-gray-900 dark:text-white">
-              <h3 className="text-lg">Schema</h3>
-              <select
-                className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-                onChange={selectedSchemaChangeHandler}
-                value={selectedSchema}
-              >
-                <option value="paradire-parameterized">
-                  Paradire PoC (Parameterized)
-                </option>
-                <option value="paradire-neo4j">Paradire PoC (Neo4j)</option>
-                <option value="paradire">Paradire PoC</option>
-                <option value="hl7r4">HL7 R4</option>
-              </select>
-            </label>
-            <button
-              className="rounded bg-green-500 p-2 text-slate-50"
-              onClick={applyClickHandler}
-            >
-              Apply
-            </button>
-          </div>
-        </div>
+      <Layout className="h-screen">
+        <Header className="flex items-center">
+          <h1 className="text-xl text-white">Data Governance Gateway</h1>
+          <div className="flex items-end space-x-8"></div>
+        </Header>
 
-        <div className="flex space-x-2 pt-5">
-          <div className="flex-1">
-            <div className="flex flex-col space-x-2 space-y-2">
-              <div />
+        <Layout>
+          <Sider width={300} style={{ background: "white" }}>
+            <Select
+              className="min-w-[250px]"
+              value={selectedSchema}
+              onChange={selectedSchemaChangeHandler}
+              options={[
+                {
+                  value: "paradire-parameterized",
+                  label: "Paradire PoC (Parameterized)",
+                },
+                {
+                  value: "paradire-neo4j",
+                  label: "Paradire PoC (Neo4j)",
+                },
+                {
+                  value: "paradire",
+                  label: "Paradire PoC",
+                },
+                {
+                  value: "hl7r4",
+                  label: "HL7 R4",
+                },
+              ]}
+            />
+
+            <Menu
+              mode="inline"
+              style={{ borderRight: 0 }}
+              selectedKeys={[activeResourceType]}
+              onSelect={activeResourceTypeSelectHandler}
+              items={Object.entries(json_schema.discriminator.mapping).map(
+                ([key]) => ({
+                  key,
+                  // icon: <LaptopOutlined />,
+                  label: key,
+                }),
+              )}
+            />
+          </Sider>
+          <Layout>
+            <Header style={{ background: "white" }}>
+              <Button onClick={applyClickHandler}>Apply</Button>
+            </Header>
+            <Content className="flex flex-col border-2">
+              <div className="flex-1">
               {Object.entries(json_schema.discriminator.mapping)
-                .filter(([key]) =>
-                  selectedResourceTypes.find((e) => e.name === key),
-                )
+                .filter(([key]) => activeResourceType === key)
                 .map(([key, ref]) => (
                   <ResourceType
                     key={key}
@@ -163,12 +191,11 @@ export default function Home() {
                     onChange={updateSelectedFieldsHandler}
                   />
                 ))}
-            </div>
-          </div>
-          <div className="flex w-[45%] flex-col space-y-2">
-            <div />
-            <div className="max-h-[35%] flex-1 border-2">
-              <Editor
+                </div>
+                <div className="flex-1 border-2">
+                  test
+                </div>
+              {/* <Editor
                 defaultLanguage="yaml"
                 value={yaml}
                 onChange={editorChangeHandler}
@@ -177,8 +204,6 @@ export default function Home() {
                   minimap: { enabled: false },
                 }}
               />
-            </div>
-            <div className="max-h-[35%] flex-1 border-2">
               <Editor
                 defaultLanguage="graphql"
                 value={rulesToGraphQl(yaml, json_schema, true)}
@@ -189,11 +214,12 @@ export default function Home() {
                   readOnly: true,
                   domReadOnly: true,
                 }}
-              />
-            </div>
-          </div>
-        </div>
-      </main>
+              /> */}
+            </Content>
+            
+          </Layout>
+        </Layout>
+      </Layout>
     </>
   );
 }

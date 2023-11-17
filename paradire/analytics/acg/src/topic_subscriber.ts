@@ -137,7 +137,6 @@ export const subscribeToTopic = async ({
         console.log(`[${name}] Disconnecting kafka producers.`);
         await fed_producer.disconnect();
         await pt_producer.disconnect();
-        
         if (iterator) {
           console.log(`[${name}] Ending async iterator.`);
           iterator.return();
