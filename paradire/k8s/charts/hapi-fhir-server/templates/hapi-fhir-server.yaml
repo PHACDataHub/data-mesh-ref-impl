@@ -18,6 +18,10 @@ spec:
       containers:
         - image: "{{ .Values.server.image }}"
           name: hapi-fhir-server
+          resources:
+            requests:
+              memory: "10Gi"
+              cpu: "10"
           ports:
             - containerPort: {{ .Values.server.targetPort }}
               protocol: TCP

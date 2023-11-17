@@ -14,29 +14,6 @@ spec:
     spec:
       containers:
       - name: patient-browser
-        image: nginx:alpine
-        volumeMounts:
-        - name: config-volume
-          mountPath: /app/dist/config
-        args:
-          - "/bin/sh"
-          - "-c"
-          - |
-            apk update && apk add --no-cache git nodejs npm && \
-            npm install -g typescript && \
-            if [ -d /app ] && [ ! -z \"$(ls -A /app)\" ]; then find /app -mindepth 1 -maxdepth 1 -not -name 'dist' -exec rm -rf {} \;; fi && \
-            if [ ! -d /app/repo ]; then mkdir -p /app/repo; fi && \
-            git clone https://github.com/smart-on-fhir/patient-browser.git /app/repo && \
-            cd /app/repo && \
-            npm install colors request commander@2.15.1 && \
-            npm ci && \
-            NODE_ENV=production npm run build && \
-            cp /app/dist/config/default.json5 /app/repo/dist/config/ && \
-            cp -R ./dist/* /usr/share/nginx/html/ && \
-            nginx -g 'daemon off;'
+        image: northamerica-northeast1-docker.pkg.dev/phx-01he5rx4wsv/paradire/patient-browser
         ports:
         - containerPort: 8080
-      volumes:
-      - name: config-volume
-        configMap:
-          name: patient-browser-config

@@ -19,6 +19,10 @@ spec:
     spec:
       containers:
       - name: hapi-fhir-db
+        resources:
+          requests:
+            memory: "10Gi"
+            cpu: "10"
         image: "{{ .Values.db.image }}"
         env:
         - name: PGDATA
@@ -32,8 +36,14 @@ spec:
         volumeMounts:
         - name: postgres-storage
           mountPath: "/var/lib/postgresql/data" 
+        - name: postgres-config
+          mountPath: "/etc/postgresql/postgresql.conf"
+          subPath: postgresql.conf
       volumes:
       - name: postgres-storage
         persistentVolumeClaim:
           claimName: hapi-fhir-db-pvc
+      - name: postgres-config
+        configMap:
+          name: postgres-config
 status: {}

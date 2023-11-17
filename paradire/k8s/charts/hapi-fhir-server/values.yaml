@@ -9,7 +9,7 @@ db:
   postgresUser: "admin"
   postgresDB: "hapi"
   volumeMount: "/var/lib/postgresql/data" 
-  size: "1Gi"
+  size: "10Gi"
   port: 5432
   targetPort: 5432
   pgdata: "/var/lib/postgresql/data/random/"

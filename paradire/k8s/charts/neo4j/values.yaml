@@ -28,9 +28,6 @@ environment:
   NEO4J_apoc_import_file_use__neo4j__config: "true"
   NEO4J_dbms_security_procedures_unrestricted: "apoc.*,gds.*"
 
-neo4jCredentials:
-  NEO4J_USERNAME: "neo4j"
-  NEO4J_PASSWORD: "your-password"
 
 persistence:
   enabled: true

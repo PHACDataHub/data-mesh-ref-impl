@@ -2,7 +2,7 @@ replicaCount: 1
 
 image:
   repository: nielsdejong/neodash
-  tag: 2.3.5
+  tag: 2.2.5
 
 service:
   type: LoadBalancer
@@ -13,7 +13,7 @@ env:
   ssoEnabled: "false"
   standalone: "true"
   standaloneProtocol: "bolt"
-  standaloneHost: "localhost"
+  standaloneHost: "neodash"
   standalonePort: "7687"
   standaloneDatabase: "neo4j"
   standaloneDashboardName: "PT Analytics Platform"

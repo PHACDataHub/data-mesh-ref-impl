@@ -34,13 +34,14 @@ data:
         # max-active: 15
         # database connection pool size
         hikari:
-          maximum-pool-size: 10
+          maximum-pool-size: 90
       jpa:
         properties:
           hibernate.format_sql: false
           hibernate.show_sql: false
           hibernate.dialect: ca.uhn.fhir.jpa.model.dialect.HapiFhirPostgres94Dialect
           hibernate.search.enabled: false
+          hibernate.jdbc.batch_size: 20 
     hapi:
       fhir:
         ### This enables the swagger-ui at /fhir/swagger-ui/index.html as well as the /fhir/api-docs (see https://hapifhir.io/hapi-fhir/docs/server_plain/openapi.html)
@@ -104,7 +105,7 @@ data:
         #    enable_index_contained_resource: false
         ###  !!Extended Lucene/Elasticsearch Indexing is still a experimental feature, expect some features (e.g. _total=accurate) to not work as expected!!
         ###  more information here: https://hapifhir.io/hapi-fhir/docs/server_jpa/elastic.html
-        advanced_lucene_indexing: false
+        advanced_lucene_indexing: true
         bulk_export_enabled: true
         bulk_import_enabled: true
         #    enforce_referential_integrity_on_delete: false
@@ -132,9 +133,9 @@ data:
             - '*'
 
         # Search coordinator thread pool sizes
-        search-coord-core-pool-size: 20
-        search-coord-max-pool-size: 100
-        search-coord-queue-capacity: 200
+        search-coord-core-pool-size: 100
+        search-coord-max-pool-size: 200
+        search-coord-queue-capacity: 400
         
         # comma-separated package names, will be @ComponentScan'ed by Spring to allow for creating custom Spring beans
         #custom-bean-packages:
@@ -176,7 +177,7 @@ data:
         #      requests_enabled: true
         #      responses_enabled: true
         #    binary_storage_enabled: true
-        inline_resource_storage_below_size: 4000
+        inline_resource_storage_below_size: 10000
     #    bulk_export_enabled: true
     #    subscription:
     #      resthook_enabled: true

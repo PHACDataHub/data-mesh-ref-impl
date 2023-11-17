@@ -1,0 +1,73 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: neo4j-deployment
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: neo4j-deployment
+  template:
+    metadata:
+      labels:
+        app: neo4j-deployment
+    spec:
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: data-pvc
+        - name: import
+          persistentVolumeClaim:
+            claimName: import-pvc
+        - name: logs
+          persistentVolumeClaim:
+            claimName: logs-pvc
+        - name: plugins
+          persistentVolumeClaim:
+            claimName: plugins-pvc
+      enableServiceLinks: false
+      containers:
+      - name: neo4j
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        resources:
+          requests:
+            memory: "40Gi"
+            cpu: "1000m"
+          limits:
+            memory: "60Gi"
+            cpu: "2000m"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        ports:
+        - name: http
+          containerPort: {{ .Values.service.httpPort }}
+        - name: https
+          containerPort: {{ .Values.service.httpsPort }}
+        - name: bolt
+          containerPort: {{ .Values.service.boltPort }}
+        readinessProbe:
+            exec:
+              command:
+              - /bin/sh
+              - -c
+              - >
+                /var/lib/neo4j/bin/cypher-shell -u neo4j -p phac@2023 
+                "MATCH () RETURN count(*) as count"
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 10
+            successThreshold: 1
+            failureThreshold: 20
+        env:
+          {{- range $key, $value := .Values.environment }}
+          - name: {{ $key }}
+            value: {{ $value | quote }}
+          {{- end }}
+        volumeMounts:
+          - name: data
+            mountPath: /data
+          - name: import
+            mountPath: /import
+          - name: logs
+            mountPath: /logs
+          - name: plugins
+            mountPath: /plugins
