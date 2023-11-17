@@ -131,11 +131,13 @@
         },
         "start_date": {
           "type": "string",
-          "description": "Date (YYYY-MM-DD) as string."
+          "description": "Date (YYYY-MM-DD) as string.",
+          "format": "date"
         },
         "end_date": {
           "type": "string",
-          "description": "Date (YYYY-MM-DD) as string."
+          "description": "Date (YYYY-MM-DD) as string.",
+          "format": "date"
         },
         "pt_list": {
           "type": "string",
@@ -159,7 +161,8 @@
         "pt_list",
         "timestamp",
         "doc"
-      ]
+      ],
+      "label": "Request COVID vaccination status"
     },
     "COVIDVaccinationStatusResponse": {
       "description": "COVID vaccination status showing quantities (count, percent) for each of statuses of COVID vaccinated patients per zip code.",
@@ -174,11 +177,13 @@
         },
         "start_date": {
           "type": "string",
-          "description": "Date (YYYY-MM-DD) as string."
+          "description": "Date (YYYY-MM-DD) as string.",
+          "format": "date"
         },
         "end_date": {
           "type": "string",
-          "description": "Date (YYYY-MM-DD) as string."
+          "description": "Date (YYYY-MM-DD) as string.",
+          "format": "date"
         },
         "patient_zip": {
           "type": "string",
@@ -217,7 +222,8 @@
         "status_count",
         "status_percent",
         "timestamp"
-      ]
+      ],
+      "label": "COVID vaccination status"
     },
     "YoungChildrenMissingScheduleRequest": {
       "description": "Request for information about young children missing required/recommended vaccination schedule for a number of specified vaccines.",
@@ -250,7 +256,8 @@
         "pt_list",
         "timestamp",
         "doc"
-      ]
+      ],
+      "label": "Request children missing scheduled vaccinations"
     },
     "YoungChildrenMissingScheduleResponse": {
       "description": "The number of patients missing scheduled vaccines together with a set of (key - vaccine code, value - number of patients missed) pairs is provided per zip code.",
@@ -288,7 +295,8 @@
         "patient_count",
         "missing_doses",
         "timestamp"
-      ]
+      ],
+      "label": "Children missing scheduled vaccinations"
     },
     "AverageDistanceForVaccineRequest": {
       "description": "Request for information average distance to travel to get some of specified vaccines.",
@@ -321,7 +329,8 @@
         "pt_list",
         "timestamp",
         "doc"
-      ]
+      ],
+      "label": "Request avg. distance for vaccine"
     },
     "AverageDistanceForVaccineResponse": {
       "description": "The average distance to travel based on the zip code of patients' address to the vaccine administering organizations.",
@@ -359,7 +368,8 @@
         "organization_name",
         "average_distance",
         "timestamp"
-      ]
+      ],
+      "label": "Average distance for vaccine"
     },
     "VaccinationByOrganizationRequest": {
       "description": "Request for vaccination count by organizations for patients coming from the same zip code.",
@@ -392,7 +402,8 @@
         "pt_list",
         "timestamp",
         "doc"
-      ]
+      ],
+      "label": "Request vaccinations by organization"
     },
     "VaccinationByOrganizationResponse": {
       "description": "The number of vaccinations by an organization for patients coming from the same zip code.",
@@ -430,7 +441,8 @@
         "organization_name",
         "vaccination_count",
         "timestamp"
-      ]
+      ],
+      "label": "Vaccinations by organization"
     },
     "VaccinationRecordStreamRequest": {
       "description": "Request for stream of vaccination records with detailed information.",
@@ -458,7 +470,8 @@
         "pt_list",
         "timestamp",
         "doc"
-      ]
+      ],
+      "label": "Request vaccination records"
     },
     "VaccinationRecordStreamResponse": {
       "description": "Vaccination record stream, each record contain information about the patient, the vaccine, and its administration by an organization.",
@@ -473,7 +486,8 @@
         },
         "immunization_date": {
           "type": "string",
-          "description": "The date and time the imaging study was conducted - Date (yyyy-MM-dd'T'HH:mm'Z')"
+          "description": "The date and time the imaging study was conducted - Date (yyyy-MM-dd'T'HH:mm'Z')",
+          "format": "date-time"
         },
         "immunization_code": {
           "type": "string",
@@ -517,7 +531,8 @@
         },
         "patient_birth_date": {
           "type": "string",
-          "description": "The birth date of the Patient"
+          "description": "The birth date of the Patient - Date (YYYY-MM-DD) as string.",
+          "format": "date"
         },
         "patient_alive": {
           "type": "boolean",
@@ -565,7 +580,8 @@
         "patient_race",
         "patient_ethnicity",
         "timestamp"
-      ]
+      ],
+      "label": "Vaccination records"
     },
     "PatientConditionRequest": {
       "description": "Request for patient conditions as a key indicator.",
@@ -593,7 +609,8 @@
         "pt_list",
         "timestamp",
         "doc"
-      ]
+      ],
+      "label": "Request patient conditions"
     },
     "PatientConditionResponse": {
       "description": "Distribution of top 100 conditions (other than medication review due or screening for employment).",
@@ -626,7 +643,8 @@
         "condition_description",
         "condition_count",
         "timestamp"
-      ]
+      ],
+      "label": "Patient conditions"
     },
     "ReasonForMedicationRequest": {
       "description": "Request for information on medication prescribed. Only for the ones that are specifically noted.",
@@ -654,7 +672,8 @@
         "pt_list",
         "timestamp",
         "doc"
-      ]
+      ],
+      "label": "Request reason for medications"
     },
     "ReasonForMedicationResponse": {
       "description": "Distribution of top 100 reasons for medication (only the ones are specifically noted.)",
@@ -687,7 +706,8 @@
         "medication_reason_description",
         "medication_reason_count",
         "timestamp"
-      ]
+      ],
+      "label": "Reason for medications"
     },
     "ProcedurePerformedRequest": {
       "description": "Request for performed procedures by organizations.",
@@ -715,7 +735,8 @@
         "pt_list",
         "timestamp",
         "doc"
-      ]
+      ],
+      "label": "Request procedures performed"
     },
     "ProcedurePerformedResponse": {
       "description": "Distribution of top 100 procedures performed by organization.",
@@ -748,7 +769,8 @@
         "procedure_description",
         "procedure_count",
         "timestamp"
-      ]
+      ],
+      "label": "Procedures performed"
     },
     "YoungChildrenMissingScheduleExtendedRequest": {
       "description": "Request for additional information about young children missing required/recommended vaccination schedule for a number of specified vaccines.",
@@ -781,7 +803,8 @@
         "pt_list",
         "timestamp",
         "doc"
-      ]
+      ],
+      "label": "Request details of children missing scheduled vaccinations"
     },
     "YoungChildrenMissingScheduleExtendedResponse": {
       "description": "The number of patients missing scheduled vaccines together with a set of (key: vaccine code, value: number of patients missed) pairs is provided per zip code. In addition, a list of organizations, some of which visited by the patients, provide the same vaccines missed by these patients.",
@@ -824,7 +847,8 @@
         "missing_doses",
         "organization_list",
         "timestamp"
-      ]
+      ],
+      "label": "Details of children missing scheduled vaccinations"
     }
   }
 }

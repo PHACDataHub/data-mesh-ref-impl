@@ -1,10 +1,10 @@
 /**
  * Access Control Gateway
- * 
+ *
  * This kafka worker implements property transformations based on a provided
  * ruleset yaml file.  The ruleset can be reconfigured by posting a message
  * to the `acg-config-connector` topic on the PT kafka cluster.
- * 
+ *
  * In this proof of concept, the ruleset is converted into a GraphQL Schema,
  * transformations are specified as custom directives.  The following directives
  * are (supported)[./directive.ts]:
@@ -13,8 +13,12 @@
  *   - @blank  - replaces the value with the word "** restricted **"
  *   - @selectable - loosely based on neo4j - this removes the property entirely
  *   - @topic - used to link queries and subscriptions to kafka
+ *
+ * Additionally the `acg-status` topic is used to communicate health events
+ * related to the ACG - and to respond to "ping" requests to ensure it is
+ * alive.
  */
-import { Kafka } from "kafkajs";
+import { Kafka, Partitioners } from "kafkajs";
 import { SchemaRegistry } from "@kafkajs/confluent-schema-registry";
 import { ApolloServer } from "@apollo/server";
 
@@ -89,6 +93,35 @@ const reload = new Promise<void>((resolve) => {
   });
 });
 
+// Monitor the `acg-status` topic for ping requests
+const instance_id = (Math.random() + 1).toString(36).substring(7);
+const status_consumer = kafka_pt.consumer({
+  groupId: `acg-status-${instance_id}`,
+  allowAutoTopicCreation: true,
+});
+await status_consumer.connect();
+await status_consumer.subscribe({
+  topic: "acg-status",
+});
+const status_producer = kafka_pt.producer({
+  allowAutoTopicCreation: true,
+  createPartitioner: Partitioners.DefaultPartitioner,
+});
+await status_producer.connect();
+
+status_consumer.run({
+  eachMessage: async ({ message }) => {
+    if (message?.value.toString() === "ping") {
+      const key = (Math.random() + 1).toString(36).substring(7);
+      console.debug("pong");
+      status_producer.send({
+        topic: "acg-status",
+        messages: [{ key, value: "pong" }],
+      });
+    }
+  },
+});
+
 // Load the latest version of the ruleset spec from a file.
 // TODO: May just read it from the topic in the future.
 const ruleset = (await existsSync("./ruleset.yaml"))
@@ -114,10 +147,12 @@ try {
             return {
               async drainServer() {
                 // Make sure all kafka connections are terminated gracefully.
+                await status_consumer.disconnect();
+                await config_consumer.disconnect();
                 for (const x of query_topic_map) {
                   if (typeof x[1] === "object") await x[1].dispose();
                 }
-                await config_consumer.disconnect();
+                await status_producer.disconnect();
               },
             };
           },
@@ -181,7 +216,17 @@ try {
       }
     }
     console.log("Ready.");
+    let key = (Math.random() + 1).toString(36).substring(7);
+    status_producer.send({
+      topic: "acg-status",
+      messages: [{ key, value: "ready" }],
+    });
     await reload;
+    key = (Math.random() + 1).toString(36).substring(7);
+    status_producer.send({
+      topic: "acg-status",
+      messages: [{ key, value: "reload" }],
+    });
     if (started) await server.stop();
     process.exit(0);
   }

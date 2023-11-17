@@ -2,7 +2,7 @@
     "type": "record",
     "name": "ConnectDefault",
     "namespace": "io.confluent.connect.avro",
-    "doc": "PatientConditionRequest - Request for patient conditions as a key indicator.",
+    "doc": "PatientConditionRequest - Request patient conditions - Request for patient conditions as a key indicator.",
     "fields": [
         {"name": "request_id", "type": "string", "doc": "Unique ID of a Fererated Analytics Request"},
         {"name": "pt_list", "type": "string", "doc": "List of PTs (comma-separated), where this request is sent, i.e BC,ON,QC."},

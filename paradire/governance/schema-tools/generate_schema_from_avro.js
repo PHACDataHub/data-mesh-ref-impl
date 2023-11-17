@@ -4,7 +4,7 @@ const fs = require("fs");
 const path = require("path");
 
 const defaults = {
-  avro_directory: "../../analytics/events/",
+  avro_directory: "../../analytics/v2_events/",
   request_match: "far_(.*?)_val.avsc",
   response_match: "fas_$1_val.avsc",
   output_file: "./src/schemas/json/paradire/paradire_parameterized.json",
@@ -91,14 +91,20 @@ const getFieldType = (type) => {
  * @param string def Default name if doc string does not contain a hyphen ( - )
  * @returns
  */
-const getNameAndDescription = (avro, def) => {
+const getNameLabelAndDescription = (avro, def) => {
   const delim = " - ";
   const doc = avro.doc;
   if (typeof doc === "string" && doc.includes(delim)) {
     const p = doc.indexOf(delim);
     const name = doc.substring(0, p);
-    const description = doc.substring(p + delim.length, doc.length);
-    return { name, description };
+    let description = doc.substring(p + delim.length, doc.length);
+    if (description.includes(delim)) {
+      const i = description.indexOf(delim);
+      const label = description.substring(0, i);
+      description = description.substring(i + delim.length, description.length);
+      return { name, label, description };
+    }
+    return { name, label: undefined, description };
   }
   return { name: def, description: undefined };
 };
@@ -113,11 +119,18 @@ const avroFieldsToJsonSchemaProperties = (avro) => ({
   properties: Object.fromEntries(
     avro.fields.map((field) => [
       field.name,
-      {
-        type: getFieldType(field.type),
-        default: field.default,
-        description: field.doc,
-      },
+      Object.assign(
+        {
+          type: getFieldType(field.type),
+          default: field.default,
+          description: field.doc,
+        },
+        (field.doc &&
+          field.doc.includes("Date (YYYY-MM-DD)") && { format: "date" }) ||
+          (field.doc.includes("Date (yyyy-MM-dd'T'HH:mm'Z')") && {
+            format: "date-time",
+          })
+      ),
     ])
   ),
   additionalProperties: false,
@@ -161,10 +174,16 @@ avro_schemas.forEach(({ request, response }) => {
     // Extract the name and description for the doc string
     // Convention is the name, followed by a space, followed by hyphen, followed
     // by a space, followed by the description until the end of string.
-    const { name: resourceType, description: responseDescription } =
-      getNameAndDescription(avro_response, root_response);
-    const { name: resourceTypeRequest, description: requestDescription } =
-      getNameAndDescription(avro_request, root_request);
+    const {
+      name: resourceType,
+      label: responseLabel,
+      description: responseDescription,
+    } = getNameLabelAndDescription(avro_response, root_response);
+    const {
+      name: resourceTypeRequest,
+      label: requestLabel,
+      description: requestDescription,
+    } = getNameLabelAndDescription(avro_request, root_request);
 
     // Set the reference names
     const $ref = `#/definitions/${resourceType}`;
@@ -187,12 +206,14 @@ avro_schemas.forEach(({ request, response }) => {
     schema_base.definitions[resourceTypeRequest] = {
       ...avroFieldsToJsonSchemaProperties(avro_request),
       description: requestDescription,
+      label: requestLabel,
     };
 
     schema_base.discriminator.mapping[resourceType] = $ref;
     schema_base.definitions[resourceType] = {
       ...avroFieldsToJsonSchemaProperties(avro_response),
       description: responseDescription,
+      label: responseLabel,
     };
   } catch (e) {
     console.error(`Unable to parse ${file} as JSON.`);

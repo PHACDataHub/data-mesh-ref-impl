@@ -82,10 +82,10 @@ export function hashDirective(directiveName: string) {
  * @param directiveName Name of directive
  * @returns
  */
-export function blankDirective(directiveName: string) {
+export function restrictDirective(directiveName: string) {
   return {
-    blankDirectiveTypeDefs: "directive @blank on FIELD_DEFINITION\n",
-    blankDirectiveTransformer: (schema: GraphQLSchema) =>
+    restrictDirectiveTypeDefs: "directive @restrict on FIELD_DEFINITION\n",
+    restrictDirectiveTransformer: (schema: GraphQLSchema) =>
       mapSchema(schema, {
         [MapperKind.OBJECT_FIELD]: (fieldConfig) => {
           const fieldDirective = getDirective(

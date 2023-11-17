@@ -4,6 +4,8 @@ import {
   GraphQLArgument,
   GraphQLField,
   GraphQLOutputType,
+  GraphQLScalarType,
+  GraphQLString,
   buildSchema,
 } from "graphql";
 import { Kafka } from "kafkajs";
@@ -11,7 +13,7 @@ import { SchemaRegistry } from "@kafkajs/confluent-schema-registry";
 
 import { get_topic_map } from "./topic_map.js";
 import {
-  blankDirective,
+  restrictDirective,
   dateDirective,
   hashDirective,
   topicDirective,
@@ -22,8 +24,8 @@ const { dateDirectiveTypeDefs, dateDirectiveTransformer } =
 const { hashDirectiveTypeDefs, hashDirectiveTransformer } =
   hashDirective("hash");
 
-const { blankDirectiveTypeDefs, blankDirectiveTransformer } =
-  blankDirective("blank");
+const { restrictDirectiveTypeDefs, restrictDirectiveTransformer } =
+  restrictDirective("restrict");
 
 const { topicDirectiveTypeDefs } = topicDirective();
 
@@ -38,12 +40,14 @@ export const create_graphql_schema = async (
   const typeDefs = rulesToGraphQl(ruleset, paradire_schema)
     .replace(/.*@selectable.*/g, "")
     .concat(
+      "\nscalar Date\n",
+      "\nscalar DateTime\n",
       `\n\n"""Directives"""\n`,
       "directive @defer(if: Boolean, label: String) on FRAGMENT_SPREAD | INLINE_FRAGMENT\n",
       "directive @stream(if: Boolean, label: String, initialCount: Int = 0) on FIELD\n",
       dateDirectiveTypeDefs,
       hashDirectiveTypeDefs,
-      blankDirectiveTypeDefs,
+      restrictDirectiveTypeDefs,
       topicDirectiveTypeDefs
     );
 
@@ -78,13 +82,26 @@ export const create_graphql_schema = async (
     switch (type) {
       case "String":
         return '""';
+      case "Date":
+        return '"2023-01-01"';
+      case "DateTime":
+        return '"2023-01-01T12:00:00"';
       case "Int":
       case "Float":
         return 1;
     }
-    return `[[[--notimplemented-${type}--]]]`;
+    throw new Error(`ERROR: ${type} is not implemented`);
   };
 
+  /**
+   * Generate a query suitable for streaming records of the given type.
+   * 
+   * The parameters of the query are not processed, this is merely to engage
+   * the GraphQL Engine, and start to process requests.
+   * 
+   * @param f 
+   * @returns 
+   */
   const get_default_query = (f: GraphQLField<unknown, unknown, unknown>) => {
     let query = `query ${f.name} { \n`;
     query += `  ${f.name} `;
@@ -100,12 +117,31 @@ export const create_graphql_schema = async (
     return query;
   };
 
+  const GraphQLDateType = new GraphQLScalarType({
+    name: "Date",
+    description: "Date as string scalar type",
+    serialize: GraphQLString.serialize,
+    parseValue: GraphQLString.parseValue,
+    parseLiteral: GraphQLString.parseLiteral,
+  });
+  const GraphQLDateTimeType = new GraphQLScalarType({
+    name: "DateTime",
+    description: "DateTime as string scalar type",
+    serialize: GraphQLString.serialize,
+    parseValue: GraphQLString.parseValue,
+    parseLiteral: GraphQLString.parseLiteral,
+  });
+
   const schema = hashDirectiveTransformer(
-    blankDirectiveTransformer(
+    restrictDirectiveTransformer(
       dateDirectiveTransformer(
         makeExecutableSchema({
           typeDefs,
-          resolvers: { Query: Object.fromEntries(query_topic_map) },
+          resolvers: {
+            Date: GraphQLDateType,
+            DateTime: GraphQLDateTimeType,
+            Query: Object.fromEntries(query_topic_map),
+          },
         })
       )
     )

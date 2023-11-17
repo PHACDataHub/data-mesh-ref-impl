@@ -21,10 +21,24 @@ const pt_producer = kafka_pt.producer({
 });
 await pt_producer.connect();
 
-// const pt_consumer = kafka_pt.consumer({ groupId: "governance-ui"});
-// await pt_consumer.connect();
 
+const pt_consumer = kafka_pt.consumer({
+  groupId: `governance-ui-${(Math.random() + 1).toString(36).substring(7)}`,
+  allowAutoTopicCreation: true,
+});
+await pt_consumer.connect();
+
+const acg_status = { online: false };
 const topic = "acg_ruleset_config";
+const status_topic = "acg-status";
+await pt_consumer.subscribe({ topic: status_topic });
+await pt_consumer.run({
+  // eslint-disable-next-line @typescript-eslint/require-await
+  eachMessage: async ({ message }) => {
+    const msg = message.value?.toString();
+    acg_status.online = msg === "pong" || msg === "ready";
+  },
+});
 
 export const postRouter = createTRPCRouter({
   hello: publicProcedure
@@ -34,6 +48,20 @@ export const postRouter = createTRPCRouter({
         greeting: `Hello ${input.text}`,
       };
     }),
+
+  ping: publicProcedure.mutation(async () => {
+    const key = (Math.random() + 1).toString(36).substring(7);
+    return pt_producer.send({
+      topic: status_topic,
+      messages: [{ key, value: "ping" }],
+    });
+  }),
+
+  acg_status: publicProcedure
+    .query(() => {
+      return acg_status;
+    }),
+
 
   updateAcg: publicProcedure
     .input(z.object({ ruleset: z.string() }))

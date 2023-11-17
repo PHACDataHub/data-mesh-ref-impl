@@ -1,17 +1,21 @@
-import type react from "react";
-import { useCallback, useState } from "react";
+import {
+  type ChangeEvent,
+  useCallback,
+  useState,
+  useRef,
+  useEffect,
+} from "react";
 
 import { type JSONSchema6 } from "json-schema";
-
-import { useDebounce } from "@uidotdev/usehooks";
 
 import {
   dereference,
   getFieldIfSelected,
+  type ResourceTypeFieldOptions,
   type ResourceTypeField,
 } from "@phac-aspc-dgg/schema-tools";
 
-import { Input, Layout, Space, Switch, Table } from "antd";
+import { Input, Space, Switch, Table } from "antd";
 
 const { Column } = Table;
 
@@ -32,12 +36,11 @@ const namedFieldFilter = (search: string) => (field: ResourceTypeField) =>
 
 export default function ResourceType({
   name,
-  disabled,
-  showDescriptions,
   schema,
   reference,
   parentReferences,
   selectedFields,
+  expanded,
   onChange,
 }: {
   name: string;
@@ -46,6 +49,7 @@ export default function ResourceType({
   schema: JSONSchema6;
   reference: string;
   parentReferences?: string[];
+  expanded?: boolean;
   selectedFields?: ResourceTypeField[];
   onChange?: (name: string, selectedFields: ResourceTypeField[]) => void;
   onRemoveClick?: () => void;
@@ -53,96 +57,69 @@ export default function ResourceType({
   const [_selectedFields, setSelectedFields] = useState<ResourceTypeField[]>(
     [],
   );
-  const [showFields, setShowFields] = useState(true);
-  const [_showDescriptions, setShowDescriptions] = useState(
-    Boolean(showDescriptions),
-  );
-  const fields = selectedFields ?? _selectedFields;
-  const [filter, setFilter] = useState("");
-  const debouncedFilter = useDebounce(filter, 300);
+  const [height, setHeight] = useState<number>(0);
 
-  // const [showOptions, setShowOptions] = useState<string[]>([]);
+  const fields = selectedFields ?? _selectedFields;
+
+  const parent = useRef<HTMLDivElement>(null);
+  const container = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (parent.current && container.current) {
+        setHeight(parent.current.offsetHeight - container.current.offsetTop);
+      }
+    };
+    window.addEventListener("resize", handleResize);
+    handleResize();
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, [container, parent, expanded]);
+
   const [_fieldOptions, setFieldOptions] = useState<
-    Record<string, { format?: string; hash?: boolean }>
+    Record<
+      string,
+      { format?: string; hash?: boolean; restrict?: boolean; hidden?: boolean }
+    >
   >({});
 
-  // const fieldToggleHandler = useCallback(
-  //   (event: react.ChangeEvent<HTMLInputElement>) => {
-  //     let changes: ResourceTypeField[] = [];
-  //     if (isFieldSelected(event.target.value, fields)) {
-  //       changes = fields.filter(namedFieldFilter(event.target.value));
-  //     } else {
-  //       if (_fieldOptions[event.target.value]) {
-  //         changes = fields.concat({
-  //           [event.target.value]: { ..._fieldOptions[event.target.value] },
-  //         });
-  //       } else {
-  //         changes = fields.concat(event.target.value);
-  //       }
-  //     }
-
-  //     if (!selectedFields) setSelectedFields(changes);
-  //     if (onChange) onChange(name, changes);
-  //   },
-  //   [_fieldOptions, fields, name, onChange, selectedFields],
-  // );
-
-  const updateFieldOptionHandler = useCallback(
-    (field: string, property: "hash" | "format" | "hidden" | "restrict") =>
-      (event: react.ChangeEvent<HTMLInputElement>) => {
-        const _thisFieldOptions = Object.assign({}, _fieldOptions[field], {
-          [property]:
-            (property === "hash" ||
-            property === "hidden" ||
-            property === "restrict"
-              ? event.target.checked
-              : event.target.value) || undefined,
-        });
-
-        setFieldOptions(
-          Object.assign({}, _fieldOptions, {
-            [field]: _thisFieldOptions,
-          }),
-        );
-
-        const changes = fields.filter(namedFieldFilter(field)).concat(
-          !Object.values(_thisFieldOptions).every((el) => el === undefined)
-            ? {
-                [field]: _thisFieldOptions,
-              }
-            : field,
-        );
-
-        if (!selectedFields) setSelectedFields(changes);
-        if (onChange) onChange(name, changes);
-      },
-    [_fieldOptions, fields, name, onChange, selectedFields],
-  );
-
   const updateSwitchFieldOptionHandler = useCallback(
-    (field: string, property: "hash" | "hidden" | "restrict") =>
-      (checked: boolean) => {
-        const _thisFieldOptions = Object.assign({}, _fieldOptions[field], {
-          [property]: checked,
-        });
-
+    (field: string, property: "hash" | "hidden" | "restrict" | "format") => {
+      const applyChange = (fieldOptions: ResourceTypeFieldOptions) => {
         setFieldOptions(
           Object.assign({}, _fieldOptions, {
-            [field]: _thisFieldOptions,
+            [field]: fieldOptions,
           }),
         );
-
         const changes = fields.filter(namedFieldFilter(field)).concat(
-          !Object.values(_thisFieldOptions).every((el) => el === undefined)
+          !Object.values(fieldOptions).every((el) => el === undefined)
             ? {
-                [field]: _thisFieldOptions,
+                [field]: fieldOptions,
               }
             : field,
         );
 
         if (!selectedFields) setSelectedFields(changes);
         if (onChange) onChange(name, changes);
-      },
+      };
+      if (property === "format") {
+        return (e: ChangeEvent<HTMLInputElement>) => {
+          applyChange(
+            Object.assign({}, _fieldOptions[field], {
+              [property]: e.target.value,
+            }),
+          );
+        };
+      }
+      return (checked: boolean) => {
+        applyChange(
+          Object.assign({}, _fieldOptions[field], {
+            [property]: checked,
+          }),
+        );
+      };
+    },
     [_fieldOptions, fields, name, onChange, selectedFields],
   );
 
@@ -157,37 +134,6 @@ export default function ResourceType({
     [fields, name, onChange],
   );
 
-  // const removeClickHandler = useCallback(() => {
-  //   onRemoveClick && onRemoveClick();
-  // }, [onRemoveClick]);
-
-  const toggleShowFields = useCallback(() => {
-    setShowFields(!showFields);
-  }, [showFields]);
-
-  const filterChangeHandler = useCallback(
-    (event: react.ChangeEvent<HTMLInputElement>) => {
-      setFilter(event.target.value);
-    },
-    [],
-  );
-
-  const showDescriptionChangeHandler = useCallback(() => {
-    setShowDescriptions(!_showDescriptions);
-  }, [_showDescriptions]);
-
-  // const showOptionsClickHandler = useCallback(
-  //   (event: react.MouseEvent<HTMLButtonElement>) => {
-  //     const field = event.currentTarget.value;
-  //     if (showOptions.includes(field)) {
-  //       setShowOptions(showOptions.filter((o) => o !== field));
-  //     } else {
-  //       setShowOptions(showOptions.concat(field));
-  //     }
-  //   },
-  //   [showOptions],
-  // );
-
   const referenced_schema = dereference(reference, schema);
   if (!referenced_schema || typeof referenced_schema === "boolean")
     return undefined;
@@ -196,98 +142,107 @@ export default function ResourceType({
 
   if (!referenced_schema.properties) return undefined;
 
-  const filter_lc = debouncedFilter.toLowerCase();
-
   const dataSource = Object.entries(referenced_schema.properties)
-    .filter(
-      ([field, val]) =>
-        !field.startsWith("_") &&
-        field !== "resourceType" &&
-        (!filter_lc ||
-          field.toLowerCase().includes(filter_lc) ||
-          (typeof val !== "boolean" &&
-            val.description?.toLowerCase().includes(filter_lc))),
-    )
+    .filter(([field]) => !field.startsWith("_") && field !== "resourceType")
     .map(([field, val]) => {
       // if (typeof val === "boolean") return undefined;
       const checked = getFieldIfSelected(field, fields);
       const fieldConf = typeof checked === "object" ? checked[field] : {};
       return {
+        key: field,
         field,
         description: (typeof val !== "boolean" && val.description) ?? "",
         restrict: Boolean(fieldConf?.restrict),
         hash: Boolean(fieldConf?.hash),
         transform: fieldConf?.format ?? "",
+        format: typeof val !== "boolean" && val.format,
       };
     });
 
   return (
-    <>
+    <div ref={parent} className="h-full">
       <p className="p-2 text-sm text-gray-500">
         {referenced_schema.description}
       </p>
-
-      <Table dataSource={dataSource}>
-        <Column
-          title="Field"
-          render={({
-            field,
-            description,
-          }: {
-            field: string;
-            description: string;
-          }) => (
-            <>
-              <span className="text-lg">{field}</span>
-              {description && (
-                <p className="text-sm text-slate-400">{description}</p>
-              )}
-            </>
-          )}
-        />
-        <Column
-          title="Restrict"
-          width={130}
-          render={({
-            field,
-            restrict,
-          }: {
-            field: string;
-            restrict: boolean;
-          }) => (
-            <Space direction="vertical">
-              <Switch
-                checked={restrict}
-                onChange={updateSwitchFieldOptionHandler(field, "restrict")}
-                checkedChildren={"ON"}
-                unCheckedChildren={"OFF"}
+      <div ref={container}>
+        <Table
+          dataSource={dataSource}
+          pagination={{ pageSize: dataSource.length }}
+          scroll={{ y: height }}
+        >
+          <Column
+            title="Field"
+            render={({
+              field,
+              description,
+            }: {
+              field: string;
+              description: string;
+            }) => (
+              <>
+                <span className="text-lg">{field}</span>
+                {description && (
+                  <p className="text-sm text-slate-400">{description}</p>
+                )}
+              </>
+            )}
+          />
+          <Column
+            title="Restrict"
+            width={130}
+            render={({
+              field,
+              restrict,
+            }: {
+              field: string;
+              restrict: boolean;
+            }) => (
+              <Space direction="vertical">
+                <Switch
+                  checked={restrict}
+                  onChange={updateSwitchFieldOptionHandler(field, "restrict")}
+                  checkedChildren={"ON"}
+                  unCheckedChildren={"OFF"}
+                />
+              </Space>
+            )}
+          />
+          <Column
+            title="One-way hash"
+            width={130}
+            render={({ field, hash }: { field: string; hash: boolean }) => (
+              <Space direction="vertical">
+                <Switch
+                  checked={hash}
+                  checkedChildren={"ON"}
+                  unCheckedChildren={"OFF"}
+                  onChange={updateSwitchFieldOptionHandler(field, "hash")}
+                />
+              </Space>
+            )}
+          />
+          <Column
+            title="Transform"
+            width={150}
+            render={({
+              field,
+              transform,
+              format,
+            }: {
+              field: string;
+              transform: string;
+              format: string;
+            }) => (
+              <Input
+                value={transform}
+                placeholder="date format"
+                disabled={!["date", "date-time"].includes(format)}
+                onChange={updateSwitchFieldOptionHandler(field, "format")}
               />
-            </Space>
-          )}
-        />
-        <Column
-          title="One-way hash"
-          width={130}
-          render={({ field, hash }: { field: string; hash: boolean }) => (
-            <Space direction="vertical">
-              <Switch
-                checked={hash}
-                checkedChildren={"ON"}
-                unCheckedChildren={"OFF"}
-                onChange={updateSwitchFieldOptionHandler(field, "hash")}
-              />
-            </Space>
-          )}
-        />
-        <Column
-          title="Transform"
-          dataIndex="transform"
-          width={150}
-          render={(transform: string) => (
-            <Input value={transform} placeholder="date format" />
-          )}
-        />
-      </Table>
-    </>
+            )}
+          />
+        </Table>
+      </div>
+    </div>
   );
 }
