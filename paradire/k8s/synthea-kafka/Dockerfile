@@ -37,10 +37,10 @@ RUN chown -R appuser:appuser /workspace/synthea \
 # Setting up environment variables
 ENV sampling_size=10
 ENV pt=AB
-ENV fihr_server_url=http://localhost:8080
-ENV CONNECT_URL=http://10.162.0.11:8083
-ENV SCHEMA_URL=http://10.162.0.11:8081
-ENV BROKER_URL=http://10.162.0.11:9093
+ENV fihr_server_url=
+ENV CONNECT_URL=
+ENV SCHEMA_URL=
+ENV BROKER_URL=
 
 # Setting the working directory to /workspace/synthea
 WORKDIR /workspace/synthea
