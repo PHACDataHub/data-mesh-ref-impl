@@ -127,6 +127,11 @@ def main():
     symptoms_folder = os.path.abspath(sys.argv[3])
     avro_folder = os.path.abspath(sys.argv[4])
 
+    print(f"schema_folder {schema_folder}")
+    print(f"csv_folder {csv_folder}")
+    print(f"symptoms_folder {symptoms_folder}")
+    print(f"avro_folder {avro_folder}")
+
     #The below function creates a multiprocessing pool with a number of processes 
     #equal to the lesser of the number of CSV files or the number of CPU cores. 
     #Each process will call the process_file function with the arguments for one CSV file. 
