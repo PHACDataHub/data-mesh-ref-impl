@@ -1,0 +1,13 @@
+{
+    "type": "record",
+    "name": "ConnectDefault",
+    "namespace": "io.confluent.connect.avro",
+    "doc": "YoungChildrenMissingScheduleExtendedRequest - Request details of children missing scheduled vaccinations - Request for additional information about young children missing required/recommended vaccination schedule for a number of specified vaccines.",
+    "fields": [
+        {"name": "request_id", "type": "string", "doc": "Unique ID of a Fererated Analytics Request"},
+        {"name": "cvx_maps", "type": "string", "doc": "Map of CVX-to-limit (in months)."},
+        {"name": "pt_list", "type": "string", "doc": "List of PTs (comma-separated), where this request is sent, i.e BC,ON,QC."},
+        {"name": "timestamp", "type": "long", "doc": "Timestamp when this record is produced"},
+        {"name": "doc", "type": "string", "doc": "Description of this request"}
+    ]
+}

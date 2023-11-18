@@ -1,0 +1,21 @@
+{
+    "type": "record",
+    "name": "allergy_val",
+    "fields": [
+        {"name": "start", "type": "string", "doc": "The date the allergy was diagnosed - Date (YYYY-MM-DD)"},
+		{"name": "stop", "type": ["null", "string"], "default": null, "doc": "The date the allergy ended, if applicable - Date (YYYY-MM-DD)"},
+        {"name": "patient_id", "type": "string", "doc": "Foreign key to the Patient - UUID."},
+        {"name": "encounter_id", "type": "string", "doc": "Foreign key to the Encounter when the allergy was diagnosed - UUID"},
+        {"name": "code", "type": "string", "doc": "Allergy code"},
+        {"name": "system", "type": "string", "doc": "Terminology system of the Allergy code. RxNorm if this is a medication allergy, otherwise SNOMED-CT"},
+        {"name": "description", "type": "string", "doc": "Description of the Allergy"},
+        {"name": "allergy_type", "type": ["null", "string"], "default": null, "doc": "Identify entry as an allergy or intolerance"},
+        {"name": "category", "type": ["null", "string"], "default": null, "doc": "Identify the category as drug, medication, food, or environment"},
+        {"name": "reaction_1", "type": ["null", "string"], "default": null, "doc": "Optional SNOMED code of the patients reaction"},
+        {"name": "description_1", "type": ["null", "string"], "default": null, "doc": "Optional description of the Reaction1 SNOMED code."},
+        {"name": "severity_1", "type": ["null", "string"], "default": null, "doc": "Severity of the reaction: MILD, MODERATE, or SEVERE"},
+        {"name": "reaction_2", "type": ["null", "string"], "default": null, "doc": "Optional SNOMED code of the patients second reaction"},
+        {"name": "description_2", "type": "string", "doc": "Optional description of the Reaction2 SNOMED code."},
+        {"name": "severity_2", "type": ["null", "string"], "default": null, "doc": "Severity of the second reaction: MILD, MODERATE, or SEVERE"}
+    ]
+}

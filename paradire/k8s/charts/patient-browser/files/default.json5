@@ -1,0 +1,1395 @@
+{
+    server: {
+        type: 'Unknown',
+        url: 'http://hapi-fhir-svc:8080/fhir',
+        tags: [],
+        conditions: {
+            '6525002': {
+                description: 'Dependent drug abuse (disorder)',
+                codes: {
+                    'SNOMED-CT': [
+                        '6525002',
+                    ],
+                },
+            },
+            '10509002': {
+                description: 'Acute bronchitis (disorder)',
+                codes: {
+                    'SNOMED-CT': [
+                        '10509002',
+                    ],
+                },
+            },
+            '15777000': {
+                description: 'Prediabetes',
+                codes: {
+                    'SNOMED-CT': [
+                        '15777000',
+                    ],
+                },
+            },
+            '16114001': {
+                description: 'Fracture of ankle',
+                codes: {
+                    'SNOMED-CT': [
+                        '16114001',
+                    ],
+                },
+            },
+            '19169002': {
+                description: 'Miscarriage in first trimester',
+                codes: {
+                    'SNOMED-CT': [
+                        '19169002',
+                    ],
+                },
+            },
+            '22298006': {
+                description: 'Myocardial infarction (disorder)',
+                codes: {
+                    'SNOMED-CT': [
+                        '22298006',
+                    ],
+                },
+            },
+            '24079001': {
+                description: 'Atopic dermatitis',
+                codes: {
+                    'SNOMED-CT': [
+                        '24079001',
+                    ],
+                },
+            },
+            '25064002': {
+                description: 'Headache (finding)',
+                codes: {
+                    'SNOMED-CT': [
+                        '25064002',
+                    ],
+                },
+            },
+            '25675004': {
+                description: 'Patient transfer to skilled nursing facility (procedure)',
+                codes: {
+                    'SNOMED-CT': [
+                        '25675004',
+                    ],
+                },
+            },
+            '26929004': {
+                description: "Alzheimer's disease (disorder)",
+                codes: {
+                    'SNOMED-CT': [
+                        '26929004',
+                    ],
+                },
+            },
+            '32911000': {
+                description: 'Homeless (finding)',
+                codes: {
+                    'SNOMED-CT': [
+                        '32911000',
+                    ],
+                },
+            },
+            '33737001': {
+                description: 'Fracture of rib',
+                codes: {
+                    'SNOMED-CT': [
+                        '33737001',
+                    ],
+                },
+            },
+            '35999006': {
+                description: 'Blighted ovum',
+                codes: {
+                    'SNOMED-CT': [
+                        '35999006',
+                    ],
+                },
+            },
+            '36955009': {
+                description: 'Loss of taste (finding)',
+                codes: {
+                    'SNOMED-CT': [
+                        '36955009',
+                    ],
+                },
+            },
+            '36971009': {
+                description: 'Sinusitis (disorder)',
+                codes: {
+                    'SNOMED-CT': [
+                        '36971009',
+                    ],
+                },
+            },
+            '38822007': {
+                description: 'Cystitis',
+                codes: {
+                    'SNOMED-CT': [
+                        '38822007',
+                    ],
+                },
+            },
+            '39848009': {
+                description: 'Whiplash injury to neck',
+                codes: {
+                    'SNOMED-CT': [
+                        '39848009',
+                    ],
+                },
+            },
+            '39898005': {
+                description: 'Sleep disorder (disorder)',
+                codes: {
+                    'SNOMED-CT': [
+                        '39898005',
+                    ],
+                },
+            },
+            '40055000': {
+                description: 'Chronic sinusitis (disorder)',
+                codes: {
+                    'SNOMED-CT': [
+                        '40055000',
+                    ],
+                },
+            },
+            '40275004': {
+                description: 'Contact dermatitis',
+                codes: {
+                    'SNOMED-CT': [
+                        '40275004',
+                    ],
+                },
+            },
+            '43724002': {
+                description: 'Chill (finding)',
+                codes: {
+                    'SNOMED-CT': [
+                        '43724002',
+                    ],
+                },
+            },
+            '43878008': {
+                description: 'Streptococcal sore throat (disorder)',
+                codes: {
+                    'SNOMED-CT': [
+                        '43878008',
+                    ],
+                },
+            },
+            '44054006': {
+                description: 'Diabetes mellitus type 2 (disorder)',
+                codes: {
+                    'SNOMED-CT': [
+                        '44054006',
+                    ],
+                },
+            },
+            '44465007': {
+                description: 'Sprain of ankle',
+                codes: {
+                    'SNOMED-CT': [
+                        '44465007',
+                    ],
+                },
+            },
+            '46177005': {
+                description: 'End-stage renal disease (disorder)',
+                codes: {
+                    'SNOMED-CT': [
+                        '46177005',
+                    ],
+                },
+            },
+            '47505003': {
+                description: 'Posttraumatic stress disorder',
+                codes: {
+                    'SNOMED-CT': [
+                        '47505003',
+                    ],
+                },
+            },
+            '47693006': {
+                description: 'Rupture of appendix',
+                codes: {
+                    'SNOMED-CT': [
+                        '47693006',
+                    ],
+                },
+            },
+            '48333001': {
+                description: 'Burn injury (morphologic abnormality)',
+                codes: {
+                    'SNOMED-CT': [
+                        '48333001',
+                    ],
+                },
+            },
+            '48724000': {
+                description: 'Mitral valve regurgitation (disorder)',
+                codes: {
+                    'SNOMED-CT': [
+                        '48724000',
+                    ],
+                },
+            },
+            '49727002': {
+                description: 'Cough (finding)',
+                codes: {
+                    'SNOMED-CT': [
+                        '49727002',
+                    ],
+                },
+            },
+            '55680006': {
+                description: 'Drug overdose',
+                codes: {
+                    'SNOMED-CT': [
+                        '55680006',
+                    ],
+                },
+            },
+            '55822004': {
+                description: 'Hyperlipidemia',
+                codes: {
+                    'SNOMED-CT': [
+                        '55822004',
+                    ],
+                },
+            },
+            '56018004': {
+                description: 'Wheezing (finding)',
+                codes: {
+                    'SNOMED-CT': [
+                        '56018004',
+                    ],
+                },
+            },
+            '58150001': {
+                description: 'Fracture of clavicle',
+                codes: {
+                    'SNOMED-CT': [
+                        '58150001',
+                    ],
+                },
+            },
+            '59621000': {
+                description: 'Essential hypertension (disorder)',
+                codes: {
+                    'SNOMED-CT': [
+                        '59621000',
+                    ],
+                },
+            },
+            '60234000': {
+                description: 'Aortic valve regurgitation (disorder)',
+                codes: {
+                    'SNOMED-CT': [
+                        '60234000',
+                    ],
+                },
+            },
+            '62106007': {
+                description: 'Concussion with no loss of consciousness',
+                codes: {
+                    'SNOMED-CT': [
+                        '62106007',
+                    ],
+                },
+            },
+            '62564004': {
+                description: 'Concussion with loss of consciousness',
+                codes: {
+                    'SNOMED-CT': [
+                        '62564004',
+                    ],
+                },
+            },
+            '64859006': {
+                description: 'Osteoporosis (disorder)',
+                codes: {
+                    'SNOMED-CT': [
+                        '64859006',
+                    ],
+                },
+            },
+            '65363002': {
+                description: 'Otitis media',
+                codes: {
+                    'SNOMED-CT': [
+                        '65363002',
+                    ],
+                },
+            },
+            '65966004': {
+                description: 'Fracture of forearm',
+                codes: {
+                    'SNOMED-CT': [
+                        '65966004',
+                    ],
+                },
+            },
+            '68235000': {
+                description: 'Nasal congestion (finding)',
+                codes: {
+                    'SNOMED-CT': [
+                        '68235000',
+                    ],
+                },
+            },
+            '68496003': {
+                description: 'Polyp of colon',
+                codes: {
+                    'SNOMED-CT': [
+                        '68496003',
+                    ],
+                },
+            },
+            '70704007': {
+                description: 'Sprain of wrist',
+                codes: {
+                    'SNOMED-CT': [
+                        '70704007',
+                    ],
+                },
+            },
+            '72892002': {
+                description: 'Normal pregnancy',
+                codes: {
+                    'SNOMED-CT': [
+                        '72892002',
+                    ],
+                },
+            },
+            '73430006': {
+                description: 'Sleep apnea (disorder)',
+                codes: {
+                    'SNOMED-CT': [
+                        '73430006',
+                    ],
+                },
+            },
+            '73438004': {
+                description: 'Unemployed (finding)',
+                codes: {
+                    'SNOMED-CT': [
+                        '73438004',
+                    ],
+                },
+            },
+            '73595000': {
+                description: 'Stress (finding)',
+                codes: {
+                    'SNOMED-CT': [
+                        '73595000',
+                    ],
+                },
+            },
+            '74400008': {
+                description: 'Appendicitis',
+                codes: {
+                    'SNOMED-CT': [
+                        '74400008',
+                    ],
+                },
+            },
+            '75498004': {
+                description: 'Acute bacterial sinusitis (disorder)',
+                codes: {
+                    'SNOMED-CT': [
+                        '75498004',
+                    ],
+                },
+            },
+            '78275009': {
+                description: 'Obstructive sleep apnea syndrome (disorder)',
+                codes: {
+                    'SNOMED-CT': [
+                        '78275009',
+                    ],
+                },
+            },
+            '80394007': {
+                description: 'Hyperglycemia (disorder)',
+                codes: {
+                    'SNOMED-CT': [
+                        '80394007',
+                    ],
+                },
+            },
+            '80583007': {
+                description: 'Severe anxiety (panic) (finding)',
+                codes: {
+                    'SNOMED-CT': [
+                        '80583007',
+                    ],
+                },
+            },
+            '82423001': {
+                description: 'Chronic pain (finding)',
+                codes: {
+                    'SNOMED-CT': [
+                        '82423001',
+                    ],
+                },
+            },
+            '84229001': {
+                description: 'Fatigue (finding)',
+                codes: {
+                    'SNOMED-CT': [
+                        '84229001',
+                    ],
+                },
+            },
+            '84757009': {
+                description: 'Epilepsy',
+                codes: {
+                    'SNOMED-CT': [
+                        '84757009',
+                    ],
+                },
+            },
+            '86406008': {
+                description: 'Human immunodeficiency virus infection (disorder)',
+                codes: {
+                    'SNOMED-CT': [
+                        '86406008',
+                    ],
+                },
+            },
+            '87433001': {
+                description: 'Pulmonary emphysema (disorder)',
+                codes: {
+                    'SNOMED-CT': [
+                        '87433001',
+                    ],
+                },
+            },
+            '88805009': {
+                description: 'Chronic congestive heart failure (disorder)',
+                codes: {
+                    'SNOMED-CT': [
+                        '88805009',
+                    ],
+                },
+            },
+            '90460009': {
+                description: 'Injury of neck (disorder)',
+                codes: {
+                    'SNOMED-CT': [
+                        '90460009',
+                    ],
+                },
+            },
+            '91302008': {
+                description: 'Sepsis (disorder)',
+                codes: {
+                    'SNOMED-CT': [
+                        '91302008',
+                    ],
+                },
+            },
+            '92691004': {
+                description: 'Carcinoma in situ of prostate (disorder)',
+                codes: {
+                    'SNOMED-CT': [
+                        '92691004',
+                    ],
+                },
+            },
+            '93761005': {
+                description: 'Primary malignant neoplasm of colon',
+                codes: {
+                    'SNOMED-CT': [
+                        '93761005',
+                    ],
+                },
+            },
+            '105531004': {
+                description: 'Housing unsatisfactory (finding)',
+                codes: {
+                    'SNOMED-CT': [
+                        '105531004',
+                    ],
+                },
+            },
+            '109838007': {
+                description: 'Overlapping malignant neoplasm of colon',
+                codes: {
+                    'SNOMED-CT': [
+                        '109838007',
+                    ],
+                },
+            },
+            '110030002': {
+                description: 'Concussion injury of brain (disorder)',
+                codes: {
+                    'SNOMED-CT': [
+                        '110030002',
+                    ],
+                },
+            },
+            '125605004': {
+                description: 'Fracture of bone (disorder)',
+                codes: {
+                    'SNOMED-CT': [
+                        '125605004',
+                    ],
+                },
+            },
+            '126906006': {
+                description: 'Neoplasm of prostate',
+                codes: {
+                    'SNOMED-CT': [
+                        '126906006',
+                    ],
+                },
+            },
+            '127013003': {
+                description: 'Disorder of kidney due to diabetes mellitus (disorder)',
+                codes: {
+                    'SNOMED-CT': [
+                        '127013003',
+                    ],
+                },
+            },
+            '127295002': {
+                description: 'Traumatic brain injury (disorder)',
+                codes: {
+                    'SNOMED-CT': [
+                        '127295002',
+                    ],
+                },
+            },
+            '128613002': {
+                description: 'Seizure disorder',
+                codes: {
+                    'SNOMED-CT': [
+                        '128613002',
+                    ],
+                },
+            },
+            '156073000': {
+                description: 'Complete miscarriage (disorder)',
+                codes: {
+                    'SNOMED-CT': [
+                        '156073000',
+                    ],
+                },
+            },
+            '160903007': {
+                description: 'Full-time employment (finding)',
+                codes: {
+                    'SNOMED-CT': [
+                        '160903007',
+                    ],
+                },
+            },
+            '160904001': {
+                description: 'Part-time employment (finding)',
+                codes: {
+                    'SNOMED-CT': [
+                        '160904001',
+                    ],
+                },
+            },
+            '160968000': {
+                description: 'Risk activity involvement (finding)',
+                codes: {
+                    'SNOMED-CT': [
+                        '160968000',
+                    ],
+                },
+            },
+            '161665007': {
+                description: 'History of renal transplant (situation)',
+                codes: {
+                    'SNOMED-CT': [
+                        '161665007',
+                    ],
+                },
+            },
+            '162573006': {
+                description: 'Suspected lung cancer (situation)',
+                codes: {
+                    'SNOMED-CT': [
+                        '162573006',
+                    ],
+                },
+            },
+            '162864005': {
+                description: 'Body mass index 30+ - obesity (finding)',
+                codes: {
+                    'SNOMED-CT': [
+                        '162864005',
+                    ],
+                },
+            },
+            '183996000': {
+                description: 'Sterilization requested (situation)',
+                codes: {
+                    'SNOMED-CT': [
+                        '183996000',
+                    ],
+                },
+            },
+            '192127007': {
+                description: 'Child attention deficit disorder',
+                codes: {
+                    'SNOMED-CT': [
+                        '192127007',
+                    ],
+                },
+            },
+            '195662009': {
+                description: 'Acute viral pharyngitis (disorder)',
+                codes: {
+                    'SNOMED-CT': [
+                        '195662009',
+                    ],
+                },
+            },
+            '196416002': {
+                description: 'Impacted molars',
+                codes: {
+                    'SNOMED-CT': [
+                        '196416002',
+                    ],
+                },
+            },
+            '197927001': {
+                description: 'Recurrent urinary tract infection',
+                codes: {
+                    'SNOMED-CT': [
+                        '197927001',
+                    ],
+                },
+            },
+            '198992004': {
+                description: 'Antepartum eclampsia',
+                codes: {
+                    'SNOMED-CT': [
+                        '198992004',
+                    ],
+                },
+            },
+            '201834006': {
+                description: 'Localized, primary osteoarthritis of the hand',
+                codes: {
+                    'SNOMED-CT': [
+                        '201834006',
+                    ],
+                },
+            },
+            '224295006': {
+                description: 'Only received primary school education (finding)',
+                codes: {
+                    'SNOMED-CT': [
+                        '224295006',
+                    ],
+                },
+            },
+            '224299000': {
+                description: 'Received higher education (finding)',
+                codes: {
+                    'SNOMED-CT': [
+                        '224299000',
+                    ],
+                },
+            },
+            '224355006': {
+                description: 'Served in armed forces (finding)',
+                codes: {
+                    'SNOMED-CT': [
+                        '224355006',
+                    ],
+                },
+            },
+            '230690007': {
+                description: 'Stroke',
+                codes: {
+                    'SNOMED-CT': [
+                        '230690007',
+                    ],
+                },
+            },
+            '232353008': {
+                description: 'Perennial allergic rhinitis with seasonal variation',
+                codes: {
+                    'SNOMED-CT': [
+                        '232353008',
+                    ],
+                },
+            },
+            '233604007': {
+                description: 'Pneumonia (disorder)',
+                codes: {
+                    'SNOMED-CT': [
+                        '233604007',
+                    ],
+                },
+            },
+            '233678006': {
+                description: 'Childhood asthma',
+                codes: {
+                    'SNOMED-CT': [
+                        '233678006',
+                    ],
+                },
+            },
+            '237602007': {
+                description: 'Metabolic syndrome X (disorder)',
+                codes: {
+                    'SNOMED-CT': [
+                        '237602007',
+                    ],
+                },
+            },
+            '239872002': {
+                description: 'Osteoarthritis of hip',
+                codes: {
+                    'SNOMED-CT': [
+                        '239872002',
+                    ],
+                },
+            },
+            '239873007': {
+                description: 'Osteoarthritis of knee',
+                codes: {
+                    'SNOMED-CT': [
+                        '239873007',
+                    ],
+                },
+            },
+            '241929008': {
+                description: 'Acute allergic reaction',
+                codes: {
+                    'SNOMED-CT': [
+                        '241929008',
+                    ],
+                },
+            },
+            '248595008': {
+                description: 'Sputum finding (finding)',
+                codes: {
+                    'SNOMED-CT': [
+                        '248595008',
+                    ],
+                },
+            },
+            '249497008': {
+                description: 'Vomiting symptom (finding)',
+                codes: {
+                    'SNOMED-CT': [
+                        '249497008',
+                    ],
+                },
+            },
+            '254637007': {
+                description: 'Non-small cell lung cancer (disorder)',
+                codes: {
+                    'SNOMED-CT': [
+                        '254637007',
+                    ],
+                },
+            },
+            '254837009': {
+                description: 'Malignant neoplasm of breast (disorder)',
+                codes: {
+                    'SNOMED-CT': [
+                        '254837009',
+                    ],
+                },
+            },
+            '263102004': {
+                description: 'Fracture subluxation of wrist',
+                codes: {
+                    'SNOMED-CT': [
+                        '263102004',
+                    ],
+                },
+            },
+            '266934004': {
+                description: 'Transport problem (finding)',
+                codes: {
+                    'SNOMED-CT': [
+                        '266934004',
+                    ],
+                },
+            },
+            '266948004': {
+                description: 'Has a criminal record (finding)',
+                codes: {
+                    'SNOMED-CT': [
+                        '266948004',
+                    ],
+                },
+            },
+            '267020005': {
+                description: 'History of tubal ligation (situation)',
+                codes: {
+                    'SNOMED-CT': [
+                        '267020005',
+                    ],
+                },
+            },
+            '267036007': {
+                description: 'Dyspnea (finding)',
+                codes: {
+                    'SNOMED-CT': [
+                        '267036007',
+                    ],
+                },
+            },
+            '267102003': {
+                description: 'Sore throat symptom (finding)',
+                codes: {
+                    'SNOMED-CT': [
+                        '267102003',
+                    ],
+                },
+            },
+            '271737000': {
+                description: 'Anemia (disorder)',
+                codes: {
+                    'SNOMED-CT': [
+                        '271737000',
+                    ],
+                },
+            },
+            '271825005': {
+                description: 'Respiratory distress (finding)',
+                codes: {
+                    'SNOMED-CT': [
+                        '271825005',
+                    ],
+                },
+            },
+            '274531002': {
+                description: 'Abnormal findings diagnostic imaging heart+coronary circulat (finding)',
+                codes: {
+                    'SNOMED-CT': [
+                        '274531002',
+                    ],
+                },
+            },
+            '278860009': {
+                description: 'Chronic low back pain (finding)',
+                codes: {
+                    'SNOMED-CT': [
+                        '278860009',
+                    ],
+                },
+            },
+            '283371005': {
+                description: 'Laceration of forearm',
+                codes: {
+                    'SNOMED-CT': [
+                        '283371005',
+                    ],
+                },
+            },
+            '283385000': {
+                description: 'Laceration of thigh',
+                codes: {
+                    'SNOMED-CT': [
+                        '283385000',
+                    ],
+                },
+            },
+            '284549007': {
+                description: 'Laceration of hand',
+                codes: {
+                    'SNOMED-CT': [
+                        '284549007',
+                    ],
+                },
+            },
+            '284551006': {
+                description: 'Laceration of foot',
+                codes: {
+                    'SNOMED-CT': [
+                        '284551006',
+                    ],
+                },
+            },
+            '301011002': {
+                description: 'Escherichia coli urinary tract infection',
+                codes: {
+                    'SNOMED-CT': [
+                        '301011002',
+                    ],
+                },
+            },
+            '302870006': {
+                description: 'Hypertriglyceridemia (disorder)',
+                codes: {
+                    'SNOMED-CT': [
+                        '302870006',
+                    ],
+                },
+            },
+            '307731004': {
+                description: 'Injury of tendon of the rotator cuff of shoulder',
+                codes: {
+                    'SNOMED-CT': [
+                        '307731004',
+                    ],
+                },
+            },
+            '312608009': {
+                description: 'Laceration - injury (disorder)',
+                codes: {
+                    'SNOMED-CT': [
+                        '312608009',
+                    ],
+                },
+            },
+            '314529007': {
+                description: 'Medication review due (situation)',
+                codes: {
+                    'SNOMED-CT': [
+                        '314529007',
+                    ],
+                },
+            },
+            '315268008': {
+                description: 'Suspected prostate cancer (situation)',
+                codes: {
+                    'SNOMED-CT': [
+                        '315268008',
+                    ],
+                },
+            },
+            '361055000': {
+                description: 'Misuses drugs (finding)',
+                codes: {
+                    'SNOMED-CT': [
+                        '361055000',
+                    ],
+                },
+            },
+            '367498001': {
+                description: 'Seasonal allergic rhinitis',
+                codes: {
+                    'SNOMED-CT': [
+                        '367498001',
+                    ],
+                },
+            },
+            '370247008': {
+                description: 'Facial laceration',
+                codes: {
+                    'SNOMED-CT': [
+                        '370247008',
+                    ],
+                },
+            },
+            '384709000': {
+                description: 'Sprain (morphologic abnormality)',
+                codes: {
+                    'SNOMED-CT': [
+                        '384709000',
+                    ],
+                },
+            },
+            '386661006': {
+                description: 'Fever (finding)',
+                codes: {
+                    'SNOMED-CT': [
+                        '386661006',
+                    ],
+                },
+            },
+            '389087006': {
+                description: 'Hypoxemia (disorder)',
+                codes: {
+                    'SNOMED-CT': [
+                        '389087006',
+                    ],
+                },
+            },
+            '398254007': {
+                description: 'Preeclampsia',
+                codes: {
+                    'SNOMED-CT': [
+                        '398254007',
+                    ],
+                },
+            },
+            '399211009': {
+                description: 'History of myocardial infarction (situation)',
+                codes: {
+                    'SNOMED-CT': [
+                        '399211009',
+                    ],
+                },
+            },
+            '399261000': {
+                description: 'History of coronary artery bypass grafting (situation)',
+                codes: {
+                    'SNOMED-CT': [
+                        '399261000',
+                    ],
+                },
+            },
+            '401303003': {
+                description: 'Acute ST segment elevation myocardial infarction (disorder)',
+                codes: {
+                    'SNOMED-CT': [
+                        '401303003',
+                    ],
+                },
+            },
+            '401314000': {
+                description: 'Acute non-ST segment elevation myocardial infarction (disorder)',
+                codes: {
+                    'SNOMED-CT': [
+                        '401314000',
+                    ],
+                },
+            },
+            '403190006': {
+                description: 'Epidermal burn of skin (disorder)',
+                codes: {
+                    'SNOMED-CT': [
+                        '403190006',
+                    ],
+                },
+            },
+            '403191005': {
+                description: 'Second degree burn',
+                codes: {
+                    'SNOMED-CT': [
+                        '403191005',
+                    ],
+                },
+            },
+            '403192003': {
+                description: 'Third degree burn',
+                codes: {
+                    'SNOMED-CT': [
+                        '403192003',
+                    ],
+                },
+            },
+            '414545008': {
+                description: 'Ischemic heart disease (disorder)',
+                codes: {
+                    'SNOMED-CT': [
+                        '414545008',
+                    ],
+                },
+            },
+            '422034002': {
+                description: 'Retinopathy due to type 2 diabetes mellitus (disorder)',
+                codes: {
+                    'SNOMED-CT': [
+                        '422034002',
+                    ],
+                },
+            },
+            '422587007': {
+                description: 'Nausea (finding)',
+                codes: {
+                    'SNOMED-CT': [
+                        '422587007',
+                    ],
+                },
+            },
+            '422650009': {
+                description: 'Social isolation (finding)',
+                codes: {
+                    'SNOMED-CT': [
+                        '422650009',
+                    ],
+                },
+            },
+            '423315002': {
+                description: 'Limited social contact (finding)',
+                codes: {
+                    'SNOMED-CT': [
+                        '423315002',
+                    ],
+                },
+            },
+            '424132000': {
+                description: 'Non-small cell carcinoma of lung, TNM stage 1 (disorder)',
+                codes: {
+                    'SNOMED-CT': [
+                        '424132000',
+                    ],
+                },
+            },
+            '424393004': {
+                description: 'Reports of violence in the environment (finding)',
+                codes: {
+                    'SNOMED-CT': [
+                        '424393004',
+                    ],
+                },
+            },
+            '427419006': {
+                description: 'Transformed migraine (disorder)',
+                codes: {
+                    'SNOMED-CT': [
+                        '427419006',
+                    ],
+                },
+            },
+            '428251008': {
+                description: 'History of appendectomy',
+                codes: {
+                    'SNOMED-CT': [
+                        '428251008',
+                    ],
+                },
+            },
+            '429280009': {
+                description: 'History of amputation of foot (situation)',
+                codes: {
+                    'SNOMED-CT': [
+                        '429280009',
+                    ],
+                },
+            },
+            '431855005': {
+                description: 'Chronic kidney disease stage 1 (disorder)',
+                codes: {
+                    'SNOMED-CT': [
+                        '431855005',
+                    ],
+                },
+            },
+            '431856006': {
+                description: 'Chronic kidney disease stage 2 (disorder)',
+                codes: {
+                    'SNOMED-CT': [
+                        '431856006',
+                    ],
+                },
+            },
+            '431857002': {
+                description: 'Chronic kidney disease stage 4 (disorder)',
+                codes: {
+                    'SNOMED-CT': [
+                        '431857002',
+                    ],
+                },
+            },
+            '433144002': {
+                description: 'Chronic kidney disease stage 3 (disorder)',
+                codes: {
+                    'SNOMED-CT': [
+                        '433144002',
+                    ],
+                },
+            },
+            '444814009': {
+                description: 'Viral sinusitis (disorder)',
+                codes: {
+                    'SNOMED-CT': [
+                        '444814009',
+                    ],
+                },
+            },
+            '446096008': {
+                description: 'Perennial allergic rhinitis',
+                codes: {
+                    'SNOMED-CT': [
+                        '446096008',
+                    ],
+                },
+            },
+            '446654005': {
+                description: 'Refugee (person)',
+                codes: {
+                    'SNOMED-CT': [
+                        '446654005',
+                    ],
+                },
+            },
+            '698306007': {
+                description: 'Awaiting transplantation of kidney (situation)',
+                codes: {
+                    'SNOMED-CT': [
+                        '698306007',
+                    ],
+                },
+            },
+            '703151001': {
+                description: 'History of single seizure (situation)',
+                codes: {
+                    'SNOMED-CT': [
+                        '703151001',
+                    ],
+                },
+            },
+            '706870000': {
+                description: 'Acute pulmonary embolism (disorder)',
+                codes: {
+                    'SNOMED-CT': [
+                        '706870000',
+                    ],
+                },
+            },
+            '706893006': {
+                description: 'Victim of intimate partner abuse (finding)',
+                codes: {
+                    'SNOMED-CT': [
+                        '706893006',
+                    ],
+                },
+            },
+            '713197008': {
+                description: 'Recurrent rectal polyp',
+                codes: {
+                    'SNOMED-CT': [
+                        '713197008',
+                    ],
+                },
+            },
+            '713458007': {
+                description: 'Lack of access to transportation (finding)',
+                codes: {
+                    'SNOMED-CT': [
+                        '713458007',
+                    ],
+                },
+            },
+            '741062008': {
+                description: 'Not in labor force (finding)',
+                codes: {
+                    'SNOMED-CT': [
+                        '741062008',
+                    ],
+                },
+            },
+            '840539006': {
+                description: 'COVID-19',
+                codes: {
+                    'SNOMED-CT': [
+                        '840539006',
+                    ],
+                },
+            },
+            '840544004': {
+                description: 'Suspected COVID-19',
+                codes: {
+                    'SNOMED-CT': [
+                        '840544004',
+                    ],
+                },
+            },
+            '90781000119102': {
+                description: 'Microalbuminuria due to type 2 diabetes mellitus (disorder)',
+                codes: {
+                    'SNOMED-CT': [
+                        '90781000119102',
+                    ],
+                },
+            },
+            '157141000119108': {
+                description: 'Proteinuria due to type 2 diabetes mellitus (disorder)',
+                codes: {
+                    'SNOMED-CT': [
+                        '157141000119108',
+                    ],
+                },
+            },
+            '5251000175109': {
+                description: 'Received certificate of high school equivalency (finding)',
+                codes: {
+                    'SNOMED-CT': [
+                        '5251000175109',
+                    ],
+                },
+            },
+            '124171000119105': {
+                description: 'Chronic intractable migraine without aura',
+                codes: {
+                    'SNOMED-CT': [
+                        '124171000119105',
+                    ],
+                },
+            },
+            '1121000119107': {
+                description: 'Chronic neck pain (finding)',
+                codes: {
+                    'SNOMED-CT': [
+                        '1121000119107',
+                    ],
+                },
+            },
+            '1871000124103': {
+                description: 'Transition from acute care to home-health care (finding)',
+                codes: {
+                    'SNOMED-CT': [
+                        '1871000124103',
+                    ],
+                },
+            },
+            '10939881000119105': {
+                description: 'Unhealthy alcohol drinking behavior (finding)',
+                codes: {
+                    'SNOMED-CT': [
+                        '10939881000119105',
+                    ],
+                },
+            },
+            '1551000119108': {
+                description: 'Nonproliferative diabetic retinopathy due to type 2 diabetes mellitus (disorder)',
+                codes: {
+                    'SNOMED-CT': [
+                        '1551000119108',
+                    ],
+                },
+            },
+            '97331000119101': {
+                description: 'Macular edema and retinopathy due to type 2 diabetes mellitus (disorder)',
+                codes: {
+                    'SNOMED-CT': [
+                        '97331000119101',
+                    ],
+                },
+            },
+            '368581000119106': {
+                description: 'Neuropathy due to type 2 diabetes mellitus (disorder)',
+                codes: {
+                    'SNOMED-CT': [
+                        '368581000119106',
+                    ],
+                },
+            },
+            '1231000119100': {
+                description: 'History of aortic valve replacement (situation)',
+                codes: {
+                    'SNOMED-CT': [
+                        '1231000119100',
+                    ],
+                },
+            },
+            '1501000119109': {
+                description: 'Proliferative diabetic retinopathy due to type II diabetes mellitus (disorder)',
+                codes: {
+                    'SNOMED-CT': [
+                        '1501000119109',
+                    ],
+                },
+            },
+        },
+    },
+    patientsPerPage: 25,
+    timeout: 20000,
+    renderSelectedOnly: false,
+    fhirViewer: {
+        enabled: false,
+        url: 'http://docs.smarthealthit.org/fhir-viewer/index.html',
+        param: 'url',
+    },
+    outputMode: 'id-list',
+    submitStrategy: 'manual',
+}

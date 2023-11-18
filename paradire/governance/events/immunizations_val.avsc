@@ -1,0 +1,12 @@
+{
+    "type": "record",
+    "name": "immunization_val",
+    "fields": [
+        {"name": "date", "type": "string", "doc": "The date the immunization was administered. - Date (yyyy-MM-dd'T'HH:mm'Z')"},
+        {"name": "patient_id", "type": "string", "doc": "Foreign key to the Patient - UUID."},
+        {"name": "encounter_id", "type": "string", "doc": "Foreign key to the Encounter where the immunization was administered - UUID"},
+        {"name": "code", "type": "string", "doc": "Immunization code from CVX"},
+        {"name": "description", "type": "string", "doc": "Description of the immunization"},
+        {"name": "base_cost", "type": "float", "doc": "The line item cost of the immunization"}
+    ]
+}

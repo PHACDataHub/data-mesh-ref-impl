@@ -1,0 +1,7 @@
+{
+	"type": "record",
+	"name": "organization_key",
+	"fields": [
+		{"name": "organization_id", "type": "string", "doc": "Primary key of the Organization - UUID"}
+	]
+}

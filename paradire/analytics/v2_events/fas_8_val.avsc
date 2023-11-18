@@ -1,0 +1,13 @@
+{
+    "type": "record",
+    "name": "ConnectDefault",
+    "namespace": "io.confluent.connect.avro",
+    "doc": "ProcedurePerformedResponse - Procedures performed - Distribution of top 100 procedures performed by organization.",
+    "fields": [
+        {"name": "request_id", "type": "string", "doc": "Unique ID of a Fererated Analytics Request."},
+        {"name": "pt", "type": "string", "doc": "PT, where this response from, i.e. BC"},
+        {"name": "procedure_description", "type": "string", "doc": "Description as in procedure.description"},
+        {"name": "procedure_count", "type": "long", "doc": "Number of procedures with description"},
+        {"name": "timestamp", "type": "long", "doc": "Timestamp when this record is produced."}
+    ]
+}

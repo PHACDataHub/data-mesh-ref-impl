@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: patient-browser
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: patient-browser
+  template:
+    metadata:
+      labels:
+        app: patient-browser
+    spec:
+      containers:
+      - name: patient-browser
+        image: northamerica-northeast1-docker.pkg.dev/phx-01he5rx4wsv/paradire/patient-browser
+        ports:
+        - containerPort: 8080

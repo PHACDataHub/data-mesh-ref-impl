@@ -1,0 +1,28 @@
+{
+    "type": "record",
+    "name": "payer_val",
+    "fields": [
+        {"name": "payer_id", "type": "string", "doc": "Primary key of the Payer (e.g. Insurance) - UUID"},
+        {"name": "name", "type": "string", "doc": "Name of the Payer."},
+        {"name": "ownership", "type": "string", "doc": "Owner of the Payer - GOVERNMENT or NO_INSURANCE"},
+        {"name": "address", "type": "string", "doc": "Payer's street address without commas or newlines"},
+        {"name": "city", "type": "string", "doc": "Street address city"},
+        {"name": "state_headquartered", "type": ["null", "string"], "default": null, "doc": "Street address state abbreviation"},
+        {"name": "zip", "type": ["null", "string"], "default": null, "doc": "Street address zip or postal code"},
+        {"name": "phone", "type": ["null", "string"], "default": null, "doc": "Payer's phone number."},
+        {"name": "amount_covered", "type": "float",  "doc": "The monetary amount paid to Organizations during the entire simulation"},
+        {"name": "amount_uncovered", "type": "float",  "doc": "The monetary amount not paid to Organizations during the entire simulation, and covered out of pocket by patients"},
+        {"name": "revenue", "type": "float",  "doc": "The monetary revenue of the Payer during the entire simulation"},
+        {"name": "covered_encounters", "type": "int",  "doc": "The number of Encounters paid for by this Payer"},
+        {"name": "uncovered_encounters", "type": "int",  "doc": "The number of Encounters not paid for by this Payer, and paid out of pocket by patients"},
+        {"name": "covered_medications", "type": "int",  "doc": "The number of Medications paid for by this Payer"},
+        {"name": "uncovered_medications", "type": "int",  "doc": "The number of Medications not paid for by this Payer, and paid out of pocket by patients"},
+        {"name": "covered_procedures", "type": "int",  "doc": "The number of Procedures paid for by this Payer"},
+        {"name": "uncovered_procedures", "type": "int",  "doc": "The number of Procedures not paid for by this Payer, and paid out of pocket by patients"},
+        {"name": "covered_immunizations", "type": "int",  "doc": "The number of Immunizations paid for by this Payer"},
+        {"name": "uncovered_immunizations", "type": "int",  "doc": "The number of Immunizations not paid for by this Payer, and paid out of pocket by patients"},
+        {"name": "unique_customers", "type": "int",  "doc": "The number of unique patients enrolled with this Payer during the entire simulation"},
+        {"name": "qols_avg", "type": ["null", "float"], "default": null,  "doc": "The average Quality of Life Scores (QOLS) for all patients enrolled with this Payer during the entire simulation"},
+        {"name": "member_months", "type": "int",  "doc": "The total number of months that patients were enrolled with this Payer during the simulation and paid monthly premiums (if any)"}
+    ]
+}

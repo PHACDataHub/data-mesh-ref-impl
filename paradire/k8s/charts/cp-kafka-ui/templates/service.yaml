@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "cp-kafka-ui.fullname" . }}
+  labels:
+    app: {{ template "cp-kafka-ui.name" . }}
+    chart: {{ template "cp-kafka-ui.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+  annotations:
+    cloud.google.com/backend-config: '{"ports": {"{{ .Values.servicePort }}":"{{ template "cp-kafka-ui.fullname" . }}-backendconfig"}}'
+spec:
+  ports:
+      - name: kafka-ui
+        port: {{ .Values.servicePort }}
+        targetPort: 8080
+    {{- if .Values.prometheus.jmx.enabled }}
+      - name: metrics
+        port: {{ .Values.prometheus.jmx.port }}
+    {{- end }}
+  selector:
+    app: {{ template "cp-kafka-ui.name" . }}
+    release: {{ .Release.Name }}

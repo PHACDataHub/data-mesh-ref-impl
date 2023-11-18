@@ -1,0 +1,1726 @@
+{
+  "$schema": "https://github.com/PHACDataHub/data-mesh-ref-impl/paradire/governance/gateway/schemas/json/paradire.json",
+  "id": "https://github.com/PHACDataHub/data-mesh-ref-impl/paradire/0.1",
+  "description": "Paradire PoC Schema",
+  "discriminator": {
+    "propertyName": "resourceType",
+    "mapping": {
+      "Allergy": "#/definitions/Allergy",
+      "CarePlan": "#/definitions/CarePlan",
+      "Claim": "#/definitions/Claim",
+      "ClaimTransaction": "#/definitions/ClaimTransaction",
+      "Condition": "#/definitions/Condition",
+      "Device": "#/definitions/Device",
+      "Encounter": "#/definitions/Encounter",
+      "ImagingStudy": "#/definitions/ImagingStudy",
+      "Immunization": "#/definitions/Immunization",
+      "Medication": "#/definitions/Medication",
+      "Observation": "#/definitions/Observation",
+      "Organization": "#/definitions/Organization",
+      "PatientExpense": "#/definitions/PatientExpense",
+      "Patient": "#/definitions/Patient",
+      "PayerTransition": "#/definitions/PayerTransition",
+      "Payer": "#/definitions/Payer",
+      "Person": "#/definitions/Person",
+      "Practitioner": "#/definitions/Practitioner",
+      "PractitionerRole": "#/definitions/PractitionerRole",
+      "Procedure": "#/definitions/Procedure",
+      "Provider": "#/definitions/Provider",
+      "Supply": "#/definitions/Supply"
+    }
+  },
+  "oneOf": [
+    {
+      "$ref": "#/definitions/Allergy"
+    },
+    {
+      "$ref": "#/definitions/CarePlan"
+    },
+    {
+      "$ref": "#/definitions/Claim"
+    },
+    {
+      "$ref": "#/definitions/ClaimTransaction"
+    },
+    {
+      "$ref": "#/definitions/Condition"
+    },
+    {
+      "$ref": "#/definitions/Device"
+    },
+    {
+      "$ref": "#/definitions/Encounter"
+    },
+    {
+      "$ref": "#/definitions/ImagingStudy"
+    },
+    {
+      "$ref": "#/definitions/Immunization"
+    },
+    {
+      "$ref": "#/definitions/Medication"
+    },
+    {
+      "$ref": "#/definitions/Observation"
+    },
+    {
+      "$ref": "#/definitions/Organization"
+    },
+    {
+      "$ref": "#/definitions/PatientExpense"
+    },
+    {
+      "$ref": "#/definitions/Patient"
+    },
+    {
+      "$ref": "#/definitions/PayerTransition"
+    },
+    {
+      "$ref": "#/definitions/Payer"
+    },
+    {
+      "$ref": "#/definitions/Procedure"
+    },
+    {
+      "$ref": "#/definitions/Provider"
+    },
+    {
+      "$ref": "#/definitions/Supply"
+    }
+  ],
+  "definitions": {
+    "Allergy": {
+      "description": "Risk of harmful or undesirable, physiological response which is unique to an individual and associated with exposure to a substance.",
+      "properties": {
+        "start": {
+          "type": "string",
+          "description": "The date the allergy was diagnosed - Date (YYYY-MM-DD)"
+        },
+        "stop": {
+          "type": [
+            "null",
+            "string"
+          ],
+          "default": null,
+          "description": "The date the allergy ended, if applicable - Date (YYYY-MM-DD)"
+        },
+        "patient_id": {
+          "type": "string",
+          "description": "Foreign key to the Patient - UUID."
+        },
+        "encounter_id": {
+          "type": "string",
+          "description": "Foreign key to the Encounter when the allergy was diagnosed - UUID"
+        },
+        "code": {
+          "type": "string",
+          "description": "Allergy code"
+        },
+        "system": {
+          "type": "string",
+          "description": "Terminology system of the Allergy code. RxNorm if this is a medication allergy, otherwise SNOMED-CT"
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the Allergy"
+        },
+        "allergy_type": {
+          "type": [
+            "null",
+            "string"
+          ],
+          "default": null,
+          "description": "Identify entry as an allergy or intolerance"
+        },
+        "category": {
+          "type": [
+            "null",
+            "string"
+          ],
+          "default": null,
+          "description": "Identify the category as drug, medication, food, or environment"
+        },
+        "reaction_1": {
+          "type": [
+            "null",
+            "string"
+          ],
+          "default": null,
+          "description": "Optional SNOMED code of the patients reaction"
+        },
+        "description_1": {
+          "type": [
+            "null",
+            "string"
+          ],
+          "default": null,
+          "description": "Optional description of the Reaction1 SNOMED code."
+        },
+        "severity_1": {
+          "type": [
+            "null",
+            "string"
+          ],
+          "default": null,
+          "description": "Severity of the reaction: MILD, MODERATE, or SEVERE"
+        },
+        "reaction_2": {
+          "type": [
+            "null",
+            "string"
+          ],
+          "default": null,
+          "description": "Optional SNOMED code of the patients second reaction"
+        },
+        "description_2": {
+          "type": "string",
+          "description": "Optional description of the Reaction2 SNOMED code."
+        },
+        "severity_2": {
+          "type": [
+            "null",
+            "string"
+          ],
+          "default": null,
+          "description": "Severity of the second reaction: MILD, MODERATE, or SEVERE"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "patient_id"
+      ]
+    },
+    "CarePlan": {
+      "description": "Describes the intention of how one or more practitioners intend to deliver care for a particular patient, group or community for a period of time, possibly limited to care for a specific condition or set of conditions.",
+      "properties": {
+        "careplan_id": {
+          "type": "string",
+          "description": "Primary Key. Unique Identifier of the care plan - UUID."
+        },
+        "start": {
+          "type": "string",
+          "description": "The date the care plan was initiated - Date (YYYY-MM-DD)"
+        },
+        "stop": {
+          "type": [
+            "null",
+            "string"
+          ],
+          "default": null,
+          "description": "The date the care plan ended, if applicable - Date (YYYY-MM-DD)"
+        },
+        "patient_id": {
+          "type": "string",
+          "description": "Foreign key to the Patient - UUID."
+        },
+        "encounter_id": {
+          "type": "string",
+          "description": "Foreign key to the Encounter when the care plan was initiated - UUID"
+        },
+        "code": {
+          "type": "string",
+          "description": "Code from SNOMED-CT"
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the care plan"
+        },
+        "reason_code": {
+          "type": [
+            "null",
+            "string"
+          ],
+          "default": null,
+          "description": "Diagnosis code from SNOMED-CT that this care plan addresses"
+        },
+        "reason_description": {
+          "type": [
+            "null",
+            "string"
+          ],
+          "default": null,
+          "description": "Description of the reason code"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "careplan_id"
+      ]
+    },
+    "Claim": {
+      "description": "A provider issued list of professional services and products which have been provided, or are to be provided, to a patient which is sent to an insurer for reimbursement.",
+      "properties": {
+        "claim_id": {
+          "type": "string",
+          "description": "Primary Key. Unique Identifier of the claim. UUID"
+        },
+        "patient_id": {
+          "type": "string",
+          "description": "Foreign key to the Patient - UUID."
+        },
+        "provider_id": {
+          "type": "string",
+          "description": "Foreign key to the Provider - UUID"
+        },
+        "primary_patient_insurance_id": {
+          "type": [
+            "null",
+            "string"
+          ],
+          "default": null,
+          "description": "Foreign key to the primary Payer. - UUID"
+        },
+        "secondary_patient_insurance_id": {
+          "type": [
+            "null",
+            "string"
+          ],
+          "default": null,
+          "description": "Foreign key to the secondary Payer. - UUID"
+        },
+        "department_id": {
+          "type": "int",
+          "description": "Placeholder for department"
+        },
+        "patient_department_id": {
+          "type": "int",
+          "description": "Placeholder for patient department"
+        },
+        "diagnosis_1": {
+          "type": [
+            "null",
+            "string"
+          ],
+          "default": null,
+          "description": "SNOMED-CT code corresponding to a diagnosis related to the claim."
+        },
+        "diagnosis_2": {
+          "type": [
+            "null",
+            "string"
+          ],
+          "default": null,
+          "description": "SNOMED-CT code corresponding to a diagnosis related to the claim."
+        },
+        "diagnosis_3": {
+          "type": [
+            "null",
+            "string"
+          ],
+          "default": null,
+          "description": "SNOMED-CT code corresponding to a diagnosis related to the claim."
+        },
+        "diagnosis_4": {
+          "type": [
+            "null",
+            "string"
+          ],
+          "default": null,
+          "description": "SNOMED-CT code corresponding to a diagnosis related to the claim."
+        },
+        "diagnosis_5": {
+          "type": [
+            "null",
+            "string"
+          ],
+          "default": null,
+          "description": "SNOMED-CT code corresponding to a diagnosis related to the claim."
+        },
+        "diagnosis_6": {
+          "type": [
+            "null",
+            "string"
+          ],
+          "default": null,
+          "description": "SNOMED-CT code corresponding to a diagnosis related to the claim."
+        },
+        "diagnosis_7": {
+          "type": [
+            "null",
+            "string"
+          ],
+          "default": null,
+          "description": "SNOMED-CT code corresponding to a diagnosis related to the claim."
+        },
+        "diagnosis_8": {
+          "type": [
+            "null",
+            "string"
+          ],
+          "default": null,
+          "description": "SNOMED-CT code corresponding to a diagnosis related to the claim."
+        },
+        "referring_provider_id": {
+          "type": [
+            "null",
+            "string"
+          ],
+          "default": null,
+          "description": "Foreign key to the Provider who made the referral. - UUID"
+        },
+        "appointment_id": {
+          "type": [
+            "null",
+            "string"
+          ],
+          "default": null,
+          "description": "Foreign key to the Encounter. - UUID"
+        },
+        "current_illness_date": {
+          "type": "string",
+          "description": "The date the patient experienced symptoms - Date (yyyy-MM-dd'T'HH:mm'Z')"
+        },
+        "service_date": {
+          "type": "string",
+          "description": "The date of the services on the claim - Date (yyyy-MM-dd'T'HH:mm'Z')"
+        },
+        "supervising_provider_id": {
+          "type": [
+            "null",
+            "string"
+          ],
+          "default": null,
+          "description": "Foreign key to the supervising Provider. - UUID"
+        },
+        "status_1": {
+          "type": [
+            "null",
+            "string"
+          ],
+          "default": null,
+          "description": "Status of the claim from the Primary Insurance. BILLED or CLOSED"
+        },
+        "status_2": {
+          "type": [
+            "null",
+            "string"
+          ],
+          "default": null,
+          "description": "Status of the claim from the Secondary Insurance. BILLED or CLOSED"
+        },
+        "status_p": {
+          "type": [
+            "null",
+            "string"
+          ],
+          "default": null,
+          "description": "Status of the claim from the Patient. BILLED or CLOSED"
+        },
+        "outstanding_1": {
+          "type": [
+            "null",
+            "float"
+          ],
+          "default": null,
+          "description": "Total amount of money owed by Primary Insurance"
+        },
+        "outstanding_2": {
+          "type": [
+            "null",
+            "float"
+          ],
+          "default": null,
+          "description": "Total amount of money owed by Secondary Insurance"
+        },
+        "outstanding_p": {
+          "type": [
+            "null",
+            "float"
+          ],
+          "default": null,
+          "description": "Total amount of money owed by Patient"
+        },
+        "last_billed_date_1": {
+          "type": [
+            "null",
+            "string"
+          ],
+          "default": null,
+          "description": "Date the claim was sent to Primary Insurance - Date (yyyy-MM-dd'T'HH:mm'Z')"
+        },
+        "last_billed_date_2": {
+          "type": [
+            "null",
+            "string"
+          ],
+          "default": null,
+          "description": "Date the claim was sent to Secondary Insurance - Date (yyyy-MM-dd'T'HH:mm'Z')"
+        },
+        "last_billed_date_p": {
+          "type": [
+            "null",
+            "string"
+          ],
+          "default": null,
+          "description": "Date the claim was sent to the Patient - Date (yyyy-MM-dd'T'HH:mm'Z')"
+        },
+        "healthcare_claim_type_id_1": {
+          "type": [
+            "null",
+            "int"
+          ],
+          "default": null,
+          "description": "Type of claim: 1 is professional, 2 is institutional"
+        },
+        "healthcare_claim_type_id_2": {
+          "type": [
+            "null",
+            "int"
+          ],
+          "default": null,
+          "description": "Type of claim: 1 is professional, 2 is institutional"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "patient_id"
+      ]
+    },
+    "ClaimTransaction": {
+      "description": "A record of a clinical claim transaction.",
+      "properties": {
+        "claim_transaction_id": {
+          "type": "string",
+          "description": "Primary Key. Unique Identifier of the claim transaction. UUID"
+        },
+        "claim_id": {
+          "type": "string",
+          "description": "Foreign key to the Claim - UUID."
+        },
+        "charge_id": {
+          "type": "int",
+          "description": "Charge ID"
+        },
+        "patient_id": {
+          "type": "string",
+          "description": "Foreign key to the Patient - UUID."
+        },
+        "claim_transaction_type": {
+          "type": "string",
+          "description": "CHARGE: original line item. PAYMENT: payment made against a charge by an insurance company (aka Payer) or patient. ADJUSTMENT: change in the charge without a payment, made by an insurance company. TRANSFERIN and TRANSFEROUT: transfer of the balance from one insurance company to another, or to a patient."
+        },
+        "amount": {
+          "type": [
+            "null",
+            "float"
+          ],
+          "default": null,
+          "description": "Dollar amount for a CHARGE or TRANSFERIN"
+        },
+        "method": {
+          "type": [
+            "null",
+            "string"
+          ],
+          "default": null,
+          "description": "Payment made by CASH, CHECK, ECHECK, COPAY, SYSTEM (adjustments without payment), or CC (credit card)."
+        },
+        "from_date": {
+          "type": [
+            "null",
+            "string"
+          ],
+          "default": null,
+          "description": "Transaction start date - Date (yyyy-MM-dd'T'HH:mm'Z')"
+        },
+        "to_date": {
+          "type": [
+            "null",
+            "string"
+          ],
+          "default": null,
+          "description": "Transaction end date - Date (yyyy-MM-dd'T'HH:mm'Z')"
+        },
+        "place_of_service": {
+          "type": "string",
+          "description": "Foreign key to the Organization - UUID."
+        },
+        "procedure_code": {
+          "type": "string",
+          "description": "SNOMED-CT or other code (e.g. CVX for Vaccines) for the service"
+        },
+        "modifier_1": {
+          "type": [
+            "null",
+            "string"
+          ],
+          "default": null,
+          "description": "Unused. Modifier on procedure code"
+        },
+        "modifier_2": {
+          "type": [
+            "null",
+            "string"
+          ],
+          "default": null,
+          "description": "Unused. Modifier on procedure code"
+        },
+        "diagnosis_ref_1": {
+          "type": [
+            "null",
+            "int"
+          ],
+          "default": null,
+          "description": "Number indicating which diagnosis code from the claim applies to this transaction, 1-8 are valid options"
+        },
+        "diagnosis_ref_2": {
+          "type": [
+            "null",
+            "int"
+          ],
+          "default": null,
+          "description": "Number indicating which diagnosis code from the claim applies to this transaction, 1-8 are valid options"
+        },
+        "diagnosis_ref_3": {
+          "type": [
+            "null",
+            "int"
+          ],
+          "default": null,
+          "description": "Number indicating which diagnosis code from the claim applies to this transaction, 1-8 are valid options"
+        },
+        "diagnosis_ref_4": {
+          "type": [
+            "null",
+            "int"
+          ],
+          "default": null,
+          "description": "Number indicating which diagnosis code from the claim applies to this transaction, 1-8 are valid options"
+        },
+        "units": {
+          "type": [
+            "null",
+            "int"
+          ],
+          "default": null,
+          "description": "Dollar amount for a CHARGE or TRANSFERIN"
+        },
+        "department_id": {
+          "type": [
+            "null",
+            "int"
+          ],
+          "default": null,
+          "description": "Placeholder for department"
+        },
+        "notes": {
+          "type": [
+            "null",
+            "string"
+          ],
+          "default": null,
+          "description": "Description of the service or transaction"
+        },
+        "unit_amount": {
+          "type": [
+            "null",
+            "float"
+          ],
+          "default": null,
+          "description": "Cost per unit"
+        },
+        "transfer_out_id": {
+          "type": [
+            "null",
+            "int"
+          ],
+          "default": null,
+          "description": "If the transaction is a TRANSFERIN, the Charge ID of the corresponding TRANSFEROUT row."
+        },
+        "transfer_type": {
+          "type": [
+            "null",
+            "string"
+          ],
+          "default": null,
+          "description": "1 if transferred to the primary insurance, 2 if transferred to the secondary insurance, or p if transferred to the patient."
+        },
+        "payments": {
+          "type": [
+            "null",
+            "float"
+          ],
+          "default": null,
+          "description": "Dollar amount of a payment for a PAYMENT row."
+        },
+        "adjustments": {
+          "type": [
+            "null",
+            "float"
+          ],
+          "default": null,
+          "description": "Dollar amount of an adjustment for an ADJUSTMENTS row."
+        },
+        "transfers": {
+          "type": [
+            "null",
+            "float"
+          ],
+          "default": null,
+          "description": "Dollar amount of a transfer for a TRANSFERIN or TRANSFEROUT row."
+        },
+        "outstanding": {
+          "type": [
+            "null",
+            "float"
+          ],
+          "default": null,
+          "description": "Dollar amount left unpaid after this transaction was applied."
+        },
+        "appointment_id": {
+          "type": [
+            "null",
+            "string"
+          ],
+          "default": null,
+          "description": "Foreign key to the Encounter - UUID"
+        },
+        "line_note": {
+          "type": [
+            "null",
+            "string"
+          ],
+          "default": null,
+          "description": "Note"
+        },
+        "patient_insurance_id": {
+          "type": [
+            "null",
+            "string"
+          ],
+          "default": null,
+          "description": "Foreign key to the Payer Transitions table member ID - UUID"
+        },
+        "fee_schedule_id": {
+          "type": [
+            "null",
+            "int"
+          ],
+          "default": null,
+          "description": "Fixed to 1."
+        },
+        "provider_id": {
+          "type": "string",
+          "description": "Foreign key to the Provider. - UUID"
+        },
+        "supervising_provider_id": {
+          "type": [
+            "null",
+            "string"
+          ],
+          "default": null,
+          "description": "Foreign key to the supervising Provider. - UUID"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "subject",
+        "resourceType"
+      ]
+    },
+    "Condition": {
+      "description": "A clinical condition, problem, diagnosis, or other event, situation, issue, or clinical concept that has risen to a level of concern.",
+      "properties": {
+        "start": {
+          "type": "string",
+          "description": "The date the condition was diagnosed - Date (YYYY-MM-DD)"
+        },
+        "stop": {
+          "type": [
+            "null",
+            "string"
+          ],
+          "default": null,
+          "description": "The date the condition resolved, if applicable - Date (YYYY-MM-DD)"
+        },
+        "patient_id": {
+          "type": "string",
+          "description": "Foreign key to the Patient - UUID."
+        },
+        "encounter_id": {
+          "type": "string",
+          "description": "Foreign key to the Encounter when the condition was diagnosed - UUID"
+        },
+        "code": {
+          "type": "string",
+          "description": "Diagnosis code from SNOMED-CT"
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the condition."
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "patient_id"
+      ]
+    },
+    "Device": {
+      "description": "A type of a manufactured item that is used in the provision of healthcare without being substantially changed through that activity. The device may be a medical or non-medical device.",
+      "properties": {
+        "start": {
+          "type": "string",
+          "description": "The date and time the device was associated to the patient - Date (yyyy-MM-dd'T'HH:mm'Z')"
+        },
+        "stop": {
+          "type": [
+            "null",
+            "string"
+          ],
+          "default": null,
+          "description": "The date and time the device was removed, if applicable - Date (yyyy-MM-dd'T'HH:mm'Z')"
+        },
+        "patient_id": {
+          "type": "string",
+          "description": "Foreign key to the Patient - UUID."
+        },
+        "encounter_id": {
+          "type": "string",
+          "description": "Foreign key to the Encounter when the device was associated - UUID"
+        },
+        "code": {
+          "type": "string",
+          "description": "Type of device, from SNOMED-CT"
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the device."
+        },
+        "device_udi": {
+          "type": "string",
+          "description": "Unique Device Identifier for the device."
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "patient_id"
+      ]
+    },
+    "Encounter": {
+      "description": "An interaction between a patient and healthcare provider(s) for the purpose of providing healthcare service(s) or assessing the health status of a patient.",
+      "properties": {
+        "encounter_id": {
+          "type": "string",
+          "description": "Primary Key. Unique Identifier of the encounter - UUID."
+        },
+        "start": {
+          "type": "string",
+          "description": "The date and time the encounter started - Date (yyyy-MM-dd'T'HH:mm'Z')"
+        },
+        "stop": {
+          "type": [
+            "null",
+            "string"
+          ],
+          "default": null,
+          "description": "The date and time the encounter concluded - Date (yyyy-MM-dd'T'HH:mm'Z')"
+        },
+        "patient_id": {
+          "type": "string",
+          "description": "Foreign key to the Patient - UUID."
+        },
+        "organization_id": {
+          "type": "string",
+          "description": "Foreign key to the Organization - UUID."
+        },
+        "provider_id": {
+          "type": "string",
+          "description": "Foreign key to the Provider. - UUID"
+        },
+        "payer_id": {
+          "type": "string",
+          "description": "Foreign key to the Payer. - UUID"
+        },
+        "encounter_class": {
+          "type": "string",
+          "description": "Code from SNOMED-CT"
+        },
+        "code": {
+          "type": "string",
+          "description": "Code from SNOMED-CT"
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the encounter"
+        },
+        "base_encounter_cost": {
+          "type": "float",
+          "description": "The base cost of the encounter, not including any line item costs related to medications, immunizations, procedures, or other services"
+        },
+        "total_claim_cost": {
+          "type": "float",
+          "description": "The total cost of the encounter, including all line items"
+        },
+        "payer_coverage": {
+          "type": "float",
+          "description": "The amount of cost covered by the Payer"
+        },
+        "reason_code": {
+          "type": [
+            "null",
+            "string"
+          ],
+          "default": null,
+          "description": "Diagnosis code from SNOMED-CT, only if this encounter targeted a specific condition"
+        },
+        "reason_description": {
+          "type": [
+            "null",
+            "string"
+          ],
+          "default": null,
+          "description": "Description of the reason code"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "patient_id"
+      ]
+    },
+    "ImagingStudy": {
+      "description": "Representation of the content produced in a DICOM imaging study. A study comprises a set of series, each of which includes a set of Service-Object Pair Instances (SOP Instances - images or other data) acquired or produced in a common context.  A series is of only one modality (e.g. X-ray, CT, MR, ultrasound), but a study may have multiple series of different modalities.",
+      "properties": {
+        "imaging_study_id": {
+          "type": "string",
+          "description": "Non-unique identifier of the imaging study. An imaging study may have multiple rows - UUID."
+        },
+        "date": {
+          "type": "string",
+          "description": "The date and time the imaging study was conducted - Date (yyyy-MM-dd'T'HH:mm'Z')"
+        },
+        "patient_id": {
+          "type": "string",
+          "description": "Foreign key to the Patient - UUID."
+        },
+        "encounter_id": {
+          "type": "string",
+          "description": "Foreign key to the Encounter where the imaging study was conducted - UUID"
+        },
+        "series_uid": {
+          "type": "string",
+          "description": "Imaging Study series DICOM UID"
+        },
+        "body_site_code": {
+          "type": "string",
+          "description": "A SNOMED Body Structures code describing what part of the body the images in the series were taken of"
+        },
+        "body_site_description": {
+          "type": "string",
+          "description": "Description of the body site"
+        },
+        "modality_code": {
+          "type": "string",
+          "description": "A DICOM-DCM code describing the method used to take the images"
+        },
+        "modality_description": {
+          "type": "string",
+          "description": "Description of the modality"
+        },
+        "instance_uid": {
+          "type": "string",
+          "description": "Imaging Study instance DICOM UID"
+        },
+        "sop_code": {
+          "type": "string",
+          "description": "A DICOM-SOP code describing the Subject-Object Pair (SOP) that constitutes the image"
+        },
+        "sop_description": {
+          "type": "string",
+          "description": "Description of the SOP code"
+        },
+        "procedure_code": {
+          "type": "string",
+          "description": "Procedure code from SNOMED-CT"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "patient_id"
+      ]
+    },
+    "Immunization": {
+      "description": "Describes the event of a patient being administered a vaccine or a record of an immunization as reported by a patient, a clinician or another party.",
+      "properties": {
+        "date": {
+          "type": "string",
+          "description": "The date and time the imaging study was conducted - Date (yyyy-MM-dd'T'HH:mm'Z')"
+        },
+        "patient_id": {
+          "type": "string",
+          "description": "Foreign key to the Patient - UUID."
+        },
+        "encounter_id": {
+          "type": "string",
+          "description": "Foreign key to the Encounter where the immunization was administered - UUID"
+        },
+        "code": {
+          "type": "string",
+          "description": "Immunization code from CVX"
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the immunization"
+        },
+        "base_cost": {
+          "type": "float",
+          "description": "The line item cost of the immunization"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "patient_id"
+      ]
+    },
+    "Medication": {
+      "description": "This resource is primarily used for the identification and definition of a medication for the purposes of prescribing, dispensing, and administering a medication as well as for making statements about medication use.",
+      "properties": {
+        "start": {
+          "type": "string",
+          "description": "The date and time the medication was prescribed - Date (yyyy-MM-dd'T'HH:mm'Z')"
+        },
+        "stop": {
+          "type": [
+            "null",
+            "string"
+          ],
+          "default": null,
+          "description": "The date and time the prescription ended, if applicable - Date (yyyy-MM-dd'T'HH:mm'Z')"
+        },
+        "patient_id": {
+          "type": "string",
+          "description": "Foreign key to the Patient - UUID."
+        },
+        "payer_id": {
+          "type": "string",
+          "description": "Foreign key to the Payer. - UUID"
+        },
+        "encounter_id": {
+          "type": "string",
+          "description": "Foreign key to the Encounter where the medication was prescribed - UUID"
+        },
+        "code": {
+          "type": "string",
+          "description": "Medication code from RxNorm"
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the medication"
+        },
+        "base_cost": {
+          "type": "float",
+          "description": "The line item cost of the medication"
+        },
+        "payer_coverage": {
+          "type": "float",
+          "description": "The amount covered or reimbursed by the Payer"
+        },
+        "dispenses": {
+          "type": "int",
+          "description": "The number of times the prescription was filled"
+        },
+        "total_cost": {
+          "type": "float",
+          "description": "The total cost of the prescription, including all dispenses"
+        },
+        "reason_code": {
+          "type": [
+            "null",
+            "string"
+          ],
+          "default": null,
+          "description": "Diagnosis code from SNOMED-CT specifying why this medication was prescribed"
+        },
+        "reason_description": {
+          "type": [
+            "null",
+            "string"
+          ],
+          "default": null,
+          "description": "Description of the reason code"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "patient_id"
+      ]
+    },
+    "Observation": {
+      "description": "Measurements and simple assertions made about a patient, device or other subject.",
+      "properties": {
+        "date": {
+          "type": "string",
+          "description": "The date and time the imaging study was conducted - Date (yyyy-MM-dd'T'HH:mm'Z')"
+        },
+        "patient_id": {
+          "type": "string",
+          "description": "Foreign key to the Patient - UUID."
+        },
+        "encounter_id": {
+          "type": "string",
+          "description": "Foreign key to the Encounter where the observation was performed - UUID"
+        },
+        "category": {
+          "type": [
+            "null",
+            "string"
+          ],
+          "default": null,
+          "description": "Observation category"
+        },
+        "code": {
+          "type": "string",
+          "description": "Observation or Lab code from LOINC"
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the observation or lab"
+        },
+        "value": {
+          "type": "string",
+          "description": "The recorded value of the observation"
+        },
+        "units": {
+          "type": [
+            "null",
+            "string"
+          ],
+          "default": null,
+          "description": "The units of measure for the value"
+        },
+        "observation_type": {
+          "type": "string",
+          "description": "The datatype of Value: text or numeric"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "patient_id"
+      ]
+    },
+    "Organization": {
+      "description": "A formally or informally recognized grouping of people or organizations formed for the purpose of achieving some form of collective action.  Includes companies, institutions, corporations, departments, community groups, healthcare practice groups, payer/insurer, etc.",
+      "properties": {
+        "organization_id": {
+          "type": "string",
+          "description": "Primary key of the Organization - UUID"
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the Organization."
+        },
+        "address": {
+          "type": "string",
+          "description": "Organization's street address without commas or newlines"
+        },
+        "city": {
+          "type": "string",
+          "description": "Street address city"
+        },
+        "state": {
+          "type": [
+            "null",
+            "string"
+          ],
+          "default": null,
+          "description": "Street address state abbreviation"
+        },
+        "zip": {
+          "type": [
+            "null",
+            "string"
+          ],
+          "default": null,
+          "description": "Street address zip or postal code"
+        },
+        "lat": {
+          "type": [
+            "null",
+            "float"
+          ],
+          "default": null,
+          "description": "Latitude of Organization's address"
+        },
+        "lon": {
+          "type": [
+            "null",
+            "float"
+          ],
+          "default": null,
+          "description": "Longitude of Organization's address"
+        },
+        "phone": {
+          "type": [
+            "null",
+            "string"
+          ],
+          "default": null,
+          "description": "Organization's phone number."
+        },
+        "revenue": {
+          "type": [
+            "null",
+            "float"
+          ],
+          "default": null,
+          "description": "The monetary revenue of the organization during the entire simulation"
+        },
+        "utilization": {
+          "type": [
+            "null",
+            "int"
+          ],
+          "default": null,
+          "description": "The number of Encounters performed by this Organization"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "organization_id"
+      ]
+    },
+    "PatientExpense": {
+      "description": "Patient Expense",
+      "properties": {
+        "patient_id": {
+          "type": "string",
+          "description": "Primary Key. Unique Identifier of the patient - UUID"
+        },
+        "year": {
+          "type": "string",
+          "description": "Date (yyyy-MM-dd'T'HH:mm'Z')"
+        },
+        "payer_id": {
+          "type": "string",
+          "description": "Foreign key to the Payer. - UUID"
+        },
+        "healthcare_expenses": {
+          "type": "float",
+          "description": "Healthcase expenses"
+        },
+        "insurance_costs": {
+          "type": "float",
+          "description": "Insurance costs"
+        },
+        "covered_costs": {
+          "type": "float",
+          "description": "Covered costs"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "patient_id"
+      ]
+    },
+    "Patient": {
+      "description": "Patient.",
+      "properties": {
+        "patient_id": {
+          "type": "string",
+          "description": "Primary Key. Unique Identifier of the patient - UUID"
+        },
+        "birth_date": {
+          "type": "string",
+          "description": "The date the patient was born - Date (YYYY-MM-DD)"
+        },
+        "death_date": {
+          "type": [
+            "null",
+            "string"
+          ],
+          "default": null,
+          "description": "The date the patient died - Date (YYYY-MM-DD)"
+        },
+        "ssn": {
+          "type": "string",
+          "description": "Patient Social Security identifier"
+        },
+        "drivers": {
+          "type": [
+            "null",
+            "string"
+          ],
+          "default": null,
+          "description": "Patient Drivers License identifier"
+        },
+        "passport": {
+          "type": [
+            "null",
+            "string"
+          ],
+          "default": null,
+          "description": "Patient Passport identifier"
+        },
+        "prefix": {
+          "type": [
+            "null",
+            "string"
+          ],
+          "default": null,
+          "description": "Name prefix, such as Mr., Mrs., Dr., etc."
+        },
+        "first": {
+          "type": "string",
+          "description": "First name of the patient"
+        },
+        "last": {
+          "type": "string",
+          "description": "Last or surname of the patient"
+        },
+        "suffix": {
+          "type": [
+            "null",
+            "string"
+          ],
+          "default": null,
+          "description": "Name suffix, such as PhD, MD, JD, etc."
+        },
+        "maiden": {
+          "type": [
+            "null",
+            "string"
+          ],
+          "default": null,
+          "description": "Maiden name of the patient"
+        },
+        "marital": {
+          "type": [
+            "null",
+            "string"
+          ],
+          "default": null,
+          "description": "Marital Status. M is married, S is single. Currently no support for divorce (D) or widowing (W)"
+        },
+        "race": {
+          "type": "string",
+          "description": "Description of the patient's primary race"
+        },
+        "ethnicity": {
+          "type": "string",
+          "description": "Description of the patient's primary ethnicity"
+        },
+        "gender": {
+          "type": "string",
+          "description": "Gender. M is male, F is female"
+        },
+        "birth_place": {
+          "type": "string",
+          "description": "Name of the town where the patient was born"
+        },
+        "address": {
+          "type": "string",
+          "description": "Patient's street address without commas or newlines"
+        },
+        "city": {
+          "type": "string",
+          "description": "Patient's address city"
+        },
+        "state": {
+          "type": "string",
+          "description": "Patient's address state"
+        },
+        "county": {
+          "type": [
+            "null",
+            "string"
+          ],
+          "default": null,
+          "description": "Patient's address county"
+        },
+        "fips": {
+          "type": [
+            "null",
+            "string"
+          ],
+          "default": null,
+          "description": "Patient's FIPS county code"
+        },
+        "zip": {
+          "type": [
+            "null",
+            "string"
+          ],
+          "default": null,
+          "description": "Patient's zip code"
+        },
+        "lat": {
+          "type": [
+            "null",
+            "float"
+          ],
+          "default": null,
+          "description": "Latitude of Patient's address"
+        },
+        "lon": {
+          "type": [
+            "null",
+            "float"
+          ],
+          "default": null,
+          "description": "Longitude of Patient's address"
+        },
+        "healthcare_expenses": {
+          "type": "float",
+          "description": "The total lifetime cost of healthcare to the patient (i.e. what the patient paid)"
+        },
+        "healthcare_coverage": {
+          "type": "float",
+          "description": "The total lifetime cost of healthcare services that were covered by Payers (i.e. what the insurance company paid)"
+        },
+        "income": {
+          "type": "int",
+          "description": "Annual income for the Patient"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "patient_id"
+      ]
+    },
+    "PayerTransition": {
+      "description": "Payer Transition",
+      "properties": {
+        "patient_id": {
+          "type": "string",
+          "description": "Primary Key. Unique Identifier of the patient - UUID"
+        },
+        "member_id": {
+          "type": [
+            "null",
+            "string"
+          ],
+          "default": null,
+          "description": "Member ID for the Insurance Plan - UUID"
+        },
+        "start_year": {
+          "type": "string",
+          "description": "Date (YYYY)"
+        },
+        "end_year": {
+          "type": "string",
+          "description": "Date (YYYY)"
+        },
+        "payer_id": {
+          "type": "string",
+          "description": "Foreign key to the Payer - UUID"
+        },
+        "secondary_payer_id": {
+          "type": [
+            "null",
+            "string"
+          ],
+          "default": null,
+          "description": "Foreign key to the Secondary Payer - UUID"
+        },
+        "plan_ownership": {
+          "type": [
+            "null",
+            "string"
+          ],
+          "default": null,
+          "description": "The owner of the insurance policy. Legal values: Guardian, Self, Spouse"
+        },
+        "owner_name": {
+          "type": [
+            "null",
+            "string"
+          ],
+          "default": null,
+          "description": "The name of the insurance policy owner"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "patient_id"
+      ]
+    },
+    "Payer": {
+      "description": "This resource provides the details about the payer.",
+      "properties": {
+        "payer_id": {
+          "type": "string",
+          "description": "Primary key of the Payer (e.g. Insurance) - UUID"
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the Payer."
+        },
+        "ownership": {
+          "type": "string",
+          "description": "Owner of the Payer - GOVERNMENT or NO_INSURANCE"
+        },
+        "address": {
+          "type": "string",
+          "description": "Payer's street address without commas or newlines"
+        },
+        "city": {
+          "type": "string",
+          "description": "Street address city"
+        },
+        "state_headquartered": {
+          "type": [
+            "null",
+            "string"
+          ],
+          "default": null,
+          "description": "Street address state abbreviation"
+        },
+        "zip": {
+          "type": [
+            "null",
+            "string"
+          ],
+          "default": null,
+          "description": "Street address zip or postal code"
+        },
+        "phone": {
+          "type": [
+            "null",
+            "string"
+          ],
+          "default": null,
+          "description": "Payer's phone number."
+        },
+        "amount_covered": {
+          "type": "float",
+          "description": "The monetary amount paid to Organizations during the entire simulation"
+        },
+        "amount_uncovered": {
+          "type": "float",
+          "description": "The monetary amount not paid to Organizations during the entire simulation, and covered out of pocket by patients"
+        },
+        "revenue": {
+          "type": "float",
+          "description": "The monetary revenue of the Payer during the entire simulation"
+        },
+        "covered_encounters": {
+          "type": "int",
+          "description": "The number of Encounters paid for by this Payer"
+        },
+        "uncovered_encounters": {
+          "type": "int",
+          "description": "The number of Encounters not paid for by this Payer, and paid out of pocket by patients"
+        },
+        "covered_medications": {
+          "type": "int",
+          "description": "The number of Medications paid for by this Payer"
+        },
+        "uncovered_medications": {
+          "type": "int",
+          "description": "The number of Medications not paid for by this Payer, and paid out of pocket by patients"
+        },
+        "covered_procedures": {
+          "type": "int",
+          "description": "The number of Procedures paid for by this Payer"
+        },
+        "uncovered_procedures": {
+          "type": "int",
+          "description": "The number of Procedures not paid for by this Payer, and paid out of pocket by patients"
+        },
+        "covered_immunizations": {
+          "type": "int",
+          "description": "The number of Immunizations paid for by this Payer"
+        },
+        "uncovered_immunizations": {
+          "type": "int",
+          "description": "The number of Immunizations not paid for by this Payer, and paid out of pocket by patients"
+        },
+        "unique_customers": {
+          "type": "int",
+          "description": "The number of unique patients enrolled with this Payer during the entire simulation"
+        },
+        "qols_avg": {
+          "type": [
+            "null",
+            "float"
+          ],
+          "default": null,
+          "description": "The average Quality of Life Scores (QOLS) for all patients enrolled with this Payer during the entire simulation"
+        },
+        "member_months": {
+          "type": "int",
+          "description": "The total number of months that patients were enrolled with this Payer during the simulation and paid monthly premiums (if any)"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "payer_id"
+      ]
+    },
+    "Procedure": {
+      "description": "An action that is or was performed on or for a patient. This can be a physical intervention like an operation, or less invasive like long term services, counseling, or hypnotherapy.",
+      "properties": {
+        "start": {
+          "type": "string",
+          "description": "The date and time the procedure was performed - Date (yyyy-MM-dd'T'HH:mm'Z')"
+        },
+        "stop": {
+          "type": [
+            "null",
+            "string"
+          ],
+          "default": null,
+          "description": "The date and time the procedure was completed, if applicable - Date (yyyy-MM-dd'T'HH:mm'Z')"
+        },
+        "patient_id": {
+          "type": "string",
+          "description": "Foreign key to the Patient - UUID."
+        },
+        "encounter_id": {
+          "type": "string",
+          "description": "Foreign key to the Encounter where the procedure was performed - UUID"
+        },
+        "code": {
+          "type": "string",
+          "description": "Code from SNOMED-CT"
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the procedure"
+        },
+        "base_cost": {
+          "type": "float",
+          "description": "The line item cost of the procedure"
+        },
+        "reason_code": {
+          "type": [
+            "null",
+            "string"
+          ],
+          "default": null,
+          "description": "Diagnosis code from SNOMED-CT specifying why this procedure was performed"
+        },
+        "reason_description": {
+          "type": [
+            "null",
+            "string"
+          ],
+          "default": null,
+          "description": "Description of the reason code."
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "patient_id"
+      ]
+    },
+    "Provider": {
+      "description": "Record of provider.",
+      "properties": {
+        "provider_id": {
+          "type": "string",
+          "description": "Primary key of the Provider/Clinician - UUID"
+        },
+        "organization_id": {
+          "type": "string",
+          "description": "Foreign key to the Organization that employees this provider - UUID"
+        },
+        "name": {
+          "type": "string",
+          "description": "First and last name of the Provider"
+        },
+        "gender": {
+          "type": "string",
+          "description": "Gender. M is male, F is female"
+        },
+        "speciality": {
+          "type": "string",
+          "description": "Provider speciality"
+        },
+        "address": {
+          "type": "string",
+          "description": "Provider's street address without commas or newlines"
+        },
+        "city": {
+          "type": "string",
+          "description": "Street address city"
+        },
+        "state": {
+          "type": [
+            "null",
+            "string"
+          ],
+          "default": null,
+          "description": "Street address state abbreviation"
+        },
+        "zip": {
+          "type": [
+            "null",
+            "string"
+          ],
+          "default": null,
+          "description": "Street address zip or postal code"
+        },
+        "lat": {
+          "type": [
+            "null",
+            "float"
+          ],
+          "default": null,
+          "description": "Latitude of Provider's address"
+        },
+        "lon": {
+          "type": [
+            "null",
+            "float"
+          ],
+          "default": null,
+          "description": "Longitude of Provider's address"
+        },
+        "encounters": {
+          "type": [
+            "null",
+            "int"
+          ],
+          "default": null,
+          "description": "The number of Encounters performed by this Provider"
+        },
+        "procedures": {
+          "type": [
+            "null",
+            "int"
+          ],
+          "default": null,
+          "description": "The number of Procedures performed by this Provider"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "provider_id"
+      ]
+    },
+    "Supply": {
+      "description": "A record of a supply for a medication, substance or device used in the healthcare setting.",
+      "properties": {
+        "date": {
+          "type": "string",
+          "description": "The date the supplies were used - Date (YYYY-MM-DD)"
+        },
+        "patient_id": {
+          "type": "string",
+          "description": "Foreign key to the Patient - UUID."
+        },
+        "encounter_id": {
+          "type": "string",
+          "description": "Foreign key to the Encounter when the supplies were used - UUID"
+        },
+        "code": {
+          "type": "string",
+          "description": "Code for the type of supply used, from SNOMED-CT"
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of supply used"
+        },
+        "quantity": {
+          "type": "int",
+          "description": "Quantity of supply used"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "quantity",
+        "resourceType"
+      ]
+    }
+  }
+}

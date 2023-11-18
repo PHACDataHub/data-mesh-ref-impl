@@ -1,0 +1,36 @@
+ARG BASE_IMAGE
+
+FROM ${BASE_IMAGE}
+
+ARG WORKFLOW_FILE
+ARG WORKFLOW_NAME
+ARG STEP_NAME
+ARG PYTHON_REQUIREMENTS
+ARG AVRO_DIR
+ARG TEST_ARGS
+
+COPY $PYTHON_REQUIREMENTS requirements.txt
+RUN pip install --upgrade pip
+RUN pip install -r requirements.txt
+
+COPY .env .
+
+COPY $AVRO_DIR/*.avsc ./
+
+COPY $WORKFLOW_FILE .
+
+COPY src/common/*.py ./
+COPY src/$STEP_NAME.py worker.py
+
+ENV __WORKFLOW_FILE=${WORKFLOW_FILE}
+ENV __WORKFLOW_NAME=${WORKFLOW_NAME}
+ENV __STEP_NAME=${STEP_NAME}
+ENV __INSTANCE_ID=${INSTANCE_ID}
+ENV __TEST_ARGS=${TEST_ARGS}
+
+RUN echo python main.py ${__WORKFLOW_FILE} ${__WORKFLOW_NAME} ${__STEP_NAME} ${__TEST_ARGS}
+CMD python main.py ${__WORKFLOW_FILE} ${__WORKFLOW_NAME} ${__STEP_NAME}
+
+# Use this for test
+# RUN echo python worker.py ${__WORKFLOW_FILE} ${__WORKFLOW_NAME} ${__STEP_NAME} ${__TEST_ARGS}
+# CMD python worker.py ${__WORKFLOW_FILE} ${__WORKFLOW_NAME} ${__STEP_NAME} ${__TEST_ARGS}

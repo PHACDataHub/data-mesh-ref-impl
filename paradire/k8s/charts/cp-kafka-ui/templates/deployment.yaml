@@ -1,0 +1,116 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "cp-kafka-ui.fullname" . }}
+  labels:
+    app: {{ template "cp-kafka-ui.name" . }}
+    chart: {{ template "cp-kafka-ui.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "cp-kafka-ui.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "cp-kafka-ui.name" . }}
+        release: {{ .Release.Name }}
+      {{- if or .Values.podAnnotations .Values.prometheus.jmx.enabled }}
+      annotations:
+      {{- range $key, $value := .Values.podAnnotations }}
+        {{ $key }}: {{ $value | quote }}
+      {{- end }}
+      {{- if .Values.prometheus.jmx.enabled }}
+        prometheus.io/scrape: "true"
+        prometheus.io/port: {{ .Values.prometheus.jmx.port | quote }}
+      {{- end }}
+      {{- end }}
+    spec:
+      containers:
+        {{- if .Values.prometheus.jmx.enabled }}
+        - name: prometheus-jmx-exporter
+          image: "{{ .Values.prometheus.jmx.image }}:{{ .Values.prometheus.jmx.imageTag }}"
+          imagePullPolicy: "{{ .Values.prometheus.jmx.imagePullPolicy }}"
+          command:
+          - java
+          - -XX:+UnlockExperimentalVMOptions
+          - -XX:+UseCGroupMemoryLimitForHeap
+          - -XX:MaxRAMFraction=1
+          - -XshowSettings:vm
+          - -jar
+          - jmx_prometheus_httpserver.jar
+          - {{ .Values.prometheus.jmx.port | quote }}
+          - /etc/jmx-kafka-ui/jmx-kafka-ui-prometheus.yml
+          ports:
+          - containerPort: {{ .Values.prometheus.jmx.port }}
+          resources:
+{{ toYaml .Values.prometheus.jmx.resources | indent 12 }}
+          volumeMounts:
+          - name: jmx-config
+            mountPath: /etc/jmx-kafka-ui
+        {{- end }}
+        - name: {{ template "cp-kafka-ui.name" . }}
+          image: "{{ .Values.image }}:{{ .Values.imageTag }}"
+          imagePullPolicy: "{{ .Values.imagePullPolicy }}"
+          ports:
+            - name: server
+              containerPort: 8080
+              protocol: TCP
+            {{- if .Values.prometheus.jmx.enabled }}
+            - containerPort: {{ .Values.jmx.port }}
+              name: jmx
+            {{- end }}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+          env:
+          - name: KAFKA_CLUSTERS_0_NAME
+            value: local
+          - name: KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS
+            value: {{ template "cp-kafka-ui.kafka.bootstrapServers" . }}
+          - name: KAFKA_CLUSTERS_0_SCHEMAREGISTRY
+            value: {{ template "cp-kafka-ui.cp-schema-registry.service-name" . }}
+          - name: KAFKA_CLUSTERS_0_KSQLDBSERVER
+            value: {{ template "cp-kafka-ui.cp-ksql-server.service-name" . }}
+          - name: KAFKA_CLUSTERS_0_KAFKACONNECT_0_NAME
+            value: {{ template "cp-kafka-ui.cp-kafka-connect.fullname" . }}
+          - name: KAFKA_CLUSTERS_0_KAFKACONNECT_0_ADDRESS
+            value: {{ template "cp-kafka-ui.cp-kafka-connect.service-name" . }}     
+          - name: AUTH_TYPE
+            value: "LOGIN_FORM"
+          - name: KAFKA_CLUSTERS_0_READONLY
+            value: 'false'
+          - name: SPRING_SECURITY_USER_NAME
+            value: "kafkaui"
+          - name: KAFKA_CLUSTERS_0_METRICS_PORT
+            value: "5555"
+          - name: SPRING_SECURITY_USER_PASSWORD
+            value: "phac@2023"
+          {{- if .Values.jmx.port }}
+          - name: JMX_PORT
+            value: "{{ .Values.jmx.port }}"
+          {{- end }}
+      {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+{{ toYaml .Values.imagePullSecrets | indent 8 }}
+      {{- end }}
+      volumes:
+      {{- if .Values.prometheus.jmx.enabled }}
+      - name: jmx-config
+        configMap:
+          name: {{ template "cp-kafka-ui.fullname" . }}-jmx-configmap
+      {{- end }}
+      {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+      {{- end }}
+      {{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
+      {{- end }}
+      {{- if .Values.affinity }}
+      affinity:
+{{ toYaml .Values.affinity | indent 8 }}
+      {{- end }}

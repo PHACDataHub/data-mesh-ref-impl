@@ -1,0 +1,15 @@
+{
+    "type": "record",
+    "name": "symptom_val",
+    "fields": [
+        {"name": "patient_id", "type": "string", "doc": "Primary Key. Unique Identifier of the patient - UUID"},
+        {"name": "gender", "type": "string", "doc": "Gender. M is male, F is female"},
+        {"name": "race", "type": "string", "doc": "Description of the patient's primary race"},
+        {"name": "ethnicity", "type": "string", "doc": "Description of the patient's primary ethnicity"},
+        {"name": "age_begin", "type": "long", "doc": "The age at which the condition was onset."},
+        {"name": "age_end", "type": ["null", "long"], "default": null, "doc": "The age at which the condition was resolved (if any)."},
+        {"name": "pathology", "type": "string", "doc": "The name of the condition"},
+        {"name": "num_symptoms", "type": "long", "doc": "The number of symptoms."},
+        {"name": "symptoms", "type": ["null", "string"], "default": null, "doc": "the symptoms (if any) and their severity level."}
+    ]
+}

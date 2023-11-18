@@ -1,0 +1,28 @@
+{
+    "name": "fas_5_source_connector",
+    "config": {
+        "_comment": "Source configuration of responses to Federated Analytics Request for Vaccination Records",
+        "connector.class": "streams.kafka.connect.source.Neo4jSourceConnector",
+        "key.converter": "io.confluent.connect.avro.AvroConverter",
+        "key.converter.schema.registry.url": "http://schema-registry:8081",
+        "value.converter": "io.confluent.connect.avro.AvroConverter",
+        "value.converter.schema.registry.url": "http://schema-registry:8081",
+        "errors.retry.timeout": "-1",
+        "errors.retry.delay.max.ms": "1000",
+        "errors.tolerance": "all",
+        "errors.log.enable": true,
+        "errors.log.include.messages": true,
+        "neo4j.server.uri": "bolt://neo4j:7687",
+        "neo4j.authentication.basic.username": "neo4j",
+        "neo4j.authentication.basic.password": "phac@2023",
+        "partitions": 4,
+        "neo4j.streaming.poll.interval.msecs": 5000,
+        "neo4j.streaming.property": "timestamp",
+        "neo4j.streaming.from": "ALL",
+        "neo4j.enforce.schema": true,
+        "neo4j.encryption.enabled": false,
+        "topic": "fas_5",
+        "neo4j.source.type":"QUERY",
+        "neo4j.source.query": "MATCH (entity:FAS_5) WHERE entity.timestamp > $lastCheck RETURN entity.request_id AS request_id, entity.pt AS pt, entity.immunization_date AS immunization_date, entity.immunization_code AS immunization_code, entity.immunization_description AS immunization_description, entity.organization_name AS organization_name, entity.organization_zip AS organization_zip, entity.encounter_class AS encounter_class, entity.encounter_code AS encounter_code, entity.encounter_description AS encounter_description, entity.patient_id AS patient_id, entity.patient_address AS patient_address, entity.patient_birth_date AS patient_birth_date, entity.patient_alive AS patient_alive, entity.patient_zip AS patient_zip, entity.patient_gender AS patient_gender, entity.patient_race AS patient_race, entity.patient_ethnicity AS patient_ethnicity, entity.timestamp AS timestamp"
+    }
+}

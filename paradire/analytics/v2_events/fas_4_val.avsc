@@ -1,0 +1,14 @@
+{
+    "type": "record",
+    "name": "ConnectDefault",
+    "namespace": "io.confluent.connect.avro",
+    "doc": "VaccinationByOrganizationResponse - Vaccinations by organization - The number of vaccinations by an organization for patients coming from the same zip code.",
+    "fields": [
+        {"name": "request_id", "type": "string", "doc": "Unique ID of a Fererated Analytics Request."},
+        {"name": "pt", "type": "string", "doc": "PT, where this response from, i.e. BC"},
+        {"name": "patient_zip", "type": "string", "doc": "Reduced zip code (first three characters) of patients"},
+        {"name": "organization_name", "type": "string", "doc": "Name of the organization which provides vaccination"},
+        {"name": "vaccination_count", "type": "long", "doc": "The number of vaccinations."},
+        {"name": "timestamp", "type": "long", "doc": "Timestamp when this record is produced."}
+    ]
+}

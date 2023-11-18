@@ -1,0 +1,73 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ template "cp-kafka-job.fullname" . }}
+  labels:
+    app: {{ template "cp-kafka-job.name" . }}
+    chart: {{ template "cp-kafka-job.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  template:
+    metadata:
+      labels:
+        app: {{ template "cp-kafka-job.name" . }}
+    spec:
+      restartPolicy: Never
+      initContainers:
+      - name: create-kafka-topics
+        image: "{{ .Values.imageCreateTopic }}:{{ .Values.imageCreateTopicTag }}"
+        command: ["/bin/sh", "-c"]
+        args:
+        - |
+          # Check if Kafka is up by listing topics
+          until kafka-topics --bootstrap-server {{ template "cp-kafka-job.kafka.bootstrapServers" . }} --list; do
+            echo "Waiting for Kafka to be ready..."
+            sleep 5
+          done
+          echo "Kafka is ready."
+          
+          topics=("allergies" "careplans" "claims_transactions" "claims" "conditions" "devices" "encounters" "imaging_studies" "immunizations" "medications" "observations" "organizations" "patient_expenses" "patients" "payer_transitions" "payers" "procedures" "providers" "supplies" "symptoms" "fed_request_city_org_patient" "fed_request_city_org_patient_visit" "fed_request_city_year_top_proc" "fed_request_patient_cvx_org" "fed_request_pt_org_med" "fed_request_top_k_immunization" "fed_request_zip_immunization" "fed_request_vaccination_record" "fed_response_city_org_patient" "fed_response_city_org_patient_visit" "fed_response_city_year_top_proc" "fed_response_patient_cvx_org" "fed_response_pt_org_med" "fed_response_top_k_immunization" "fed_response_zip_immunization" "fed_response_vaccination_record" "fas_1" "fas_2" "fas_3" "fas_4" "fas_5" "fas_6" "fas_7" "fas_8" "fas_9" "far_1" "far_2" "far_3" "far_4" "far_5" "far_6" "far_7" "far_8" "far_9")
+        
+          for topic in "${topics[@]}"; do
+            if ! kafka-topics --bootstrap-server {{ template "cp-kafka-job.kafka.bootstrapServers" . }} --topic $topic --describe > /dev/null 2>&1; then
+              echo "Creating topic: $topic"
+              kafka-topics --bootstrap-server {{ template "cp-kafka-job.kafka.bootstrapServers" . }} --create --if-not-exists --topic $topic --replication-factor {{ $.Values.replicationFactor }} --partitions {{ $.Values.partitions }}
+            else
+              echo "Topic $topic already exists, skipping creation."
+            fi
+          done
+
+          echo "Topic setup completed."
+          kafka-topics --bootstrap-server {{ template "cp-kafka-job.kafka.bootstrapServers" . }} --list
+      - name: check-fhir
+        image: curlimages/curl:latest
+        command: ["/bin/sh", "-c"]
+        args:
+        - |
+          # Check if HAPI FHIR server is up and returns HTTP 200 OK
+          until [ "$(curl -o /dev/null -s -w '%{http_code}\n' {{ .Values.fihrHealthCheckUrl }})" = "200" ]; do
+            echo "Waiting for HAPI FHIR server to be ready..."
+            sleep 5
+          done
+          echo "HAPI FHIR server is ready."
+      containers:
+      - name: synthea-data
+        resources:
+          requests:
+            memory: "16Gi"
+            cpu: "20"
+        image: "{{ .Values.imageSyntheaKafka }}:{{ .Values.imageSyntheaKafkaTag }}"
+        env:
+          - name: sampling_size
+            value: "{{ .Values.samplingSize }}"
+          - name: pt
+            value: "{{ .Values.pt }}"
+          - name: fihr_server_url
+            value: "{{ .Values.fihrServerUrl }}"
+          - name: CONNECT_URL
+            value: {{ template "cp-kafka-job.cp-kafka-connect.service-name" . }}
+          - name: SCHEMA_URL
+            value: {{ template "cp-kafka-job.cp-schema-registry.service-name" . }}
+          - name: BROKER_URL
+            value: {{ template "cp-kafka-job.kafka.bootstrapServers" . }}

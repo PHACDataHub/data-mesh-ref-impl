@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: hapi-fhir-db
+  name: hapi-fhir-db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hapi-fhir-db
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: hapi-fhir-db
+    spec:
+      containers:
+      - name: hapi-fhir-db
+        resources:
+          requests:
+            memory: "10Gi"
+            cpu: "10"
+        image: "{{ .Values.db.image }}"
+        env:
+        - name: PGDATA
+          value: "{{ .Values.db.pgdata }}"
+        - name: POSTGRES_PASSWORD
+          value: "{{ .Values.db.postgresPassword }}"
+        - name: POSTGRES_USER
+          value: "{{ .Values.db.postgresUser }}"
+        - name: POSTGRES_DB
+          value: "{{ .Values.db.postgresDB }}"
+        volumeMounts:
+        - name: postgres-storage
+          mountPath: "/var/lib/postgresql/data" 
+        - name: postgres-config
+          mountPath: "/etc/postgresql/postgresql.conf"
+          subPath: postgresql.conf
+      volumes:
+      - name: postgres-storage
+        persistentVolumeClaim:
+          claimName: hapi-fhir-db-pvc
+      - name: postgres-config
+        configMap:
+          name: postgres-config
+status: {}

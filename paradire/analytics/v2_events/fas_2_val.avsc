@@ -1,0 +1,14 @@
+{
+    "type": "record",
+    "name": "ConnectDefault",
+    "namespace": "io.confluent.connect.avro",
+    "doc": "YoungChildrenMissingScheduleResponse - Children missing scheduled vaccinations - The number of patients missing scheduled vaccines together with a set of (key - vaccine code, value - number of patients missed) pairs is provided per zip code.",
+    "fields": [
+        {"name": "request_id", "type": "string", "doc": "Unique ID of a Fererated Analytics Request."},
+        {"name": "pt", "type": "string", "doc": "PT, where this response from, i.e. BC"},
+        {"name": "patient_zip", "type": "string", "doc": "Reduced zip code (first three characters)."},
+        {"name": "patient_count", "type": "long", "doc": "The total number of vaccinated patients, with in the zipcode"},
+        {"name": "missing_doses", "type": "string", "doc": "The missing doses"},
+        {"name": "timestamp", "type": "long", "doc": "Timestamp when this record is produced."}
+    ]
+}

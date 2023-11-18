@@ -1,0 +1,7 @@
+{
+	"type": "record",
+	"name": "providers_key",
+	"fields": [
+		{"name": "provider_id", "type": "string", "doc": "Primary key of the Provider/Clinician - UUID"}
+	]
+}

@@ -1,0 +1,7 @@
+{
+    "type": "record",
+    "name": "payer_key",
+    "fields": [
+        {"name": "payer_id", "type": "string", "doc": "Primary key of the Payer (e.g. Insurance) - UUID"}
+    ]
+}

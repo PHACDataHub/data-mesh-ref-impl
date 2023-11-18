@@ -1,0 +1,27 @@
+{
+    "type": "record",
+    "name": "ConnectDefault",
+    "namespace": "io.confluent.connect.avro",
+    "doc": "VaccinationRecordStreamResponse - Vaccination records - Vaccination record stream, each record contain information about the patient, the vaccine, and its administration by an organization.",
+    "fields": [
+        {"name": "request_id", "type": "string", "doc": "Unique ID of a Fererated Analytics Request."},
+        {"name": "pt", "type": "string", "doc": "PT, where this response from, i.e. BC"},
+        {"name": "immunization_date", "type": "string", "doc": "The date and time the imaging study was conducted - Date (yyyy-MM-dd'T'HH:mm'Z')"},
+        {"name": "immunization_code", "type": "string", "doc": "Immunization code from CVX"},
+        {"name": "immunization_description", "type": "string", "doc": "Description of the immunization"},
+        {"name": "organization_name", "type": "string", "doc": "Name of the Organization."},
+        {"name": "organization_zip", "type": ["null", "string"], "default": null, "doc": "Street address zip or postal code"},
+        {"name": "encounter_class", "type": "string", "doc": "Code from SNOMED-CT"},
+        {"name": "encounter_code", "type": "string", "doc": "Code from SNOMED-CT"},
+        {"name": "encounter_description", "type": "string", "doc": "Description of the encounter"},
+        {"name": "patient_id", "type": "string", "doc": "Primary Key. Unique Identifier of the patient - UUID"},
+        {"name": "patient_address", "type": "string", "doc": "Patient's street address without commas or newlines"},
+        {"name": "patient_birth_date", "type": "string", "doc": "The birth date of the Patient - Date (YYYY-MM-DD) as string."},
+        {"name": "patient_alive", "type": "boolean", "doc": "If the patient is alive"},
+        {"name": "patient_zip", "type": "string", "doc": "Patient's zip code"},
+        {"name": "patient_gender", "type": "string", "doc": "Gender. M is male, F is female"},
+        {"name": "patient_race", "type": "string", "doc": "Description of the patient's primary race"},
+        {"name": "patient_ethnicity", "type": "string", "doc": "Description of the patient's primary ethnicity"},
+        {"name": "timestamp", "type": "long", "doc": "Timestamp when this record is produced."}
+    ]
+}

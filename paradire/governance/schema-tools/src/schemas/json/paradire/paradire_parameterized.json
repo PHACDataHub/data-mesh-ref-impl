@@ -1,0 +1,854 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "id": "https://github.com/PHACDataHub/data-mesh-ref-impl/paradire/federal/0.1",
+  "description": "Federal paradire PoC data model",
+  "discriminator": {
+    "propertyName": "resourceType",
+    "mapping": {
+      "COVIDVaccinationStatusResponse": "#/definitions/COVIDVaccinationStatusResponse",
+      "YoungChildrenMissingScheduleResponse": "#/definitions/YoungChildrenMissingScheduleResponse",
+      "AverageDistanceForVaccineResponse": "#/definitions/AverageDistanceForVaccineResponse",
+      "VaccinationByOrganizationResponse": "#/definitions/VaccinationByOrganizationResponse",
+      "VaccinationRecordStreamResponse": "#/definitions/VaccinationRecordStreamResponse",
+      "PatientConditionResponse": "#/definitions/PatientConditionResponse",
+      "ReasonForMedicationResponse": "#/definitions/ReasonForMedicationResponse",
+      "ProcedurePerformedResponse": "#/definitions/ProcedurePerformedResponse",
+      "YoungChildrenMissingScheduleExtendedResponse": "#/definitions/YoungChildrenMissingScheduleExtendedResponse"
+    }
+  },
+  "entrypoints": {
+    "COVIDVaccinationStatusRequest": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/COVIDVaccinationStatusResponse"
+      },
+      "arguments": "#/definitions/COVIDVaccinationStatusRequest",
+      "topics": {
+        "request": "far_1",
+        "response": "fas_1"
+      }
+    },
+    "YoungChildrenMissingScheduleRequest": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/YoungChildrenMissingScheduleResponse"
+      },
+      "arguments": "#/definitions/YoungChildrenMissingScheduleRequest",
+      "topics": {
+        "request": "far_2",
+        "response": "fas_2"
+      }
+    },
+    "AverageDistanceForVaccineRequest": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/AverageDistanceForVaccineResponse"
+      },
+      "arguments": "#/definitions/AverageDistanceForVaccineRequest",
+      "topics": {
+        "request": "far_3",
+        "response": "fas_3"
+      }
+    },
+    "VaccinationByOrganizationRequest": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/VaccinationByOrganizationResponse"
+      },
+      "arguments": "#/definitions/VaccinationByOrganizationRequest",
+      "topics": {
+        "request": "far_4",
+        "response": "fas_4"
+      }
+    },
+    "VaccinationRecordStreamRequest": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/VaccinationRecordStreamResponse"
+      },
+      "arguments": "#/definitions/VaccinationRecordStreamRequest",
+      "topics": {
+        "request": "far_5",
+        "response": "fas_5"
+      }
+    },
+    "PatientConditionRequest": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/PatientConditionResponse"
+      },
+      "arguments": "#/definitions/PatientConditionRequest",
+      "topics": {
+        "request": "far_6",
+        "response": "fas_6"
+      }
+    },
+    "ReasonForMedicationRequest": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/ReasonForMedicationResponse"
+      },
+      "arguments": "#/definitions/ReasonForMedicationRequest",
+      "topics": {
+        "request": "far_7",
+        "response": "fas_7"
+      }
+    },
+    "ProcedurePerformedRequest": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/ProcedurePerformedResponse"
+      },
+      "arguments": "#/definitions/ProcedurePerformedRequest",
+      "topics": {
+        "request": "far_8",
+        "response": "fas_8"
+      }
+    },
+    "YoungChildrenMissingScheduleExtendedRequest": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/YoungChildrenMissingScheduleExtendedResponse"
+      },
+      "arguments": "#/definitions/YoungChildrenMissingScheduleExtendedRequest",
+      "topics": {
+        "request": "far_9",
+        "response": "fas_9"
+      }
+    }
+  },
+  "definitions": {
+    "COVIDVaccinationStatusRequest": {
+      "description": "Request for COVID vaccination status by a number of CVXs, within a period of time, and based on the number of doses depending on vaccine type.",
+      "properties": {
+        "request_id": {
+          "type": "string",
+          "description": "Unique ID of a Fererated Analytics Request"
+        },
+        "covid_cvx_list": {
+          "type": "string",
+          "description": "List of COVID CVX codes (comma-separated), i.e 207,208."
+        },
+        "start_date": {
+          "type": "string",
+          "description": "Date (YYYY-MM-DD) as string.",
+          "format": "date"
+        },
+        "end_date": {
+          "type": "string",
+          "description": "Date (YYYY-MM-DD) as string.",
+          "format": "date"
+        },
+        "pt_list": {
+          "type": "string",
+          "description": "List of PTs (comma-separated), where this request is sent, i.e BC,ON,QC."
+        },
+        "timestamp": {
+          "type": "number",
+          "description": "Timestamp when this record is produced"
+        },
+        "doc": {
+          "type": "string",
+          "description": "Description of this request"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "request_id",
+        "covid_cvx_list",
+        "start_date",
+        "end_date",
+        "pt_list",
+        "timestamp",
+        "doc"
+      ],
+      "label": "Request COVID vaccination status"
+    },
+    "COVIDVaccinationStatusResponse": {
+      "description": "COVID vaccination status showing quantities (count, percent) for each of statuses of COVID vaccinated patients per zip code.",
+      "properties": {
+        "request_id": {
+          "type": "string",
+          "description": "Unique ID of a Fererated Analytics Request."
+        },
+        "pt": {
+          "type": "string",
+          "description": "PT, where this response from, i.e. BC"
+        },
+        "start_date": {
+          "type": "string",
+          "description": "Date (YYYY-MM-DD) as string.",
+          "format": "date"
+        },
+        "end_date": {
+          "type": "string",
+          "description": "Date (YYYY-MM-DD) as string.",
+          "format": "date"
+        },
+        "patient_zip": {
+          "type": "string",
+          "description": "Reduced zip code (first three characters)."
+        },
+        "patient_count": {
+          "type": "number",
+          "description": "The total number of vaccinated patients, with in the zipcode"
+        },
+        "patient_status": {
+          "type": "string",
+          "description": "The status of patient: Unvaccinated (0 doses), One-dosed, or Fully vaccinated (2 doses)."
+        },
+        "status_count": {
+          "type": "number",
+          "description": "The total number of vaccinated patients, for single status type, with in the zipcode"
+        },
+        "status_percent": {
+          "type": "number",
+          "description": "status_count/patient_count * 100% with two digits after decimal point, i.e. 64.35"
+        },
+        "timestamp": {
+          "type": "number",
+          "description": "Timestamp when this record is produced."
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "request_id",
+        "pt",
+        "start_date",
+        "end_date",
+        "patient_zip",
+        "patient_count",
+        "patient_status",
+        "status_count",
+        "status_percent",
+        "timestamp"
+      ],
+      "label": "COVID vaccination status"
+    },
+    "YoungChildrenMissingScheduleRequest": {
+      "description": "Request for information about young children missing required/recommended vaccination schedule for a number of specified vaccines.",
+      "properties": {
+        "request_id": {
+          "type": "string",
+          "description": "Unique ID of a Fererated Analytics Request"
+        },
+        "cvx_maps": {
+          "type": "string",
+          "description": "Map of CVX-to-limit (in months)."
+        },
+        "pt_list": {
+          "type": "string",
+          "description": "List of PTs (comma-separated), where this request is sent, i.e BC,ON,QC."
+        },
+        "timestamp": {
+          "type": "number",
+          "description": "Timestamp when this record is produced"
+        },
+        "doc": {
+          "type": "string",
+          "description": "Description of this request"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "request_id",
+        "cvx_maps",
+        "pt_list",
+        "timestamp",
+        "doc"
+      ],
+      "label": "Request children missing scheduled vaccinations"
+    },
+    "YoungChildrenMissingScheduleResponse": {
+      "description": "The number of patients missing scheduled vaccines together with a set of (key - vaccine code, value - number of patients missed) pairs is provided per zip code.",
+      "properties": {
+        "request_id": {
+          "type": "string",
+          "description": "Unique ID of a Fererated Analytics Request."
+        },
+        "pt": {
+          "type": "string",
+          "description": "PT, where this response from, i.e. BC"
+        },
+        "patient_zip": {
+          "type": "string",
+          "description": "Reduced zip code (first three characters)."
+        },
+        "patient_count": {
+          "type": "number",
+          "description": "The total number of vaccinated patients, with in the zipcode"
+        },
+        "missing_doses": {
+          "type": "string",
+          "description": "The missing doses"
+        },
+        "timestamp": {
+          "type": "number",
+          "description": "Timestamp when this record is produced."
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "request_id",
+        "pt",
+        "patient_zip",
+        "patient_count",
+        "missing_doses",
+        "timestamp"
+      ],
+      "label": "Children missing scheduled vaccinations"
+    },
+    "AverageDistanceForVaccineRequest": {
+      "description": "Request for information average distance to travel to get some of specified vaccines.",
+      "properties": {
+        "request_id": {
+          "type": "string",
+          "description": "Unique ID of a Fererated Analytics Request"
+        },
+        "cvx_list": {
+          "type": "string",
+          "description": "List of CVX codes (comma-separated), i.e 207,208"
+        },
+        "pt_list": {
+          "type": "string",
+          "description": "List of PTs (comma-separated), where this request is sent, i.e BC,ON,QC."
+        },
+        "timestamp": {
+          "type": "number",
+          "description": "Timestamp when this record is produced"
+        },
+        "doc": {
+          "type": "string",
+          "description": "Description of this request"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "request_id",
+        "cvx_list",
+        "pt_list",
+        "timestamp",
+        "doc"
+      ],
+      "label": "Request avg. distance for vaccine"
+    },
+    "AverageDistanceForVaccineResponse": {
+      "description": "The average distance to travel based on the zip code of patients' address to the vaccine administering organizations.",
+      "properties": {
+        "request_id": {
+          "type": "string",
+          "description": "Unique ID of a Fererated Analytics Request."
+        },
+        "pt": {
+          "type": "string",
+          "description": "PT, where this response from, i.e. BC"
+        },
+        "patient_zip": {
+          "type": "string",
+          "description": "Reduced zip code (first three characters) of patients"
+        },
+        "organization_name": {
+          "type": "string",
+          "description": "Name of the organization which provides vaccination"
+        },
+        "average_distance": {
+          "type": "number",
+          "description": "Average travel distance in kilometres."
+        },
+        "timestamp": {
+          "type": "number",
+          "description": "Timestamp when this record is produced."
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "request_id",
+        "pt",
+        "patient_zip",
+        "organization_name",
+        "average_distance",
+        "timestamp"
+      ],
+      "label": "Average distance for vaccine"
+    },
+    "VaccinationByOrganizationRequest": {
+      "description": "Request for vaccination count by organizations for patients coming from the same zip code.",
+      "properties": {
+        "request_id": {
+          "type": "string",
+          "description": "Unique ID of a Fererated Analytics Request"
+        },
+        "cvx_list": {
+          "type": "string",
+          "description": "List of CVX codes (comma-separated), i.e 207,208"
+        },
+        "pt_list": {
+          "type": "string",
+          "description": "List of PTs (comma-separated), where this request is sent, i.e BC,ON,QC."
+        },
+        "timestamp": {
+          "type": "number",
+          "description": "Timestamp when this record is produced"
+        },
+        "doc": {
+          "type": "string",
+          "description": "Description of this request"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "request_id",
+        "cvx_list",
+        "pt_list",
+        "timestamp",
+        "doc"
+      ],
+      "label": "Request vaccinations by organization"
+    },
+    "VaccinationByOrganizationResponse": {
+      "description": "The number of vaccinations by an organization for patients coming from the same zip code.",
+      "properties": {
+        "request_id": {
+          "type": "string",
+          "description": "Unique ID of a Fererated Analytics Request."
+        },
+        "pt": {
+          "type": "string",
+          "description": "PT, where this response from, i.e. BC"
+        },
+        "patient_zip": {
+          "type": "string",
+          "description": "Reduced zip code (first three characters) of patients"
+        },
+        "organization_name": {
+          "type": "string",
+          "description": "Name of the organization which provides vaccination"
+        },
+        "vaccination_count": {
+          "type": "number",
+          "description": "The number of vaccinations."
+        },
+        "timestamp": {
+          "type": "number",
+          "description": "Timestamp when this record is produced."
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "request_id",
+        "pt",
+        "patient_zip",
+        "organization_name",
+        "vaccination_count",
+        "timestamp"
+      ],
+      "label": "Vaccinations by organization"
+    },
+    "VaccinationRecordStreamRequest": {
+      "description": "Request for stream of vaccination records with detailed information.",
+      "properties": {
+        "request_id": {
+          "type": "string",
+          "description": "Unique ID of a Fererated Analytics Request."
+        },
+        "pt_list": {
+          "type": "string",
+          "description": "List of PTs (comma-separated), where this request is sent, i.e BC,ON,QC."
+        },
+        "timestamp": {
+          "type": "number",
+          "description": "Timestamp when this record is produced."
+        },
+        "doc": {
+          "type": "string",
+          "description": "Description of this request"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "request_id",
+        "pt_list",
+        "timestamp",
+        "doc"
+      ],
+      "label": "Request vaccination records"
+    },
+    "VaccinationRecordStreamResponse": {
+      "description": "Vaccination record stream, each record contain information about the patient, the vaccine, and its administration by an organization.",
+      "properties": {
+        "request_id": {
+          "type": "string",
+          "description": "Unique ID of a Fererated Analytics Request."
+        },
+        "pt": {
+          "type": "string",
+          "description": "PT, where this response from, i.e. BC"
+        },
+        "immunization_date": {
+          "type": "string",
+          "description": "The date and time the imaging study was conducted - Date (yyyy-MM-dd'T'HH:mm'Z')",
+          "format": "date-time"
+        },
+        "immunization_code": {
+          "type": "string",
+          "description": "Immunization code from CVX"
+        },
+        "immunization_description": {
+          "type": "string",
+          "description": "Description of the immunization"
+        },
+        "organization_name": {
+          "type": "string",
+          "description": "Name of the Organization."
+        },
+        "organization_zip": {
+          "type": [
+            "null",
+            "string"
+          ],
+          "default": null,
+          "description": "Street address zip or postal code"
+        },
+        "encounter_class": {
+          "type": "string",
+          "description": "Code from SNOMED-CT"
+        },
+        "encounter_code": {
+          "type": "string",
+          "description": "Code from SNOMED-CT"
+        },
+        "encounter_description": {
+          "type": "string",
+          "description": "Description of the encounter"
+        },
+        "patient_id": {
+          "type": "string",
+          "description": "Primary Key. Unique Identifier of the patient - UUID"
+        },
+        "patient_address": {
+          "type": "string",
+          "description": "Patient's street address without commas or newlines"
+        },
+        "patient_birth_date": {
+          "type": "string",
+          "description": "The birth date of the Patient - Date (YYYY-MM-DD) as string.",
+          "format": "date"
+        },
+        "patient_alive": {
+          "type": "boolean",
+          "description": "If the patient is alive"
+        },
+        "patient_zip": {
+          "type": "string",
+          "description": "Patient's zip code"
+        },
+        "patient_gender": {
+          "type": "string",
+          "description": "Gender. M is male, F is female"
+        },
+        "patient_race": {
+          "type": "string",
+          "description": "Description of the patient's primary race"
+        },
+        "patient_ethnicity": {
+          "type": "string",
+          "description": "Description of the patient's primary ethnicity"
+        },
+        "timestamp": {
+          "type": "number",
+          "description": "Timestamp when this record is produced."
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "request_id",
+        "pt",
+        "immunization_date",
+        "immunization_code",
+        "immunization_description",
+        "organization_name",
+        "organization_zip",
+        "encounter_class",
+        "encounter_code",
+        "encounter_description",
+        "patient_id",
+        "patient_address",
+        "patient_birth_date",
+        "patient_alive",
+        "patient_zip",
+        "patient_gender",
+        "patient_race",
+        "patient_ethnicity",
+        "timestamp"
+      ],
+      "label": "Vaccination records"
+    },
+    "PatientConditionRequest": {
+      "description": "Request for patient conditions as a key indicator.",
+      "properties": {
+        "request_id": {
+          "type": "string",
+          "description": "Unique ID of a Fererated Analytics Request"
+        },
+        "pt_list": {
+          "type": "string",
+          "description": "List of PTs (comma-separated), where this request is sent, i.e BC,ON,QC."
+        },
+        "timestamp": {
+          "type": "number",
+          "description": "Timestamp when this record is produced"
+        },
+        "doc": {
+          "type": "string",
+          "description": "Description of this request"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "request_id",
+        "pt_list",
+        "timestamp",
+        "doc"
+      ],
+      "label": "Request patient conditions"
+    },
+    "PatientConditionResponse": {
+      "description": "Distribution of top 100 conditions (other than medication review due or screening for employment).",
+      "properties": {
+        "request_id": {
+          "type": "string",
+          "description": "Unique ID of a Fererated Analytics Request."
+        },
+        "pt": {
+          "type": "string",
+          "description": "PT, where this response from, i.e. BC"
+        },
+        "condition_description": {
+          "type": "string",
+          "description": "Description as in condition.description"
+        },
+        "condition_count": {
+          "type": "number",
+          "description": "Number of conditions with description"
+        },
+        "timestamp": {
+          "type": "number",
+          "description": "Timestamp when this record is produced."
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "request_id",
+        "pt",
+        "condition_description",
+        "condition_count",
+        "timestamp"
+      ],
+      "label": "Patient conditions"
+    },
+    "ReasonForMedicationRequest": {
+      "description": "Request for information on medication prescribed. Only for the ones that are specifically noted.",
+      "properties": {
+        "request_id": {
+          "type": "string",
+          "description": "Unique ID of a Fererated Analytics Request"
+        },
+        "pt_list": {
+          "type": "string",
+          "description": "List of PTs (comma-separated), where this request is sent, i.e BC,ON,QC."
+        },
+        "timestamp": {
+          "type": "number",
+          "description": "Timestamp when this record is produced"
+        },
+        "doc": {
+          "type": "string",
+          "description": "Description of this request"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "request_id",
+        "pt_list",
+        "timestamp",
+        "doc"
+      ],
+      "label": "Request reason for medications"
+    },
+    "ReasonForMedicationResponse": {
+      "description": "Distribution of top 100 reasons for medication (only the ones are specifically noted.)",
+      "properties": {
+        "request_id": {
+          "type": "string",
+          "description": "Unique ID of a Fererated Analytics Request."
+        },
+        "pt": {
+          "type": "string",
+          "description": "PT, where this response from, i.e. BC"
+        },
+        "medication_reason_description": {
+          "type": "string",
+          "description": "Description as in medication.reason_description"
+        },
+        "medication_reason_count": {
+          "type": "number",
+          "description": "Number of medication reasons with description"
+        },
+        "timestamp": {
+          "type": "number",
+          "description": "Timestamp when this record is produced."
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "request_id",
+        "pt",
+        "medication_reason_description",
+        "medication_reason_count",
+        "timestamp"
+      ],
+      "label": "Reason for medications"
+    },
+    "ProcedurePerformedRequest": {
+      "description": "Request for performed procedures by organizations.",
+      "properties": {
+        "request_id": {
+          "type": "string",
+          "description": "Unique ID of a Fererated Analytics Request"
+        },
+        "pt_list": {
+          "type": "string",
+          "description": "List of PTs (comma-separated), where this request is sent, i.e BC,ON,QC."
+        },
+        "timestamp": {
+          "type": "number",
+          "description": "Timestamp when this record is produced"
+        },
+        "doc": {
+          "type": "string",
+          "description": "Description of this request"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "request_id",
+        "pt_list",
+        "timestamp",
+        "doc"
+      ],
+      "label": "Request procedures performed"
+    },
+    "ProcedurePerformedResponse": {
+      "description": "Distribution of top 100 procedures performed by organization.",
+      "properties": {
+        "request_id": {
+          "type": "string",
+          "description": "Unique ID of a Fererated Analytics Request."
+        },
+        "pt": {
+          "type": "string",
+          "description": "PT, where this response from, i.e. BC"
+        },
+        "procedure_description": {
+          "type": "string",
+          "description": "Description as in procedure.description"
+        },
+        "procedure_count": {
+          "type": "number",
+          "description": "Number of procedures with description"
+        },
+        "timestamp": {
+          "type": "number",
+          "description": "Timestamp when this record is produced."
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "request_id",
+        "pt",
+        "procedure_description",
+        "procedure_count",
+        "timestamp"
+      ],
+      "label": "Procedures performed"
+    },
+    "YoungChildrenMissingScheduleExtendedRequest": {
+      "description": "Request for additional information about young children missing required/recommended vaccination schedule for a number of specified vaccines.",
+      "properties": {
+        "request_id": {
+          "type": "string",
+          "description": "Unique ID of a Fererated Analytics Request"
+        },
+        "cvx_maps": {
+          "type": "string",
+          "description": "Map of CVX-to-limit (in months)."
+        },
+        "pt_list": {
+          "type": "string",
+          "description": "List of PTs (comma-separated), where this request is sent, i.e BC,ON,QC."
+        },
+        "timestamp": {
+          "type": "number",
+          "description": "Timestamp when this record is produced"
+        },
+        "doc": {
+          "type": "string",
+          "description": "Description of this request"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "request_id",
+        "cvx_maps",
+        "pt_list",
+        "timestamp",
+        "doc"
+      ],
+      "label": "Request details of children missing scheduled vaccinations"
+    },
+    "YoungChildrenMissingScheduleExtendedResponse": {
+      "description": "The number of patients missing scheduled vaccines together with a set of (key: vaccine code, value: number of patients missed) pairs is provided per zip code. In addition, a list of organizations, some of which visited by the patients, provide the same vaccines missed by these patients.",
+      "properties": {
+        "request_id": {
+          "type": "string",
+          "description": "Unique ID of a Fererated Analytics Request."
+        },
+        "pt": {
+          "type": "string",
+          "description": "PT, where this response from, i.e. BC"
+        },
+        "patient_zip": {
+          "type": "string",
+          "description": "Reduced zip code (first three characters)."
+        },
+        "patient_count": {
+          "type": "number",
+          "description": "The total number of vaccinated patients, with in the zipcode"
+        },
+        "missing_doses": {
+          "type": "string",
+          "description": "The missing doses"
+        },
+        "organization_list": {
+          "type": "string",
+          "description": "List of organizations, visited by patients, administring such missing doses."
+        },
+        "timestamp": {
+          "type": "number",
+          "description": "Timestamp when this record is produced."
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "request_id",
+        "pt",
+        "patient_zip",
+        "patient_count",
+        "missing_doses",
+        "organization_list",
+        "timestamp"
+      ],
+      "label": "Details of children missing scheduled vaccinations"
+    }
+  }
+}

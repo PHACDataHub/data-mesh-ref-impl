@@ -1,0 +1,30 @@
+{
+    "name": "fas_sink_connectors",
+    "config": {
+        "_comment": "Sink configuration for responses to Federated Analytics Requests from PT Analytics Platform",
+        "connector.class": "streams.kafka.connect.sink.Neo4jSinkConnector",
+        "key.converter": "io.confluent.connect.avro.AvroConverter",
+        "key.converter.schema.registry.url": "http://schema-registry:8081",
+        "value.converter": "io.confluent.connect.avro.AvroConverter",
+        "value.converter.schema.registry.url": "http://schema-registry:8081",
+        "errors.retry.timeout": "-1",
+        "errors.retry.delay.max.ms": "1000",
+        "errors.tolerance": "all",
+        "errors.log.enable": true,
+        "errors.log.include.messages": true,
+        "neo4j.server.uri": "bolt://neo4j:7687",
+        "neo4j.authentication.basic.username": "neo4j",
+        "neo4j.authentication.basic.password": "phac@2023",
+        "neo4j.encryption.enabled": false,
+        "topics": "fas_1,fas_2,fas_3,fas_4,fas_5,fas_6,fas_7,fas_8,fas_9",
+        "neo4j.topic.cypher.fas_1": "CREATE (n:FAS_1) SET n.request_id = event.request_id, n.pt = event.pt, n.start_date = event.start_date, n.end_date = event.end_date, n.patient_zip = event.patient_zip, n.patient_count = event.patient_count, n.patient_status = event.patient_status, n.status_count = event.status_count, n.status_percent = event.status_percent, n.timestamp = event.timestamp",
+        "neo4j.topic.cypher.fas_2": "CREATE (n:FAS_2) SET n.request_id = event.request_id, n.pt = event.pt, n.patient_zip = event.patient_zip, n.patient_count = event.patient_count, n.missing_doses = event.missing_doses, n.timestamp = event.timestamp",
+        "neo4j.topic.cypher.fas_3":"CREATE (n:FAS_3) SET n.request_id = event.request_id, n.pt = event.pt, n.patient_zip = event.patient_zip, n.organization_name = event.organization_name, n.average_distance = event.average_distance, n.timestamp = event.timestamp",
+        "neo4j.topic.cypher.fas_4":"CREATE (n:FAS_4) SET n.request_id = event.request_id, n.pt = event.pt, n.patient_zip = event.patient_zip, n.organization_name = event.organization_name, n.vaccination_count = event.vaccination_count, n.timestamp = event.timestamp",
+        "neo4j.topic.cypher.fas_5":"CREATE (n:FAS_5) SET n.request_id = event.request_id, n.pt = event.pt, n.immunization_date = event.immunization_date, n.immunization_code = event.immunization_code, n.immunization_description = event.immunization_description, n.organization_name = event.organization_name, n.organization_zip = event.organization_zip, n.encounter_class = event.encounter_class, n.encounter_code = event.encounter_code, n.encounter_description = event.encounter_description, n.patient_id = event.patient_id, n.patient_address = event.patient_address, n.patient_birth_date = event.patient_birth_date, n.patient_alive = event.patient_alive, n.patient_zip = event.patient_zip, n.patient_gender = event.patient_gender, n.patient_race = event.patient_race, n.patient_ethnicity = event.patient_ethnicity, n.timestamp = event.timestamp",
+        "neo4j.topic.cypher.fas_6":"CREATE (n:FAS_6) SET n.request_id = event.request_id, n.pt = event.pt, n.condition_description = event.condition_description, n.condition_count = event.condition_count, n.timestamp = event.timestamp",
+        "neo4j.topic.cypher.fas_7":"CREATE (n:FAS_7) SET n.request_id = event.request_id, n.medication_reason_description = event.medication_reason_description, n.medication_reason_count = event.medication_reason_count, n.pt = event.pt, n.timestamp = event.timestamp",
+        "neo4j.topic.cypher.fas_8":"CREATE (n:FAS_8) SET n.request_id = event.request_id, n.pt = event.pt, n.procedure_description = event.procedure_description, n.procedure_count = event.procedure_count, n.timestamp = event.timestamp",
+        "neo4j.topic.cypher.fas_9":"CREATE (n:FAS_9) SET n.request_id = event.request_id, n.pt = event.pt, n.patient_zip = event.patient_zip, n.patient_count = event.patient_count, n.missing_doses = event.missing_doses, n.organization_list = event.organization_list, n.timestamp = event.timestamp"
+    }
+}

@@ -1,0 +1,13 @@
+{
+    "type": "record",
+    "name": "ConnectDefault",
+    "namespace": "io.confluent.connect.avro",
+    "doc": "ReasonForMedicationResponse - Reason for medications - Distribution of top 100 reasons for medication (only the ones are specifically noted.)",
+    "fields": [
+        {"name": "request_id", "type": "string", "doc": "Unique ID of a Fererated Analytics Request."},
+        {"name": "pt", "type": "string", "doc": "PT, where this response from, i.e. BC"},
+        {"name": "medication_reason_description", "type": "string", "doc": "Description as in medication.reason_description"},
+        {"name": "medication_reason_count", "type": "long", "doc": "Number of medication reasons with description"},
+        {"name": "timestamp", "type": "long", "doc": "Timestamp when this record is produced."}
+    ]
+}

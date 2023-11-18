@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-config
+  labels:
+    app: hapi-fhir-db
+data:
+  postgresql.conf: |
+    max_connections = 100
+    shared_buffers = 12GB
+    effective_cache_size = 25GB
+    work_mem = 256MB
+    maintenance_work_mem = 1GB
+    checkpoint_completion_target = 0.9
