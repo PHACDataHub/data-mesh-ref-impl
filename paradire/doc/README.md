@@ -35,7 +35,7 @@ How to read this document:
 
 ## Table of Content
 ### I. [The Proof-of-Concept](./part-i.md)
-### II. [What's underneath?](./part-ii.md)
+### II. [Access Control Gateway](./part-ii.md)
 ### III. [PT and F clusters in harmony](/part-iii.md)
 ### IV. [Looking forward with hindsight](./part-iv.md)
 
