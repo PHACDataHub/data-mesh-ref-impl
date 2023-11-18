@@ -15,7 +15,7 @@ It is both a reference implementation and proof-of-concept, rather the latter, f
 &nbsp;
 
 How to read this document:
-- Part I - [The Proof-of-Concept (PoC)]((./part-i.md)):
+- Part I - [The Proof-of-Concept (PoC)](./part-i.md):
     + First with an overview, then the present challenges, follow by the PoC guiding principles, its conceptual, and ends with key considerations.
     + This is a high-level walkthrough discussing multiple aspects of both the current situation and the PoC.
     + The target audience consists of key stake-holders, domain experts, project managers, architects, and others.
