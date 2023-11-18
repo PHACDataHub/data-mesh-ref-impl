@@ -528,6 +528,8 @@ And three events of the response:
     'status_percent': 77.78, 
     'timestamp': 1700000130760
 }
+```
+```json
 {
     'request_id': 'far_1-2', 
     'pt': 'BC', 
@@ -541,6 +543,8 @@ And three events of the response:
     'status_percent': 16.67, 
     'timestamp': 1700000130760
 }
+```
+```json
 {
     'request_id': 'far_1-2', 
     'pt': 'BC', 
