@@ -517,45 +517,41 @@ Below is the AVRO specification of an example response:
 And three events of the response:
 ```json
 {
-    'request_id': 'far_1-2', 
-    'pt': 'BC', 
-    'start_date': '2021-01-01', 
-    'end_date': '2021-04-01', 
-    'patient_zip': 'V0B', 
-    'patient_count': 9, 
-    'patient_status': 'Unvaccinated', 
-    'status_count': 7, 
-    'status_percent': 77.78, 
-    'timestamp': 1700000130760
+    "request_id": "far_1-2", 
+    "pt": "BC", 
+    "start_date": "2021-01-01", 
+    "end_date": "2021-04-01", 
+    "patient_zip": "V0B", 
+    "patient_count": 9, 
+    "patient_status": "Unvaccinated", 
+    "status_count": 7, 
+    "status_percent": 77.78, 
+    "timestamp": 1700000130760
 }
-```
-```json
 {
-    'request_id': 'far_1-2', 
-    'pt': 'BC', 
-    'start_date': '2021-01-01', 
-    'end_date': '2021-04-01', 
-    'patient_zip': 'V0H', 
-    'patient_count': 12, 
-    'patient_status': 
-    'One-dosed', 
-    'status_count': 2, 
-    'status_percent': 16.67, 
-    'timestamp': 1700000130760
+    "request_id": "far_1-2", 
+    "pt": "BC", 
+    "start_date": "2021-01-01", 
+    "end_date": "2021-04-01", 
+    "patient_zip": "V0H", 
+    "patient_count": 12, 
+    "patient_status": 
+    "One-dosed", 
+    "status_count": 2, 
+    "status_percent": 16.67, 
+    "timestamp": 1700000130760
 }
-```
-```json
 {
-    'request_id': 'far_1-2', 
-    'pt': 'BC', 
-    'start_date': '2021-01-01', 
-    'end_date': '2021-04-01', 
-    'patient_zip': 'V7P', 
-    'patient_count': 46, 
-    'patient_status': 'Fully vaccinated', 
-    'status_count': 6, 
-    'status_percent': 13.04, 
-    'timestamp': 1700000130760
+    "request_id": "far_1-2", 
+    "pt": "BC", 
+    "start_date": "2021-01-01", 
+    "end_date": "2021-04-01", 
+    "patient_zip": "V7P", 
+    "patient_count": 46, 
+    "patient_status": "Fully vaccinated", 
+    "status_count": 6, 
+    "status_percent": 13.04, 
+    "timestamp": 1700000130760
 }
 ```
 
