@@ -94,8 +94,10 @@ The **Immunization Record Gateway (IRG)** aims to enhance, standardize and conne
 <center>
     <img src="https://github.com/synthetichealth/synthea/raw/gh-pages/images/architecture.png" width="80%"
         alt="Synthea Architecture"/>
-    <figcaption>Synthea Architecture</figcaption>
-    <br/>
+    <div align="center">
+        <figcaption>Synthea Architecture</figcaption>
+        <br/>
+    </div>
 </center>
 
 Synthea contains a framework for defining modules using JSON. These JSON modules describe a progression of states and the transitions between them. On each Synthea generation time-step, the generic framework processes states one at a time to trigger conditions, encounters, medications, and other clinical events.
@@ -103,8 +105,10 @@ Synthea contains a framework for defining modules using JSON. These JSON modules
 <center>
     <img src="https://cloud.githubusercontent.com/assets/13512036/18751952/e054e258-80ae-11e6-9b09-2350ed77b56c.png"
         alt="Ear infection"/>
-    <figcaption>Ear infection</figcaption>
-    <br/>
+    <div align="center">
+        <figcaption>Ear infection</figcaption>
+        <br/>
+    </div>
 </center>
 
 This simplified example of childhood ear infections, can be seen as above, shows the flow of a generic module. In this instance, children get ear infections at different rates based on their age, are then diagnosed at an encounter, and then are prescribed either an antibiotic or a painkiller.
@@ -116,8 +120,10 @@ This simplified example of childhood ear infections, can be seen as above, shows
 <center>
     <img src="../img/hapi_fhir.png"
         alt="HAPI FHIR for New Brunswick PT-deployment by the PoC"/>
-    <figcaption>HAPI FHIR for New Brunswick PT-deployment by the PoC</figcaption>
-    <br/>
+    <div align="center">
+        <figcaption>HAPI FHIR for New Brunswick PT-deployment by the PoC</figcaption>
+        <br/>
+    </div>
 </center>
 
 The EHRs can be viewed in detail by a pre-deployed `Patient Browser` to simulate the existing PT health information systems.
@@ -125,8 +131,10 @@ The EHRs can be viewed in detail by a pre-deployed `Patient Browser` to simulate
 <center>
     <img src="../img/patient_browser.png"
         alt="Patient Browser for New Brunswick PT-deployment by the PoC"/>
-    <figcaption>Patient Browser for New Brunswick PT-deployment by the PoC</figcaption>
-    <br/>
+    <div align="center">
+        <figcaption>Patient Browser for New Brunswick PT-deployment by the PoC</figcaption>
+        <br/>
+    </div>
 </center>
 
 ### E.3. Extract EHR events from PT HIS and stream them into PT Analytics Platform
@@ -206,8 +214,10 @@ These *elements of `HL7 Immunization Resource Type`* are chosen, and *allowed to
 <center>
     <img src="../img/pt_ehr_events.png"
         alt="AVRO events into 20 topics in the Kafka Cluster of the PT Analytics Platform">
+    <div align="center">
         <figcaption>AVRO events into 20 topics in the Kafka Cluster of the PT Analytics Platform</figcaption>
-    <br/>
+        <br/>
+    </div>
 </center>
 
 Immunization events are now shown as `Kafka` messages. They are now *data-in-motion*.
@@ -215,8 +225,10 @@ Immunization events are now shown as `Kafka` messages. They are now *data-in-mot
 <center>
     <img src="../img/pt_ehr_immunizations.png"
         alt="Immunization events as messages in the Kafka Cluster of the PT Analytics Platform">
+    <div align="center">
         <figcaption>Immunization events as messages in the Kafka Cluster of the PT Analytics Platform</figcaption>
-    <br/>
+        <br/>
+    </div>
 </center>
 
 **Step 5**. Sink connectors to the graph analytics engine and database `Neo4j` are setup to receive streaming events from `Kafka` topics. Once this step is done, a complete dataset, up-to-this-minute is available in the `PT Analytics Platform` and ready for (local and remote) analytics queries.
@@ -224,8 +236,10 @@ Immunization events are now shown as `Kafka` messages. They are now *data-in-mot
 <center>
     <img src="../img/single_patient_view.png"
         alt="Single patient view in the PT Analytics Platform">
+    <div align="center">
         <figcaption>Single patient view in the PT Analytics Platform</figcaption>
-    <br/>
+        <br/>
+    </div>
 </center>
 
 The following diagram show the vaccinations over time of a single patient (`Nikita578`), living in Saanich, Sunshine Coast D, British Columbia, show as the green circle in the middle, who was born in 2002.
@@ -236,8 +250,10 @@ The following diagram show the vaccinations over time of a single patient (`Niki
 <center>
     <img src="../img/single_patient_immunizations.png"
         alt="Single patient immunizations over time">
+    <div align="center">
         <figcaption>Single patient immunizations over time</figcaption>
-    <br/>
+        <br/>
+    </div>
 </center>
 
 ### E.4. What analytics can be conducted locally at the PT Analytics Platform?
@@ -257,8 +273,8 @@ In this section, we show a number of analytics that can be performed locally. *I
         </td>
         <td style="text-align: center;  vertical-align: top;">
             <img src="../img/pap_far_1_1.png" alt="2021-04-01" />
-            <br />
             <figcaption>2021-04-01</figcaption>
+            <br />
         </td>
         <td style="text-align: center;  vertical-align: top;">
             <img src="../img/pap_far_1_2.png" alt="2021-07-01" />
@@ -273,9 +289,9 @@ In this section, we show a number of analytics that can be performed locally. *I
             <br />
         </td>
         <td style="text-align: center;  vertical-align: top;">
-            <img src="../img/pap_far_1_4.png" alt="2021-10-01" />
-            <br />
+            <img src="../img/pap_far_1_4.png" alt="2021-01-01" />
             <figcaption>2022-01-01</figcaption>
+            <br />
         </td>
     </tr>
 </table>
@@ -291,8 +307,8 @@ In this section, we show a number of analytics that can be performed locally. *I
         </td>
         <td style="text-align: center;  vertical-align: top;">
             <img src="../img/pap_far_2_2.png" alt="2021-04-01" />
-            <br />
             <figcaption>Who missing vaccination - individual locations</figcaption>
+            <br />
         </td>
     </tr>
 </table>
@@ -304,8 +320,10 @@ The first one based on the statistics computed using distances between patients'
 <center>
     <img src="../img/pap_far_3_1.png"
         alt="Average travel distance to get vaccinated">
+    <div align="center">
         <figcaption>Average travel distance to get vaccinated</figcaption>
-    <br/>
+        <br/>
+    </div>
 </center>
 
 The second one uses a different approaches. It show every single travel distance of individuals for getting COVID doses.
@@ -313,8 +331,10 @@ The second one uses a different approaches. It show every single travel distance
 <center>
     <img src="../img/pap_far_3_2.png"
         alt="Individuals travels for COVID vaccinations">
+    <div align="center">
         <figcaption>Individuals travels for COVID vaccinations</figcaption>
-    <br/>
+        <br/>
+    </div>
 </center>
 
 **Vaccination Traffic**: This simple Sandkey chart shows the number of vaccinations each patient getting from an organization.
@@ -322,8 +342,10 @@ The second one uses a different approaches. It show every single travel distance
 <center>
     <img src="../img/pap_far_4_1.png"
         alt="Random 10 patients and their vaccinations by organizations">
+    <div align="center">
         <figcaption>Random 10 patients and their vaccinations by organizations</figcaption>
-    <br/>
+        <br/>
+    </div>
 </center>
 
 **Vaccination Record**: Below is a simple extraction of random 10 vaccination records ordered by time
@@ -345,28 +367,36 @@ The second one uses a different approaches. It show every single travel distance
 
 <center>
     <img src="../img/pap_far_6_1.png" alt="Distribution of conditions" />
-    <figcaption>Distribution of conditions</figcaption>
-    <br/>
+    <div align="center">
+        <figcaption>Distribution of conditions</figcaption>
+        <br/>
+    </div>
 </center>
 
 <center>
     <img src="../img/pap_far_6_2.png" alt="Distribution of reasons for medication" />
-    <figcaption>Distribution of reasons for medication</figcaption>
-    <br/>
+    <div align="center">
+        <figcaption>Distribution of reasons for medication</figcaption>
+        <br/>
+    </div>
 </center>
 
 <center>
     <img src="../img/pap_far_6_3.png" alt="Distribution of top 100 procedures" />
-    <figcaption>Distribution of top 100 procedures</figcaption>
-    <br/>
+    <div align="center">
+        <figcaption>Distribution of top 100 procedures</figcaption>
+        <br/>
+    </div>
 </center>
 
 **Research Indicator**: This inquiry wishes to see more why certain patients missing their vaccination, while the organizations, where they visited (for other vaccinations), still provided the vaccines they missed to other patients.
 
 <center>
     <img src="../img/pap_far_7_1.png" alt="Where would they have been immunized?" />
-    <figcaption>Where would they have been immunized?</figcaption>
-    <br/>
+    <div align="center">
+        <figcaption>Where would they have been immunized?</figcaption>
+        <br/>
+    </div>
 </center>
 
 ## [F. Building Trust by Sharing Data with Governance](#f-building-trust-by-sharing-data-with-governance)
@@ -403,8 +433,10 @@ Let's take an example. The diagram below shows the formation of vaccination reco
 
 <center>
     <img src="../img/data-governance.png" alt="Data Governance Gateway" />
-    <figcaption>Data Governance Gateway</figcaption>
-    <br/>
+    <div align="center">
+        <figcaption>Data Governance Gateway</figcaption>
+        <br/>
+    </div>
 </center>
 
 From F side, (although it is not know what data standards are going to be used), but let's suppose that the instance of the vaccination record contains CVX, some information of the patient, the organization where the vaccine was administered, the encounter, and the immunization activity. See the purple box on the right and its input from the green box in the middle for reference.
@@ -636,8 +668,10 @@ CREATE (n:FAR_1)
 The message landed in the `far_1` topic on FAP, as shown below.
 <center>
     <img src="../img/far_1_fap.png" alt="COVIDVaccinationStatusRequest (FAR_1)" />
-    <figcaption>COVIDVaccinationStatusRequest (FAR_1)</figcaption>
-    <br/>
+    <div align="center">
+        <figcaption>COVIDVaccinationStatusRequest (FAR_1)</figcaption>
+        <br/>
+    </div>
 </center>
 
 **Step 2, 3, 4**. The Access Control Gateways replicates the request
@@ -649,8 +683,10 @@ Thus, the request arrives at the PT side.
 The message landed in the `far_1` topic on FAP, as shown below.
 <center>
     <img src="../img/far_1_pap.png" alt="COVIDVaccinationStatusRequest (FAR_1)" />
-    <figcaption>COVIDVaccinationStatusRequest (FAR_1)</figcaption>
-    <br/>
+    <div align="center">
+        <figcaption>COVIDVaccinationStatusRequest (FAR_1)</figcaption>
+        <br/>
+    </div>
 </center>
 
 **Step 5, 6, 7, 8**. `Neo4j` sink connector for the parameterized request type of `far_1` detects the request.
@@ -731,16 +767,20 @@ RETURN
 
 <center>
     <img src="../img/fas_1_pap.png" alt="COVIDVaccinationStatusResponse (FAS_1)" />
-    <figcaption>COVIDVaccinationStatusResponse (FAS_1)</figcaption>
-    <br/>
+    <div align="center">
+        <figcaption>COVIDVaccinationStatusResponse (FAS_1)</figcaption>
+        <br/>
+    </div>
 </center>
 
 **Step 11, 12, 13**. Access Control Gateway detects response event, perform governance rules, and replicate them into `fas_1` topic on the F side.
 
 <center>
     <img src="../img/fas_1_fap.png" alt="COVIDVaccinationStatusResponse (FAS_1)" />
-    <figcaption>COVIDVaccinationStatusResponse (FAS_1)</figcaption>
-    <br/>
+    <div align="center">
+        <figcaption>COVIDVaccinationStatusResponse (FAS_1)</figcaption>
+        <br/>
+    </div>
 </center>
 
 **Step 14**. `Neo4j` picks up the events and converts them into entities.
@@ -765,8 +805,10 @@ Below some 10 examples:
 This is now the Federal view.
 <center>
     <img src="../img/fap_fas_1_1.png " alt="Percentage of vaccinated population per zip code for the Period above" />
-    <figcaption>Percentage of vaccinated population per zip code for the Period above</figcaption>
-    <br/>
+    <div align="center">
+        <figcaption>Percentage of vaccinated population per zip code for the Period above</figcaption>
+        <br/>
+    </div>
 </center>
 
 Let's some other queries.
@@ -775,6 +817,10 @@ Let's some other queries.
 
 <center>
     <img src="../img/fap_far_2_1.png " alt="Who missing vaccination" />
+    <div align="center">
+        <figcaption>Patient Browser for New Brunswick PT-deployment by the PoC</figcaption>
+        <br/>
+    </div>
     <figcaption>Who missing vaccination</figcaption>
     <br/>
 </center>
@@ -783,8 +829,10 @@ Let's some other queries.
 
 <center>
     <img src="../img/fap_far_5_1.png " alt="Random consecutive 1000 events in the stream of vaccination records" />
-    <figcaption>Random consecutive 1000 events in the stream of vaccination records</figcaption>
-    <br/>
+    <div align="center">
+        <figcaption>Random consecutive 1000 events in the stream of vaccination records</figcaption>
+        <br/>
+    </div>
 </center>
 
 --- 
