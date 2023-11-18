@@ -2,13 +2,7 @@
 
 --- 
 
-# [Part III](#part-iii)
-
-### [K. First-hand experience](#k-first-hand-experience)
-
-### [J. The 14 clusters](#j-the-14-clusters)
-
-(VM, CI/CD, auto deployment, Kubernetes, monitoring)
+# [Part III - PT and F clusters in harmony](#part-iii---pt-and-f-clusters-in-harmony)
 
 
 --- 

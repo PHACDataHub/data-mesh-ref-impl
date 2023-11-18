@@ -72,6 +72,7 @@ The **Immunization Record Gateway (IRG)** aims to enhance, standardize and conne
          alt="The conceptual view of the Proof-of-Concept">
     <div align="center">
         <figcaption>The conceptual view of the Proof-of-Concept</figcaption>
+        <br/>
     </div>
 </center>
 
@@ -92,8 +93,8 @@ The **Immunization Record Gateway (IRG)** aims to enhance, standardize and conne
 
 <center>
     <img src="https://github.com/synthetichealth/synthea/raw/gh-pages/images/architecture.png" width="80%"
-        alt="Synthea Architecture">
-        <figcaption>Synthea Architecture</figcaption>
+        alt="Synthea Architecture"/>
+    <figcaption>Synthea Architecture</figcaption>
     <br/>
 </center>
 
@@ -101,8 +102,8 @@ Synthea contains a framework for defining modules using JSON. These JSON modules
 
 <center>
     <img src="https://cloud.githubusercontent.com/assets/13512036/18751952/e054e258-80ae-11e6-9b09-2350ed77b56c.png"
-        alt="Ear infection">
-        <figcaption>Ear infection</figcaption>
+        alt="Ear infection"/>
+    <figcaption>Ear infection</figcaption>
     <br/>
 </center>
 
@@ -114,8 +115,8 @@ This simplified example of childhood ear infections, can be seen as above, shows
 
 <center>
     <img src="../img/hapi_fhir.png"
-        alt="HAPI FHIR for New Brunswick PT-deployment by the PoC">
-        <figcaption>HAPI FHIR for New Brunswick PT-deployment by the PoC</figcaption>
+        alt="HAPI FHIR for New Brunswick PT-deployment by the PoC"/>
+    <figcaption>HAPI FHIR for New Brunswick PT-deployment by the PoC</figcaption>
     <br/>
 </center>
 
@@ -123,8 +124,8 @@ The EHRs can be viewed in detail by a pre-deployed `Patient Browser` to simulate
 
 <center>
     <img src="../img/patient_browser.png"
-        alt="Patient Browser for New Brunswick PT-deployment by the PoC">
-        <figcaption>Patient Browser for New Brunswick PT-deployment by the PoC</figcaption>
+        alt="Patient Browser for New Brunswick PT-deployment by the PoC"/>
+    <figcaption>Patient Browser for New Brunswick PT-deployment by the PoC</figcaption>
     <br/>
 </center>
 
@@ -279,7 +280,7 @@ In this section, we show a number of analytics that can be performed locally. *I
     </tr>
 </table>
 
-**Vaccination Status**: The following set of diagrams show the situation of COVID vaccination at the start of the year 2021, then at the end of four subsequent quarters in that year. The charts, at each point in time, show the number of patients per zip code who are unvaccinated, vaccinated with a single dose, or fully vaccinated (2 doses) with the 207 and 208 vaccines (Moderna).
+**Vaccination Schedule**: The following set of diagrams show an inquiry for young children missing vaccination schedule. In this, the charts are able to show the data from multiple angles based on a set of vaccine schedule: who missed schedule of which vaccines; heat map can be shown at for a high level over view, but map with individual location (and missing doses) provide a more in-dept details.
 
 <table cellspacing="0" cellpadding="0" border="0">
     <tr>
@@ -295,8 +296,6 @@ In this section, we show a number of analytics that can be performed locally. *I
         </td>
     </tr>
 </table>
-
-**Vaccination Schedule **: The following set of diagrams show an inquiry for young children missing vaccination schedule. In this, the charts are able to show the data from multiple angles based on a set of vaccine schedule: who missed schedule of which vaccines; heat map can be shown at for a high level over view, but map with individual location (and missing doses) provide a more in-dept details.
 
 **Travel distance**: The following set of diagrams show two types of analysis on traveling distance to get vaccinated.
 
@@ -421,15 +420,372 @@ We will see in the Federated Analytics Request 5 (FAR 5) some concrete example e
 
 ## [G. The F cluster](#g-the-f-cluster)
 
-The F cluster basically is a simpler version of the PT cluster. It is [the analytics platform](#d-conceptual-view) in essence. Below we will discuss the same set of queries, previously performed on a single PT Analytics Platform.
+The F cluster basically is a simpler version of the PT cluster. It is [the analytics platform](#d-conceptual-view) in essence.
 
-What is a Federated Analytics Query
+### G.1. Local and Federated Analytics Queries
 
-Each of the queries, now is created in a UI or NeoDash and delivered into Kafka topic as a message. Here is an example:
+Previously we defined a set of analytics requests that were created within a single PT Analytics Platform. They were executed in place and the responses (to the requests) are consumed locally as shown in the examples above.  Now, we wish to create the same set of queries on the F Analytics Platform, which then automatically got executed on a number of desired PT Analytics Platforms,  the responses to the requests are delivered to the F Platform after applying governance rules, and then aggregated at the F Analytics Platform. 
 
-The query is then delivered to each of the Access Control Gateways (ACG) of the PTs. The ACG decides if the request is for its PT based on the `pt_list` parameter, if it matches, then the request is taken from the F's Kafka topic and replicated (with certain control) into the corresponding PT's Kafka topic.
+**The best possible way to define a query is to use natural language**. It is possible to use (AI) Natural Language Processing (NLP) tools to to transform a statement in natural language such as:
 
+    How many patient are there in a zip?
+    
+to a `Cypher` query as below:
 
+```cypher
+MATCH (n:Patient)
+RETURN DISTINCT(patient.zip) AS zip, COUNT(patient) AS count;
+```
+
+However we have not enough time to implement that in this PoC, thus **the preferred option is parameterized queries**.
+
+### G.2. What is a parameterized query?
+
+*A query is a pair of a request and a response*.
+
+*The request is a single event*, which:
+   + Specifies `an intent` of some user from the F side;
+   + Is formulated at the F Analytics Platform with *four mandatory parameters*: 
+        - `request_id`, which is a unique string identifying the request and differentiate it from any other request, i.e. *far_1-1* or *afe703e7-85d5-3bb7-9092-8104167871c4* or any unique identifier.
+        - `pt_list`, which is the list of PT 2-letter abbreviations, i.e *BC,ON,QC*, indicating which PTs this request addresses.
+        - `timestamp`, the number of seconds measured from *1970-01-01*, a.k.a epoch, recorded the datetime when this request is created.
+        - `doc`, the document string describing this request, i.e. *All PTs: COVID-19 monovalent Moderna adult (12+ yrs) vaccine, 1st/2nd dosage.*
+   + Is replicated from a Kafka's topic on FAP (reserved for the type of the parameterized requests, for example `far_1` topic for *Federated Analytics Request One (FAR_1)*) into the topic with the same name on those PAP clusters which represent the PTs mentioned in the `pt_list`.
+
+   Below is the AVRO specification of an example request:
+```json
+{
+    "type": "record",
+    "name": "ConnectDefault",
+    "namespace": "io.confluent.connect.avro",
+    "doc": "COVIDVaccinationStatusRequest - Request COVID vaccination status - Request for COVID vaccination status by a number of CVXs, within a period of time, and based on the number of doses depending on vaccine type.",
+    "fields": [
+        {"name": "request_id", "type": "string", "doc": "Unique ID of a Fererated Analytics Request"},
+        {"name": "covid_cvx_list", "type": "string", "doc": "List of COVID CVX codes (comma-separated), i.e 207,208."},
+        {"name": "start_date", "type": "string", "doc": "Date (YYYY-MM-DD) as string."},
+        {"name": "end_date", "type": "string", "doc": "Date (YYYY-MM-DD) as string."},
+        {"name": "pt_list", "type": "string", "doc": "List of PTs (comma-separated), where this request is sent, i.e BC,ON,QC."},
+        {"name": "timestamp", "type": "long", "doc": "Timestamp when this record is produced"},
+        {"name": "doc", "type": "string", "doc": "Description of this request"}
+    ]
+}
+```
+
+And an instance:
+```json
+{   
+    "request_id": "far_1-2",
+    "covid_cvx_list": "207,208",
+    "start_date": "2021-01-01",
+    "end_date": "2021-04-01",
+    "pt_list": "AB,BC,MB,NB,NL,NT,NS,NU,ON,PE,QC,SK,YT",
+    "timestamp": 1699312649,
+    "doc": "All PTs: COVID-19 monovalent Moderna adult (12+ yrs) vaccine, 1st/2nd dosage."
+}
+```
+
+The response is a (possibly continuous) stream of events, which:
+   + Specifies the detail in returning data
+   + Each event is created inside the PT Analytics Platform with *three mandatory parameters*: 
+        - `request_id`, which is inherited from the request and is used to identify each and every response to this request.
+        - `pt`, which indicates the PT owns the platform.
+        - `timestamp`, the number of seconds measured from *1970-01-01*, a.k.a epoch, recorded the datetime when this event is created.
+   + Is replicated from a Kafka's topic on PAP (reserved for the type of the parameterized responses, for example `fas_1` topic for the *Federated Analytics Response One (FAS_1)*) into the topic with the same name on FAP.
+
+Below is the AVRO specification of an example response:
+```json
+{
+    "type": "record",
+    "name": "ConnectDefault",
+    "namespace": "io.confluent.connect.avro",
+    "doc": "COVIDVaccinationStatusResponse - COVID vaccination status - COVID vaccination status showing quantities (count, percent) for each of statuses of COVID vaccinated patients per zip code.",
+    "fields": [
+        {"name": "request_id", "type": "string", "doc": "Unique ID of a Fererated Analytics Request."},
+        {"name": "pt", "type": "string", "doc": "PT, where this response from, i.e. BC"},
+        {"name": "start_date", "type": "string", "doc": "Date (YYYY-MM-DD) as string."},
+        {"name": "end_date", "type": "string", "doc": "Date (YYYY-MM-DD) as string."},
+        {"name": "patient_zip", "type": "string", "doc": "Reduced zip code (first three characters)."},
+        {"name": "patient_count", "type": "long", "doc": "The total number of vaccinated patients, with in the zipcode"},
+        {"name": "patient_status", "type": "string", "doc": "The status of patient: Unvaccinated (0 doses), One-dosed, or Fully vaccinated (2 doses)."},
+        {"name": "status_count", "type": "long", "doc": "The total number of vaccinated patients, for single status type, with in the zipcode"},
+        {"name": "status_percent", "type": "double", "doc": "status_count/patient_count * 100% with two digits after decimal point, i.e. 64.35"},
+        {"name": "timestamp", "type": "long", "doc": "Timestamp when this record is produced."}
+    ]
+}
+```
+
+And three events of the response:
+```json
+{
+    'request_id': 'far_1-2', 
+    'pt': 'BC', 
+    'start_date': '2021-01-01', 
+    'end_date': '2021-04-01', 
+    'patient_zip': 'V0B', 
+    'patient_count': 9, 
+    'patient_status': 'Unvaccinated', 
+    'status_count': 7, 
+    'status_percent': 77.78, 
+    'timestamp': 1700000130760
+}
+{
+    'request_id': 'far_1-2', 
+    'pt': 'BC', 
+    'start_date': '2021-01-01', 
+    'end_date': '2021-04-01', 
+    'patient_zip': 'V0H', 
+    'patient_count': 12, 
+    'patient_status': 
+    'One-dosed', 
+    'status_count': 2, 
+    'status_percent': 16.67, 
+    'timestamp': 1700000130760
+}
+{
+    'request_id': 'far_1-2', 
+    'pt': 'BC', 
+    'start_date': '2021-01-01', 
+    'end_date': '2021-04-01', 
+    'patient_zip': 'V7P', 
+    'patient_count': 46, 
+    'patient_status': 'Fully vaccinated', 
+    'status_count': 6, 
+    'status_percent': 13.04, 
+    'timestamp': 1700000130760
+}
+```
+
+### G.3. Federated Analytics Queries
+
+<center>
+    <img src="../img/system-architecture.png" 
+         alt="The conceptual view of the Proof-of-Concept">
+    <div align="center">
+        <figcaption>The conceptual view of the Proof-of-Concept</figcaption>
+        <br/>
+    </div>
+</center>
+
+**Key data flow: Federated Analytics Requests F- to PT Analytics Platform and back with the responses**
+
+(See the chains of purple circles on the right of the *the conceptual view of the Proof-of-Concept* above)
+
+**Step 0**. The query is formed by either a UI or NeoDash
+
+With UI, an AVRO message with content as below
+```json
+    {
+        "request_id": "far_1-1", 
+        "covid_cvx_list": "207,208", 
+        "start_date": "2021-01-01", 
+        "end_date": "2021-04-01", 
+        "pt_list": "BC", 
+        "timestamp": 1699312649, 
+        "doc": 
+        "BC only: COVID-19 monovalent Moderna adult (12+ yrs) vaccine, 1st/2nd dosage."
+    }
+```
+
+With NeoDash, it would be a Cypher query
+```cypher
+CREATE (n:FAR_1)
+    SET
+        n.request_id = 'far_1-1',
+        n.covid_cvx_list = '207,208',
+        n.start_date = '2021-01-01', 
+        n.end_date = '2021-04-01', 
+        n.pt_list = 'BC',
+        n.timestamp = apoc.date.currentTimestamp(),
+        n.doc = 'BC only: COVID-19 monovalent Moderna adult (12+ yrs) vaccine, 1st/2nd dosage.';
+```
+
+**Step 1**. The query is inserted into `far_1` Kafka topic
+ - directly if it is an AVRO message
+ - or converted from a Neo4j `FAR_1` entity (shown as above) into an event by the `Neo4j` `far_1` source connector
+ ```json
+ {
+    "name": "far_1_source_connector",
+    "config": {
+        "_comment": "Source configuration of FAR_1 Request (going to PT Analytics Platform)",
+        "connector.class": "streams.kafka.connect.source.Neo4jSourceConnector",
+        "key.converter": "io.confluent.connect.avro.AvroConverter",
+        "key.converter.schema.registry.url": "http://schema-registry:8081",
+        "value.converter": "io.confluent.connect.avro.AvroConverter",
+        "value.converter.schema.registry.url": "http://schema-registry:8081",
+        "errors.retry.timeout": "-1",
+        "errors.retry.delay.max.ms": "1000",
+        "errors.tolerance": "all",
+        "errors.log.enable": true,
+        "errors.log.include.messages": true,
+        "neo4j.server.uri": "bolt://neo4j:7687",
+        "neo4j.authentication.basic.username": "neo4j",
+        "neo4j.authentication.basic.password": "phac@2023",
+        "partitions": 4,
+        "neo4j.streaming.poll.interval.msecs": 5000,
+        "neo4j.streaming.property": "timestamp",
+        "neo4j.streaming.from": "ALL",
+        "neo4j.enforce.schema": true,
+        "neo4j.encryption.enabled": false,
+        "topic": "far_1",
+        "neo4j.source.type":"QUERY",
+        "neo4j.source.query": "MATCH (entity:FAR_1) WHERE entity.timestamp > $lastCheck RETURN entity.request_id AS request_id, entity.covid_cvx_list AS covid_cvx_list, entity.start_date AS start_date, entity.end_date AS end_date, entity.pt_list AS pt_list, entity.timestamp AS timestamp, entity.doc AS doc"
+    }
+}
+ ```
+
+The message landed in the `far_1` topic on FAP, as shown below.
+<center>
+    <img src="../img/far_1_fap.png" alt="COVIDVaccinationStatusRequest (FAR_1)" />
+    <figcaption>COVIDVaccinationStatusRequest (FAR_1)</figcaption>
+    <br/>
+</center>
+
+**Step 2, 3, 4**. The Access Control Gateways replicates the request
+- All ACGs subscribe to the `far` topic of FAP, thus all of them aware of the appearance of the request in the topic.
+- Each and everyone of them takes the event, verify the `pt_list` against its own PT 2-letter abbreviation, and if matched, then replicate the event.
+
+Thus, the request arrives at the PT side.
+
+The message landed in the `far_1` topic on FAP, as shown below.
+<center>
+    <img src="../img/far_1_pap.png" alt="COVIDVaccinationStatusRequest (FAR_1)" />
+    <figcaption>COVIDVaccinationStatusRequest (FAR_1)</figcaption>
+    <br/>
+</center>
+
+**Step 5, 6, 7, 8**. `Neo4j` sink connector for the parameterized request type of `far_1` detects the request.
+- It invokes the `Cypher` query in the `far_sink_connectors` connector to perform the analysis, and
+- Creates entities as events for the response
+
+```cypher
+WITH 
+    event.request_id AS request_id,
+    SPLIT(event.covid_cvx_list, ',') AS covid_cvx_list,
+    DATE(event.start_date) AS start_date,
+    DATE(event.end_date) AS end_date,
+    event.pt_list AS pt
+WITH
+    request_id, pt, covid_cvx_list, start_date, end_date
+    OPTIONAL MATCH (patient:Patient)-[]-(immunization:Immunization)
+WITH
+    DISTINCT(patient) AS patient, 
+    request_id, pt, start_date, end_date, covid_cvx_list,
+    COLLECT(immunization) AS immunizations
+WITH 
+    patient, request_id, pt, start_date, end_date, covid_cvx_list,
+    REDUCE(l=0, e IN immunizations | 
+    CASE WHEN 
+        e.code IN covid_cvx_list AND 
+        DATE(e.date) >= start_date AND 
+        DATE(e.date) <= end_date
+    THEN l + 1 ELSE l END) AS immunization_count
+WITH
+    DISTINCT(patient.zip) AS patient_zip,
+    request_id, pt, start_date, end_date,
+    CASE
+        WHEN immunization_count >= 2 THEN 'Fully vaccinated' 
+        WHEN immunization_count = 1 THEN 'One-dosed' 
+        ELSE 'Unvaccinated' END AS patient_status, 
+    COUNT(*) AS status_count
+WITH
+    request_id, pt, start_date, end_date, patient_zip, patient_status, status_count
+        MATCH (patient:Patient {zip: patient_zip})
+WITH 
+    request_id, pt, start_date, end_date, patient_zip, patient_status, status_count,
+    COUNT(patient) AS patient_count
+WITH
+    request_id, pt, start_date, end_date, patient_zip, patient_status, status_count, patient_count,
+    ROUND(status_count*10000.0 / patient_count)/100.0 AS status_percent
+    CREATE (n:FAS_1)
+        SET
+            n.request_id = request_id,
+            n.pt = pt,
+            n.start_date = TOSTRING(start_date),
+            n.end_date = TOSTRING(end_date),
+            n.patient_zip = patient_zip,
+            n.patient_count = patient_count,
+            n.patient_status = patient_status,
+            n.status_count = status_count,
+            n.status_percent = status_percent,
+            n.timestamp = apoc.date.currentTimestamp();
+```
+
+**Step 9, 10**. `Neo4j` `fas_1_source_connector` for the parameterized response type of `fas_1` detects the response's events.
+- It converts them into AVRO messages and publish into the topic with the same name.
+
+```cypher
+MATCH (entity:FAS_1)
+    WHERE entity.timestamp > $lastCheck
+RETURN
+    entity.request_id AS request_id,
+    entity.pt AS pt,
+    entity.start_date AS start_date,
+    entity.end_date AS end_date,
+    entity.patient_zip AS patient_zip,
+    entity.patient_count AS patient_count,
+    entity.patient_status AS patient_status,
+    entity.status_count AS status_count,
+    entity.status_percent AS status_percent,
+    entity.timestamp AS timestamp
+```
+
+<center>
+    <img src="../img/fas_1_pap.png" alt="COVIDVaccinationStatusResponse (FAS_1)" />
+    <figcaption>COVIDVaccinationStatusResponse (FAS_1)</figcaption>
+    <br/>
+</center>
+
+**Step 11, 12, 13**. Access Control Gateway detects response event, perform governance rules, and replicate them into `fas_1` topic on the F side.
+
+<center>
+    <img src="../img/fas_1_fap.png" alt="COVIDVaccinationStatusResponse (FAS_1)" />
+    <figcaption>COVIDVaccinationStatusResponse (FAS_1)</figcaption>
+    <br/>
+</center>
+
+**Step 14**. `Neo4j` picks up the events and converts them into entities.
+
+Below some 10 examples:
+
+| n.patient_zip | n.patient_status   | n.status_percent |
+|---------------|--------------------|------------------|
+| "V6Z"         | "Unvaccinated"     | 76.4             |
+| "V4A"         | "Unvaccinated"     | 80.16            |
+| "V1M"         | "Fully vaccinated" | 11.76            |
+| "V1X"         | "Unvaccinated"     | 70.37            |
+| "V9E"         | "Unvaccinated"     | 78.81            |
+| "V3B"         | "Unvaccinated"     | 75.93            |
+| "V1M"         | "Unvaccinated"     | 79.41            |
+| "V0J"         | "Fully vaccinated" | 100.0            |
+| "V4S"         | "One-dosed"        | 18.18            |
+| "V4C"         | "One-dosed"        | 10.71            |
+
+**Step 15**. `NeoDash` creates a dashboard and show them (note the board name)
+
+This is now the Federal view.
+<center>
+    <img src="../img/fap_fas_1_1.png " alt="Percentage of vaccinated population per zip code for the Period above" />
+    <figcaption>Percentage of vaccinated population per zip code for the Period above</figcaption>
+    <br/>
+</center>
+
+Let's some other queries.
+
+**Vaccination Schedule**: The following set of diagrams show an inquiry for young children missing vaccination schedule. In this, the charts are able to show the data from multiple angles based on a set of vaccine schedule: who missed schedule of which vaccines; heat map can be shown at for a high level over view, but map with individual location (and missing doses) provide a more in-dept details.
+
+<center>
+    <img src="../img/fap_far_2_1.png " alt="Who missing vaccination" />
+    <figcaption>Who missing vaccination</figcaption>
+    <br/>
+</center>
+
+**Vaccination Record**: Note the distinctive changes in patient (identifier), birth date, and address.
+
+<center>
+    <img src="../img/fap_far_5_1.png " alt="Random consecutive 1000 events in the stream of vaccination records" />
+    <figcaption>Random consecutive 1000 events in the stream of vaccination records</figcaption>
+    <br/>
+</center>
 
 --- 
 

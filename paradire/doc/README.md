@@ -18,15 +18,15 @@ How to read this document:
 - Part I - [The Proof-of-Concept (PoC)]((./part-i.md)):
     + First with an overview, then the present challenges, follow by the PoC guiding principles, its conceptual, and ends with key considerations.
     + This is a high-level walkthrough discussing multiple aspects of both the current situation and the PoC.
-    + The target audience consists of key stake-holders, domain experts, program/project managers, system architects, and others.
-- Part II - [What's underneath?](./part-ii.md):
-    + Discusses in detail the selected architecture, pros and cons, the synthetic data approach, the reference implementations of the PT and F platforms, last but not least, a set of concrete federated analytics queries in action.
+    + The target audience consists of key stake-holders, domain experts, project managers, architects, and others.
+- Part II - [Access Control Gateway](./part-ii.md):
+    + Discusses in detail Access Control Gateway, one of the key component of the PoC.
     + This is a technology-focus with proper details in both design and implementation aspects.
-    + Program/project managers, System/software/solution architects, software/UI/devops developers/engineers, and others with similar interests are the target audience.
+    + Architects, developers, devops engineers, and others with similar interests are the target audience.
 - Part III - [PT and F clusters in harmony](/part-iii.md)
-    + Provides a deep dive into continuous development, CI/CD pipeline for deployment, as well as details of the showcase platform consisting of 13 PT clusters and 1 F clusters.
+    + Provides a deep dive into the deployment of 13 PT clusters and 1 F clusters.
     + Utilization of modern cloud-native technologies such as containerization, orchestration, cloud-deployment, etc is omnipresent. 
-    + The target audience includes, but not limited to, program/project managers, system/software/solution architects, devops engineers, 
+    + The target audience includes, but not limited to, project managers, architects, devops engineers, and others.
 - Part IV - [Looking forward with hindsight](./part-iv.md)
     + Review of what have been done, what can be improved, and what are missing.
     + Paradire Playground as the continuation of the PoC.
