@@ -100,6 +100,8 @@ The **Immunization Record Gateway (IRG)** aims to enhance, standardize and conne
     </div>
 </center>
 
+<br/>
+
 Synthea contains a framework for defining modules using JSON. These JSON modules describe a progression of states and the transitions between them. On each Synthea generation time-step, the generic framework processes states one at a time to trigger conditions, encounters, medications, and other clinical events.
 
 <center>
@@ -110,6 +112,8 @@ Synthea contains a framework for defining modules using JSON. These JSON modules
         <br/>
     </div>
 </center>
+
+<br/>
 
 This simplified example of childhood ear infections, can be seen as above, shows the flow of a generic module. In this instance, children get ear infections at different rates based on their age, are then diagnosed at an encounter, and then are prescribed either an antibiotic or a painkiller.
 
@@ -126,6 +130,8 @@ This simplified example of childhood ear infections, can be seen as above, shows
     </div>
 </center>
 
+<br/>
+
 The EHRs can be viewed in detail by a pre-deployed `Patient Browser` to simulate the existing PT health information systems.
 
 <center>
@@ -141,27 +147,27 @@ The EHRs can be viewed in detail by a pre-deployed `Patient Browser` to simulate
 
 **Step 3**. The `Data Governance Gateway`, used by the policy designers to help them *choosing elements of `HL7 Resource Type`*, in this case i.e. `Immunization`, then *defines the extraction control mechanism* for the resources of this type.
 
-Note that, while generating EHS, Synthea collects [`time-based events in 20 categories`](https://github.com/synthetichealth/synthea/wiki/CSV-File-Data-Dictionary) and provide them separately:
-- allergies
-- careplans
-- claims_transactions
-- claims
-- conditions
-- devices
-- encounters
-- imaging_studies
-- immunizations
-- medications
-- observations
-- organizations
-- patient_expenses
-- patients
-- payer_transitions
-- payers
-- procedures
-- providers
-- supplies
-- symptoms
+Note that, while generating EHS, Synthea collects [`time-based events in 20 categories`](https://github.com/synthetichealth/synthea/wiki/CSV-File-Data-Dictionary) and provide them separately. Below is the list of  event categories and their `HL7 FHIR Resource Type`:
+- allergies: from [R4 - AllergyIntolerance](https://www.hl7.org/fhir/allergyintolerance.html)
+- careplans: from [R4 - CarePlan](https://www.hl7.org/fhir/careplan.html)
+- claims_transactions: from [ R4 - ClaimResponse](https://www.hl7.org/fhir/claimresponse.html)
+- claims: from [R4 - Claim](https://www.hl7.org/fhir/claim.html)
+- conditions: from [R4 - Condition](https://www.hl7.org/fhir/condition.html)
+- devices: from [R3 - Device](https://www.hl7.org/fhir/device.html)
+- encounters: from [R4 - Appointment](https://www.hl7.org/fhir/appointment.html)
+- imaging_studies: from [R4 - ImagingStudy](https://www.hl7.org/fhir/imagingstudy.html)
+- immunizations: from [R4 - Immunization](https://www.hl7.org/fhir/immunization.html)
+- medications: from [R4 - Medication](https://www.hl7.org/fhir/medication.html)
+- observations: from [R4 - Observation](https://www.hl7.org/fhir/observation.html)
+- organizations: from [R3 - Organization](https://www.hl7.org/fhir/organization.html)
+- patient_expenses: from [R4 - Invoice](https://www.hl7.org/fhir/invoice.html)
+- patients: from [R3 - Patient](https://www.hl7.org/fhir/patient.html)
+- payer_transitions: from [R3 - InsurancePlan](https://www.hl7.org/fhir/insuranceplan.html)
+- payers: from [R3 - Organization](https://www.hl7.org/fhir/organization.html)
+- procedures: from [R4 - Procedure](https://www.hl7.org/fhir/procedure.html)
+- providers: from [R4 - Practitioner](https://www.hl7.org/fhir/practitioner.html)
+- supplies: from [R3 - InventoryItem](https://www.hl7.org/fhir/inventoryitem.html)
+- symptoms: from [R4 - Observation](https://www.hl7.org/fhir/observation.html)
 
 Let's take an example of `immunization` to see how these events ended up in the PT Analytics Platform.
 
@@ -220,6 +226,8 @@ These *elements of `HL7 Immunization Resource Type`* are chosen, and *allowed to
     </div>
 </center>
 
+<br/>
+
 Immunization events are now shown as `Kafka` messages. They are now *data-in-motion*.
 
 <center>
@@ -231,6 +239,8 @@ Immunization events are now shown as `Kafka` messages. They are now *data-in-mot
     </div>
 </center>
 
+<br/>
+
 **Step 5**. Sink connectors to the graph analytics engine and database `Neo4j` are setup to receive streaming events from `Kafka` topics. Once this step is done, a complete dataset, up-to-this-minute is available in the `PT Analytics Platform` and ready for (local and remote) analytics queries.
 
 <center>
@@ -241,6 +251,9 @@ Immunization events are now shown as `Kafka` messages. They are now *data-in-mot
         <br/>
     </div>
 </center>
+
+
+<br/>
 
 The following diagram show the vaccinations over time of a single patient (`Nikita578`), living in Saanich, Sunshine Coast D, British Columbia, show as the green circle in the middle, who was born in 2002.
 + The six annual encounters in 2014-2019 (show as blue circles with titles `Well child visit` from top left to the right and down), when she was under 18. During this period of time she got a number of vaccinations (show as pink circles) at the encounters, all at the Fraser Canyon Clinic.
@@ -296,6 +309,8 @@ In this section, we show a number of analytics that can be performed locally. *I
     </tr>
 </table>
 
+<br/>
+
 **Vaccination Schedule**: The following set of diagrams show an inquiry for young children missing vaccination schedule. In this, the charts are able to show the data from multiple angles based on a set of vaccine schedule: who missed schedule of which vaccines; heat map can be shown at for a high level over view, but map with individual location (and missing doses) provide a more in-dept details.
 
 <table cellspacing="0" cellpadding="0" border="0">
@@ -312,6 +327,8 @@ In this section, we show a number of analytics that can be performed locally. *I
         </td>
     </tr>
 </table>
+
+<br/>
 
 **Travel distance**: The following set of diagrams show two types of analysis on traveling distance to get vaccinated.
 
@@ -337,6 +354,8 @@ The second one uses a different approaches. It show every single travel distance
     </div>
 </center>
 
+<br/>
+
 **Vaccination Traffic**: This simple Sandkey chart shows the number of vaccinations each patient getting from an organization.
 
 <center>
@@ -347,6 +366,8 @@ The second one uses a different approaches. It show every single travel distance
         <br/>
     </div>
 </center>
+
+<br/>
 
 **Vaccination Record**: Below is a simple extraction of random 10 vaccination records ordered by time
 
@@ -363,6 +384,8 @@ The second one uses a different approaches. It show every single travel distance
 | 2014-06-05 | "140" |  "Influenza  seasonal  injectable  preservative free" |  "Fraser Canyon Clinic"        |  "Well child visit (procedure)"               | "410620009" | "114cbf30"  | 12                 | "1030 MacGyver Approach Unit 50" | "V9E" |  "F"    |  "white" |  "nonhispanic" |
 | 2014-06-05 | "62"  |  "HPV  quadrivalent"                                  |  "Fraser Canyon Clinic"        |  "Well child visit (procedure)"               | "410620009" | "114cbf30"  | 12                 | "1030 MacGyver Approach Unit 50" | "V9E" |  "F"    |  "white" |  "nonhispanic" |
 
+<br/>
+
 **Key Indicators**: To easily capture a key statistics at a moment. Three examples are shown: patient condition, reason for medications, performed procedures distributions.
 
 <center>
@@ -373,6 +396,8 @@ The second one uses a different approaches. It show every single travel distance
     </div>
 </center>
 
+<br/>
+
 <center>
     <img src="../img/pap_far_6_2.png" alt="Distribution of reasons for medication" />
     <div align="center">
@@ -381,6 +406,8 @@ The second one uses a different approaches. It show every single travel distance
     </div>
 </center>
 
+<br/>
+
 <center>
     <img src="../img/pap_far_6_3.png" alt="Distribution of top 100 procedures" />
     <div align="center">
@@ -388,6 +415,8 @@ The second one uses a different approaches. It show every single travel distance
         <br/>
     </div>
 </center>
+
+<br/>
 
 **Research Indicator**: This inquiry wishes to see more why certain patients missing their vaccination, while the organizations, where they visited (for other vaccinations), still provided the vaccines they missed to other patients.
 
@@ -438,6 +467,8 @@ Let's take an example. The diagram below shows the formation of vaccination reco
         <br/>
     </div>
 </center>
+
+<br/>
 
 From F side, (although it is not know what data standards are going to be used), but let's suppose that the instance of the vaccination record contains CVX, some information of the patient, the organization where the vaccine was administered, the encounter, and the immunization activity. See the purple box on the right and its input from the green box in the middle for reference.
 
@@ -598,6 +629,8 @@ And three events of the response:
     </div>
 </center>
 
+<br/>
+
 **Key data flow: Federated Analytics Requests F- to PT Analytics Platform and back with the responses**
 
 (See the chains of purple circles on the right of the *the conceptual view of the Proof-of-Concept* above)
@@ -606,19 +639,20 @@ And three events of the response:
 
 With UI, an AVRO message with content as below
 ```json
-    {
-        "request_id": "far_1-1", 
-        "covid_cvx_list": "207,208", 
-        "start_date": "2021-01-01", 
-        "end_date": "2021-04-01", 
-        "pt_list": "BC", 
-        "timestamp": 1699312649, 
-        "doc": 
-        "BC only: COVID-19 monovalent Moderna adult (12+ yrs) vaccine, 1st/2nd dosage."
-    }
+{
+    "request_id": "far_1-1", 
+    "covid_cvx_list": "207,208", 
+    "start_date": "2021-01-01", 
+    "end_date": "2021-04-01", 
+    "pt_list": "BC", 
+    "timestamp": 1699312649, 
+    "doc": 
+    "BC only: COVID-19 monovalent Moderna adult (12+ yrs) vaccine, 1st/2nd dosage."
+}
 ```
 
 With NeoDash, it would be a Cypher query
+
 ```cypher
 CREATE (n:FAR_1)
     SET
@@ -674,6 +708,8 @@ The message landed in the `far_1` topic on FAP, as shown below.
     </div>
 </center>
 
+<br/>
+
 **Step 2, 3, 4**. The Access Control Gateways replicates the request
 - All ACGs subscribe to the `far` topic of FAP, thus all of them aware of the appearance of the request in the topic.
 - Each and everyone of them takes the event, verify the `pt_list` against its own PT 2-letter abbreviation, and if matched, then replicate the event.
@@ -688,6 +724,8 @@ The message landed in the `far_1` topic on FAP, as shown below.
         <br/>
     </div>
 </center>
+
+<br/>
 
 **Step 5, 6, 7, 8**. `Neo4j` sink connector for the parameterized request type of `far_1` detects the request.
 - It invokes the `Cypher` query in the `far_sink_connectors` connector to perform the analysis, and
@@ -773,6 +811,8 @@ RETURN
     </div>
 </center>
 
+<br/>
+
 **Step 11, 12, 13**. Access Control Gateway detects response event, perform governance rules, and replicate them into `fas_1` topic on the F side.
 
 <center>
@@ -783,12 +823,16 @@ RETURN
     </div>
 </center>
 
+<br/>
+
 **Step 14**. `Neo4j` picks up the events and converts them into entities.
 
 Below some 10 examples:
 
+<center>
+
 | n.patient_zip | n.patient_status   | n.status_percent |
-|---------------|--------------------|------------------|
+|:-------------:|-------------------:|:----------------:|
 | "V6Z"         | "Unvaccinated"     | 76.4             |
 | "V4A"         | "Unvaccinated"     | 80.16            |
 | "V1M"         | "Fully vaccinated" | 11.76            |
@@ -799,6 +843,8 @@ Below some 10 examples:
 | "V0J"         | "Fully vaccinated" | 100.0            |
 | "V4S"         | "One-dosed"        | 18.18            |
 | "V4C"         | "One-dosed"        | 10.71            |
+
+</center>
 
 **Step 15**. `NeoDash` creates a dashboard and show them (note the board name)
 
@@ -811,6 +857,8 @@ This is now the Federal view.
     </div>
 </center>
 
+<br/>
+
 Let's some other queries.
 
 **Vaccination Schedule**: The following set of diagrams show an inquiry for young children missing vaccination schedule. In this, the charts are able to show the data from multiple angles based on a set of vaccine schedule: who missed schedule of which vaccines; heat map can be shown at for a high level over view, but map with individual location (and missing doses) provide a more in-dept details.
@@ -818,12 +866,12 @@ Let's some other queries.
 <center>
     <img src="../img/fap_far_2_1.png " alt="Who missing vaccination" />
     <div align="center">
-        <figcaption>Patient Browser for New Brunswick PT-deployment by the PoC</figcaption>
+        <figcaption>Who missing vaccination</figcaption>
         <br/>
     </div>
-    <figcaption>Who missing vaccination</figcaption>
-    <br/>
 </center>
+
+<br/>
 
 **Vaccination Record**: Note the distinctive changes in patient (identifier), birth date, and address.
 
