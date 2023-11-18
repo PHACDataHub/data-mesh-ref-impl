@@ -829,7 +829,7 @@ RETURN
 
 Below some 10 examples:
 
-<center>
+<div align="center">
 
 | n.patient_zip | n.patient_status   | n.status_percent |
 |:-------------:|-------------------:|:----------------:|
@@ -844,7 +844,7 @@ Below some 10 examples:
 | "V4S"         | "One-dosed"        | 18.18            |
 | "V4C"         | "One-dosed"        | 10.71            |
 
-</center>
+</div>
 
 **Step 15**. `NeoDash` creates a dashboard and show them (note the board name)
 
