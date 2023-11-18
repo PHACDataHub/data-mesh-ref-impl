@@ -7,6 +7,8 @@ metadata:
     chart: {{ template "cp-kafka-ui.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+  annotations:
+    cloud.google.com/backend-config: '{"ports": {"{{ .Values.servicePort }}":"{{ template "cp-kafka-ui.fullname" . }}-backendconfig"}}'
 spec:
   ports:
       - name: kafka-ui
