@@ -430,6 +430,24 @@ services:
       kafka-topics --bootstrap-server broker:${BROKER_INTERNAL_PORT} --create --if-not-exists --topic providers --replication-factor ${REPLICATION_FACTOR} --partitions ${PARTITIONS}
       kafka-topics --bootstrap-server broker:${BROKER_INTERNAL_PORT} --create --if-not-exists --topic supplies --replication-factor ${REPLICATION_FACTOR} --partitions ${PARTITIONS}
       kafka-topics --bootstrap-server broker:${BROKER_INTERNAL_PORT} --create --if-not-exists --topic symptoms --replication-factor ${REPLICATION_FACTOR} --partitions ${PARTITIONS}
+      # kafka-topics --bootstrap-server broker:${BROKER_INTERNAL_PORT} --create --if-not-exists --topic far_1 --replication-factor ${REPLICATION_FACTOR} --partitions ${PARTITIONS} --config retention.ms=${FAR_RETENTION_MS}
+      # kafka-topics --bootstrap-server broker:${BROKER_INTERNAL_PORT} --create --if-not-exists --topic far_2 --replication-factor ${REPLICATION_FACTOR} --partitions ${PARTITIONS} --config retention.ms=${FAR_RETENTION_MS}
+      # kafka-topics --bootstrap-server broker:${BROKER_INTERNAL_PORT} --create --if-not-exists --topic far_3 --replication-factor ${REPLICATION_FACTOR} --partitions ${PARTITIONS} --config retention.ms=${FAR_RETENTION_MS}
+      # kafka-topics --bootstrap-server broker:${BROKER_INTERNAL_PORT} --create --if-not-exists --topic far_4 --replication-factor ${REPLICATION_FACTOR} --partitions ${PARTITIONS} --config retention.ms=${FAR_RETENTION_MS}
+      # kafka-topics --bootstrap-server broker:${BROKER_INTERNAL_PORT} --create --if-not-exists --topic far_5 --replication-factor ${REPLICATION_FACTOR} --partitions ${PARTITIONS} --config retention.ms=${FAR_RETENTION_MS}
+      # kafka-topics --bootstrap-server broker:${BROKER_INTERNAL_PORT} --create --if-not-exists --topic far_6 --replication-factor ${REPLICATION_FACTOR} --partitions ${PARTITIONS} --config retention.ms=${FAR_RETENTION_MS}
+      # kafka-topics --bootstrap-server broker:${BROKER_INTERNAL_PORT} --create --if-not-exists --topic far_7 --replication-factor ${REPLICATION_FACTOR} --partitions ${PARTITIONS} --config retention.ms=${FAR_RETENTION_MS}
+      # kafka-topics --bootstrap-server broker:${BROKER_INTERNAL_PORT} --create --if-not-exists --topic far_8 --replication-factor ${REPLICATION_FACTOR} --partitions ${PARTITIONS} --config retention.ms=${FAR_RETENTION_MS}
+      # kafka-topics --bootstrap-server broker:${BROKER_INTERNAL_PORT} --create --if-not-exists --topic far_9 --replication-factor ${REPLICATION_FACTOR} --partitions ${PARTITIONS} --config retention.ms=${FAR_RETENTION_MS}
+      # kafka-topics --bootstrap-server broker:${BROKER_INTERNAL_PORT} --create --if-not-exists --topic fas_1 --replication-factor ${REPLICATION_FACTOR} --partitions ${PARTITIONS} --config retention.ms=${FAS_RETENTION_MS}
+      # kafka-topics --bootstrap-server broker:${BROKER_INTERNAL_PORT} --create --if-not-exists --topic fas_2 --replication-factor ${REPLICATION_FACTOR} --partitions ${PARTITIONS} --config retention.ms=${FAS_RETENTION_MS}
+      # kafka-topics --bootstrap-server broker:${BROKER_INTERNAL_PORT} --create --if-not-exists --topic fas_3 --replication-factor ${REPLICATION_FACTOR} --partitions ${PARTITIONS} --config retention.ms=${FAS_RETENTION_MS}
+      # kafka-topics --bootstrap-server broker:${BROKER_INTERNAL_PORT} --create --if-not-exists --topic fas_4 --replication-factor ${REPLICATION_FACTOR} --partitions ${PARTITIONS} --config retention.ms=${FAS_RETENTION_MS}
+      # kafka-topics --bootstrap-server broker:${BROKER_INTERNAL_PORT} --create --if-not-exists --topic fas_5 --replication-factor ${REPLICATION_FACTOR} --partitions ${PARTITIONS} --config retention.ms=${FAS_RETENTION_MS}
+      # kafka-topics --bootstrap-server broker:${BROKER_INTERNAL_PORT} --create --if-not-exists --topic fas_6 --replication-factor ${REPLICATION_FACTOR} --partitions ${PARTITIONS} --config retention.ms=${FAS_RETENTION_MS}
+      # kafka-topics --bootstrap-server broker:${BROKER_INTERNAL_PORT} --create --if-not-exists --topic fas_7 --replication-factor ${REPLICATION_FACTOR} --partitions ${PARTITIONS} --config retention.ms=${FAS_RETENTION_MS}
+      # kafka-topics --bootstrap-server broker:${BROKER_INTERNAL_PORT} --create --if-not-exists --topic fas_8 --replication-factor ${REPLICATION_FACTOR} --partitions ${PARTITIONS} --config retention.ms=${FAS_RETENTION_MS}
+      # kafka-topics --bootstrap-server broker:${BROKER_INTERNAL_PORT} --create --if-not-exists --topic fas_9 --replication-factor ${REPLICATION_FACTOR} --partitions ${PARTITIONS} --config retention.ms=${FAS_RETENTION_MS}
 
       echo -e 'Successfully created the following topics:'
       kafka-topics --bootstrap-server broker:${BROKER_INTERNAL_PORT} --list

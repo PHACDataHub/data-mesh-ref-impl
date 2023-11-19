@@ -8,6 +8,12 @@ fi
 
 topic=$1
 
+if [ -z "$2" ]; then
+    retention_ms=-1
+else
+    retention_ms=$2
+fi
+
 # Load environment variables
 source .env
 
@@ -32,7 +38,7 @@ else
     set +e  # Disable exit on error temporarily
     docker exec ${broker_container_name} /bin/kafka-topics \
         --bootstrap-server ${broker_internal_host}:${broker_internal_port} \
-        --create --topic ${topic} --partitions ${partitions} --replication-factor ${replication_factor}
+        --create --topic ${topic} --partitions ${partitions} --replication-factor ${replication_factor} --config retention.ms=${retention_ms}
     create_status=$?
     set -e  # Re-enable exit on error
 
