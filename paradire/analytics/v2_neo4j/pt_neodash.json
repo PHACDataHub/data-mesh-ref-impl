@@ -2,7 +2,7 @@
     "title": "BC Analytics Platform",
     "version": "2.3",
     "settings": {
-      "pagenumber": 0,
+      "pagenumber": 6,
       "editable": true,
       "fullscreenEnabled": false,
       "parameters": {
@@ -252,8 +252,8 @@
                 "zip",
                 "address",
                 "ethnicity",
-                "race",
                 "gender",
+                "race",
                 "last",
                 "city",
                 "healthcare_expenses",
@@ -313,8 +313,8 @@
                 "zip",
                 "address",
                 "ethnicity",
-                "race",
                 "gender",
+                "race",
                 "last",
                 "city",
                 "healthcare_expenses",
@@ -387,16 +387,16 @@
                 "zip",
                 "address",
                 "ethnicity",
-                "gender",
                 "race",
+                "gender",
                 "last",
                 "healthcare_expenses",
                 "city",
                 "prefix",
                 "birth_date",
                 "county",
-                "birth_place",
                 "fips",
+                "birth_place",
                 "ssn",
                 "marital",
                 "passport",
@@ -406,8 +406,8 @@
                 "state",
                 "drivers",
                 "first",
-                "maiden",
                 "suffix",
+                "maiden",
                 "death_date"
               ],
               [
@@ -639,6 +639,26 @@
               "fullscreenEnabled": true,
               "downloadImageEnabled": true,
               "compact": true
+            }
+          }
+        ]
+      },
+      {
+        "title": "Reset",
+        "reports": [
+          {
+            "id": "8b20af4e-87b5-4fd6-9aa2-88fd4268a62e",
+            "title": "Cleanup FAR/FAS",
+            "query": "WITH ['FAR', 'FAS'] AS entity_list\n    UNWIND entity_list AS entity\nWITH entity, SPLIT('1,2,3,4,5,6,7,8,9', ',') AS counter_list\n    UNWIND counter_list AS counter\nWITH \n    'MATCH (n:' + entity + '_' + counter + ') RETURN n' AS batch_producer,\n    ' WITH n DETACH DELETE n' AS batch_runner\nWITH batch_producer, batch_runner\n    CALL apoc.periodic.iterate(batch_producer, batch_runner, {batchSize:10000, parallel:true})\n        YIELD total RETURN total;\n\n\n",
+            "width": 3,
+            "height": 2,
+            "x": 0,
+            "y": 0,
+            "type": "table",
+            "selection": {},
+            "settings": {
+              "autorun": false,
+              "refreshButtonEnabled": true
             }
           }
         ]

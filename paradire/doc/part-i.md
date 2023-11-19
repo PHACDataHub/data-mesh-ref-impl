@@ -474,10 +474,19 @@ From F side, (although it is not know what data standards are going to be used),
 
 The vaccination record, provided from PT, consists of several pieces of information derived from multiple resource types in a patient's EHR, from *HL7 FHIR R4*, namely *Patient, Organization, Appointment, Immunization*. Note that from the diagram depicting HL7 FHIR, it is easy to see that *the minimum required version for HL7 FHIR is R4*. This implies on **what data needs to be extracted from the data that PT holds** in order to create vaccination records for F. This is the first role of the Data Governance Gateway, exercising control on its first sub-component, the Event Streaming Gateway to collect such data from PT.
 
-The extracted data, now is in stream within the PT Analytics Platform. It is ephemeral and will stay for a short period of time. The stream heads to the Access Control Gateway, which is the second sub-component of the Data Governance Gateway, where **according the executable policy the data must be transformed**:
+The extracted data, now is in stream within the PT Analytics Platform. The stream heads to the Access Control Gateway, which is the second sub-component of the Data Governance Gateway, where **according the executable policy the data must be transformed**:
 + certain fields such as *personal information is blocked* and replaced by '** restricted **' to highlight that information is there but restricted.
 + certain fields like the *patient identifier is transformed into an irreversible identifier*(so that later need to correlate data based on the patient identifier is still intact), 
 + certain fields like *birth date, zip code, etc are reduced in capacity* to provide less information, for example instead of full birth date, its year can be provided so analytics on age can still be done; similarly 6-character zip code will not be allowed, only it first three (forward station code) is allowed for area map and so.
++ define *how ephemeral the data* should be:
+    - what data consititue as data-in-motion and must be ephemeral,
+    - how long can it stay in the streams
++ *monitoring the chain of events*:
+    - when and how EHR data is extracted, 
+    - what kind, with what parameters, and when a request arrived,
+    - what, how, and when EHR data is used to form the response,
+    - at what time the above data-in-motion enter the streams,
+    - at what time the above data-in-motion leave the streams, i.e. deleted
 
 We will see in the Federated Analytics Request 5 (FAR 5) some concrete example explaining how the data governance rules work.
 

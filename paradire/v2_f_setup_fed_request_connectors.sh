@@ -42,7 +42,7 @@ for item in {1..9}
 do
     request_topic=far_${item}
 
-    ./scripts/create_topic.sh ${request_topic}
+    ./scripts/create_topic.sh ${request_topic} ${FAR_RETENTION_MS}
 
     ./scripts/create_subject.sh ${request_topic}-key ${event_dir}/${request_topic}_key.avsc
     ./scripts/create_subject.sh ${request_topic}-value ${event_dir}/${request_topic}_val.avsc
@@ -65,7 +65,7 @@ for item in {1..9}
 do
     response_topic=fas_${item}
 
-    ./scripts/create_topic.sh ${response_topic}
+    ./scripts/create_topic.sh ${response_topic} ${FAS_RETENTION_MS}
 
     ./scripts/create_subject.sh ${response_topic}-key ${event_dir}/${response_topic}_key.avsc
     ./scripts/create_subject.sh ${response_topic}-value ${event_dir}/${response_topic}_val.avsc
