@@ -10,7 +10,7 @@ The **Immunization Record Gateway (IRG)** aims to enhance, standardize and conne
 
 ## [B. Present Situation](#b-present-situation)
 
-**Our understanding** is as follow:
+**Our understanding** is as follows:
 1. *vaccination events are recorded at the first-line of contact*: the local public health clinics, doctors' offices, school, and pharmacies.
 2. vaccination records *may or may not be centrally kept in a PT electronic immunization registry* (if exists and/or up-to-date).
 3. vaccination records *may or may not be automatically synchronized* from the facilities where they were created to local public health unit, or to PT electronic immunization registry.
