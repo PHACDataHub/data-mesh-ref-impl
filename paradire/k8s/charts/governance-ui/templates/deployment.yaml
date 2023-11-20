@@ -15,6 +15,7 @@ spec:
       containers:
       - name: governance-ui
         image: northamerica-northeast1-docker.pkg.dev/phx-01he5rx4wsv/paradire/governance-ui
+        imagePullPolicy: Always
         ports:
         - containerPort: 3000
         env:
@@ -26,3 +27,5 @@ spec:
           value: {{ .Values.nextauth_secret | quote }}
         - name: PT
           value: {{ .Values.pt | quote }}
+        - name: NEXTAUTH_URL
+          value: "http://nowhere"

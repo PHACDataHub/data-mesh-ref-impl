@@ -15,10 +15,11 @@ spec:
       containers:
       - name: acg
         image: northamerica-northeast1-docker.pkg.dev/phx-01he5rx4wsv/paradire/acg
+        imagePullPolicy: Always
         env:
         - name: BROKER_LIST
-          value: "{{ printf "cp-kafka-0.%s.nb:9092" (include "cp-kafka.cp-kafka-headless.fullname" .) }},{{ printf "cp-kafka-1.%s.nb:9092" (include "cp-kafka.cp-kafka-headless.fullname" .) }},{{ printf "cp-kafka-2.%s.nb:9092" (include "cp-kafka.cp-kafka-headless.fullname" .) }},{{ printf "cp-kafka-3.%s.nb:9092" (include "cp-kafka.cp-kafka-headless.fullname" .) }}"
-          # value: {{ printf "%s:9092" (include "cp-kafka.cp-kafka-headless.fullname" .)  | quote}}
+          # value: "{{ printf "cp-kafka-0.%s.nb:9092" (include "cp-kafka.cp-kafka-headless.fullname" .) }},{{ printf "cp-kafka-1.%s.nb:9092" (include "cp-kafka.cp-kafka-headless.fullname" .) }},{{ printf "cp-kafka-2.%s.nb:9092" (include "cp-kafka.cp-kafka-headless.fullname" .) }},{{ printf "cp-kafka-3.%s.nb:9092" (include "cp-kafka.cp-kafka-headless.fullname" .) }}"
+          value: {{ printf "%s:9092" (include "cp-kafka.cp-kafka-headless.fullname" .)  | quote}}
         - name: SCHEMA_REGISTRY_URL
           value: "http://cp-schema-registry:8081"
         - name: F_BROKER_LIST

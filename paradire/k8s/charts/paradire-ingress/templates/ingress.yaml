@@ -49,7 +49,7 @@ spec:
           service:
             name: neo4j-svc
             port:
-              number: 7473
+              number: 7474
         path: /
         pathType: Prefix
   - host: neodash.{{ .Values.pt | lower }}.paradire.phac-aspc.alpha.canada.ca

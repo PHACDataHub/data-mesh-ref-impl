@@ -98,10 +98,10 @@ const reload = new Promise<void>((resolve) => {
   config_consumer.run({
     eachMessage: async ({ message }) => {
       console.info("=== New ruleset configuration received ===");
-      const ruleset = message.value.toString();
+      const ruleset = message?.value?.toString();
       // When a new ruleset arrives, write to a file and exit.  The container
       // restarts automatically.
-      await writeFileSync("./ruleset.yaml", ruleset);
+      await writeFileSync("./ruleset.yaml", ruleset ?? "");
       resolve();
     },
   });
@@ -125,7 +125,7 @@ await status_producer.connect();
 
 status_consumer.run({
   eachMessage: async ({ message }) => {
-    if (message?.value.toString() === "ping") {
+    if (message?.value?.toString() === "ping") {
       const key = (Math.random() + 1).toString(36).substring(7);
       console.debug("pong");
       status_producer.send({
@@ -149,7 +149,7 @@ try {
         ruleset,
         { pt: kafka_pt, federal: kafka_federal },
         { pt: registry_pt, federal: registry_federal },
-        PT
+        (PT ?? "Unknown").toUpperCase(),
       );
 
     // Create graphql pipeline
