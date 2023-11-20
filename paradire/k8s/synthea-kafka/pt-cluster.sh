@@ -13,7 +13,7 @@ python ./csv2avro.py /workspace/governance/events "$(realpath /data/$pt/csv/*/)"
 avro_dir="/workspace/governance/events"
 data_dir="/data"
 event_dir="/workspace/analytics/v2_events"
-connector_dir="/workspace/analytics/v2_pt_connectors"
+connector_pt_dir="/workspace/analytics/v2_pt_connectors"
 
 # Define Kafka and Schema Registry related variables
 # These are now expected to be provided as environment variables
@@ -179,7 +179,7 @@ for item in {1..9}; do
     curl -X POST ${connect_url}/connectors \
     -H 'Content-Type:application/json' \
     -H 'Accept:application/json' \
-    -d @${connector_dir}/${response_topic}_source_connector.json
+    -d @${connector_pt_dir}/${response_topic}_source_connector.json
     echo
 done
 
@@ -187,7 +187,7 @@ done
 curl -X POST ${connect_url}/connectors \
     -H 'Content-Type:application/json' \
     -H 'Accept:application/json' \
-    -d @${connector_dir}/far_sink_connectors.json
+    -d @${connector_pt_dir}/far_sink_connectors.json
 echo ''
 
 # Additional Connector Creation
@@ -197,7 +197,7 @@ echo "Creating additional connectors..."
 curl -X POST ${connect_url}/connectors \
   -H 'Content-Type:application/json' \
   -H 'Accept:application/json' \
-  -d @${connector_dir}/event_sink_connector_1.json
+  -d @${connector_pt_dir}/event_sink_connector_1.json
 echo
 
 # List the current connector instances
@@ -210,7 +210,7 @@ sleep 10
 curl -X POST ${connect_url}/connectors \
   -H 'Content-Type:application/json' \
   -H 'Accept:application/json' \
-  -d @${connector_dir}/event_sink_connector_2.json
+  -d @${connector_pt_dir}/event_sink_connector_2.json
 echo
 
 # List the current connector instances again

@@ -2,7 +2,7 @@ replicaCount: 1
 
 image:
   repository: nielsdejong/neodash
-  tag: 2.2.5
+  tag: 2.4.0
 
 service:
   type: ClusterIP
