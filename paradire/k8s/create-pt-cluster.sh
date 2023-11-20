@@ -1,6 +1,7 @@
 #!/bin/bash
 
 provinces="ab bc mb nb nl ns nt nu on pe qc sk yt"
+# provinces="nb"
 selected_provinces=($provinces) # Automatically select all 13 provinces
 
 # Get user input for action: 1 for install, 2 for upgrade
@@ -26,19 +27,19 @@ fi
 for pt in "${selected_provinces[@]}"; do
     # Determine whether to install or upgrade
     if [[ "$action_choice" == "1" ]]; then
-        helm install "$pt"-province . --namespace="$pt" \
-        --create-namespace \
-        --set cp-kafka-ui.paradire.pt="$pt" \
-        --set cp-kafka-job.samplingSize="$record_count" \
-        --set cp-kafka-job.pt="$pt" \
-        --set cp-kafka-job.GCPBucketName="paradire-synthea-data" || exit $?
+        cmd="install"
     elif [[ "$action_choice" == "2" ]]; then
-        helm upgrade "$pt"-province . --namespace="$pt" \
-        --set cp-kafka-ui.paradire.pt="$pt" \
-        --set cp-kafka-job.samplingSize="$record_count" \
-        --set cp-kafka-job.pt="$pt" \
-        --set cp-kafka-job.GCPBucketName="paradire-synthea-data" || exit $?
+        cmd="upgrade"
     fi
+
+    helm $cmd "$pt"-province . --namespace="$pt" \
+    --create-namespace \
+    --set cp-kafka-ui.paradire.pt="$pt" \
+    --set cp-kafka-job.samplingSize="$record_count" \
+    --set cp-kafka-job.pt="$pt" \
+    --set governance-ui.pt="$pt" \
+    --set cp-kafka-job.GCPBucketName="paradire-synthea-data" || exit $?
+
 done
 
 echo "All tasks completed!"

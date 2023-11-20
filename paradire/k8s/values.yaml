@@ -18,3 +18,10 @@ cp-kafka-job:
   samplingSize: 5
   pt: "ab"
   GCPBucketName: "paradire-synthea-data"
+
+
+## ------------------------------------------------------
+## Governance UI
+## ------------------------------------------------------
+governance-ui:
+  pt: "ab"

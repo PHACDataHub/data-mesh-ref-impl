@@ -70,9 +70,8 @@ services:
     environment:
       BROKER_HOST: broker
       BROKER_PORT: ${BROKER_INTERNAL_PORT}
-      NEXT_PUBLIC_PUBLIC_IP: ${PUBLIC_IP}
-      NEXT_PUBLIC_GATEWAY_PORT: ${GATEWAY_PORT}
       NEXTAUTH_SECRET: ${NEXTAUTH_SECRET}
+      NEXT_PUBLIC_PT: ${PT}
 
     networks:
       - backend

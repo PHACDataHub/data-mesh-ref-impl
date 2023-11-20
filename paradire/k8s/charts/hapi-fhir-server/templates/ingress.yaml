@@ -4,8 +4,8 @@ metadata:
   name: hapi-fhir-ingress
   annotations:
     kubernetes.io/ingress.allow-http: "true"
-    kubernetes.io/ingress.global-static-ip-name: {{ .Values.paradire.pt }}-cluster-ip
-    cert-manager.io/cluster-issuer: letsencrypt-production
+    kubernetes.io/ingress.global-static-ip-name: {{ .Values.paradire.pt | lower }}-cluster-ip
+    cert-manager.io/cluster-issuer: letsencrypt-staging
     acme.cert-manager.io/http01-edit-in-place: "true"
 spec:
   ingressClassName: "gce"
