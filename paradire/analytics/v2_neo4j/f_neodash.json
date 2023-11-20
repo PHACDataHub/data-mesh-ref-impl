@@ -193,7 +193,7 @@
           {
             "id": "87b45734-28a5-4407-9148-b54892341a1d",
             "title": "Send query to PTs",
-            "query": "MERGE (h:FAR_1_HELPER)\n  SET h.request_id = apoc.create.uuid()\nWITH h\n  CREATE (n:FAR_1)\n    SET\n      n.request_id = h.request_id,\n      n.covid_cvx_list = $neodash_far_1_covid_cvx_list,\n      n.start_date = TOSTRING($neodash_far_1_start_date),\n      n.end_date = TOSTRING($neodash_far_1_end_date),\n      n.pt_list = $neodash_pt_list,\n      n.timestamp = apoc.date.currentTimestamp(),\n      n.doc = 'All PTs: COVID-19 monovalent Moderna adult (12+ yrs) vaccine, 1st/2nd dosage.'\nRETURN n.request_id;\n",
+            "query": "MERGE (h:FAR_1_HELPER)\n  SET h.request_id = apoc.create.uuid()\nWITH h\n  CREATE (n:FAR_1)\n    SET\n      n.request_id = h.request_id,\n      n.covid_cvx_list = $neodash_far_1_covid_cvx_list,\n      n.start_date = TOSTRING($neodash_far_1_start_date),\n      n.end_date = TOSTRING($neodash_far_1_end_date),\n      n.pt_list = $neodash_pt_list,\n      n.timestamp = apoc.date.currentTimestamp(),\n      n.doc = \"All PTs: COVID-19 monovalent Moderna adult (12+ yrs) vaccine, 1st/2nd dosage.\"\nRETURN n.request_id;\n",
             "width": 8,
             "height": 2,
             "x": 16,
@@ -235,7 +235,7 @@
           {
             "id": "86f385fb-67dd-45c0-858b-880cfa402475",
             "title": "Vaccination schedule",
-            "query": "WITH '{\"03\": 6, \"08\": 6, \"20\": 18, \"21\": 12, \"49\": 18, \"83\": 18, \"114\": 2, \"115\": 48, \"119\": 4, \"133\": 4}' AS cvx_maps\nWITH apoc.map.sortedProperties(apoc.convert.fromJsonMap(cvx_maps)) AS sortedList\n  UNWIND sortedList AS sorted\nRETURN sorted[0] AS CVX, sorted[1] AS months",
+            "query": "WITH \"{\"03\": 6, \"08\": 6, \"20\": 18, \"21\": 12, \"49\": 18, \"83\": 18, \"114\": 2, \"115\": 48, \"119\": 4, \"133\": 4}\" AS cvx_maps\nWITH apoc.map.sortedProperties(apoc.convert.fromJsonMap(cvx_maps)) AS sortedList\n  UNWIND sortedList AS sorted\nRETURN sorted[0] AS CVX, sorted[1] AS months",
             "width": 8,
             "height": 2,
             "x": 0,
@@ -258,7 +258,7 @@
           {
             "id": "436f4a2d-a06a-4381-ab2c-f684cdcfbc22",
             "title": "Query",
-            "query": "MERGE (h:FAR_2_HELPER)\n  SET h.request_id = apoc.create.uuid()\nWITH h\n  CREATE (n:FAR_2)\n    SET \n      n.request_id = h.request_id,\n      n.cvx_maps = '{\"03\": 6, \"08\": 6, \"20\": 18, \"21\": 12, \"49\": 18, \"83\": 18, \"114\": 2, \"115\": 48, \"119\": 4, \"133\": 4}', \n      n.pt_list = 'AB,BC,MB,NB,NL,NT,NS,NU,ON,PE,QC,SK,YT',\n      n.timestamp = apoc.date.currentTimestamp(),\n      n.doc = 'All PT: Young children missing vaccination schedule'\nRETURN n.request_id\n\n\n\n",
+            "query": "MERGE (h:FAR_2_HELPER)\n  SET h.request_id = apoc.create.uuid()\nWITH h\n  CREATE (n:FAR_2)\n    SET \n      n.request_id = h.request_id,\n      n.cvx_maps = \"{\"03\": 6, \"08\": 6, \"20\": 18, \"21\": 12, \"49\": 18, \"83\": 18, \"114\": 2, \"115\": 48, \"119\": 4, \"133\": 4}\", \n      n.pt_list = \"AB,BC,MB,NB,NL,NT,NS,NU,ON,PE,QC,SK,YT\",\n      n.timestamp = apoc.date.currentTimestamp(),\n      n.doc = \"All PT: Young children missing vaccination schedule\"\nRETURN n.request_id\n\n\n\n",
             "width": 4,
             "height": 2,
             "x": 8,
@@ -319,7 +319,7 @@
           {
             "id": "406de899-7155-4e34-82d8-45570b5039f5",
             "title": "Query",
-            "query": "MERGE (h:FAR_3_HELPER)\n  SET h.request_id = apoc.create.uuid()\nWITH h\n  CREATE (n:FAR_3)\n    SET\n      n.request_id = h.request_id,\n      n.cvx_list = '43,52',\n      n.pt_list = 'AB,BC,MB,NB,NL,NT,NS,NU,ON,PE,QC,SK,YT',\n      n.timestamp = apoc.date.currentTimestamp(),\n      n.doc = 'All PTs: Travel distance to get Hepatitis A/B vaccine, adult dosage.'\nRETURN n.request_id\n\n\n\n",
+            "query": "MERGE (h:FAR_3_HELPER)\n  SET h.request_id = apoc.create.uuid()\nWITH h\n  CREATE (n:FAR_3)\n    SET\n      n.request_id = h.request_id,\n      n.cvx_list = \"43,52\",\n      n.pt_list = \"AB,BC,MB,NB,NL,NT,NS,NU,ON,PE,QC,SK,YT\",\n      n.timestamp = apoc.date.currentTimestamp(),\n      n.doc = \"All PTs: Travel distance to get Hepatitis A/B vaccine, adult dosage.\"\nRETURN n.request_id\n\n\n\n",
             "width": 6,
             "height": 2,
             "x": 0,
@@ -393,7 +393,7 @@
           {
             "id": "e591e48d-492f-4b95-87c5-328e6fe9ca35",
             "title": "Query",
-            "query": "MERGE (h:FAR_4_HELPER)\n  SET h.request_id = apoc.create.uuid()\nWITH h\n  CREATE (n:FAR_4)\n    SET\n      n.request_id = h.request_id,\n      n.cvx_list = '43,52',\n      n.pt_list = 'AB,BC,MB,NB,NL,NT,NS,NU,ON,PE,QC,SK,YT',\n      n.timestamp = apoc.date.currentTimestamp(),\n      n.doc = 'All PTs: Which zip code where patients travel to organization to get vaccinated.'\nRETURN n.request_id\n\n\n\n\n\n\n",
+            "query": "MERGE (h:FAR_4_HELPER)\n  SET h.request_id = apoc.create.uuid()\nWITH h\n  CREATE (n:FAR_4)\n    SET\n      n.request_id = h.request_id,\n      n.cvx_list = \"43,52\",\n      n.pt_list = \"AB,BC,MB,NB,NL,NT,NS,NU,ON,PE,QC,SK,YT\",\n      n.timestamp = apoc.date.currentTimestamp(),\n      n.doc = \"All PTs: Which zip code where patients travel to organization to get vaccinated.\"\nRETURN n.request_id\n\n\n\n\n\n\n",
             "width": 6,
             "height": 2,
             "x": 0,
@@ -432,7 +432,7 @@
           {
             "id": "cbc58e77-5b2f-4d08-9ec7-667cfe53c1fd",
             "title": "Query",
-            "query": "MERGE (h:FAR_5_HELPER)\n  SET h.request_id = apoc.create.uuid()\nWITH h\n  CREATE (n:FAR_5)\n    SET\n      n.request_id = h.request_id,\n      n.pt_list = 'AB,BC,MB,NB,NL,NT,NS,NU,ON,PE,QC,SK,YT',\n      n.timestamp = apoc.date.currentTimestamp(),\n      n.doc = 'All PTs: Vaccination record streams.'\nRETURN n.request_id\n\n\n\n\n\n\n\n\n\n",
+            "query": "MERGE (h:FAR_5_HELPER)\n  SET h.request_id = apoc.create.uuid()\nWITH h\n  CREATE (n:FAR_5)\n    SET\n      n.request_id = h.request_id,\n      n.pt_list = \"AB,BC,MB,NB,NL,NT,NS,NU,ON,PE,QC,SK,YT\",\n      n.timestamp = apoc.date.currentTimestamp(),\n      n.doc = \"All PTs: Vaccination record streams.\"\nRETURN n.request_id\n\n\n\n\n\n\n\n\n\n",
             "width": 6,
             "height": 2,
             "x": 0,
@@ -535,7 +535,7 @@
           {
             "id": "0530f6f5-04b3-4b49-9b8a-392d48ccaaf2",
             "title": "Query A",
-            "query": "MERGE (h:FAR_6_HELPER)\n  SET h.request_id = apoc.create.uuid()\nWITH h\n  CREATE (n:FAR_6)\n    SET \n      n.request_id = h.request_id,\n      n.pt_list = 'AB,BC,MB,NB,NL,NT,NS,NU,ON,PE,QC,SK,YT',\n      n.timestamp = apoc.date.currentTimestamp(),\n      n.doc = 'All PTs: Statistics for requested conditions'\nRETURN n.request_id;",
+            "query": "MERGE (h:FAR_6_HELPER)\n  SET h.request_id = apoc.create.uuid()\nWITH h\n  CREATE (n:FAR_6)\n    SET \n      n.request_id = h.request_id,\n      n.pt_list = \"AB,BC,MB,NB,NL,NT,NS,NU,ON,PE,QC,SK,YT\",\n      n.timestamp = apoc.date.currentTimestamp(),\n      n.doc = \"All PTs: Statistics for requested conditions\"\nRETURN n.request_id;",
             "width": 8,
             "height": 2,
             "x": 0,
@@ -550,7 +550,7 @@
           {
             "id": "77587484-3024-4e56-8f7a-23e9beedb127",
             "title": "Query B",
-            "query": "MERGE (h:FAR_7_HELPER)\n  SET h.request_id = apoc.create.uuid()\nWITH h\n  CREATE (n:FAR_7)\n    SET \n      n.request_id = h.request_id,\n      n.pt_list = 'AB,BC,MB,NB,NL,NT,NS,NU,ON,PE,QC,SK,YT',\n      n.timestamp = apoc.date.currentTimestamp(),\n      n.doc = 'All PTs: Statistics for requested medication reasons'\nRETURN n.request_id;",
+            "query": "MERGE (h:FAR_7_HELPER)\n  SET h.request_id = apoc.create.uuid()\nWITH h\n  CREATE (n:FAR_7)\n    SET \n      n.request_id = h.request_id,\n      n.pt_list = \"AB,BC,MB,NB,NL,NT,NS,NU,ON,PE,QC,SK,YT\",\n      n.timestamp = apoc.date.currentTimestamp(),\n      n.doc = \"All PTs: Statistics for requested medication reasons\"\nRETURN n.request_id;",
             "width": 8,
             "height": 2,
             "x": 8,
@@ -565,7 +565,7 @@
           {
             "id": "147b3a3a-2400-4bf4-b5c6-df61e9453d38",
             "title": "Query C",
-            "query": "MERGE (h:FAR_8_HELPER)\n  SET h.request_id = apoc.create.uuid()\nWITH h\n  CREATE (n:FAR_8)\n    SET \n      n.request_id = h.request_id,\n      n.pt_list = 'AB,BC,MB,NB,NL,NT,NS,NU,ON,PE,QC,SK,YT',\n      n.timestamp = apoc.date.currentTimestamp(),\n      n.doc = 'All PTs: Statistics for requested procedures'\nRETURN n.request_id;",
+            "query": "MERGE (h:FAR_8_HELPER)\n  SET h.request_id = apoc.create.uuid()\nWITH h\n  CREATE (n:FAR_8)\n    SET \n      n.request_id = h.request_id,\n      n.pt_list = \"AB,BC,MB,NB,NL,NT,NS,NU,ON,PE,QC,SK,YT\",\n      n.timestamp = apoc.date.currentTimestamp(),\n      n.doc = \"All PTs: Statistics for requested procedures\"\nRETURN n.request_id;",
             "width": 8,
             "height": 2,
             "x": 16,
@@ -605,7 +605,7 @@
           {
             "id": "6bbd6915-c9c5-4b71-8176-be209cfbccb2",
             "title": "Query",
-            "query": "MERGE (h:FAR_9_HELPER)\n  SET h.request_id = apoc.create.uuid()\nWITH h\nCREATE (n:FAR_9)\n    SET \n      n.request_id = h.request_id,\n      n.cvx_maps = '{\"03\": 6, \"08\": 6, \"20\": 18, \"21\": 12, \"49\": 18, \"83\": 18, \"114\": 2, \"115\": 48, \"119\": 4, \"133\": 4}', \n      n.pt_list = 'AB,BC,MB,NB,NL,NT,NS,NU,ON,PE,QC,SK,YT',\n      n.timestamp = apoc.date.currentTimestamp(),\n      n.doc = 'All PT: Young children missing vaccination schedule'\nRETURN n.request_id;\n\n\n",
+            "query": "MERGE (h:FAR_9_HELPER)\n  SET h.request_id = apoc.create.uuid()\nWITH h\nCREATE (n:FAR_9)\n    SET \n      n.request_id = h.request_id,\n      n.cvx_maps = \"{\"03\": 6, \"08\": 6, \"20\": 18, \"21\": 12, \"49\": 18, \"83\": 18, \"114\": 2, \"115\": 48, \"119\": 4, \"133\": 4}\", \n      n.pt_list = \"AB,BC,MB,NB,NL,NT,NS,NU,ON,PE,QC,SK,YT\",\n      n.timestamp = apoc.date.currentTimestamp(),\n      n.doc = \"All PT: Young children missing vaccination schedule\"\nRETURN n.request_id;\n\n\n",
             "width": 6,
             "height": 2,
             "x": 0,
@@ -625,7 +625,7 @@
           {
             "id": "82e4fd02-7c2c-4401-b5e9-3ad60dd4e121",
             "title": "Cleanup",
-            "query": "WITH ['FAR', 'FAS'] AS entity_list\n    UNWIND entity_list AS entity\nWITH entity, SPLIT('1,2,3,4,5,6,7,8,9', ',') AS counter_list\n    UNWIND counter_list AS counter\nWITH entity + '_' + counter AS current_entity,\n    'MATCH (n:' + entity + '_' + counter + ') RETURN n' AS batch_producer,\n    ' WITH n DETACH DELETE n' AS batch_runner\nWITH current_entity, batch_producer, batch_runner\n    CALL apoc.periodic.iterate(batch_producer, batch_runner, {batchSize:10000, parallel:true})\n        YIELD total RETURN current_entity, total;\n\n\n\n",
+            "query": "WITH [\"FAR\", \"FAS\"] AS entity_list\n    UNWIND entity_list AS entity\nWITH entity, SPLIT(\"1,2,3,4,5,6,7,8,9\", \",\") AS counter_list\n    UNWIND counter_list AS counter\nWITH entity + \"_\" + counter AS current_entity,\n    \"MATCH (n:\" + entity + \"_\" + counter + \") RETURN n\" AS batch_producer,\n    \" WITH n DETACH DELETE n\" AS batch_runner\nWITH current_entity, batch_producer, batch_runner\n    CALL apoc.periodic.iterate(batch_producer, batch_runner, {batchSize:10000, parallel:true})\n        YIELD total RETURN current_entity, total;\n\n\n\n",
             "width": 6,
             "height": 6,
             "x": 0,
