@@ -1,7 +1,7 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: {{ template "cp-kafka-ui.fullname" . }}-ingress
+  name: hapi-fhir-ingress
   annotations:
     kubernetes.io/ingress.allow-http: "true"
     kubernetes.io/ingress.global-static-ip-name: {{ .Values.paradire.pt }}-cluster-ip
@@ -10,11 +10,11 @@ metadata:
 spec:
   ingressClassName: "gce"
   tls:
-    - secretName: {{ template "cp-kafka-ui.fullname" . }}-ssl
+    - secretName: hapi-fhir-ssl
       hosts:
-        - kafkaui.{{ .Values.paradire.pt }}.paradire.phac-aspc.alpha.canada.ca
+        - fhir.{{ .Values.paradire.pt }}.paradire.phac-aspc.alpha.canada.ca
   defaultBackend:
     service:
-      name: {{ template "cp-kafka-ui.fullname" . }}
+      name: hapi-fhir-svc
       port:
-        number: {{ .Values.servicePort }}
+        number: {{ .Values.server.port }}

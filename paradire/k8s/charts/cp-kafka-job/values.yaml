@@ -13,9 +13,10 @@ imageSyntheaKafkaTag: latest
 replicationFactor: 1
 partitions: 4
 samplingSize: 20
-pt: "AB"
+pt: "ab"
 fihrHealthCheckUrl: "http://hapi-fhir-svc:8080"
 fihrServerUrl: "http://hapi-fhir-svc:8080/fhir"
+GCPBucketName: "paradire-synthea-data"
 
 ## You can list load balanced service endpoint, or list of all brokers (which is hard in K8s).  e.g.:
 ## bootstrapServers: "PLAINTEXT://dozing-prawn-kafka-headless:9092"

@@ -1,16 +1,16 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: neodash-deployment
+  name: neodash
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: neodash-deployment
+      app: neodash
   template:
     metadata:
       labels:
-        app: neodash-deployment
+        app: neodash
     spec:
       containers:
         - name: neodash

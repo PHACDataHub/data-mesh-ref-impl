@@ -53,6 +53,8 @@ spec:
             mountPath: /etc/jmx-kafka-connect
         {{- end }}
         - name: {{ template "cp-kafka-connect.name" . }}-server
+          securityContext:
+            runAsUser: 0
           image: "{{ .Values.image }}:{{ .Values.imageTag }}"
           imagePullPolicy: "{{ .Values.imagePullPolicy }}"
           ports:
@@ -96,6 +98,12 @@ spec:
               value: {{ template "cp-kafka-connect.cp-schema-registry.service-name" .}}
             - name: CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL
               value: {{ template "cp-kafka-connect.cp-schema-registry.service-name" .}}
+            - name: jdbcConnectorVersion
+              value: {{ .Values.jdbcConnectorVersion | quote }}
+            - name: filePulseConnectorVersion
+              value: {{ .Values.filePulseConnectorVersion | quote }}
+            - name: neo4jConnectorVersion
+              value: {{ .Values.neo4jConnectorVersion | quote }}
             - name: KAFKA_HEAP_OPTS
               value: "{{ .Values.heapOptions }}"
             {{- range $key, $value := .Values.configurationOverrides }}
@@ -110,23 +118,20 @@ spec:
             - name: KAFKA_JMX_PORT
               value: "{{ .Values.jmx.port }}"
             {{- end }}
-        {{- if .Values.customEnv.CUSTOM_SCRIPT_PATH }}
           command:
             - /bin/bash
             - -c
             - |
               echo "Installing connector plugins"
-              confluent-hub install --no-prompt confluentinc/kafka-connect-jdbc:${{ .Values.jdbcConnectorVersion }}
-              confluent-hub install --no-prompt streamthoughts/kafka-connect-file-pulse:${{ .Values.filePulseConnectorVersion }}
-              confluent-hub install --no-prompt neo4j/kafka-connect-neo4j:${{ .Values.neo4jConnectorVersion }}
+              confluent-hub install --no-prompt confluentinc/kafka-connect-jdbc:$jdbcConnectorVersion
+              confluent-hub install --no-prompt streamthoughts/kafka-connect-file-pulse:$filePulseConnectorVersion
+              confluent-hub install --no-prompt neo4j/kafka-connect-neo4j:$neo4jConnectorVersion
               /etc/confluent/docker/run &
-              $CUSTOM_SCRIPT_PATH
               sleep infinity
           {{- if .Values.livenessProbe }}
           livenessProbe:
 {{ toYaml .Values.livenessProbe | trim | indent 12 }}
           {{- end }}
-        {{- end }}
           {{- if .Values.volumeMounts }}
           volumeMounts:
 {{ toYaml .Values.volumeMounts | indent 10 }}

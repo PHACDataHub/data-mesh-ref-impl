@@ -4,6 +4,8 @@ metadata:
   labels:
     app: hapi-fhir-svc
   name: hapi-fhir-svc
+  annotations:
+    cloud.google.com/backend-config: '{"ports": { "{{ .Values.server.port | quote }}": "hapi-fhir-backendconfig" }}'
 spec:
   type: ClusterIP
   ports:

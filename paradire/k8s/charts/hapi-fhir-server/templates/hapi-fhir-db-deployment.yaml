@@ -19,10 +19,6 @@ spec:
     spec:
       containers:
       - name: hapi-fhir-db
-        resources:
-          requests:
-            memory: "10Gi"
-            cpu: "10"
         image: "{{ .Values.db.image }}"
         env:
         - name: PGDATA
