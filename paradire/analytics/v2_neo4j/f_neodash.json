@@ -258,7 +258,7 @@
           {
             "id": "436f4a2d-a06a-4381-ab2c-f684cdcfbc22",
             "title": "Query",
-            "query": "MERGE (h:FAR_2_HELPER)\n  SET h.request_id = apoc.create.uuid()\nWITH h\n  CREATE (n:FAR_2)\n    SET \n      n.request_id = h.request_id,\n      n.cvx_maps = \"{\"03\": 6, \"08\": 6, \"20\": 18, \"21\": 12, \"49\": 18, \"83\": 18, \"114\": 2, \"115\": 48, \"119\": 4, \"133\": 4}\", \n      n.pt_list = \"AB,BC,MB,NB,NL,NT,NS,NU,ON,PE,QC,SK,YT\",\n      n.timestamp = apoc.date.currentTimestamp(),\n      n.doc = \"All PT: Young children missing vaccination schedule\"\nRETURN n.request_id\n\n\n\n",
+            "query": "MERGE (h:FAR_2_HELPER)\n  SET h.request_id = apoc.create.uuid()\nWITH h\n  CREATE (n:FAR_2)\n    SET \n      n.request_id = h.request_id,\n      n.cvx_maps = apoc.convert.toJson(apoc.map.fromPairs([[\"03\", 6], [\"08\", 6], [\"20\", 18], [\"21\", 12], [\"49\", 18], [\"83\", 18], [\"114\", 2], [\"115\", 48], [\"119\", 4], [\"133\", 4]])), \n      n.pt_list = \"AB,BC,MB,NB,NL,NT,NS,NU,ON,PE,QC,SK,YT\",\n      n.timestamp = apoc.date.currentTimestamp(),\n      n.doc = \"All PT: Young children missing vaccination schedule\"\nRETURN n.request_id\n\n\n\n",
             "width": 4,
             "height": 2,
             "x": 8,
@@ -605,7 +605,7 @@
           {
             "id": "6bbd6915-c9c5-4b71-8176-be209cfbccb2",
             "title": "Query",
-            "query": "MERGE (h:FAR_9_HELPER)\n  SET h.request_id = apoc.create.uuid()\nWITH h\nCREATE (n:FAR_9)\n    SET \n      n.request_id = h.request_id,\n      n.cvx_maps = \"{\"03\": 6, \"08\": 6, \"20\": 18, \"21\": 12, \"49\": 18, \"83\": 18, \"114\": 2, \"115\": 48, \"119\": 4, \"133\": 4}\", \n      n.pt_list = \"AB,BC,MB,NB,NL,NT,NS,NU,ON,PE,QC,SK,YT\",\n      n.timestamp = apoc.date.currentTimestamp(),\n      n.doc = \"All PT: Young children missing vaccination schedule\"\nRETURN n.request_id;\n\n\n",
+            "query": "MERGE (h:FAR_9_HELPER)\n  SET h.request_id = apoc.create.uuid()\nWITH h\nCREATE (n:FAR_9)\n    SET \n      n.request_id = h.request_id,\n      n.cvx_maps = apoc.convert.toJson(apoc.map.fromPairs([[\"03\", 6], [\"08\", 6], [\"20\", 18], [\"21\", 12], [\"49\", 18], [\"83\", 18], [\"114\", 2], [\"115\", 48], [\"119\", 4], [\"133\", 4]])), \n      n.pt_list = \"AB,BC,MB,NB,NL,NT,NS,NU,ON,PE,QC,SK,YT\",\n      n.timestamp = apoc.date.currentTimestamp(),\n      n.doc = \"All PT: Young children missing vaccination schedule\"\nRETURN n.request_id;\n\n\n",
             "width": 6,
             "height": 2,
             "x": 0,
