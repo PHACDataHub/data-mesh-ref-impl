@@ -18,7 +18,6 @@ import {
 } from "@phac-aspc-dgg/schema-tools";
 
 import { api } from "~/utils/api";
-import { env } from "~/env.mjs";
 
 const { Header, Content, Sider } = Layout;
 
@@ -37,6 +36,8 @@ export default function Home() {
   );
 
   const acg_status = api.post.acg_status.useQuery();
+  const pt = api.post.hello.useQuery();
+
   const updateAcg = api.post.updateAcg.useMutation();
   const pingAcg = api.post.ping.useMutation();
 
@@ -156,7 +157,7 @@ export default function Home() {
       <Layout className="h-screen">
         <Header className="flex items-center justify-between text-white">
           <h1 className="flex space-x-2 text-xl font-bold">
-            <span>{env.NEXT_PUBLIC_PT.toLocaleUpperCase()}</span>
+            <span>{pt.data?.pt}</span>
             <span>Data Governance Gateway</span>
           </h1>
           <div>

@@ -3,7 +3,7 @@ kind: Service
 metadata:
   name: patient-browser-svc
   annotations:
-    cloud.google.com/backend-config: '{"ports": { "{{ .Values.service.port | quote }}": "patient-browser-backendconfig" }}'
+    cloud.google.com/backend-config: '{"ports": { {{ .Values.service.port | quote }}: "patient-browser-backendconfig" }}'
 spec:
   type: {{ .Values.service.type }}
   ports:

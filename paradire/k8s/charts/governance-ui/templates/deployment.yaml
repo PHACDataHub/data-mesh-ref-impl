@@ -24,5 +24,5 @@ spec:
           value: "9092"
         - name: NEXTAUTH_SECRET
           value: {{ .Values.nextauth_secret | quote }}
-        - name: NEXT_PUBLIC_PT
+        - name: PT
           value: {{ .Values.pt | quote }}

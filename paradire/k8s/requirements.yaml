@@ -35,3 +35,12 @@ dependencies:
 - name: patient-browser
   version: 0.1.0
   repository: file://./charts/patient-browser
+- name: governance-ui
+  version: 0.1.0
+  repository: file://./charts/governance-ui
+- name: acg
+  version: 0.1.0
+  repository: file://./charts/acg
+- name: paradire-ingress
+  version: 0.1.0
+  repository: file://./charts/paradire-ingress

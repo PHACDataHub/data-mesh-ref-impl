@@ -3,7 +3,7 @@ kind: Service
 metadata:
   name: neodash-svc
   annotations:
-    cloud.google.com/backend-config: '{"ports": { "{{ .Values.service.port | quote }}": "neo4j-backendconfig" }}'
+    cloud.google.com/backend-config: '{"ports": { {{ .Values.service.port | quote }}: "neo4j-backendconfig" }}'
 spec:
   selector:
     app: neodash

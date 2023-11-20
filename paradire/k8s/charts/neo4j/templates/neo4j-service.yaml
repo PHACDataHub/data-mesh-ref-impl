@@ -3,7 +3,7 @@ kind: Service
 metadata:
   name: neo4j-svc
   annotations:
-    cloud.google.com/backend-config: '{"ports": { "{{ .Values.service.httpsPort | quote }}": "neo4j-backendconfig" }}'
+    cloud.google.com/backend-config: '{"ports": { {{ .Values.service.httpsPort | quote }}: "neo4j-backendconfig" }}'
 spec:
   type: ClusterIP
   ports:

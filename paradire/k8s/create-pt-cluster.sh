@@ -1,7 +1,6 @@
 #!/bin/bash
 
 provinces="ab bc mb nb nl ns nt nu on pe qc sk yt"
-# provinces="nb"
 selected_provinces=($provinces) # Automatically select all 13 provinces
 
 # Get user input for action: 1 for install, 2 for upgrade
@@ -32,12 +31,16 @@ for pt in "${selected_provinces[@]}"; do
         cmd="upgrade"
     fi
 
+    # kubectl -n $pt delete ingress/paradire-ingress
+
     helm $cmd "$pt"-province . --namespace="$pt" \
     --create-namespace \
     --set cp-kafka-ui.paradire.pt="$pt" \
     --set cp-kafka-job.samplingSize="$record_count" \
     --set cp-kafka-job.pt="$pt" \
     --set governance-ui.pt="$pt" \
+    --set acg.pt="$pt" \
+    --set paradire-ingress.pt="$pt" \
     --set cp-kafka-job.GCPBucketName="paradire-synthea-data" || exit $?
 
 done
