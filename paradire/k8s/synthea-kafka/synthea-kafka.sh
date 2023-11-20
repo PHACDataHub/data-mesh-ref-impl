@@ -215,3 +215,7 @@ echo
 
 # List the current connector instances again
 list_connectors
+
+gcloud auth activate-service-account --key-file="${GOOGLE_APPLICATION_CREDENTIALS}"
+gsutil -m cp -r /data/* gs://${GCS_BUCKET}/$pt/$(date +%Y%m%d-%H%M%S)/
+echo "Data upload to GCS completed."

@@ -64,43 +64,43 @@ rm -rf $output_dir
 mkdir $output_dir
 
 case $pt in
-    'AB')
+    'ab')
         ./run_synthea -p $sampling_size Alberta
         ;;
-    'BC')
+    'bc')
         ./run_synthea -p $sampling_size "British Columbia"
         ;;
-    'MB')
+    'mb')
         ./run_synthea -p $sampling_size Manitoba
         ;;
-    'NB')
+    'nb')
         ./run_synthea -p $sampling_size "New Brunswick"
         ;;
-    'NL')
+    'nl')
         ./run_synthea -p $sampling_size "Newfoundland and Labrador"
         ;;
-    'NT')
+    'nt')
         ./run_synthea -p $sampling_size "Northwest Territories"
         ;;
-    'NS')
+    'ns')
         ./run_synthea -p $sampling_size "Nova Scotia"
         ;;
-    'NU')
+    'nu')
         ./run_synthea -p $sampling_size Nunavut
         ;;
-    'ON')
+    'on')
         ./run_synthea -p $sampling_size Ontario
         ;;
-    'PE')
+    'pe')
         ./run_synthea -p $sampling_size "Prince Edward Island"
         ;;
-    'QC')
+    'qc')
         ./run_synthea -p $sampling_size Quebec
         ;;
-    'SK')
+    'sk')
         ./run_synthea -p $sampling_size Saskatchewan
         ;;
-    'YT')
+    'yt')
         ./run_synthea -p $sampling_size Yukon
         ;;
     *)

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Define constants
-valid_pt=" AB BC MB NB NL NS NT NU ON PE QC SK YT "
+valid_pt=" ab bc mb nb nl ns nt nu on pe qc sk yt "
 MAX_JOBS=$(nproc)
 
 # Check and install necessary tools
