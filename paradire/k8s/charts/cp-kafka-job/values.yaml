@@ -11,6 +11,7 @@ imageSyntheaKafka: northamerica-northeast1-docker.pkg.dev/phx-01he5rx4wsv/paradi
 imageSyntheaKafkaTag: latest
 
 replicationFactor: 1
+retentionMs: 300000
 partitions: 4
 samplingSize: 20
 pt: "ab"

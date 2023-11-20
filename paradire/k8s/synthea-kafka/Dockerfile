@@ -56,7 +56,9 @@ COPY synthea_patch/genenerate_ca_demo_sampling.sh ./
 COPY synthea_patch/genenerate_pt_sampling.sh ./
 COPY synthea_patch/upload_FHIR_data.sh ./
 COPY synthea_patch/ca_data.tar.gz ./
-COPY ./k8s/synthea-kafka/synthea-kafka.sh ./
+COPY ./k8s/synthea-kafka/entrypoint.sh ./
+COPY ./k8s/synthea-kafka/federal-cluster.sh ./
+COPY ./k8s/synthea-kafka/pt-cluster.sh ./
 COPY src/csv2avro.py ./
 COPY synthea_patch/LifecycleModule.java ./src/main/java/org/mitre/synthea/modules/
 COPY synthea_patch/synthea.properties ./src/main/resources/
@@ -71,9 +73,13 @@ RUN tar xvzf "ca_data.tar.gz" && \
 # Copy event and connector configurations
 COPY ./analytics/v2_events/ /workspace/analytics/v2_events
 COPY ./analytics/v2_pt_connectors/ /workspace/analytics/v2_pt_connectors
+COPY ./analytics/v2_f_connectors/ /workspace/analytics/v2_f_connectors
+
+# Make sure scripts are executable
+RUN chmod +x entrypoint.sh federal-cluster.sh pt-cluster.sh
 
 # Switch back to the non-root user
 USER appuser
 
 # Set the default command
-CMD ["./synthea-kafka.sh"]
+CMD ["./entrypoint.sh"]

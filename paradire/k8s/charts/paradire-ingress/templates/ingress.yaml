@@ -47,7 +47,7 @@ spec:
       paths:
       - backend: 
           service:
-            name: neo4j-svc
+            name: neo4j
             port:
               number: 7474
         path: /
