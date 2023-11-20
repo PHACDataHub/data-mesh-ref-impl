@@ -1,16 +1,16 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: neo4j-deployment
+  name: neo4j
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: neo4j-deployment
+      app: neo4j
   template:
     metadata:
       labels:
-        app: neo4j-deployment
+        app: neo4j
     spec:
       volumes:
         - name: data

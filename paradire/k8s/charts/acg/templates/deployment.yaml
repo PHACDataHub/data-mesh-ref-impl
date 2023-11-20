@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: acg
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: acg
+  template:
+    metadata:
+      labels:
+        app: acg
+    spec:
+      containers:
+      - name: acg
+        image: northamerica-northeast1-docker.pkg.dev/phx-01he5rx4wsv/paradire/acg
+        env:
+        - name: BROKER_LIST
+          value: "{{ printf "cp-kafka-0.%s.nb:9092" (include "cp-kafka.cp-kafka-headless.fullname" .) }},{{ printf "cp-kafka-1.%s.nb:9092" (include "cp-kafka.cp-kafka-headless.fullname" .) }},{{ printf "cp-kafka-2.%s.nb:9092" (include "cp-kafka.cp-kafka-headless.fullname" .) }},{{ printf "cp-kafka-3.%s.nb:9092" (include "cp-kafka.cp-kafka-headless.fullname" .) }}"
+          # value: {{ printf "%s:9092" (include "cp-kafka.cp-kafka-headless.fullname" .)  | quote}}
+        - name: SCHEMA_REGISTRY_URL
+          value: "http://cp-schema-registry:8081"
+        - name: F_BROKER_LIST
+          value: "35.234.253.243:9093,35.234.253.243:9095,35.234.253.243:9097,35.234.253.243:9099"
+        - name: F_SCHEMA_REGISTRY_HOST
+          value: "35.234.253.243"
+        - name: F_SCHEMA_REGISTRY_PORT
+          value: "8081"
+        - name: PT
+          value: {{ .Values.pt | upper | quote }}

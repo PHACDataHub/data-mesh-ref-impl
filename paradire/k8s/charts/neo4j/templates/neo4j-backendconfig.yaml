@@ -1,0 +1,7 @@
+apiVersion: cloud.google.com/v1
+kind: BackendConfig
+metadata:
+  name: neo4j-backendconfig
+spec:
+  healthCheck:
+    requestPath: /

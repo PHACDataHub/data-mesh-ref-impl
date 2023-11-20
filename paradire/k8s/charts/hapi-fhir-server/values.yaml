@@ -13,3 +13,6 @@ db:
   port: 5432
   targetPort: 5432
   pgdata: "/var/lib/postgresql/data/random/"
+
+paradire:
+  pt: nb

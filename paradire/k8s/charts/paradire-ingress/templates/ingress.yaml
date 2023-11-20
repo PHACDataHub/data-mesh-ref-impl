@@ -1,0 +1,96 @@
+# ingress.yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: paradire-ingress
+  annotations:
+    kubernetes.io/ingress.allow-http: "true"
+    kubernetes.io/ingress.global-static-ip-name: {{ .Values.pt | lower }}-cluster-ip
+    cert-manager.io/cluster-issuer: letsencrypt-staging
+    acme.cert-manager.io/http01-edit-in-place: "true"
+    kubernetes.io/ingress.class: gce
+spec:
+  ingressClassName: "gce"
+  tls:
+    - secretName: governance-ui-ssl
+      hosts:
+        - governance.{{ .Values.pt | lower }}.paradire.phac-aspc.alpha.canada.ca
+    - secretName: neo4j-ssl
+      hosts:
+        - neo4j.{{ .Values.pt | lower }}.paradire.phac-aspc.alpha.canada.ca
+    - secretName: neodash-ssl
+      hosts:
+        - neodash.{{ .Values.pt | lower }}.paradire.phac-aspc.alpha.canada.ca
+    - secretName: cp-kafka-ui-ssl
+      hosts:
+        - kafkaui.{{ .Values.pt }}.paradire.phac-aspc.alpha.canada.ca
+    - secretName: patient-browser-ssl
+      hosts:
+        - patient-browser.{{ .Values.pt }}.paradire.phac-aspc.alpha.canada.ca
+    - secretName: hapi-fhir-ssl
+      hosts:
+        - fhir.{{ .Values.pt }}.paradire.phac-aspc.alpha.canada.ca
+
+  rules:
+  - host: governance.{{ .Values.pt | lower }}.paradire.phac-aspc.alpha.canada.ca
+    http:
+      paths:
+      - backend: 
+          service:
+            name: governance-ui-svc
+            port:
+              number: 3000
+        path: /
+        pathType: Prefix
+  - host: neo4j.{{ .Values.pt | lower }}.paradire.phac-aspc.alpha.canada.ca
+    http:
+      paths:
+      - backend: 
+          service:
+            name: neo4j-svc
+            port:
+              number: 7473
+        path: /
+        pathType: Prefix
+  - host: neodash.{{ .Values.pt | lower }}.paradire.phac-aspc.alpha.canada.ca
+    http:
+      paths:
+      - backend: 
+          service:
+            name: neodash-svc
+            port:
+              number: 5005
+        path: /
+        pathType: Prefix
+  - host: kafkaui.{{ .Values.pt | lower }}.paradire.phac-aspc.alpha.canada.ca
+    http:
+      paths:
+      - backend: 
+          service:
+            name: cp-kafka-ui
+            port:
+              number: 8089
+        path: /
+        pathType: Prefix
+  - host: patient-browser.{{ .Values.pt | lower }}.paradire.phac-aspc.alpha.canada.ca
+    http:
+      paths:
+      - backend: 
+          service:
+            name: patient-browser-svc
+            port:
+              number: 8079
+        path: /
+        pathType: Prefix
+  - host: fhir.{{ .Values.pt | lower }}.paradire.phac-aspc.alpha.canada.ca
+    http:
+      paths:
+      - backend: 
+          service:
+            name: hapi-fhir-svc
+            port:
+              number: 8080
+        path: /
+        pathType: Prefix
+
+

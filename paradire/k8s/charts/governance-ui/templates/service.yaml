@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: governance-ui-svc
+  annotations:
+    cloud.google.com/backend-config: '{"ports": { "3000": "governance-ui-backendconfig" }}'
+spec:
+  ports:
+    - port: 3000
+      protocol: TCP
+  selector:
+    app: governance-ui

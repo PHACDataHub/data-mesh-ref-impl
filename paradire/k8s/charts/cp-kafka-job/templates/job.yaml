@@ -53,10 +53,6 @@ spec:
           echo "HAPI FHIR server is ready."
       containers:
       - name: synthea-data
-        resources:
-          requests:
-            memory: "16Gi"
-            cpu: "20"
         image: "{{ .Values.imageSyntheaKafka }}:{{ .Values.imageSyntheaKafkaTag }}"
         env:
           - name: sampling_size
@@ -71,3 +67,15 @@ spec:
             value: {{ template "cp-kafka-job.cp-schema-registry.service-name" . }}
           - name: BROKER_URL
             value: {{ template "cp-kafka-job.kafka.bootstrapServers" . }}
+          - name: GCS_BUCKET
+            value: "{{ .Values.GCPBucketName }}"
+          - name: GOOGLE_APPLICATION_CREDENTIALS
+            value: "/var/secrets/google/key.json"
+        volumeMounts:
+          - name: google-cloud-key
+            mountPath: /var/secrets/google
+            readOnly: true
+      volumes:
+        - name: google-cloud-key
+          secret:
+            secretName: gcp-sa-secret

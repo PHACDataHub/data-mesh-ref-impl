@@ -30,6 +30,7 @@ export const env = createEnv({
     ),
     BROKER_HOST: z.string(),
     BROKER_PORT: z.number(),
+    PT: z.string(),
   },
 
   /**
@@ -38,8 +39,6 @@ export const env = createEnv({
    * `NEXT_PUBLIC_`.
    */
   client: {
-    NEXT_PUBLIC_PUBLIC_IP: z.string().optional(),
-    NEXT_PUBLIC_GATEWAY_PORT: z.string().optional(),
     // NEXT_PUBLIC_CLIENTVAR: z.string(),
   },
 
@@ -49,8 +48,7 @@ export const env = createEnv({
    */
   runtimeEnv: {
     DATABASE_URL: process.env.DATABASE_URL ?? "file:./db.sqlite",
-    NEXT_PUBLIC_PUBLIC_IP: process.env.NEXT_PUBLIC_PUBLIC_IP,
-    NEXT_PUBLIC_GATEWAY_PORT: process.env.NEXT_PUBLIC_GATEWAY_PORT,
+    PT: process.env.PT,
     NODE_ENV: process.env.NODE_ENV,
     NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
     NEXTAUTH_URL: process.env.NEXTAUTH_URL,

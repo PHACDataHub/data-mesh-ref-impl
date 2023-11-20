@@ -15,21 +15,22 @@ import {
   type ResourceTypeField,
 } from "@phac-aspc-dgg/schema-tools";
 
-import { Input, Space, Switch, Table } from "antd";
+import { Input, Space, Switch, Table, Checkbox } from "antd";
+import { type CheckboxChangeEvent } from "antd/es/checkbox";
 
 const { Column } = Table;
 
-function getSubSelectedFields(
-  selected: ResourceTypeField | undefined,
-  field: string,
-) {
-  if (typeof selected === "undefined") return [];
-  if (typeof selected === "string") return [];
-  const val = selected[field]?.fields;
-  if (typeof val === "undefined") return [];
-  if (!Array.isArray(val)) return [val];
-  return val;
-}
+// function getSubSelectedFields(
+//   selected: ResourceTypeField | undefined,
+//   field: string,
+// ) {
+//   if (typeof selected === "undefined") return [];
+//   if (typeof selected === "string") return [];
+//   const val = selected[field]?.fields;
+//   if (typeof val === "undefined") return [];
+//   if (!Array.isArray(val)) return [val];
+//   return val;
+// }
 
 const namedFieldFilter = (search: string) => (field: ResourceTypeField) =>
   field !== search && !(typeof field === "object" && search in field);
@@ -111,6 +112,14 @@ export default function ResourceType({
             }),
           );
         };
+      } else if (property === "hash") {
+        return (e: CheckboxChangeEvent) => {
+          applyChange(
+            Object.assign({}, _fieldOptions[field], {
+              [property]: e.target.checked,
+            }),
+          );
+        };
       }
       return (checked: boolean) => {
         applyChange(
@@ -123,16 +132,16 @@ export default function ResourceType({
     [_fieldOptions, fields, name, onChange, selectedFields],
   );
 
-  const subfieldChangeHandler = useCallback(
-    (subFieldName: string, selectedFields: ResourceTypeField[]) => {
-      const changes = fields
-        .filter(namedFieldFilter(subFieldName))
-        .concat({ [subFieldName]: { fields: selectedFields } });
-      if (!selectedFields) setSelectedFields(changes);
-      if (onChange) onChange(name, changes);
-    },
-    [fields, name, onChange],
-  );
+  // const subfieldChangeHandler = useCallback(
+  //   (subFieldName: string, selectedFields: ResourceTypeField[]) => {
+  //     const changes = fields
+  //       .filter(namedFieldFilter(subFieldName))
+  //       .concat({ [subFieldName]: { fields: selectedFields } });
+  //     if (!selectedFields) setSelectedFields(changes);
+  //     if (onChange) onChange(name, changes);
+  //   },
+  //   [fields, name, onChange],
+  // );
 
   const referenced_schema = dereference(reference, schema);
   if (!referenced_schema || typeof referenced_schema === "boolean")
@@ -200,7 +209,11 @@ export default function ResourceType({
               <Space direction="vertical">
                 <Switch
                   checked={restrict}
-                  onChange={updateSwitchFieldOptionHandler(field, "restrict")}
+                  onChange={
+                    updateSwitchFieldOptionHandler(field, "restrict") as (
+                      checked: boolean,
+                    ) => void
+                  }
                   checkedChildren={"ON"}
                   unCheckedChildren={"OFF"}
                 />
@@ -212,11 +225,13 @@ export default function ResourceType({
             width={130}
             render={({ field, hash }: { field: string; hash: boolean }) => (
               <Space direction="vertical">
-                <Switch
+                <Checkbox
                   checked={hash}
-                  checkedChildren={"ON"}
-                  unCheckedChildren={"OFF"}
-                  onChange={updateSwitchFieldOptionHandler(field, "hash")}
+                  onChange={
+                    updateSwitchFieldOptionHandler(field, "hash") as (
+                      e: CheckboxChangeEvent,
+                    ) => void
+                  }
                 />
               </Space>
             )}
@@ -237,7 +252,11 @@ export default function ResourceType({
                 value={transform}
                 placeholder="date format"
                 disabled={!["date", "date-time"].includes(format)}
-                onChange={updateSwitchFieldOptionHandler(field, "format")}
+                onChange={
+                  updateSwitchFieldOptionHandler(field, "format") as (
+                    e: ChangeEvent<HTMLInputElement>,
+                  ) => void
+                }
               />
             )}
           />

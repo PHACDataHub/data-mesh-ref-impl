@@ -4,8 +4,7 @@ import Head from "next/head";
 
 import Editor from "@monaco-editor/react";
 
-import { Button, Select } from "antd";
-import { Layout, Menu } from "antd";
+import { Button, Select, Layout, Menu } from "antd";
 
 import ResourceType from "~/components/ResourceType";
 
@@ -20,7 +19,7 @@ import {
 
 import { api } from "~/utils/api";
 
-const { Header, Content, Sider, Footer } = Layout;
+const { Header, Content, Sider } = Layout;
 
 export default function Home() {
   const [selectedSchema, setSelectedSchema] = useState<SchemaType>(
@@ -37,6 +36,8 @@ export default function Home() {
   );
 
   const acg_status = api.post.acg_status.useQuery();
+  const pt = api.post.hello.useQuery();
+
   const updateAcg = api.post.updateAcg.useMutation();
   const pingAcg = api.post.ping.useMutation();
 
@@ -115,6 +116,7 @@ export default function Home() {
 
   useEffect(() => {
     pingAcg.mutate();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const online = Boolean(acg_status.data?.online);
@@ -154,7 +156,10 @@ export default function Home() {
       </Head>
       <Layout className="h-screen">
         <Header className="flex items-center justify-between text-white">
-          <h1 className="text-xl font-bold">Data Governance Gateway</h1>
+          <h1 className="flex space-x-2 text-xl font-bold">
+            <span>{pt.data?.pt}</span>
+            <span>Data Governance Gateway</span>
+          </h1>
           <div>
             <Button
               className="rounded-none border-0  border-b-[1px] border-white p-1 font-bold text-white"

@@ -37,32 +37,46 @@ import {
   BROKER2_HOST,
   BROKER3_HOST,
   BROKER4_HOST,
+  BROKER_LIST,
+  F_BROKER_LIST,
+  SCHEMA_REGISTRY_URL,
   PT,
 } from "./config.js";
 
 import { create_graphql_schema } from "./graphql.js";
 import { existsSync, readFileSync, writeFileSync } from "fs";
 
+const broker_list = BROKER_LIST
+  ? `${BROKER_LIST}`.split(",")
+  : [
+      `${BROKER_HOST}:${BROKER_INTERNAL_PORT}`,
+      `${BROKER2_HOST}:${BROKER2_INTERNAL_PORT}`,
+      `${BROKER3_HOST}:${BROKER3_INTERNAL_PORT}`,
+      `${BROKER4_HOST}:${BROKER4_INTERNAL_PORT}`,
+    ];
+
 // Connection to PT kafka
 const kafka_pt = new Kafka({
   clientId: "dag",
-  brokers: [
-    `${BROKER_HOST}:${BROKER_INTERNAL_PORT}`,
-    `${BROKER2_HOST}:${BROKER2_INTERNAL_PORT}`,
-    `${BROKER3_HOST}:${BROKER3_INTERNAL_PORT}`,
-    `${BROKER4_HOST}:${BROKER4_INTERNAL_PORT}`,
-  ],
+  brokers: broker_list,
 });
 
+const schema_registry_url =
+  SCHEMA_REGISTRY_URL ??
+  `http://${SCHEMA_REGISTRY_HOST}:${SCHEMA_REGISTRY_PORT}`;
 // Connection to PT schema registry
 const registry_pt = new SchemaRegistry({
-  host: `http://${SCHEMA_REGISTRY_HOST}:${SCHEMA_REGISTRY_PORT}`,
+  host: schema_registry_url,
 });
+
+const f_broker_list = F_BROKER_LIST
+  ? `${F_BROKER_LIST}`.split(",")
+  : [`${F_BROKER_HOST}:${F_BROKER_EXTERNAL_PORT}`];
 
 // Connection to federal kafka
 const kafka_federal = new Kafka({
   clientId: "dag",
-  brokers: [`${F_BROKER_HOST}:${F_BROKER_EXTERNAL_PORT}`],
+  brokers: f_broker_list,
 });
 
 // Connection to federal schema registry

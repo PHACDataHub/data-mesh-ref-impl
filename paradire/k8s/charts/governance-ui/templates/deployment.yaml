@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: governance-ui
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: governance-ui
+  template:
+    metadata:
+      labels:
+        app: governance-ui
+    spec:
+      containers:
+      - name: governance-ui
+        image: northamerica-northeast1-docker.pkg.dev/phx-01he5rx4wsv/paradire/governance-ui
+        ports:
+        - containerPort: 3000
+        env:
+        - name: BROKER_HOST
+          value: {{ printf (include "cp-kafka-rest.cp-kafka-headless.fullname" .)  | quote}}
+        - name: BROKER_PORT
+          value: "9092"
+        - name: NEXTAUTH_SECRET
+          value: {{ .Values.nextauth_secret | quote }}
+        - name: PT
+          value: {{ .Values.pt | quote }}

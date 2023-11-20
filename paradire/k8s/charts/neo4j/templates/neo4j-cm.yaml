@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: neo4j-constraints-config
+data:
+  v2_entity_constraints.cql: |-
+    {{ .Files.Get "files/v2_entity_constraints.cql" | nindent 8 }}

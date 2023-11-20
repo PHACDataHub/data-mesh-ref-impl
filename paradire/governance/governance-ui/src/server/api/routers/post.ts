@@ -42,10 +42,9 @@ await pt_consumer.run({
 
 export const postRouter = createTRPCRouter({
   hello: publicProcedure
-    .input(z.object({ text: z.string() }))
-    .query(({ input }) => {
+    .query(() => {
       return {
-        greeting: `Hello ${input.text}`,
+        pt: `${env.PT}`.toUpperCase(),
       };
     }),
 

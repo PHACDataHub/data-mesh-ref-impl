@@ -6,7 +6,7 @@ image:
   pullPolicy: IfNotPresent
 
 service:
-  type: LoadBalancer
+  type: ClusterIP
   httpPort: 7474
   httpsPort: 7473
   boltPort: 7687
@@ -28,6 +28,9 @@ environment:
   NEO4J_apoc_import_file_use__neo4j__config: "true"
   NEO4J_dbms_security_procedures_unrestricted: "apoc.*,gds.*"
 
+job:
+  NEO4J_USERNAME: "neo4j"
+  NEO4J_PASSWORD: "phac@2023"
 
 persistence:
   enabled: true
@@ -38,3 +41,5 @@ persistence:
     logs: /logs
     plugins: /plugins
 
+paradire:
+  pt: nb

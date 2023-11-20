@@ -2,48 +2,45 @@ dependencies:
 - name: cp-kafka
   version: 0.1.0
   repository: file://./charts/cp-kafka
-  condition: cp-kafka.enabled
 - name: cp-zookeeper
   version: 0.1.0
   repository: file://./charts/cp-zookeeper
-  condition: cp-zookeeper.enabled
 - name: cp-schema-registry
   version: 0.1.0
   repository: file://./charts/cp-schema-registry
-  condition: cp-schema-registry.enabled
 - name: cp-kafka-rest
   version: 0.1.0
   repository: file://./charts/cp-kafka-rest
-  condition: cp-kafka-rest.enabled
 - name: cp-kafka-connect
   version: 0.1.0
   repository: file://./charts/cp-kafka-connect
-  condition: cp-kafka-connect.enabled
 - name: cp-ksql-server
   version: 0.1.0
   repository: file://./charts/cp-ksql-server
-  condition: cp-ksql-server.enabled
 - name: cp-kafka-ui
   version: 0.1.0
   repository: file://./charts/cp-kafka-ui
-  condition: cp-kafka-ui.enabled
 - name: cp-kafka-job
   version: 0.1.0
   repository: file://./charts/cp-kafka-job
-  condition: cp-kafka-job.enabled
 - name: hapi-fhir-server
   version: 0.1.0
   repository: file://./charts/hapi-fhir-server
-  condition: hapi-fhir-server.enabled
 - name: neo4j
   version: 0.1.0
   repository: file://./charts/neo4j
-  condition: neo4j.enabled
 - name: neodash
   version: 0.1.0
   repository: file://./charts/neodash
-  condition: neodash.enabled
 - name: patient-browser
   version: 0.1.0
   repository: file://./charts/patient-browser
-  condition: patient-browser.enabled
+- name: governance-ui
+  version: 0.1.0
+  repository: file://./charts/governance-ui
+- name: acg
+  version: 0.1.0
+  repository: file://./charts/acg
+- name: paradire-ingress
+  version: 0.1.0
+  repository: file://./charts/paradire-ingress
