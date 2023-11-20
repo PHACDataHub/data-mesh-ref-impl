@@ -23,10 +23,10 @@ spec:
         - name: SCHEMA_REGISTRY_URL
           value: "http://cp-schema-registry:8081"
         - name: F_BROKER_LIST
-          value: {{ printf "%s.phac.cluster.local:9092" (include "cp-kafka.cp-kafka-headless.fullname" .)  | quote}}
+          value: {{ printf "%s.phac:9092" (include "cp-kafka.cp-kafka-headless.fullname" .)  | quote}}
           # value: "35.234.253.243:9093,35.234.253.243:9095,35.234.253.243:9097,35.234.253.243:9099"
         - name: F_SCHEMA_REGISTRY_URL
-          value: "http://cp-schema-registry.phac.cluster.local:8081"
+          value: "http://cp-schema-registry.phac:8081"
           # value: {{ printf "%s.phac:9092" (include "cp-kafka.cp-kafka-headless.fullname" .)  | quote}}
         - name: F_SCHEMA_REGISTRY_PORT
           value: "8081"
