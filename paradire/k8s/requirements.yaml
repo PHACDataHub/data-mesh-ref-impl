@@ -35,9 +35,3 @@ dependencies:
 - name: patient-browser
   version: 0.1.0
   repository: file://./charts/patient-browser
-- name: cp-grafana
-  version: 0.1.0
-  repository: file://./charts/cp-grafana
-- name: cp-prometheus
-  version: 0.1.0
-  repository: file://./charts/cp-prometheus
