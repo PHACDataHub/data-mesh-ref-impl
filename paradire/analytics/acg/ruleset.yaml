@@ -50,13 +50,16 @@ ruleset:
         - encounter_code
         - encounter_description
         - patient_id
-        - patient_address
-        - patient_birth_date
+        - patient_address:
+            restrict: true
+        - patient_birth_date:
+            format: yyyy
         - patient_alive
         - patient_zip
         - patient_gender
         - patient_race
-        - patient_ethnicity
+        - patient_ethnicity:
+            hash: true
         - timestamp
     - name: PatientConditionResponse
       fields:
