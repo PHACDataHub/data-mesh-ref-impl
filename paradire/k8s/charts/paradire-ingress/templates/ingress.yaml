@@ -6,31 +6,32 @@ metadata:
   annotations:
     kubernetes.io/ingress.allow-http: "true"
     kubernetes.io/ingress.global-static-ip-name: {{ .Values.pt | lower }}-cluster-ip
-    cert-manager.io/cluster-issuer: letsencrypt-production
-    acme.cert-manager.io/http01-edit-in-place: "true"
+    # cert-manager.io/cluster-issuer: letsencrypt-production
+    # acme.cert-manager.io/http01-edit-in-place: "true"
     kubernetes.io/ingress.class: gce
 spec:
   ingressClassName: "gce"
-  tls:
-    - secretName: governance-ui-ssl
-      hosts:
-        - governance.{{ .Values.pt | lower }}.paradire.phac-aspc.alpha.canada.ca
-    - secretName: neo4j-ssl
-      hosts:
-        - neo4j.{{ .Values.pt | lower }}.paradire.phac-aspc.alpha.canada.ca
-    - secretName: neodash-ssl
-      hosts:
-        - neodash.{{ .Values.pt | lower }}.paradire.phac-aspc.alpha.canada.ca
-    - secretName: cp-kafka-ui-ssl
-      hosts:
-        - kafkaui.{{ .Values.pt }}.paradire.phac-aspc.alpha.canada.ca
-        - kafka.{{ .Values.pt }}.paradire.phac-aspc.alpha.canada.ca
-    - secretName: patient-browser-ssl
-      hosts:
-        - patient-browser.{{ .Values.pt }}.paradire.phac-aspc.alpha.canada.ca
-    - secretName: hapi-fhir-ssl
-      hosts:
-        - fhir.{{ .Values.pt }}.paradire.phac-aspc.alpha.canada.ca
+  # tls:
+  #   - secretName: governance-ui-ssl-prod
+  #     hosts:
+  #       - governance.{{ .Values.pt | lower }}.paradire.phac-aspc.alpha.canada.ca
+  #   - secretName: neo4j-ssl-prod
+  #     hosts:
+  #       - neo4j.{{ .Values.pt | lower }}.paradire.phac-aspc.alpha.canada.ca
+  #       - bolt.neo4j.{{ .Values.pt | lower }}.paradire.phac-aspc.alpha.canada.ca
+  #   - secretName: neodash-ssl-prod
+  #     hosts:
+  #       - neodash.{{ .Values.pt | lower }}.paradire.phac-aspc.alpha.canada.ca
+  #   - secretName: cp-kafka-ui-ssl-prod
+  #     hosts:
+  #       - kafkaui.{{ .Values.pt }}.paradire.phac-aspc.alpha.canada.ca
+  #       - kafka.{{ .Values.pt }}.paradire.phac-aspc.alpha.canada.ca
+  #   - secretName: patient-browser-ssl-prod
+  #     hosts:
+  #       - patient-browser.{{ .Values.pt }}.paradire.phac-aspc.alpha.canada.ca
+  #   - secretName: hapi-fhir-ssl-prod
+  #     hosts:
+  #       - fhir.{{ .Values.pt }}.paradire.phac-aspc.alpha.canada.ca
 
   rules:
   - host: governance.{{ .Values.pt | lower }}.paradire.phac-aspc.alpha.canada.ca
@@ -61,6 +62,16 @@ spec:
             name: neodash-svc
             port:
               number: 5005
+        path: /
+        pathType: Prefix
+  - host: neodash-designer.{{ .Values.pt | lower }}.paradire.phac-aspc.alpha.canada.ca
+    http:
+      paths:
+      - backend: 
+          service:
+            name: neodash-designer-svc
+            port:
+              number: 5006
         path: /
         pathType: Prefix
   - host: kafkaui.{{ .Values.pt | lower }}.paradire.phac-aspc.alpha.canada.ca

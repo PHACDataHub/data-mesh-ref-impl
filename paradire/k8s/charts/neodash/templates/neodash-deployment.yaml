@@ -25,7 +25,7 @@ spec:
             - name: standaloneProtocol
               value: "{{ .Values.env.standaloneProtocol }}"
             - name: standaloneHost
-              value: "{{ .Values.env.standaloneHost }}"
+              value: {{ printf "bolt.neo4j.%s.paradire.phac-aspc.alpha.canada.ca" .Values.paradire.pt | quote }}
             - name: standalonePort
               value: "{{ .Values.env.standalonePort }}"
             - name: standaloneDatabase

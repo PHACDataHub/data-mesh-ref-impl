@@ -55,6 +55,8 @@ for pt in "${selected_provinces[@]}"; do
         --set cp-kafka-ui.paradire.pt="$pt" \
         --set cp-kafka-job.pt="$pt" \
         --set governance-ui.pt="$pt" \
+        --set neodash.paradire.pt="$pt" \
+        --set neodash-designer.paradire.pt="$pt" \
         --set acg.pt="$pt" \
         --set cp-kafka-cj.cronSchedule="$cron_schedule" \
         --set cp-kafka-cj.pt="$pt" \

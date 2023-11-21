@@ -5,3 +5,6 @@ neodash:
 
 neo4j:
   enabled: true
+
+paradire:
+  pt: nb

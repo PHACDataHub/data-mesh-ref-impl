@@ -17,4 +17,7 @@ spec:
         image: nielsdejong/neodash:{{ .Values.neodash.version }}
         ports:
         - containerPort: 5005
+        env:
+          - name: standaloneHost
+            value: {{ printf "bolt.neo4j.%s.paradire.phac-aspc.alpha.canada.ca" .Values.paradire.pt | quote }}
       restartPolicy: Always

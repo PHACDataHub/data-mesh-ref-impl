@@ -25,6 +25,9 @@ spec:
         - name: plugins
           persistentVolumeClaim:
             claimName: plugins-pvc
+        - name: certs
+          secret:
+            secretName: neo4j-ssl-prod
       enableServiceLinks: false
       containers:
       - name: neo4j
@@ -62,6 +65,8 @@ spec:
           - name: {{ $key }}
             value: {{ $value | quote }}
           {{- end }}
+          - name: NEO4J_server_default__advertised__address
+            value: {{ printf "bolt.neo4j.%s.paradire.phac-aspc.alpha.canada.ca" .Values.paradire.pt | quote }}
         volumeMounts:
           - name: data
             mountPath: /data
@@ -70,4 +75,6 @@ spec:
           - name: logs
             mountPath: /logs
           - name: plugins
-            mountPath: /plugins
+            mountPath: /var/lib/neo4j/plugins
+          - name: certs
+            mountPath: /certificates
