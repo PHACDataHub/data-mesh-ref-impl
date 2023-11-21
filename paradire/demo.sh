@@ -17,7 +17,7 @@ sed -i "s/http:\/\/localhost:8080\/fhir/https:\/\/$PUBLIC_IP\/fhir/" hapi_fhir_p
 ./setup_pt_fhir.sh 
 docker compose -f docker-compose-pt-acg-governance.yml up --build -d
 
-sudo apt-get install python3-venv
+sudo apt-get install python3-venv -y
 rm -rf /home/luc_belliveau_gcp_hc_sc_gc_ca/Immunization_Gateway_ENV/
 ./generate_patient_population.sh 1000 ca_spp ${pt,,}
 
