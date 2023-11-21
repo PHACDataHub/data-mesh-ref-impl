@@ -46,6 +46,7 @@ ENV sampling_size=10 \
     SCHEMA_URL= \
     BROKER_URL= \
     GCS_BUCKET= \
+    CRON_JOB= \
     GOOGLE_APPLICATION_CREDENTIALS=
 
 # Change to the synthea working directory
@@ -59,6 +60,7 @@ COPY synthea_patch/ca_data.tar.gz ./
 COPY ./k8s/synthea-kafka/entrypoint.sh ./
 COPY ./k8s/synthea-kafka/federal-cluster.sh ./
 COPY ./k8s/synthea-kafka/pt-cluster.sh ./
+COPY ./k8s/synthea-kafka/pt-cluster-cron.sh ./
 COPY src/csv2avro.py ./
 COPY synthea_patch/LifecycleModule.java ./src/main/java/org/mitre/synthea/modules/
 COPY synthea_patch/synthea.properties ./src/main/resources/
@@ -76,7 +78,7 @@ COPY ./analytics/v2_pt_connectors/ /workspace/analytics/v2_pt_connectors
 COPY ./analytics/v2_f_connectors/ /workspace/analytics/v2_f_connectors
 
 # Make sure scripts are executable
-RUN chmod +x entrypoint.sh federal-cluster.sh pt-cluster.sh
+RUN chmod +x entrypoint.sh federal-cluster.sh pt-cluster.sh pt-cluster-cron.sh 
 
 # Switch back to the non-root user
 USER appuser
