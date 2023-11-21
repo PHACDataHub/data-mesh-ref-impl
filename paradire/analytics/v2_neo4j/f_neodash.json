@@ -128,7 +128,7 @@
           {
             "id": "5cc7a34e-58f4-46aa-ae85-acc8cdeed9ab",
             "title": "Percentage of vaccinated population per zip code for the Period above",
-            "query": "MATCH (h:FAR_1_HELPER)\nWITH h\n  MATCH (n:FAS_1 {request_id: h.request_id})\nWITH DISTINCT(n.patient_zip) AS zip, COLLECT([n.status_percent, n.patient_status]) AS ps\nWITH zip, ps\n  WHERE SIZE(ps) = 3\nWITH\n  zip, ps ORDER BY zip SKIP TOINTEGER(RAND() * 50) + 1  LIMIT 100\nWITH zip, ps\n  UNWIND ps AS e\nRETURN zip, e[0] AS status_percent, e[1] AS patient_status\n  \n",
+            "query": "MATCH (h:FAR_1_HELPER)\nWITH h\n  MATCH (n:FAS_1 {request_id: h.request_id})\nWITH DISTINCT(n.patient_zip) AS zip, COLLECT([n.status_percent, n.patient_status]) AS ps, SUM(n.status_percent) AS sum\nWITH zip, ps\n  WHERE SIZE(ps) = 3 AND sum <= 105\nWITH\n  zip, ps ORDER BY zip SKIP TOINTEGER(RAND() * 50) + 1  LIMIT 100\nWITH zip, ps\n  UNWIND ps AS e\nRETURN zip, e[0] AS status_percent, e[1] AS patient_status\n  \n",
             "width": 24,
             "height": 6,
             "x": 0,
@@ -365,10 +365,25 @@
         "title": "FAR 4 - Vaccination traffic",
         "reports": [
           {
-            "id": "fc028ea0-5e67-4a6f-a2d7-fcab04e59eee",
-            "title": "Hep A/B vaccinations at PT",
-            "query": "MATCH (h:FAR_4_HELPER)\nWITH h\n  MATCH (n:FAS_4 {request_id: h.request_id})\nRETURN [n.pt] AS path, n.vaccination_count ORDER BY path\n",
-            "width": 11,
+            "id": "e591e48d-492f-4b95-87c5-328e6fe9ca35",
+            "title": "Query",
+            "query": "MERGE (h:FAR_4_HELPER)\n  SET h.request_id = apoc.create.uuid()\nWITH h\n  CREATE (n:FAR_4)\n    SET\n      n.request_id = h.request_id,\n      n.cvx_list = \"43,52\",\n      n.pt_list = \"AB,BC,MB,NB,NL,NT,NS,NU,ON,PE,QC,SK,YT\",\n      n.timestamp = apoc.date.currentTimestamp(),\n      n.doc = \"All PTs: Which zip code where patients travel to organization to get vaccinated.\"\nRETURN n.request_id\n\n\n\n\n\n\n",
+            "width": 8,
+            "height": 2,
+            "x": 16,
+            "y": 0,
+            "type": "table",
+            "selection": {},
+            "settings": {
+              "autorun": false,
+              "refreshButtonEnabled": true
+            }
+          },
+          {
+            "id": "7f58c9db-1510-47df-957e-9c314b56bd0c",
+            "title": "Hep A/B vaccinations at zip code - organization",
+            "query": "MATCH (h:FAR_4_HELPER)\nWITH h\n  MATCH (n:FAS_4 {request_id: h.request_id})\nRETURN [n.patient_zip, n.organization_name] AS path, n.vaccination_count ORDER BY path\n",
+            "width": 16,
             "height": 8,
             "x": 0,
             "y": 0,
@@ -392,32 +407,17 @@
             "schema": []
           },
           {
-            "id": "e591e48d-492f-4b95-87c5-328e6fe9ca35",
-            "title": "Query",
-            "query": "MERGE (h:FAR_4_HELPER)\n  SET h.request_id = apoc.create.uuid()\nWITH h\n  CREATE (n:FAR_4)\n    SET\n      n.request_id = h.request_id,\n      n.cvx_list = \"43,52\",\n      n.pt_list = \"AB,BC,MB,NB,NL,NT,NS,NU,ON,PE,QC,SK,YT\",\n      n.timestamp = apoc.date.currentTimestamp(),\n      n.doc = \"All PTs: Which zip code where patients travel to organization to get vaccinated.\"\nRETURN n.request_id\n\n\n\n\n\n\n",
-            "width": 6,
-            "height": 2,
-            "x": 0,
-            "y": 8,
-            "type": "table",
-            "selection": {},
-            "settings": {
-              "autorun": false,
-              "refreshButtonEnabled": true
-            }
-          },
-          {
-            "id": "7f58c9db-1510-47df-957e-9c314b56bd0c",
-            "title": "Hep A/B vaccinations at zip code - organization",
-            "query": "MATCH (h:FAR_4_HELPER)\nWITH h\n  MATCH (n:FAS_4 {request_id: h.request_id})\nRETURN [n.patient_zip, n.organization_name] AS path, n.vaccination_count ORDER BY path\n",
-            "width": 13,
-            "height": 8,
-            "x": 11,
-            "y": 0,
+            "id": "9bad2b22-8500-4d03-acd9-f32493586033",
+            "title": "Hep A/B vaccinations at PTs",
+            "query": "MATCH (h:FAR_4_HELPER)\nWITH h\n  MATCH (n:FAS_4 {request_id: h.request_id})\nRETURN [n.pt] AS path, COUNT(n.vaccination_count) AS count ORDER BY path\n",
+            "width": 8,
+            "height": 6,
+            "x": 16,
+            "y": 2,
             "type": "sunburst",
             "selection": {
               "index": "path",
-              "value": "n.vaccination_count",
+              "value": "count",
               "key": "(none)"
             },
             "settings": {
