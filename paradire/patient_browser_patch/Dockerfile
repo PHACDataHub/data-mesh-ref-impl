@@ -12,7 +12,7 @@ WORKDIR /app
 RUN git clone https://github.com/smart-on-fhir/patient-browser.git .
 
 # Copy patches from host to container
-COPY . .
+COPY ./default.json5 .
 
 # Install dependencies and build project
 RUN npm install colors request commander@2.15.1
@@ -25,4 +25,6 @@ RUN mv default.json5 ./dist/config/
 # Setup the nginx server
 FROM nginx:alpine
 COPY --from=build /app/dist /usr/share/nginx/html
-CMD ["sh", "-c", "nginx -g 'daemon off;'"]
+
+COPY ./browser.sh /
+CMD ["/browser.sh"]

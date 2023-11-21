@@ -6,7 +6,7 @@ metadata:
   annotations:
     kubernetes.io/ingress.allow-http: "true"
     kubernetes.io/ingress.global-static-ip-name: {{ .Values.pt | lower }}-cluster-ip
-    cert-manager.io/cluster-issuer: letsencrypt-staging
+    cert-manager.io/cluster-issuer: letsencrypt-production
     acme.cert-manager.io/http01-edit-in-place: "true"
     kubernetes.io/ingress.class: gce
 spec:
@@ -24,6 +24,7 @@ spec:
     - secretName: cp-kafka-ui-ssl
       hosts:
         - kafkaui.{{ .Values.pt }}.paradire.phac-aspc.alpha.canada.ca
+        - kafka.{{ .Values.pt }}.paradire.phac-aspc.alpha.canada.ca
     - secretName: patient-browser-ssl
       hosts:
         - patient-browser.{{ .Values.pt }}.paradire.phac-aspc.alpha.canada.ca

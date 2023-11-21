@@ -1,7 +1,7 @@
 service:
   type: ClusterIP
   port: 8079
-  targetPort: 8080
+  targetPort: 80
 
 paradire:
   pt: nb

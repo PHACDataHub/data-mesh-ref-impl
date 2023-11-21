@@ -42,6 +42,7 @@ for pt in "${selected_provinces[@]}"; do
         --set governance-ui.enabled=false \
         --set hapi-fhir-server.enabled=false \
         --set patient-browser.enabled=false \
+        --set patient-browser.paradire.pt="$pt" \
         --set cp-kafka-cj.enabled=false \
         --set cp-kafka-ui.paradire.pt="$pt" \
         --set cp-kafka-job.pt="$pt" \
