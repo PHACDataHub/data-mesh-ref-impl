@@ -1,8 +1,11 @@
 #!/bin/bash
 
-# Check the pt environment variable
-if [ "$pt" != "phac" ]; then
-    ./pt-cluster.sh
-else
+if [ "$pt" = "phac" ]; then
     ./federal-cluster.sh
+else
+    if [ "$CRON_JOB" = "false" ]; then
+        ./pt-cluster.sh
+    else
+        ./pt-cluster-cron.sh
+    fi
 fi

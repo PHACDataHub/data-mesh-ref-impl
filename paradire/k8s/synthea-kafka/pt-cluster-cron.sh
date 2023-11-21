@@ -12,8 +12,6 @@ python ./csv2avro.py /workspace/governance/events "$(realpath /data/$pt/csv/*/)"
 # Set current working directory and other configurations
 avro_dir="/workspace/governance/events"
 data_dir="/data"
-event_dir="/workspace/analytics/v2_events"
-connector_pt_dir="/workspace/analytics/v2_pt_connectors"
 
 # Define Kafka and Schema Registry related variables
 # These are now expected to be provided as environment variables
@@ -28,38 +26,12 @@ if [ -z "$CONNECT_URL" ] || [ -z "$SCHEMA_URL" ] || [ -z "$BROKER_URL" ] ; then
     exit 1
 fi
 
-# Function to list all available plugins
-list_plugins() {
-    echo "All available plugins ...";
-    curl -s -XGET ${connect_url}/connector-plugins | jq '.[].class'
-    echo ''
-}
-
-# Function to list all current connectors
-list_connectors() {
-    echo "All current connectors ...";
-    curl -s -XGET ${connect_url}/connectors | jq '.[]'
-    echo ''
-}
-
-# Function to get schema registry configuration
-get_schema_registry_config() {
-    echo "Top level schema compatibility configuration ..." 
-    curl --silent -X GET ${schema_url}/config | jq .[]
-    echo ''
-}
 
 # Function to get supported schema types
 get_supported_schema_types() {
     curl --silent ${schema_url}/schemas/types
 }
 
-# Function to list all current subjects
-list_subjects() {
-    echo "List all current subjects ..." 
-    curl --silent -X GET ${schema_url}/subjects | jq .[]
-    echo ''
-}
 
 # Create a subject
 create_subject() {
@@ -101,78 +73,6 @@ get_subject_info() {
     echo ''
 }
 
-
-# Create request and response topics and subjects
-for item in {1..9}; do
-    request_topic=far_${item}
-
-    create_subject ${request_topic}-key ${event_dir}/${request_topic}_key.avsc
-    create_subject ${request_topic}-value ${event_dir}/${request_topic}_val.avsc
-    get_subject_info ${request_topic}-key
-    get_subject_info ${request_topic}-value
-
-    key_schema_id=$(curl --silent -X GET ${schema_url}/subjects/${request_topic}-key/versions/latest | jq .id)
-    value_schema_id=$(curl --silent -X GET ${schema_url}/subjects/${request_topic}-value/versions/latest | jq .id)
-done
-
-
-for item in {1..9}; do
-    response_topic=fas_${item}
-
-    create_subject ${response_topic}-key ${event_dir}/${response_topic}_key.avsc
-    create_subject ${response_topic}-value ${event_dir}/${response_topic}_val.avsc
-    get_subject_info ${response_topic}-key
-    get_subject_info ${response_topic}-value
-
-    key_schema_id=$(curl --silent -X GET ${schema_url}/subjects/${response_topic}-key/versions/latest | jq .id)
-    value_schema_id=$(curl --silent -X GET ${schema_url}/subjects/${response_topic}-value/versions/latest | jq .id)
-    echo $key_schema_id $value_schema_id
-done
-
-# Create connectors for response topics
-for item in {1..9}; do
-    response_topic=fas_${item}
-    
-    curl -X POST ${connect_url}/connectors \
-    -H 'Content-Type:application/json' \
-    -H 'Accept:application/json' \
-    -d @${connector_pt_dir}/${response_topic}_source_connector.json
-    echo
-done
-
-# Create sink connector
-curl -X POST ${connect_url}/connectors \
-    -H 'Content-Type:application/json' \
-    -H 'Accept:application/json' \
-    -d @${connector_pt_dir}/far_sink_connectors.json
-echo ''
-
-# Additional Connector Creation
-echo "Creating additional connectors..."
-
-# Create the first event sink connector
-curl -X POST ${connect_url}/connectors \
-  -H 'Content-Type:application/json' \
-  -H 'Accept:application/json' \
-  -d @${connector_pt_dir}/event_sink_connector_1.json
-echo
-
-# List the current connector instances
-list_connectors
-
-echo "Wait for sinking key entities"
-sleep 10
-
-# Create the second event sink connector
-curl -X POST ${connect_url}/connectors \
-  -H 'Content-Type:application/json' \
-  -H 'Accept:application/json' \
-  -d @${connector_pt_dir}/event_sink_connector_2.json
-echo
-
-# List the current connector instances again
-list_connectors
-
 # Check if AVRO is a supported schema type
 echo "Checking if AVRO is a supported schema type..."
 supported_types=$(get_supported_schema_types)
@@ -185,9 +85,6 @@ else
 fi
 echo ''
 
-# List the current Schema Registry configuration and subjects
-get_schema_registry_config
-list_subjects
 
 # Define the topics to process
 topics=(allergies careplans claims claims_transactions conditions devices encounters imaging_studies immunizations medications observations organizations patient_expenses patients payer_transitions payers procedures providers supplies symptoms)
@@ -213,10 +110,6 @@ for topic in "${topics[@]}"; do
     echo ''
 
 done
-
-# List subjects at the end of the script
-list_subjects
-
 
 gcloud auth activate-service-account --key-file="${GOOGLE_APPLICATION_CREDENTIALS}"
 gsutil -m cp -r /data/* gs://${GCS_BUCKET}/$pt/$(date +%Y%m%d-%H%M%S)/
