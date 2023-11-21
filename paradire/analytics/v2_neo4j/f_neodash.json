@@ -1,9 +1,8 @@
 {
-    "uuid": "d8f4a139-ffac-48d2-a8ba-212458f19495",
     "title": "Federal Analytics Platform",
     "version": "2.4",
     "settings": {
-      "pagenumber": 0,
+      "pagenumber": 3,
       "editable": false,
       "fullscreenEnabled": false,
       "parameters": {
@@ -129,7 +128,7 @@
           {
             "id": "5cc7a34e-58f4-46aa-ae85-acc8cdeed9ab",
             "title": "Percentage of vaccinated population per zip code for the Period above",
-            "query": "MATCH (h:FAR_1_HELPER)\nWITH h\n  MATCH (n:FAS_1 {request_id: h.request_id})\nRETURN n.patient_zip AS zip, n.status_percent AS percent, n.patient_status AS status\n",
+            "query": "MATCH (h:FAR_1_HELPER)\nWITH h\n  MATCH (n:FAS_1 {request_id: h.request_id})\nWITH DISTINCT(n.patient_zip) AS zip, COLLECT([n.status_percent, n.patient_status]) AS ps\nWITH zip, ps\n  WHERE SIZE(ps) = 3\nWITH\n  zip, ps ORDER BY zip SKIP TOINTEGER(RAND() * 50) + 1  LIMIT 100\nWITH zip, ps\n  UNWIND ps AS e\nRETURN zip, e[0] AS status_percent, e[1] AS patient_status\n  \n",
             "width": 24,
             "height": 6,
             "x": 0,
@@ -137,8 +136,8 @@
             "type": "bar",
             "selection": {
               "index": "zip",
-              "value": "percent",
-              "key": "status"
+              "value": "status_percent",
+              "key": "patient_status"
             },
             "settings": {
               "refreshButtonEnabled": true,
@@ -146,21 +145,21 @@
               "barValues": true,
               "styleRules": [
                 {
-                  "field": "status",
+                  "field": "patient_status",
                   "condition": "=",
                   "value": "Unvaccinated",
                   "customization": "bar color",
                   "customizationValue": "red"
                 },
                 {
-                  "field": "status",
+                  "field": "patient_status",
                   "condition": "=",
                   "value": "One-dosed",
                   "customization": "bar color",
                   "customizationValue": "orange"
                 },
                 {
-                  "field": "status",
+                  "field": "patient_status",
                   "condition": "=",
                   "value": "Fully vaccinated",
                   "customization": "bar color",
@@ -235,7 +234,7 @@
           {
             "id": "86f385fb-67dd-45c0-858b-880cfa402475",
             "title": "Vaccination schedule",
-            "query": "WITH \"{\"03\": 6, \"08\": 6, \"20\": 18, \"21\": 12, \"49\": 18, \"83\": 18, \"114\": 2, \"115\": 48, \"119\": 4, \"133\": 4}\" AS cvx_maps\nWITH apoc.map.sortedProperties(apoc.convert.fromJsonMap(cvx_maps)) AS sortedList\n  UNWIND sortedList AS sorted\nRETURN sorted[0] AS CVX, sorted[1] AS months",
+            "query": "WITH apoc.convert.toJson(apoc.map.fromPairs([[\"03\", 6], [\"08\", 6], [\"20\", 18], [\"21\", 12], [\"49\", 18], [\"83\", 18], [\"114\", 2], [\"115\", 48], [\"119\", 4], [\"133\", 4]])) AS cvx_maps\nWITH apoc.map.sortedProperties(apoc.convert.fromJsonMap(cvx_maps)) AS sortedList\n  UNWIND sortedList AS sorted\nRETURN sorted[0] AS CVX, sorted[1] AS months",
             "width": 8,
             "height": 2,
             "x": 0,
@@ -275,7 +274,7 @@
           {
             "id": "5e8e2c58-d535-4b12-ad81-bd0a5e087d09",
             "title": "Young children missing vaccination schedule",
-            "query": "MATCH (h:FAR_2_HELPER)\nWITH h\n  MATCH (n:FAS_2 {request_id: h.request_id})\nRETURN n.patient_zip AS zip, n.patient_count AS count, n.missing_doses AS missing_doses\n\n\n\n",
+            "query": "MATCH (h:FAR_2_HELPER)\nWITH h\n  MATCH (n:FAS_2 {request_id: h.request_id})\nRETURN \n  n.patient_zip AS zip, n.patient_count AS patient_count, n.missing_doses AS missing_doses\n  ORDER BY patient_count DESC\n\n\n\n",
             "width": 12,
             "height": 6,
             "x": 0,
@@ -283,7 +282,7 @@
             "type": "table",
             "selection": {},
             "settings": {
-              "columnWidths": "[3,3,25]",
+              "columnWidths": "[3,5,25]",
               "refreshButtonEnabled": true,
               "autorun": true,
               "compact": true
@@ -292,8 +291,8 @@
           },
           {
             "id": "31166f72-9124-400f-87ba-8a45a001cd1b",
-            "title": "Young children missing vaccination schedule",
-            "query": "MATCH (h:FAR_2_HELPER)\nWITH h\n  MATCH (n:FAS_2 {request_id: h.request_id})\nRETURN n.patient_zip AS zip, n.patient_count AS patient_count, n.missing_doses AS missing_doses\n\n\n\n",
+            "title": "Top 30 zip code where young children missing vaccination schedule",
+            "query": "MATCH (h:FAR_2_HELPER)\nWITH h\n  MATCH (n:FAS_2 {request_id: h.request_id})\nRETURN\n  n.patient_zip AS zip,\n  n.patient_count AS patient_count,\n  n.missing_doses AS missing_doses\n  ORDER BY patient_count DESC LIMIT 30\n\n\n\n",
             "width": 12,
             "height": 8,
             "x": 12,
@@ -338,8 +337,8 @@
           },
           {
             "id": "a3683eef-645f-4592-a45d-b678f627f054",
-            "title": "Average travel distance to get vaccinated",
-            "query": "MATCH (h:FAR_3_HELPER)\nWITH h\n  MATCH (n:FAS_3 {request_id: h.request_id})\nRETURN [n.pt, n.patient_zip, n.organization_name] AS path, n.average_distance AS average_distance\n\n\n\n\n",
+            "title": "Top 100 zip code with farthest average travel distance to get vaccinated",
+            "query": "MATCH (h:FAR_3_HELPER)\nWITH h\n  MATCH (n:FAS_3 {request_id: h.request_id})\nRETURN [n.pt, n.patient_zip, n.organization_name] AS path, n.average_distance AS average_distance ORDER BY average_distance DESC LIMIT 100\n\n\n\n\n",
             "width": 24,
             "height": 8,
             "x": 0,
@@ -367,15 +366,15 @@
         "reports": [
           {
             "id": "fc028ea0-5e67-4a6f-a2d7-fcab04e59eee",
-            "title": "Hep A/B vaccinations at PT - zip code - organization",
-            "query": "MATCH (h:FAR_4_HELPER)\nWITH h\n  MATCH (n:FAS_4 {request_id: h.request_id})\nRETURN [n.pt, n.patient_zip, n.organization_name], n.vaccination_count\n",
-            "width": 24,
+            "title": "Hep A/B vaccinations at PT",
+            "query": "MATCH (h:FAR_4_HELPER)\nWITH h\n  MATCH (n:FAS_4 {request_id: h.request_id})\nRETURN [n.pt] AS path, n.vaccination_count ORDER BY path\n",
+            "width": 11,
             "height": 8,
             "x": 0,
             "y": 0,
             "type": "sunburst",
             "selection": {
-              "index": "[n.pt, n.patient_zip, n.organization_name]",
+              "index": "path",
               "value": "n.vaccination_count",
               "key": "(none)"
             },
@@ -386,7 +385,9 @@
               "interactive": true,
               "labelProperty": "count",
               "downloadImageEnabled": true,
-              "fullscreenEnabled": true
+              "fullscreenEnabled": true,
+              "colors": "paired",
+              "autorun": false
             },
             "schema": []
           },
@@ -404,6 +405,33 @@
               "autorun": false,
               "refreshButtonEnabled": true
             }
+          },
+          {
+            "id": "7f58c9db-1510-47df-957e-9c314b56bd0c",
+            "title": "Hep A/B vaccinations at zip code - organization",
+            "query": "MATCH (h:FAR_4_HELPER)\nWITH h\n  MATCH (n:FAS_4 {request_id: h.request_id})\nRETURN [n.patient_zip, n.organization_name] AS path, n.vaccination_count ORDER BY path\n",
+            "width": 13,
+            "height": 8,
+            "x": 11,
+            "y": 0,
+            "type": "sunburst",
+            "selection": {
+              "index": "path",
+              "value": "n.vaccination_count",
+              "key": "(none)"
+            },
+            "settings": {
+              "layout": "horizontal",
+              "refreshButtonEnabled": true,
+              "legend": false,
+              "interactive": true,
+              "labelProperty": "count",
+              "downloadImageEnabled": true,
+              "fullscreenEnabled": true,
+              "colors": "paired",
+              "autorun": false
+            },
+            "schema": []
           }
         ]
       },
@@ -423,7 +451,7 @@
             "settings": {
               "refreshButtonEnabled": true,
               "allowDownload": true,
-              "columnWidths": "[5, 2, 17, 13, 15, 5, 5, 3, 3, 3, 3, 3]",
+              "columnWidths": "[5, 2, 17, 13, 15, 5, 5, 4, 4, 2, 2, 3]",
               "downloadImageEnabled": true,
               "fullscreenEnabled": true,
               "autorun": false
@@ -452,7 +480,7 @@
           {
             "id": "203e7295-aff1-44cc-9849-aa36d04a17a3",
             "title": "Distribution of top 100 conditions (other than medication review due or screening for employment)",
-            "query": "MATCH (h:FAR_6_HELPER)\nWITH h\n  MATCH (n:FAS_6 {request_id: h.request_id})\nWITH n.condition_description AS description, n.condition_count AS count ORDER BY count DESC LIMIT 100\nRETURN description, count",
+            "query": "MATCH (h:FAR_6_HELPER)\nWITH h\n  MATCH (n:FAS_6 {request_id: h.request_id})\nWITH n.condition_description AS description, SUM(n.condition_count) AS count ORDER BY count DESC LIMIT 100\nRETURN description, count",
             "width": 24,
             "height": 8,
             "x": 0,
@@ -479,7 +507,7 @@
           {
             "id": "e03318cc-1509-4081-9657-3e5573dde596",
             "title": "Distribution of top 100 reasons for medication",
-            "query": "MATCH (h:FAR_7_HELPER)\nWITH h\n  MATCH (n:FAS_7 {request_id: h.request_id})\nWITH n.medication_reason_description AS description, n.medication_reason_count AS count ORDER BY count DESC LIMIT 100\nRETURN description, count\n\n\n",
+            "query": "MATCH (h:FAR_7_HELPER)\nWITH h\n  MATCH (n:FAS_7 {request_id: h.request_id})\nWITH n.medication_reason_description AS description, SUM(n.medication_reason_count) AS count ORDER BY count DESC LIMIT 100\nRETURN description, count\n\n\n",
             "width": 24,
             "height": 8,
             "x": 0,
@@ -507,7 +535,7 @@
           {
             "id": "3bb97486-eb77-48aa-a415-8a4f0ef1b39d",
             "title": "Distribution of top 100 procedures",
-            "query": "MATCH (h:FAR_8_HELPER)\nWITH h\n  MATCH (n:FAS_8 {request_id: h.request_id})\nWITH n.procedure_description AS description, n.procedure_count AS count ORDER BY count DESC LIMIT 100\nRETURN description, count\n\n\n",
+            "query": "MATCH (h:FAR_8_HELPER)\nWITH h\n  MATCH (n:FAS_8 {request_id: h.request_id})\nWITH n.procedure_description AS description, SUM(n.procedure_count) AS count ORDER BY count DESC LIMIT 100\nRETURN description, count\n\n\n",
             "width": 24,
             "height": 8,
             "x": 0,
@@ -584,8 +612,8 @@
         "reports": [
           {
             "id": "ced06a1b-bb79-4adb-a0dd-ff89f0c1ae22",
-            "title": "Where would they have been immunized?",
-            "query": "MATCH (h:FAR_9_HELPER)\nWITH h\n  MATCH (n:FAS_9 {request_id: h.request_id})\nRETURN\n  n.patient_zip AS zip,\n  n.patient_count AS patient_count,\n  n.missing_doses AS missing_doses,\n  n.organization_list AS organization_list",
+            "title": "Where would they have been immunized? (Top 30 zip code with most young patients missing vaccination schedule)",
+            "query": "MATCH (h:FAR_9_HELPER)\nWITH h\n  MATCH (n:FAS_9 {request_id: h.request_id})\nRETURN\n  n.patient_zip AS zip,\n  n.patient_count AS patient_count,\n  n.missing_doses AS missing_doses,\n  n.organization_list AS organization_list\n  ORDER BY patient_count DESC LIMIT 30\n",
             "width": 24,
             "height": 8,
             "x": 0,
@@ -674,5 +702,6 @@
           }
         }
       }
-    }
+    },
+    "uuid": "d8f4a139-ffac-48d2-a8ba-212458f19495"
   }
