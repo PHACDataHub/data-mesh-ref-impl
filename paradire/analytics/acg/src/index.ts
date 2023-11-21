@@ -47,6 +47,8 @@ import {
 import { create_graphql_schema } from "./graphql.js";
 import { existsSync, readFileSync, writeFileSync } from "fs";
 
+const instance_id = (Math.random() + 1).toString(36).substring(7);
+
 const broker_list = BROKER_LIST
   ? `${BROKER_LIST}`.split(",")
   : [
@@ -58,7 +60,7 @@ const broker_list = BROKER_LIST
 
 // Connection to PT kafka
 const kafka_pt = new Kafka({
-  clientId: "dag",
+  clientId: `dag-${instance_id}`,
   brokers: broker_list,
 });
 
@@ -76,7 +78,7 @@ const f_broker_list = F_BROKER_LIST
 
 // Connection to federal kafka
 const kafka_federal = new Kafka({
-  clientId: "dag",
+  clientId: `dag${instance_id}`,
   brokers: f_broker_list,
 });
 
@@ -92,7 +94,7 @@ const registry_federal = new SchemaRegistry({
 // Monitor `acg_ruleset_config` topic for ruleset changes
 const topic = "acg_ruleset_config";
 const config_consumer = kafka_pt.consumer({
-  groupId: "acg-config-connector",
+  groupId: `acg-config-connector-${instance_id}`,
   allowAutoTopicCreation: true,
 });
 await config_consumer.connect();
@@ -113,7 +115,6 @@ const reload = new Promise<void>((resolve) => {
 });
 
 // Monitor the `acg-status` topic for ping requests
-const instance_id = (Math.random() + 1).toString(36).substring(7);
 const status_consumer = kafka_pt.consumer({
   groupId: `acg-status-${instance_id}`,
   allowAutoTopicCreation: true,

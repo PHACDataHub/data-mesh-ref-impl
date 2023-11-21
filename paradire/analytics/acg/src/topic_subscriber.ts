@@ -7,6 +7,8 @@ import { Partitioners, type Kafka } from "kafkajs";
 
 import { PubSub } from "graphql-subscriptions";
 
+const instance_id = (Math.random() + 1).toString(36).substring(7);
+
 // In-memory queue to move messages from kafka consumer to graphql resolver.
 const pubsub = new PubSub();
 
@@ -57,7 +59,7 @@ export const subscribeToTopic = async ({
   await pt_producer.connect();
 
   // Create a consumer that listens for federal analytics requests
-  const fed_consumer = kafka.federal.consumer({ groupId: name });
+  const fed_consumer = kafka.federal.consumer({ groupId: `${name}-${instance_id}` });
   await fed_consumer.connect();
   await fed_consumer.subscribe({
     topic: topic.request,
@@ -102,7 +104,7 @@ export const subscribeToTopic = async ({
 
   // Create a consumer that listens for responses to analytics requests from
   // PT.
-  const pt_consumer = kafka.pt.consumer({ groupId: name });
+  const pt_consumer = kafka.pt.consumer({ groupId: `${name}-${instance_id}` });
   await pt_consumer.connect();
   await pt_consumer.subscribe({
     topic: topic.response,
