@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: neodash-designer
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: neodash-designer
+  template:
+    metadata:
+      labels:
+        app: neodash-designer
+    spec:
+      containers:
+      - name: neodash-designer
+        image: nielsdejong/neodash:{{ .Values.neodash.version }}
+        ports:
+        - containerPort: 5005
+      restartPolicy: Always

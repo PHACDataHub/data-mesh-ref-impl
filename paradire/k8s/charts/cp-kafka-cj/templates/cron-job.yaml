@@ -1,0 +1,75 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ template "cp-kafka-cj.fullname" . }}
+  labels:
+    app: {{ template "cp-kafka-cj.name" . }}
+    chart: {{ template "cp-kafka-cj.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  schedule: "{{ .Values.cronSchedule }}" 
+  successfulJobsHistoryLimit: 0 
+  concurrencyPolicy: Forbid 
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            app: {{ template "cp-kafka-cj.name" . }}
+        spec:
+          restartPolicy: Never
+          initContainers:
+          - name: check-fhir
+            image: curlimages/curl:latest
+            env:
+              - name: pt
+                value: "{{ .Values.pt }}"
+            command: ["/bin/sh", "-c"]
+            args:
+            - |
+              # Skip health check if pt is 'phac'
+              if [ "$pt" = "phac" ]; then
+                echo "Skipping HAPI FHIR server health check for 'phac'."
+                exit 0
+              fi
+
+              # Check if HAPI FHIR server is up and returns HTTP 200 OK
+              until [ "$(curl -o /dev/null -s -w '%{http_code}\n' {{ .Values.fihrHealthCheckUrl }})" = "200" ]; do
+                echo "Waiting for HAPI FHIR server to be ready..."
+                sleep 5
+              done
+              echo "HAPI FHIR server is ready."
+          containers:
+          - name: synthea-data
+            image: "{{ .Values.imageSyntheaKafka }}:{{ .Values.imageSyntheaKafkaTag }}"
+            imagePullPolicy: Always
+            env:
+              - name: sampling_size
+                value: "{{ .Values.samplingSize }}"
+              - name: pt
+                value: "{{ .Values.pt }}"
+              - name: fihr_server_url
+                value: "{{ .Values.fihrServerUrl }}"
+              - name: CONNECT_URL
+                value: {{ template "cp-kafka-cj.cp-kafka-connect.service-name" . }}
+              - name: SCHEMA_URL
+                value: {{ template "cp-kafka-cj.cp-schema-registry.service-name" . }}
+              - name: BROKER_URL
+                value: {{ template "cp-kafka-cj.kafka.bootstrapServers" . }}
+              - name: GCS_BUCKET
+                value: "{{ .Values.GCPBucketName }}"
+              - name: GOOGLE_APPLICATION_CREDENTIALS
+                value: "/var/secrets/google/key.json"
+              - name: CRON_JOB
+                value: "{{ .Values.cronJob }}"
+            volumeMounts:
+              - name: google-cloud-key
+                mountPath: /var/secrets/google
+                readOnly: true
+          volumes:
+            - name: google-cloud-key
+              secret:
+                secretName: gcp-sa-secret-cron
+
+

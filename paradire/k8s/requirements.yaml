@@ -59,3 +59,11 @@ dependencies:
   version: 0.1.0
   repository: file://./charts/paradire-ingress
   condition: paradire-ingress.enabled
+- name: neodash-designer
+  version: 0.1.0
+  repository: file://./charts/neodash-designer
+  condition: neodash-designer.enabled
+- name: cp-kafka-cj
+  version: 0.1.0
+  repository: file://./charts/cp-kafka-cj
+  condition: cp-kafka-cj.enabled

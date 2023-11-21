@@ -11,6 +11,17 @@ cp-kafka:
   enabled: true
 
 ## ------------------------------------------------------
+## Kafka CJ
+## ------------------------------------------------------
+cp-kafka-cj:
+  enabled: true
+  samplingSize: 100
+  pt: "ab"
+  cronJob: "true"
+  GCPBucketName: "paradire-synthea-data"
+  cronSchedule: "0 0 * * *"
+
+## ------------------------------------------------------
 ## Kafka Connect
 ## ------------------------------------------------------
 cp-kafka-connect:
@@ -23,6 +34,7 @@ cp-kafka-job:
   enabled: true
   samplingSize: 5
   pt: "ab"
+  cronJob: "false"
   GCPBucketName: "paradire-synthea-data"
 
 ## ------------------------------------------------------
@@ -93,4 +105,10 @@ paradire-ingress:
 ## patient-browser
 ## ------------------------------------------------------
 patient-browser:
+  enabled: true
+
+## ------------------------------------------------------
+## neodash-designer
+## ------------------------------------------------------
+neodash-designer:
   enabled: true
