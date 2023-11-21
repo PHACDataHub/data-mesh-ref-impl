@@ -15,10 +15,20 @@ import {
   type ResourceTypeField,
 } from "@phac-aspc-dgg/schema-tools";
 
-import { Input, Space, Switch, Table, Checkbox } from "antd";
+import {
+  Input,
+  Space,
+  Switch,
+  Table,
+  Checkbox,
+  Typography,
+  Button,
+} from "antd";
 import { type CheckboxChangeEvent } from "antd/es/checkbox";
 
 const { Column } = Table;
+const { Title, Text } = Typography;
+const { Search } = Input;
 
 // function getSubSelectedFields(
 //   selected: ResourceTypeField | undefined,
@@ -68,7 +78,11 @@ export default function ResourceType({
   useEffect(() => {
     const handleResize = () => {
       if (parent.current && container.current) {
-        setHeight(parent.current.offsetHeight - container.current.offsetTop);
+        const p = parent.current.getBoundingClientRect();
+        const c = container.current.getBoundingClientRect();
+        console.log({ p, c });
+
+        setHeight(p.height - c.top - 39);
       }
     };
     window.addEventListener("resize", handleResize);
@@ -170,9 +184,17 @@ export default function ResourceType({
 
   return (
     <div ref={parent} className="h-full">
-      <p className="p-2 text-sm text-gray-500">
-        {referenced_schema.description}
-      </p>
+      <div className="flex min-h-[50px] justify-between">
+        <div>
+          <Title level={2} style={{ margin: 0 }}>
+            Title
+          </Title>
+          <Text style={{ color: "#707070" }}>
+            {referenced_schema.description}
+          </Text>
+        </div>
+        <Button type="primary">Apply</Button>
+      </div>
       <div ref={container}>
         <Table
           dataSource={dataSource}
@@ -180,7 +202,7 @@ export default function ResourceType({
           scroll={{ y: height }}
         >
           <Column
-            title="Field"
+            title={<div><Search disabled placeholder="Search fields" /></div>}
             render={({
               field,
               description,
@@ -189,9 +211,15 @@ export default function ResourceType({
               description: string;
             }) => (
               <>
-                <span className="text-lg">{field}</span>
+                <Text style={{ color: "#1890ff", fontWeight: 400 }}>
+                  {field}
+                </Text>
                 {description && (
-                  <p className="text-sm text-slate-400">{description}</p>
+                  <p className="m-0">
+                    <Text style={{ color: "#707070", fontWeight: 400 }}>
+                      {description}
+                    </Text>
+                  </p>
                 )}
               </>
             )}
@@ -199,6 +227,9 @@ export default function ResourceType({
           <Column
             title="Restrict"
             width={130}
+            sorter={(a: { restrict: boolean }, b: { restrict: boolean }) =>
+              +b.restrict - +a.restrict
+            }
             render={({
               field,
               restrict,
@@ -222,6 +253,9 @@ export default function ResourceType({
           />
           <Column
             title="One-way hash"
+            sorter={(a: { hash: boolean }, b: { hash: boolean }) =>
+              +b.hash - +a.hash
+            }
             width={130}
             render={({ field, hash }: { field: string; hash: boolean }) => (
               <Space direction="vertical">

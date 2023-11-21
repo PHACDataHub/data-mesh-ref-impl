@@ -1,3 +1,11 @@
-@tailwind base;
-@tailwind components;
+/* @tailwind base; */
+/* @tailwind components; */
 @tailwind utilities;
+
+.ant-menu-item-selected.ant-menu-item-only-child {
+    border-right: 3px solid #1677ff;
+}
+
+body {
+    margin: 0;
+}
