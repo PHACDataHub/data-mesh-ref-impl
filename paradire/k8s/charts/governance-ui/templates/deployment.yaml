@@ -12,6 +12,7 @@ spec:
       labels:
         app: governance-ui
     spec:
+      enableServiceLinks: false
       containers:
       - name: governance-ui
         image: northamerica-northeast1-docker.pkg.dev/phx-01he5rx4wsv/paradire/governance-ui
@@ -29,3 +30,5 @@ spec:
           value: {{ .Values.pt | quote }}
         - name: NEXTAUTH_URL
           value: "http://nowhere"
+        - name: HOSTNAME
+          value: "0.0.0.0"

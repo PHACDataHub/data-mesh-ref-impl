@@ -21,6 +21,7 @@ export const {
   F_BROKER_LIST,
   F_SCHEMA_REGISTRY_HOST,
   F_SCHEMA_REGISTRY_PORT,
+  F_SCHEMA_REGISTRY_URL,
   PT,
 } = process.env;
 

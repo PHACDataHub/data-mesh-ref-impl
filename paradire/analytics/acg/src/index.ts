@@ -40,6 +40,7 @@ import {
   BROKER_LIST,
   F_BROKER_LIST,
   SCHEMA_REGISTRY_URL,
+  F_SCHEMA_REGISTRY_URL,
   PT,
 } from "./config.js";
 
@@ -79,9 +80,13 @@ const kafka_federal = new Kafka({
   brokers: f_broker_list,
 });
 
+const f_schema_registry_url = F_SCHEMA_REGISTRY_URL
+  ? F_SCHEMA_REGISTRY_URL
+  : `http://${F_SCHEMA_REGISTRY_HOST}:${F_SCHEMA_REGISTRY_PORT}`;
+
 // Connection to federal schema registry
 const registry_federal = new SchemaRegistry({
-  host: `http://${F_SCHEMA_REGISTRY_HOST}:${F_SCHEMA_REGISTRY_PORT}`,
+  host: f_schema_registry_url,
 });
 
 // Monitor `acg_ruleset_config` topic for ruleset changes
@@ -149,7 +154,7 @@ try {
         ruleset,
         { pt: kafka_pt, federal: kafka_federal },
         { pt: registry_pt, federal: registry_federal },
-        (PT ?? "Unknown").toUpperCase(),
+        (PT ?? "Unknown").toUpperCase()
       );
 
     // Create graphql pipeline

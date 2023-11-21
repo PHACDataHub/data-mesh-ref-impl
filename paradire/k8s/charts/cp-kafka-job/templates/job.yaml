@@ -79,6 +79,7 @@ spec:
       containers:
       - name: synthea-data
         image: "{{ .Values.imageSyntheaKafka }}:{{ .Values.imageSyntheaKafkaTag }}"
+        imagePullPolicy: Always
         env:
           - name: sampling_size
             value: "{{ .Values.samplingSize }}"
