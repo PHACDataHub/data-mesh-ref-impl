@@ -203,6 +203,13 @@ export default function Home() {
             content="User interface to generate data governance rules"
           />
           <link rel="icon" href="/favicon.ico" />
+          <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com"  />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap"
+          rel="stylesheet"
+        />
+
         </Head>
         <Layout className="h-screen">
           <Header className="flex h-[48px] items-center justify-between p-[16px] text-white">
