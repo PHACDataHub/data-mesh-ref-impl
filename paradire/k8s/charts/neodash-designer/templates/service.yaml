@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: neodash-designer-svc
+spec:
+  type: ClusterIP
+  ports:
+  - port: {{ .Values.neodash.designerPort }}
+    targetPort: 5005
+    protocol: TCP
+    name: http
+  selector:
+    app: neodash-designer

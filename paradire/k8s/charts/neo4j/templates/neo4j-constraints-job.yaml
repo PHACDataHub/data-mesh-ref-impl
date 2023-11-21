@@ -24,10 +24,10 @@ spec:
           args:
             - |
               echo 'Creating constraints and indexes ...'
-              until cypher-shell -u $NEO4J_USERNAME -p $NEO4J_PASSWORD -a bolt://neo4j-deployment-svc:7687 "RETURN 'Neo4j is up'"; do
+              until cypher-shell -u $NEO4J_USERNAME -p $NEO4J_PASSWORD -a bolt://neo4j:7687 "RETURN 'Neo4j is up'"; do
                 echo 'Waiting for Neo4j to be ready...'
                 sleep 5
               done
-              cypher-shell -u $NEO4J_USERNAME -p $NEO4J_PASSWORD -a bolt://neo4j-deployment-svc:7687 --file /import/v2_entity_constraints.cql
+              cypher-shell -u $NEO4J_USERNAME -p $NEO4J_PASSWORD -a bolt://neo4j:7687 --file /import/v2_entity_constraints.cql
               echo 'Constraints and indexes are created ✅'
       restartPolicy: OnFailure

@@ -1,0 +1,7 @@
+
+neodash:
+  version: "2.4.0" 
+  designerPort: 5006
+
+neo4j:
+  enabled: true

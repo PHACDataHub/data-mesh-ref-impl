@@ -18,7 +18,8 @@ pt: "ab"
 fihrHealthCheckUrl: "http://hapi-fhir-svc:8080"
 fihrServerUrl: "http://hapi-fhir-svc:8080/fhir"
 GCPBucketName: "paradire-synthea-data"
-cronJob: "false"
+cronJob: "true"
+cronSchedule: "0 0 * * *"
 
 ## You can list load balanced service endpoint, or list of all brokers (which is hard in K8s).  e.g.:
 ## bootstrapServers: "PLAINTEXT://dozing-prawn-kafka-headless:9092"
