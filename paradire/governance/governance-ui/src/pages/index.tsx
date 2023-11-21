@@ -255,11 +255,7 @@ export default function Home() {
               />
             </Sider>
             <Layout className="m-[16px] bg-white p-[16px]">
-              {/* <div className="flex h-[50px]">
-                <Title level={2} style={styles.header2}>
-                  bla
-                </Title>
-                <Text>des</Text>
+              <div className="flex h-[50px] justify-between">
                 <Select
                   className="min-w-[250px]"
                   value={selectedSchema}
@@ -294,7 +290,7 @@ export default function Home() {
                   Apply
                 </Button>
                 
-              </div> */}
+              </div>
               <Content>
                 <Content
                   className={`${

@@ -193,7 +193,7 @@ export default function ResourceType({
             {referenced_schema.description}
           </Text>
         </div>
-        <Button type="primary">Apply</Button>
+        {/* <Button type="primary">Apply</Button> */}
       </div>
       <div ref={container}>
         <Table
