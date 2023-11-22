@@ -3,6 +3,7 @@ from avro.datafile import DataFileWriter
 from avro.io import DatumWriter
 import multiprocessing
 import os
+import re
 import sys
 
 
@@ -29,14 +30,16 @@ EHR_EVENTS = {
     'symptoms'
 }
 
+MULTI_WORD_REGEX=re.compile(r"([^,]+)(,\s[^,]+)*")
 
-def convert_primitive(value, value_type):
+
+def convert_primitive(value, value_type, file_name, line_count):
     if value == '':
         if value_type == 'null':
             return 'null'
         if value_type  == 'string':
             return '""'
-        assert False, f"Empty string cannot be converted into one of {type_list}."
+        assert False, f"Empty string cannot be converted into one of {type_list} {file_name} {line_count}."
 
     if value_type in ['int', 'long'] and all(e in '-0123456789' for e in value) and isinstance(int(value), int):
         return int(value)
@@ -49,16 +52,16 @@ def convert_primitive(value, value_type):
     if value_type == 'string':
         return '"' + f"{value}" + '"'
     
-    assert False, f"{value} cannot be converted into one of {type_list}."
+    assert False, f"{value} cannot be converted into one of {type_list} {file_name} {line_count}."
 
 
-def convert_union(value, type_list):
+def convert_union(value, type_list, file_name, line_count):
     if value == '':
         if 'null' in type_list:
             return 'null'
         if 'string' in type_list:
             return '{"string": ""}'
-        assert False, f"Empty string cannot be converted into one of {type_list}."
+        assert False, f"Empty string cannot be converted into one of {type_list} {file_name} {line_count}."
 
     if 'int' in type_list and all(e in '-0123456789' for e in value) and isinstance(int(value), int):
         return '{"int":' + f"{int(value)}" + '}'
@@ -68,13 +71,13 @@ def convert_union(value, type_list):
 
     if 'float' in type_list and value == 'NaN':
         return 'null'
-    if 'float' in type_list and isinstance(float(value), float):
+    if 'float' in type_list and all(e in '-0123456789.' for e in value) and isinstance(float(value), float):
         return '{"float":' + f"{float(value)}" + '}'
 
     if 'string' in type_list:
         return '{"string":"' + f"{value}" + '"}'
     
-    assert False, f"{value} cannot be converted into one of {type_list}."
+    assert False, f"{value} cannot be converted into one of {type_list} {file_name} {line_count}."
 
 
 def process_file(arguments):
@@ -94,16 +97,17 @@ def process_file(arguments):
                 if not line:
                     break
                 line = line.strip()
+                fields = [''.join(e) for e in MULTI_WORD_REGEX.findall(line)]
                 key_items = []
                 val_items = []
-                for field, cell in zip(val_schema.fields, line.split(',')):
+                for field, cell in zip(val_schema.fields, fields):
                     if isinstance(field.type, avro.schema.PrimitiveSchema):
-                        item = f"\"{field.name}\": {convert_primitive(cell, field.type.fullname)}"
+                        item = f"\"{field.name}\": {convert_primitive(cell, field.type.fullname, file_name, line_count)}"
                         val_items.append(item)
                         if field.name in key_field_names:
                             key_items.append(item)
                     elif isinstance(field.type, avro.schema.UnionSchema):
-                        val_items.append(f"\"{field.name}\": {convert_union(cell, [schema.type for schema in field.type.schemas])}")
+                        val_items.append(f"\"{field.name}\": {convert_union(cell, [schema.type for schema in field.type.schemas], file_name, line_count)}")
                     else:
                         assert False, f"Unknown field type {field.type.__class__.__name__}"
                 key = '{' + ', '.join(key_items) + '}'

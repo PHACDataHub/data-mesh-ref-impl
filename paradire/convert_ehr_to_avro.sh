@@ -22,8 +22,8 @@ export VENV_PATH CSV_DIR SYMPTOMS_DIR AVRO_DIR
 
 setup_venv
 
-rm -rf $AVRO_DIR
-mkdir -p "$AVRO_DIR"
+# rm -rf $AVRO_DIR
+# mkdir -p "$AVRO_DIR"
 [ ! -d "$AVRO_DIR" ] && mkdir -p "$AVRO_DIR"
 source "$VENV_PATH/bin/activate"
 

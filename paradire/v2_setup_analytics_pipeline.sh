@@ -4,7 +4,7 @@ source .env
 
 echo 'Creating constraints and indexes ...'
 sudo cp analytics/v2_neo4j/v2_entity_constraints.cql neo4j/import/.
-# docker exec -u ${NEO4J_USERNAME} --interactive --tty  neo4j cypher-shell -u ${NEO4J_USERNAME} -p ${NEO4J_PASSWORD} --file /import/v2_entity_constraints.cql
+docker exec -u ${NEO4J_USERNAME} --interactive --tty  neo4j cypher-shell -u ${NEO4J_USERNAME} -p ${NEO4J_PASSWORD} --file /import/v2_entity_constraints.cql
 echo 'Constraints and indexes are created ✅'
 
 if [ ${PT} = "F" ]; then
@@ -16,6 +16,7 @@ else
 fi
 
 sudo cp analytics/v2_neo4j/$dashboard_file neo4j/import/.
+sudo sed -i 's/BC Analytics Platform/$dashboard_title/g' .env
 
 echo Reading dashboard file $dashboard_file
 dashboard_version=2.4
