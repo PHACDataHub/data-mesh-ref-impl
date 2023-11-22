@@ -97,7 +97,9 @@ def process_file(arguments):
                 if not line:
                     break
                 line = line.strip()
-                fields = [''.join(e) for e in MULTI_WORD_REGEX.findall(line)]
+                fields = line.split(',')
+                if entity == 'organization':
+                    fields = [''.join(e) for e in MULTI_WORD_REGEX.findall(line)]
                 key_items = []
                 val_items = []
                 for field, cell in zip(val_schema.fields, fields):
