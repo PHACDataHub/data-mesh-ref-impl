@@ -1,4 +1,5 @@
 ./cleanup_pt_cluster.sh
+docker compose -f docker-compose-pt-acg-governance.yml down -v
 git checkout .
 git pull
 
