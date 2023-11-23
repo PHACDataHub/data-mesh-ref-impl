@@ -30,7 +30,7 @@ EHR_EVENTS = {
     'symptoms'
 }
 
-MULTI_WORD_REGEX=re.compile(r"([^,]+)(,\s[^,]+)*")
+MULTI_WORD_REGEX=re.compile(r"([^,]+)(,\s[^,]+)+")
 
 
 def convert_primitive(value, value_type, file_name, line_count):
