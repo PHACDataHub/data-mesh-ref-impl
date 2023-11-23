@@ -1,5 +1,6 @@
 ./cleanup_pt_cluster.sh
 docker compose -f docker-compose-pt-acg-governance.yml down -v
+docker rm -f patient-browser
 git checkout .
 git pull
 
