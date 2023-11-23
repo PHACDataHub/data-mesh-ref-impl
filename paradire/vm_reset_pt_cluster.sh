@@ -14,7 +14,6 @@ source .env
 sed -i "s/http:\/\/localhost:8080\/fhir/https:\/\/$PUBLIC_IP\/fhir/" hapi_fhir_patch/hapi.application.yaml
 
 ./setup_pt_fhir.sh 
-docker compose -f docker-compose-pt-acg-governance.yml up --build -d
 
 sudo apt-get install python3-venv -y
 rm -rf /home/luc_belliveau_gcp_hc_sc_gc_ca/Immunization_Gateway_ENV/
@@ -22,6 +21,8 @@ rm -rf /home/luc_belliveau_gcp_hc_sc_gc_ca/Immunization_Gateway_ENV/
 
 ./convert_ehr_to_avro.sh $(realpath /home/luc_belliveau_gcp_hc_sc_gc_ca/synthea/ca_spp/${pt,,}/csv/*/) $(realpath /home/luc_belliveau_gcp_hc_sc_gc_ca/synthea/ca_spp/${pt,,}/symptoms/csv/*/) data 
 ./stream_pt_ehr_events.sh data
+
+docker compose -f docker-compose-pt-acg-governance.yml up --build -d
 
 sed -i "s/http:\/\/localhost:8080\/fhir/https:\/\/$PUBLIC_IP\/fhir/" patient_browser_patch/default.json5
 ./setup_patient_browser.sh
