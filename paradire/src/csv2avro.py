@@ -98,7 +98,7 @@ def process_file(arguments):
                     break
                 line = line.strip()
                 fields = line.split(',')
-                if entity == 'organization':
+                if entity == 'organizations':
                     fields = [''.join(e) for e in MULTI_WORD_REGEX.findall(line)]
                 key_items = []
                 val_items = []
