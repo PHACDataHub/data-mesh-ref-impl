@@ -4,7 +4,7 @@ docker rm -f patient-browser
 git checkout .
 git pull
 
-./setup_pt_cluster.sh $PT 35.203.40.154
+./setup_pt_cluster.sh $PT $phac
 
 source .env
 
