@@ -13,11 +13,11 @@ source .env
 ./v2_pt_setup_ehr_event_streams.sh
 ./v2_pt_setup_fed_request_connectors.sh 
 
-sed -i "s/http:\/\/localhost:8080\/fhir/https:\/\/$PUBLIC_IP\/fhir/" hapi_fhir_patch/hapi.application.yaml
+sed -i "s/http:\/\/localhost:8080\/fhir/http:\/\/$PUBLIC_IP:8080\/fhir/" hapi_fhir_patch/hapi.application.yaml
 
 ./setup_pt_fhir.sh 
 
-sudo apt-get install python3-venv -y
+sudo apt-get install python3-venv python3-avro -y
 rm -rf /home/luc_belliveau_gcp_hc_sc_gc_ca/Immunization_Gateway_ENV/
 ./generate_patient_population.sh 1000 ca_spp $PT
 
@@ -26,6 +26,6 @@ rm -rf /home/luc_belliveau_gcp_hc_sc_gc_ca/Immunization_Gateway_ENV/
 
 docker compose -f docker-compose-pt-acg-governance.yml up --build -d
 
-sed -i "s/http:\/\/localhost:8080\/fhir/https:\/\/$PUBLIC_IP\/fhir/" patient_browser_patch/default.json5
+sed -i "s/http:\/\/localhost:8080\/fhir/http:\/\/$PUBLIC_IP:8080\/fhir/" patient_browser_patch/default.json5
 ./setup_patient_browser.sh
 

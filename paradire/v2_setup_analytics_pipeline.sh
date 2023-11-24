@@ -16,7 +16,7 @@ else
 fi
 
 sudo cp analytics/v2_neo4j/$dashboard_file neo4j/import/.
-sudo sed -i 's/BC Analytics Platform/$dashboard_title/g' .env
+sudo sed -i 's/BC Analytics Platform/$dashboard_title/g' neo4j/import/$dashboard_file
 
 echo Reading dashboard file $dashboard_file
 dashboard_version=2.4

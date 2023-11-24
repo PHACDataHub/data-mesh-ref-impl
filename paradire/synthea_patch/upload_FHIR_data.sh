@@ -45,15 +45,15 @@ export -f upload_file
 
 # Upload hospital information
 echo "Starting hospital information uploads..."
-find "$output_dir/$pt/fhir/" -type f -name "hospitalInformation*.json" | parallel -j $MAX_JOBS upload_file {}
+find "$output_dir/${pt^^}/fhir/" -type f -name "hospitalInformation*.json" | parallel -j $MAX_JOBS upload_file {}
 echo "Hospital information upload process completed!"
 
 # Upload practitioner information
 echo "Starting practitioner information uploads..."
-find "$output_dir/$pt/fhir/" -type f -name "practitionerInformation*.json" | parallel -j $MAX_JOBS upload_file {}
+find "$output_dir/${pt^^}/fhir/" -type f -name "practitionerInformation*.json" | parallel -j $MAX_JOBS upload_file {}
 echo "Practitioner information upload process completed!"
 
 # Upload EHRs
 echo "Starting EHR uploads..."
-find "$output_dir/$pt/fhir/" -type f -name "*.json" ! -name "hospitalInformation*" ! -name "practitionerInformation*" | parallel -j $MAX_JOBS upload_file {}
+find "$output_dir/${pt^^}/fhir/" -type f -name "*.json" ! -name "hospitalInformation*" ! -name "practitionerInformation*" | parallel -j $MAX_JOBS upload_file {}
 echo "EHR upload process completed!"
