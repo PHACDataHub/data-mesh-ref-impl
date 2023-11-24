@@ -23,7 +23,7 @@ How to read this document:
     + Discusses in detail Access Control Gateway, one of the key component of the PoC.
     + This is a technology-focus with proper details in both design and implementation aspects.
     + Architects, developers, devops engineers, and others with similar interests are the target audience.
-- Part III - [PT and F clusters in harmony](/part-iii.md)
+- Part III - [PT and F clusters in harmony](./part-iii.md)
     + Provides a deep dive into the deployment of 13 PT clusters and 1 F clusters.
     + Utilization of modern cloud-native technologies such as containerization, orchestration, cloud-deployment, etc is omnipresent. 
     + The target audience includes, but not limited to, project managers, architects, devops engineers, and others.
@@ -36,7 +36,7 @@ How to read this document:
 ## Table of Content
 ### I. [The Proof-of-Concept](./part-i.md)
 ### II. [Access Control Gateway](./part-ii.md)
-### III. [PT and F clusters in harmony](/part-iii.md)
+### III. [PT and F clusters in harmony](/.part-iii.md)
 ### IV. [Looking forward with hindsight](./part-iv.md)
 
 --- 
