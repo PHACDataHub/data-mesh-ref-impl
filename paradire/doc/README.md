@@ -1,4 +1,4 @@
-# [Pan-Canada Immunization Data on Federated Data Architecture](#pan-canada-immunization-data-on-federated-data-architecture)
+# [Pan-Canadian Health and Immunization Data on Federated Data Architecture](#pan-canada-immunization-data-on-federated-data-architecture)
 
 &nbsp;
 
