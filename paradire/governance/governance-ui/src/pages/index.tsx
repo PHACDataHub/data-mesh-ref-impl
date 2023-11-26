@@ -4,7 +4,15 @@ import Head from "next/head";
 
 import Editor from "@monaco-editor/react";
 
-import { Button, Select, Layout, Menu, Typography, ConfigProvider } from "antd";
+import {
+  Button,
+  Select,
+  Layout,
+  Menu,
+  Typography,
+  ConfigProvider,
+  Tooltip,
+} from "antd";
 
 import ResourceType from "~/components/ResourceType";
 
@@ -18,6 +26,7 @@ import {
 } from "@phac-aspc-dgg/schema-tools";
 
 import { api } from "~/utils/api";
+import { type ACGStatus } from "~/server/api/routers/post";
 
 const { Header, Content, Sider } = Layout;
 const { Title, Text } = Typography;
@@ -48,6 +57,8 @@ export default function Home() {
     "paradire-parameterized",
   );
 
+  const [acg, setAcg] = useState<ACGStatus | null>(null);
+
   const [activeResourceType, setActiveResourceType] = useState<string>("");
 
   const activeResourceTypeSelectHandler = useCallback(
@@ -57,16 +68,35 @@ export default function Home() {
     [],
   );
 
-  const acg_status = api.post.acg_status.useQuery();
+  const { yaml, setYaml, selectedResourceTypes, setSelectedResourceTypes } =
+    useDataGovernance();
+
   const pt = api.post.hello.useQuery();
 
   const updateAcg = api.post.updateAcg.useMutation();
   const pingAcg = api.post.ping.useMutation();
 
-  const [showPanel, setShowPanel] = useState(false);
+  api.post.onAcgStatusUpdate.useSubscription(undefined, {
+    onError(e) {
+      console.error("An error has occurred with the ACG status update.");
+      console.error(e);
+    },
+    onData(status) {
+      if (status === "ready") {
+        pingAcg.mutate();
+      } else {
+        setAcg(status);
+        if (status.ruleset !== false) setYaml(status.ruleset);
+      }
+    },
+    onStarted() {
+      // Once the subscription has started, send a ping to the ACG to determine
+      // if it is online, and to get the active ruleset.
+      console.log("-- started --");
+    },
+  });
 
-  const { yaml, setYaml, selectedResourceTypes, setSelectedResourceTypes } =
-    useDataGovernance();
+  const [showPanel, setShowPanel] = useState(false);
 
   const updateSelectedFieldsHandler = useCallback(
     (name: string, selectedFields: ResourceTypeField[]) => {
@@ -136,35 +166,20 @@ export default function Home() {
     );
   }, [addEverythingClickHandler, json_schema]);
 
-  useEffect(() => {
-    pingAcg.mutate();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const online = Boolean(acg?.online);
 
-  const online = Boolean(acg_status.data?.online);
-
-  useEffect(() => {
-    if (!online) {
-      const pollAcgStatus = async () => {
-        const status = await acg_status.refetch();
-        if (!Boolean(status.data?.online)) {
-          setTimeout(() => {
-            void pollAcgStatus();
-          }, 1000);
-        }
-      };
-      void pollAcgStatus();
-    }
-  }, [acg_status, online]);
-
-  const applyClickHandler = useCallback(() => {
-    updateAcg.mutate({ ruleset: yaml });
-    setTimeout(() => void acg_status.refetch(), 300);
-  }, [acg_status, updateAcg, yaml]);
+  const applyClickHandler = useCallback(async () => {
+    await updateAcg.mutateAsync({ ruleset: yaml });
+  }, [updateAcg, yaml]);
 
   const expandClickHandler = useCallback(() => {
     setShowPanel(!showPanel);
   }, [showPanel]);
+
+  const PT = useMemo(() => {
+    if (pt.data?.pt) return pt.data.pt;
+    return "...";
+  }, [pt]);
 
   return (
     <>
@@ -197,19 +212,18 @@ export default function Home() {
         }}
       >
         <Head>
-          <title>{pt.data?.pt} Data Governance Gateway</title>
+          <title>{`${PT} Data Governance Gateway`}</title>
           <meta
             name="description"
             content="User interface to generate data governance rules"
           />
           <link rel="icon" href="/favicon.ico" />
           <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com"  />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap"
-          rel="stylesheet"
-        />
-
+          <link rel="preconnect" href="https://fonts.gstatic.com" />
+          <link
+            href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap"
+            rel="stylesheet"
+          />
         </Head>
         <Layout className="h-screen">
           <Header className="flex h-[48px] items-center justify-between p-[16px] text-white">
@@ -219,7 +233,7 @@ export default function Home() {
                 color: "#fff",
               }}
             >
-              {pt.data?.pt} Data Governance Gateway
+              {PT} Data Governance Gateway
             </Title>
             <div>
               <Button
@@ -238,6 +252,27 @@ export default function Home() {
               width={325}
               style={{ boxShadow: "0px 2px 8px 0px rgba(0,0,0,0.15)" }}
             >
+              <div className="p-[16px]">
+                <Select
+                  className="w-full"
+                  value={selectedSchema}
+                  onChange={selectedSchemaChangeHandler}
+                  options={[
+                    {
+                      value: "paradire-parameterized",
+                      label: "PHAC Analytic Requests",
+                    },
+                    {
+                      value: "paradire",
+                      label: "FHIR Event Extraction Control",
+                    },
+                    {
+                      value: "hl7r4",
+                      label: "Full HL7 R4 Sample",
+                    },
+                  ]}
+                />
+              </div>
               <Menu
                 mode="inline"
                 style={{ border: 0 }}
@@ -256,31 +291,41 @@ export default function Home() {
             </Sider>
             <Layout className="m-[16px] bg-white p-[16px]">
               <div className="flex h-[50px] justify-between">
-                <Select
-                  className="min-w-[250px]"
-                  value={selectedSchema}
-                  onChange={selectedSchemaChangeHandler}
-                  options={[
-                    {
-                      value: "paradire-parameterized",
-                      label: "Paradire PoC (Parameterized)",
-                    },
-                    {
-                      value: "paradire-neo4j",
-                      label: "Paradire PoC (Neo4j)",
-                    },
-                    {
-                      value: "paradire",
-                      label: "Paradire PoC",
-                    },
-                    {
-                      value: "hl7r4",
-                      label: "HL7 R4",
-                    },
-                  ]}
-                />
-
-                {(online && "Online") || "Offline"}
+                {(online && (
+                  <Tooltip title="ACG Online">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth={1.5}
+                      stroke="green"
+                      className="h-6 w-6"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M9.348 14.651a3.75 3.75 0 010-5.303m5.304 0a3.75 3.75 0 010 5.303m-7.425 2.122a6.75 6.75 0 010-9.546m9.546 0a6.75 6.75 0 010 9.546M5.106 18.894c-3.808-3.808-3.808-9.98 0-13.789m13.788 0c3.808 3.808 3.808 9.981 0 13.79M12 12h.008v.007H12V12zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"
+                      />
+                    </svg>
+                  </Tooltip>
+                )) || (
+                  <Tooltip title="ACG Offline">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth={1.5}
+                      stroke="red"
+                      className="h-6 w-6"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M3 3l8.735 8.735m0 0a.374.374 0 11.53.53m-.53-.53l.53.53m0 0L21 21M14.652 9.348a3.75 3.75 0 010 5.304m2.121-7.425a6.75 6.75 0 010 9.546m2.121-11.667c3.808 3.807 3.808 9.98 0 13.788m-9.546-4.242a3.733 3.733 0 01-1.06-2.122m-1.061 4.243a6.75 6.75 0 01-1.625-6.929m-.496 9.05c-3.068-3.067-3.664-7.67-1.79-11.334M12 12h.008v.008H12V12z"
+                      />
+                    </svg>
+                  </Tooltip>
+                )}
                 <Button
                   type="primary"
                   size="middle"
@@ -289,7 +334,6 @@ export default function Home() {
                 >
                   Apply
                 </Button>
-                
               </div>
               <Content>
                 <Content
@@ -314,7 +358,11 @@ export default function Home() {
                       />
                     ))}
                 </Content>
-                {!showPanel && (<Content><Button onClick={expandClickHandler}>Expand</Button></Content>)}
+                {!showPanel && (
+                  <Content>
+                    <Button onClick={expandClickHandler}>Expand</Button>
+                  </Content>
+                )}
                 {showPanel && (
                   <Content className="h-[50%] border-2 p-2">
                     <Button onClick={expandClickHandler}>Expand</Button>

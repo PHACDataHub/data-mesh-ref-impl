@@ -42,9 +42,9 @@ ENV NEXT_TELEMETRY_DISABLED 1
 RUN npm link @phac-aspc-dgg/schema-tools
 
 RUN \
-    if [ -f yarn.lock ]; then SKIP_ENV_VALIDATION=1 yarn build; \
-    elif [ -f package-lock.json ]; then SKIP_ENV_VALIDATION=1 npm run build; \
-    elif [ -f pnpm-lock.yaml ]; then yarn global add pnpm && SKIP_ENV_VALIDATION=1 pnpm run build; \
+    if [ -f yarn.lock ]; then SKIP_ENV_VALIDATION=1 yarn build:ws; \
+    elif [ -f package-lock.json ]; then SKIP_ENV_VALIDATION=1 npm run build:ws; \
+    elif [ -f pnpm-lock.yaml ]; then yarn global add pnpm && SKIP_ENV_VALIDATION=1 pnpm run build:ws; \
     else echo "Lockfile not found." && exit 1; \
     fi
 
@@ -61,18 +61,16 @@ ENV NEXT_TELEMETRY_DISABLED 1
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
+COPY --from=deps /app/node_modules ./node_modules
+
 COPY --from=builder /app/next.config.mjs ./
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/package.json ./package.json
-
-COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+COPY --from=builder --chown=nextjs:nodejs /app/dist/ .
 
 USER nextjs
-EXPOSE 3000
 EXPOSE 3001
 
-ENV PORT 3000
 ENV WS_PORT 3001
 
-CMD ["node", "server.js"]
+CMD ["node", "./server/wsServer.js"]

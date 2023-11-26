@@ -4,22 +4,45 @@
  *
  * We also create a few inference helpers for input and output types.
  */
-import { httpBatchLink, loggerLink } from "@trpc/client";
+import {
+  createWSClient,
+  httpBatchLink,
+  loggerLink,
+  wsLink,
+} from "@trpc/client";
 import { createTRPCNext } from "@trpc/next";
 import { type inferRouterInputs, type inferRouterOutputs } from "@trpc/server";
 import superjson from "superjson";
 
-import { type AppRouter } from "~/server/api/root";
+import { type AppRouter } from "../server/api/root";
+import { env } from "~/env.mjs";
 
 const getBaseUrl = () => {
   if (typeof window !== "undefined") return ""; // browser should use relative url
   if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`; // SSR should use vercel url
+  if (process.env.GOVERNANCE_UI_URL) return process.env.GOVERNANCE_UI_URL;
   return `http://localhost:${process.env.PORT ?? 3000}`; // dev SSR should use localhost
 };
 
+function getEndingLink() {
+  console.log(process.env);
+  if (typeof window === "undefined") {
+    return httpBatchLink({
+      url: `${getBaseUrl()}/api/trpc`,
+    });
+  }
+  const client = createWSClient({
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+    url: env.NEXT_PUBLIC_GOVERNANCE_WS_URL || `ws://localhost:${process.env.WS_PORT ?? 3001}`,
+  });
+  return wsLink<AppRouter>({
+    client,
+  });
+}
+
 /** A set of type-safe react-query hooks for your tRPC API. */
 export const api = createTRPCNext<AppRouter>({
-  config() {
+  config({ ctx }) {
     return {
       /**
        * Transformer used for data de-serialization from the server.
@@ -39,10 +62,14 @@ export const api = createTRPCNext<AppRouter>({
             process.env.NODE_ENV === "development" ||
             (opts.direction === "down" && opts.result instanceof Error),
         }),
-        httpBatchLink({
-          url: `${getBaseUrl()}/api/trpc`,
-        }),
+        getEndingLink(),
       ],
+      headers() {
+        if (ctx?.req) {
+          return { ...ctx.req.headers };
+        }
+        return {};
+      },
     };
   },
   /**

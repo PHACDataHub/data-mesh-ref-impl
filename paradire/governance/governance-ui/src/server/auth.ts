@@ -6,7 +6,7 @@ import {
   type NextAuthOptions,
 } from "next-auth";
 
-import { db } from "~/server/db";
+import { db } from "./db";
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
