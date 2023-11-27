@@ -24,8 +24,15 @@ export type ACGStatus = {
   ruleset: false | string;
 };
 
+export type ACGMonitor = {
+  event: "query" | "response";
+  name: string;
+  message: string;
+};
+
 const topic = "acg_ruleset_config";
 const status_topic = "acg-status";
+const monitor_topic = "acg_monitor";
 
 export const postRouter = createTRPCRouter({
   hello: publicProcedure.query(() => {
@@ -39,6 +46,39 @@ export const postRouter = createTRPCRouter({
     return pt_producer.send({
       topic: status_topic,
       messages: [{ key, value: "ping" }],
+    });
+  }),
+
+  onAcgMonitor: publicProcedure.subscription(async () => {
+    console.info("-= subscribing to ACG Monitor =-");
+
+    const pt_consumer = kafka_pt.consumer({
+      groupId: `governance-ui-${(Math.random() + 1).toString(36).substring(7)}`,
+      allowAutoTopicCreation: true,
+    });
+    await pt_consumer.connect();
+    await pt_consumer.subscribe({ topic: monitor_topic });
+
+    return observable<ACGMonitor>((emit) => {
+      void pt_consumer.run({
+        // eslint-disable-next-line @typescript-eslint/require-await
+        eachMessage: async ({ message }) => {
+          console.info("-= MONITOR FROM ACG =-");
+          try {
+            const msg = message.value?.toString();
+            if (msg) {
+              const payload = JSON.parse(msg) as ACGMonitor;
+              emit.next(payload);
+            }
+          } catch (e) {
+            console.error(e);
+          }
+        },
+      });
+
+      return () => {
+        void pt_consumer.disconnect();
+      };
     });
   }),
 

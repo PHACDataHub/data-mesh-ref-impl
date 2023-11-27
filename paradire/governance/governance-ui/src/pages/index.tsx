@@ -1,4 +1,11 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  useReducer,
+} from "react";
 
 import Head from "next/head";
 
@@ -7,12 +14,18 @@ import Editor from "@monaco-editor/react";
 import {
   Button,
   Select,
+  Collapse,
   Layout,
   Menu,
   Typography,
   ConfigProvider,
   Tooltip,
+  Tabs,
+  Timeline,
+  type TimelineItemProps,
 } from "antd";
+
+import { UpSquareOutlined, DownSquareOutlined } from "@ant-design/icons";
 
 import ResourceType from "~/components/ResourceType";
 
@@ -23,6 +36,7 @@ import {
   getSchema,
   type ResourceTypeField,
   type SchemaType,
+  type ResourceTypeFieldOptions,
 } from "@phac-aspc-dgg/schema-tools";
 
 import { api } from "~/utils/api";
@@ -59,6 +73,17 @@ export default function Home() {
 
   const [acg, setAcg] = useState<ACGStatus | null>(null);
 
+  const [monitorEnabled, setMonitorEnabled] = useState(false);
+  const monitorItems = useRef<TimelineItemProps[]>([]);
+  const monitorResponses = useRef<
+    {
+      request_id: string;
+      items: string[];
+    }[]
+  >([]);
+
+  const [, forceUpdate] = useReducer((x: number) => x + 1, 0);
+
   const [activeResourceType, setActiveResourceType] = useState<string>("");
 
   const activeResourceTypeSelectHandler = useCallback(
@@ -75,6 +100,121 @@ export default function Home() {
 
   const updateAcg = api.post.updateAcg.useMutation();
   const pingAcg = api.post.ping.useMutation();
+
+  const dataChangeHandler = useCallback((tab: string) => {
+    setMonitorEnabled(tab === "monitor");
+    monitorItems.current.splice(0, monitorItems.current.length);
+  }, []);
+
+  api.post.onAcgMonitor.useSubscription(undefined, {
+    enabled: monitorEnabled,
+    onData(data) {
+      const request_id = (data.message as unknown as { request_id: string })
+        .request_id;
+
+      let label = data.name;
+      let description = "";
+
+      if (json_schema.entrypoints && data.name in json_schema.entrypoints) {
+        const r = json_schema.entrypoints[data.name];
+        if (r && data.event === "query") {
+          const request_reference = dereference(r.arguments, json_schema);
+          if (typeof request_reference === "object") {
+            label =
+              ("label" in request_reference &&
+                (request_reference.label as string)) ||
+              label;
+            description =
+              ("description" in request_reference &&
+                // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+                request_reference.description) ||
+              description;
+          }
+        } else if (
+          r &&
+          typeof r.items === "object" &&
+          "$ref" in r.items &&
+          typeof r.items.$ref === "string"
+        ) {
+          const request_reference = dereference(r.items.$ref, json_schema);
+          if (typeof request_reference === "object") {
+            label =
+              ("label" in request_reference &&
+                (request_reference.label as string)) ||
+              label;
+            description =
+              ("description" in request_reference &&
+                // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+                request_reference.description) ||
+              description;
+            const ref_name = r.items.$ref.replace("#/definitions/", "")
+            const t = selectedResourceTypes.find((s) => s.name === ref_name);
+            // TODO: color codes
+          }
+        }
+      }
+
+      if (data.event === "query") {
+        monitorItems.current.push({
+          color: "blue",
+          children: (
+            <Collapse
+              items={[
+                {
+                  key: "1",
+                  label: `${label} [${request_id}]`,
+                  children: (
+                    <div>
+                      <p>{description}</p>
+                      <pre>{JSON.stringify(data.message, null, 2)}</pre>
+                    </div>
+                  ),
+                },
+              ]}
+            />
+          ),
+        });
+        monitorResponses.current.push({ request_id, items: [] });
+      } else {
+        const responses = monitorResponses.current.find(
+          (m) => m.request_id === request_id,
+        );
+        if (responses) {
+          responses.items.push(JSON.stringify(data.message, null, 2));
+
+          const response_group = monitorItems.current.findIndex(
+            (mi) => mi.key === `response_${request_id}`,
+          );
+          if (response_group > -1)
+            monitorItems.current.splice(response_group, 1);
+
+          monitorItems.current.push({
+            key: `response_${request_id}`,
+            color: "green",
+            children: (
+              <Collapse
+                items={[
+                  {
+                    key: "1",
+                    label: `${label} [${request_id}] responses (${responses.items.length})`,
+                    children: (
+                      <div>
+                        <p>{description}</p>
+                        {responses.items.map((i, idx) => (
+                          <pre key={`${idx}`}>{i}</pre>
+                        ))}
+                      </div>
+                    ),
+                  },
+                ]}
+              />
+            ),
+          });
+        }
+      }
+      forceUpdate();
+    },
+  });
 
   api.post.onAcgStatusUpdate.useSubscription(undefined, {
     onError(e) {
@@ -96,7 +236,7 @@ export default function Home() {
     },
   });
 
-  const [showPanel, setShowPanel] = useState(false);
+  const [showPanel, setShowPanel] = useState(true);
 
   const updateSelectedFieldsHandler = useCallback(
     (name: string, selectedFields: ResourceTypeField[]) => {
@@ -167,6 +307,17 @@ export default function Home() {
   }, [addEverythingClickHandler, json_schema]);
 
   const online = Boolean(acg?.online);
+
+  const summarizeResourceFieldTransform = (obj: ResourceTypeFieldOptions) => {
+    const restrictions: string[] = [];
+    if (obj) {
+      if (obj.format)
+        restrictions.push(`will be transformed using [${obj.format}]`);
+      if (obj.hash) restrictions.push("will be converted to a one-way hash");
+      if (obj.restrict) restrictions.push("is restricted");
+    }
+    return ` ${restrictions.join(", ")}`;
+  };
 
   const applyClickHandler = useCallback(async () => {
     await updateAcg.mutateAsync({ ruleset: yaml });
@@ -338,7 +489,7 @@ export default function Home() {
               <Content>
                 <Content
                   className={`${
-                    showPanel ? "h-[50%]" : "h-full"
+                    showPanel ? "h-[50%]" : "h-[95%]"
                   } overflow-auto`}
                 >
                   {Object.entries(json_schema.discriminator.mapping)
@@ -359,44 +510,143 @@ export default function Home() {
                     ))}
                 </Content>
                 {!showPanel && (
-                  <Content>
-                    <Button onClick={expandClickHandler}>Expand</Button>
+                  <Content className="h-[5%]">
+                    <Button onClick={expandClickHandler}>
+                      <UpSquareOutlined /> Data Preview
+                    </Button>
                   </Content>
                 )}
                 {showPanel && (
                   <Content className="h-[50%] border-2 p-2">
-                    <Button onClick={expandClickHandler}>Expand</Button>
-                    <div className="flex h-full space-x-2">
-                      <div className="flex flex-1 flex-col">
-                        <h3 className="text-lg">Ruleset yaml</h3>
-                        <div className="flex-1">
-                          <Editor
-                            defaultLanguage="yaml"
-                            value={yaml}
-                            onChange={editorChangeHandler}
-                            options={{
-                              language: "yaml",
-                              minimap: { enabled: false },
-                            }}
-                          />
-                        </div>
-                      </div>
-                      <div className="flex flex-1 flex-col">
-                        <h3 className="text-lg">GraphQL SDL</h3>
-                        <div className="flex-1">
-                          <Editor
-                            defaultLanguage="graphql"
-                            value={rulesToGraphQl(yaml, json_schema, true)}
-                            onChange={() => false}
-                            options={{
-                              language: "graphql",
-                              minimap: { enabled: false },
-                              readOnly: true,
-                              domReadOnly: true,
-                            }}
-                          />
-                        </div>
-                      </div>
+                    <div className="flex h-full">
+                      <Tabs
+                        className="flex flex-1"
+                        defaultActiveKey="summary"
+                        onChange={dataChangeHandler}
+                        items={[
+                          {
+                            label: (
+                              <Button onClick={expandClickHandler}>
+                                <DownSquareOutlined /> Close
+                              </Button>
+                            ),
+                            key: "",
+                          },
+                          {
+                            label: "Summary",
+                            key: "summary",
+                            className: "flex-1 h-full",
+                            children: (
+                              <ul className="h-full overflow-auto">
+                                {Object.entries(
+                                  json_schema.discriminator.mapping,
+                                ).map(([key, ref]) => {
+                                  const restrictions =
+                                    selectedResourceTypes
+                                      .find((s) => s.name === key)
+                                      ?.selectedFields.filter(
+                                        (s) =>
+                                          typeof s === "object" &&
+                                          Object.entries(s).reduce(
+                                            (p, c) => p && Boolean(c),
+                                            true,
+                                          ) &&
+                                          Object.values(s)
+                                            .map(
+                                              (v) =>
+                                                v &&
+                                                Object.values(v)
+                                                  .map((vi) => Boolean(vi))
+                                                  .every((d) => d),
+                                            )
+                                            .every((d) => d),
+                                      )
+                                      .map((s) => Object.entries(s)[0]) ?? [];
+                                  return (
+                                    <li key={key}>
+                                      <strong>
+                                        {(dereference(ref, json_schema) as any)
+                                          ?.label ?? key}
+                                      </strong>
+                                      <ul>
+                                        {restrictions.length === 0 && (
+                                          <li>
+                                            WARNING: Full access, no
+                                            restrictions.
+                                          </li>
+                                        )}
+                                        {restrictions.map(
+                                          (r, idx) =>
+                                            r && (
+                                              <li key={`${idx}`}>
+                                                {r[0]}
+                                                {summarizeResourceFieldTransform(
+                                                  r[1] as ResourceTypeFieldOptions,
+                                                )}
+                                              </li>
+                                            ),
+                                        )}
+                                      </ul>
+                                    </li>
+                                  );
+                                })}
+                              </ul>
+                            ),
+                          },
+                          {
+                            label: "Ruleset",
+                            key: "yaml",
+                            className: "flex-1 h-full",
+                            children: (
+                              <Editor
+                                defaultLanguage="yaml"
+                                value={yaml}
+                                onChange={editorChangeHandler}
+                                options={{
+                                  language: "yaml",
+                                  minimap: { enabled: false },
+                                }}
+                              />
+                            ),
+                          },
+                          {
+                            label: "GraphQL",
+                            key: "graphql",
+                            className: "flex-1 h-full",
+                            children: (
+                              <Editor
+                                defaultLanguage="graphql"
+                                value={rulesToGraphQl(yaml, json_schema, true)}
+                                onChange={() => false}
+                                options={{
+                                  language: "graphql",
+                                  minimap: { enabled: false },
+                                  readOnly: true,
+                                  domReadOnly: true,
+                                }}
+                              />
+                            ),
+                          },
+                          {
+                            label: "Monitor",
+                            key: "monitor",
+                            className: "flex-1 h-full",
+                            children: (
+                              <div className="h-full overflow-auto">
+                                <Title level={3}>
+                                  {PT} -&gt; PHAC Live Monitoring
+                                </Title>
+                                <Timeline
+                                  mode="alternate"
+                                  className="mt-5"
+                                  pending="Monitoring ACG..."
+                                  items={monitorItems.current}
+                                />
+                              </div>
+                            ),
+                          },
+                        ]}
+                      />
                     </div>
                   </Content>
                 )}
