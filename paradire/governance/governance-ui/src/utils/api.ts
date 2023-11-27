@@ -15,7 +15,14 @@ import { type inferRouterInputs, type inferRouterOutputs } from "@trpc/server";
 import superjson from "superjson";
 
 import { type AppRouter } from "../server/api/root";
-import { env } from "~/env.mjs";
+
+let GOVERNANCE_WS_URL = "";
+
+if (typeof window !== "undefined") {
+  const data = await fetch("/api/env/GOVERNANCE_WS_URL");
+  const gov_env = (await data.json()) as { GOVERNANCE_WS_URL: string };
+  if (gov_env.GOVERNANCE_WS_URL) GOVERNANCE_WS_URL = gov_env.GOVERNANCE_WS_URL;
+}
 
 const getBaseUrl = () => {
   if (typeof window !== "undefined") return ""; // browser should use relative url
@@ -25,7 +32,6 @@ const getBaseUrl = () => {
 };
 
 function getEndingLink() {
-  console.log(process.env);
   if (typeof window === "undefined") {
     return httpBatchLink({
       url: `${getBaseUrl()}/api/trpc`,
@@ -33,7 +39,7 @@ function getEndingLink() {
   }
   const client = createWSClient({
     // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-    url: env.NEXT_PUBLIC_GOVERNANCE_WS_URL || `ws://localhost:${process.env.WS_PORT ?? 3001}`,
+    url: GOVERNANCE_WS_URL || `ws://localhost:${process.env.WS_PORT ?? 3001}`,
   });
   return wsLink<AppRouter>({
     client,

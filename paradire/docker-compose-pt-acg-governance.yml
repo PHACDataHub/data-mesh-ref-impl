@@ -73,7 +73,7 @@ services:
       NEXTAUTH_SECRET: ${NEXTAUTH_SECRET}
       NEXTAUTH_URL: "http://nowhere"
       GOVERNANCE_UI_URL: "http://${PUBLIC_IP}:${GOVERNANCE_UI_PORT}"
-      NEXT_PUBLIC_GOVERNANCE_WS_URL: "ws://${PUBLIC_IP}:${GOVERNANCE_UI_WS_PORT}"
+      GOVERNANCE_WS_URL: "ws://${PUBLIC_IP}:${GOVERNANCE_UI_WS_PORT}"
       PT: ${PT}
 
     networks:
@@ -93,7 +93,7 @@ services:
       NEXTAUTH_SECRET: ${NEXTAUTH_SECRET}
       NEXTAUTH_URL: "http://nowhere"
       GOVERNANCE_UI_URL: "http://${PUBLIC_IP}:${GOVERNANCE_UI_PORT}"
-      NEXT_PUBLIC_GOVERNANCE_WS_URL: "ws://${PUBLIC_IP}:${GOVERNANCE_UI_WS_PORT}"
+      GOVERNANCE_WS_URL: "ws://${PUBLIC_IP}:${GOVERNANCE_UI_WS_PORT}"
       PT: ${PT}
 
     networks:
