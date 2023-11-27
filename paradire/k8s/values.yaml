@@ -3,19 +3,22 @@
 ## ------------------------------------------------------
 acg:
   enabled: true
+  pt: "ab"
 
 ## ------------------------------------------------------
 ## Kafka
 ## ------------------------------------------------------
 cp-kafka:
   enabled: true
+  persistence:
+    size: 20Gi
 
 ## ------------------------------------------------------
 ## Kafka CJ
 ## ------------------------------------------------------
 cp-kafka-cj:
   enabled: true
-  samplingSize: 100
+  samplingSize: 1000
   pt: "ab"
   cronJob: "true"
   GCPBucketName: "paradire-synthea-data"
@@ -26,6 +29,8 @@ cp-kafka-cj:
 ## ------------------------------------------------------
 cp-kafka-connect:
   enabled: true
+  persistence:
+    size: 10Gi
 
 ## ------------------------------------------------------
 ## Kafka Job
@@ -48,6 +53,9 @@ cp-kafka-rest:
 ## ------------------------------------------------------
 cp-kafka-ui:
   enabled: true
+  kafkaUiSecret:
+    username: "a2Fma2F1aQ=="  # base64 encoded 'kafkaui'
+    password: "cGhhY0AyMDIz"  # base64 encoded 'phac@2023'
   paradire:
     pt: "ab"
 
@@ -69,6 +77,10 @@ cp-schema-registry:
 cp-zookeeper:
   servers: 3
   enabled: true
+  persistence:
+    enabled: true
+    dataDirSize: 10Gi
+    dataLogDirSize: 10Gi
 
 ## ------------------------------------------------------
 ## Governance UI
@@ -82,13 +94,31 @@ governance-ui:
 ## ------------------------------------------------------
 hapi-fhir-server:
   enabled: true
+  db:
+    size: "20Gi"
+  postgresSecret:
+    postgresPassword: "YWRtaW4="  # base64 encoded 'admin'
+    postgresUser: "YWRtaW4="      # base64 encoded 'admin'
+    postgresDB: "aGFwaQ=="        # base64 encoded 'hapi'
+  paradire:
+    pt: "ab"
 
 ## ------------------------------------------------------
 ## Neo4j
 ## ------------------------------------------------------
 neo4j:
   enabled: true
-
+  storage:
+    dataPvcSize: "10Gi"
+    importPvcSize: "10Gi"
+    logsPvcSize: "10Gi"
+    pluginsPvcSize: "10Gi"
+  env-val: statging
+  neo4jSecret:
+    NEO4J_AUTH: "bmVvNGovcGhhY0AyMDIz" # base64 encoded 'neo4j/phac@2023'
+    NEO4J_USERNAME: "bmVvNGo="         # base64 encoded 'neo4j'
+    NEO4J_PASSWORD: "cGhhY0AyMDIz"     # base64 encoded 'phac@2023'
+    
 ## ------------------------------------------------------
 ## Neodash
 ## ------------------------------------------------------
@@ -100,15 +130,21 @@ neodash:
 ## ------------------------------------------------------
 paradire-ingress:
   enabled: true
+  env: statging
+  pt: "ab"
 
 ## ------------------------------------------------------
 ## patient-browser
 ## ------------------------------------------------------
 patient-browser:
   enabled: true
+  paradire:
+    pt: "ab"
 
 ## ------------------------------------------------------
 ## neodash-designer
 ## ------------------------------------------------------
 neodash-designer:
   enabled: true
+  paradire:
+    pt: "ab"

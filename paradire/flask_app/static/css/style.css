@@ -1,0 +1,109 @@
+body, html {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #222f3e;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #c8d6e5;
+    justify-content: center;
+    align-items: center; 
+    box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    border-radius: 8px;
+}
+
+.header.center-align {
+    text-align: center;
+    width: 100%;
+    margin: 0 auto;
+    margin-bottom: 50px;
+    color: #333;
+    display: block;
+    font-weight: bold;
+    font-size: 2.5rem;
+}
+
+.row {
+    display: flex;
+    flex-wrap: wrap;
+    margin-right: -15px;
+    width: 100%;
+    margin-left: -15px;
+}
+
+.card-container {
+    padding: 15px;
+}
+
+.province-card {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    padding: 20px;
+    margin-bottom: 30px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.province-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+}
+
+.province-title {
+    font-size: 1.8rem;
+    font-weight: bold;
+    margin-bottom: 25px;
+    color: #222f3e;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.service-btn {
+    display: block;
+    font-weight: bold;
+    width: 100%;
+    padding: 15px; 
+    margin-bottom: 15px;
+    border: none;
+    border-radius: 5px;
+    text-decoration: none;
+    color: white;
+    background-color: #007bff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.service-btn:hover {
+    background-color: #222f3e;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    color: white !important;
+}
+
+
+@media (min-width: 768px) {
+    .card-container {
+        flex: 0 0 calc(50% - 30px); 
+        max-width: calc(50% - 30px);
+    }
+}
+
+@media (min-width: 992px) {
+    .card-container {
+        flex: 0 0 calc(33.333% - 30px);
+        max-width: calc(33.333% - 30px);
+    }
+}
+
+@media (min-width: 1200px) {
+    .card-container {
+        flex: 0 0 calc(25% - 30px);
+        max-width: calc(25% - 30px);
+    }
+}

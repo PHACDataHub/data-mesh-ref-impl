@@ -1,5 +1,10 @@
 #!/bin/bash
 
+for i in {1..10}
+do
+   echo "Running PT CRON JOB"
+done
+
 # Generate sample data
 ./genenerate_pt_sampling.sh $sampling_size /data $pt
 

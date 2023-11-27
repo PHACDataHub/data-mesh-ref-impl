@@ -1,5 +1,10 @@
 #!/bin/bash
 
+for i in {1..10}
+do
+   echo "Running FEDERAL CLUSTER SCRIPT"
+done
+
 # Define Kafka and Schema Registry related variables
 # These are now expected to be provided as environment variables
 connect_url="${CONNECT_URL}"

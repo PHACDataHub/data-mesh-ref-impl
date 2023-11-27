@@ -14,7 +14,7 @@ env:
   standalone: "true"
   standaloneProtocol: "bolt"
   standaloneHost: "neodash"
-  standalonePort: "7687"
+  standalonePort: "80"
   standaloneDatabase: "neo4j"
   standaloneDashboardName: "PT Analytics Platform"
   standaloneDashboardDatabase: "neo4j"

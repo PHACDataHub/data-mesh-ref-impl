@@ -1,0 +1,77 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: links
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: links-app-deployment
+  namespace: links
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: links-app
+  template:
+    metadata:
+      labels:
+        app: links-app
+    spec:
+      containers:
+      - name: links-app
+        image: northamerica-northeast1-docker.pkg.dev/phx-01he5rx4wsv/paradire/links-app:latest
+        ports:
+        - containerPort: 80
+        env:
+        - name: FLASK_APP
+          value: "app.py"
+        - name: FLASK_DEBUG
+          value: "0"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: links-app-service
+  namespace: links
+spec:
+  selector:
+    app: links-app
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+  type: ClusterIP
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: links-ingress
+  namespace: links
+  annotations:
+    kubernetes.io/ingress.allow-http: "true"
+    kubernetes.io/ingress.global-static-ip-name: links-cluster-ip
+    cert-manager.io/cluster-issuer: letsencrypt-dns-staging
+    acme.cert-manager.io/http01-edit-in-place: "true"
+    kubernetes.io/ingress.class: gce
+spec:
+  ingressClassName: "gce"
+  tls:
+    - secretName: wildcard-ssl-staging
+      hosts:
+        - "*.links.paradire.phac-aspc.alpha.canada.ca"
+  rules:
+  - host: links.paradire.phac-aspc.alpha.canada.ca
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: links-app-service
+            port:
+              number: 80

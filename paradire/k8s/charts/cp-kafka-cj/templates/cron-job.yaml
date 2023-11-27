@@ -20,26 +20,33 @@ spec:
         spec:
           restartPolicy: Never
           initContainers:
-          - name: check-fhir
-            image: curlimages/curl:latest
+          - name: check-services
+            image: confluentinc/cp-kafka:7.5.1
             env:
               - name: pt
-                value: "{{ .Values.pt }}"
+                value:  "{{ .Values.pt | upper }}"
             command: ["/bin/sh", "-c"]
             args:
             - |
               # Skip health check if pt is 'phac'
-              if [ "$pt" = "phac" ]; then
-                echo "Skipping HAPI FHIR server health check for 'phac'."
+              if [ "$pt" = "PHAC" ]; then
+                echo "Skipping checks for 'phac'."
                 exit 0
               fi
 
-              # Check if HAPI FHIR server is up and returns HTTP 200 OK
+              echo "Checking HAPI FHIR server..."
               until [ "$(curl -o /dev/null -s -w '%{http_code}\n' {{ .Values.fihrHealthCheckUrl }})" = "200" ]; do
                 echo "Waiting for HAPI FHIR server to be ready..."
                 sleep 5
               done
               echo "HAPI FHIR server is ready."
+
+              echo "Checking Kafka..."
+              until kafka-topics --bootstrap-server {{ template "cp-kafka-cj.kafka.bootstrapServers" . }} --list; do
+                echo "Waiting for Kafka to be ready..."
+                sleep 5
+              done
+              echo "Kafka is ready."
           containers:
           - name: synthea-data
             image: "{{ .Values.imageSyntheaKafka }}:{{ .Values.imageSyntheaKafkaTag }}"
@@ -48,7 +55,7 @@ spec:
               - name: sampling_size
                 value: "{{ .Values.samplingSize }}"
               - name: pt
-                value: "{{ .Values.pt }}"
+                value: "{{ .Values.pt | upper }}"
               - name: fihr_server_url
                 value: "{{ .Values.fihrServerUrl }}"
               - name: CONNECT_URL

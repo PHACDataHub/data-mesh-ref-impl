@@ -29,6 +29,22 @@ spec:
       {{- end }}
       {{- end }}
     spec:
+      initContainers:
+      - name: kafka-check
+        image: confluentinc/cp-kafka:7.5.1
+        command: ["/bin/sh", "-c"]
+        args:
+        - |
+          check_kafka_ready() {
+              local bootstrap_servers={{ template "cp-kafka-connect.kafka.bootstrapServers" . }}
+              echo "Checking Kafka..."
+              until kafka-topics --bootstrap-server "$bootstrap_servers" --list; do
+                  echo "Waiting for Kafka to be ready..."
+                  sleep 5
+              done
+              echo "Kafka is ready."
+          }
+          check_kafka_ready
       containers:
         {{- if .Values.prometheus.jmx.enabled }}
         - name: prometheus-jmx-exporter

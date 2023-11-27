@@ -4,6 +4,8 @@ metadata:
   name: neo4j
 spec:
   replicas: {{ .Values.replicaCount }}
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app: neo4j
@@ -16,6 +18,9 @@ spec:
         - name: data
           persistentVolumeClaim:
             claimName: data-pvc
+        - name: import-config
+          configMap:
+            name: neo4j-config
         - name: import
           persistentVolumeClaim:
             claimName: import-pvc
@@ -27,54 +32,100 @@ spec:
             claimName: plugins-pvc
         - name: certs
           secret:
-            secretName: neo4j-ssl-prod
+            secretName: wildcard-ssl-{{ .Values.envSetting }}
       enableServiceLinks: false
+      initContainers:
+        - name: init-copy-files
+          image: alpine
+          env:
+          - name: NEO4J_APOC_VERSION
+            value: {{ .Values.job.NEO4J_APOC_VERSION }}
+          - name: NEO4J_APOC_EXTENDED_VERSION
+            value: {{ .Values.job.NEO4J_APOC_EXTENDED_VERSION }}
+          - name: NEO4J_GDS_VERSION
+            value: {{ .Values.job.NEO4J_GDS_VERSION }}      
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              cp -L /config-map-import/* /var/lib/neo4j/import/ &&
+              PLUGIN_DIR=/var/lib/neo4j/plugins &&
+              echo Downloading plugins... &&
+              # Download APOC Core Plugin
+              if [ -f ${PLUGIN_DIR}/apoc-${NEO4J_APOC_VERSION}-core.jar ]; then
+                  echo apoc-${NEO4J_APOC_VERSION}-core.jar already downloaded.
+              else
+                  wget -O ${PLUGIN_DIR}/apoc-${NEO4J_APOC_VERSION}-core.jar https://github.com/neo4j/apoc/releases/download/${NEO4J_APOC_VERSION}/apoc-${NEO4J_APOC_VERSION}-core.jar
+              fi &&
+              # Download APOC Extended Plugin
+              if [ -f ${PLUGIN_DIR}/apoc-${NEO4J_APOC_EXTENDED_VERSION}-extended.jar ]; then
+                  echo apoc-${NEO4J_APOC_EXTENDED_VERSION}-extended.jar already downloaded.
+              else
+                  wget -O ${PLUGIN_DIR}/apoc-${NEO4J_APOC_EXTENDED_VERSION}-extended.jar https://github.com/neo4j-contrib/neo4j-apoc-procedures/releases/download/${NEO4J_APOC_EXTENDED_VERSION}/apoc-${NEO4J_APOC_EXTENDED_VERSION}-extended.jar
+              fi &&
+              # Download Neo4j Graph Data Science Library
+              if [ -f ${PLUGIN_DIR}/neo4j-graph-data-science-${NEO4J_GDS_VERSION}.jar ]; then
+                  echo neo4j-graph-data-science-${NEO4J_GDS_VERSION}.jar already downloaded.
+              else
+                  wget -O ${PLUGIN_DIR}/neo4j-graph-data-science-${NEO4J_GDS_VERSION}.zip https://graphdatascience.ninja/neo4j-graph-data-science-${NEO4J_GDS_VERSION}.zip &&
+                  unzip -j ${PLUGIN_DIR}/neo4j-graph-data-science-${NEO4J_GDS_VERSION}.zip -d ${PLUGIN_DIR} &&
+                  rm ${PLUGIN_DIR}/neo4j-graph-data-science-${NEO4J_GDS_VERSION}.zip
+              fi &&
+              echo Plugins downloaded ✅
+          volumeMounts:
+            - name: import-config
+              mountPath: /config-map-import
+            - name: import
+              mountPath: /var/lib/neo4j/import
+            - name: plugins
+              mountPath: /var/lib/neo4j/plugins
       containers:
-      - name: neo4j
-        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-        resources:
-          requests:
-            memory: "40Gi"
-            cpu: "1000m"
-          limits:
-            memory: "60Gi"
-            cpu: "2000m"
-        imagePullPolicy: {{ .Values.image.pullPolicy }}
-        ports:
-        - name: http
-          containerPort: {{ .Values.service.httpPort }}
-        - name: https
-          containerPort: {{ .Values.service.httpsPort }}
-        - name: bolt
-          containerPort: {{ .Values.service.boltPort }}
-        readinessProbe:
-            exec:
-              command:
-              - /bin/sh
-              - -c
-              - >
-                /var/lib/neo4j/bin/cypher-shell -u neo4j -p phac@2023 
-                "MATCH () RETURN count(*) as count"
-            initialDelaySeconds: 30
-            periodSeconds: 10
-            timeoutSeconds: 10
-            successThreshold: 1
-            failureThreshold: 20
-        env:
-          {{- range $key, $value := .Values.environment }}
-          - name: {{ $key }}
-            value: {{ $value | quote }}
-          {{- end }}
-          - name: NEO4J_server_default__advertised__address
-            value: {{ printf "bolt.neo4j.%s.paradire.phac-aspc.alpha.canada.ca" .Values.paradire.pt | quote }}
-        volumeMounts:
-          - name: data
-            mountPath: /data
-          - name: import
-            mountPath: /import
-          - name: logs
-            mountPath: /logs
-          - name: plugins
-            mountPath: /var/lib/neo4j/plugins
-          - name: certs
-            mountPath: /certificates
+        - name: neo4j
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          resources:
+            requests:
+              memory: "40Gi"
+              cpu: "1000m"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.httpPort }}
+            - name: https
+              containerPort: {{ .Values.service.httpsPort }}
+            - name: bolt
+              containerPort: {{ .Values.service.boltPort }}
+          readinessProbe:
+              exec:
+                command:
+                - /bin/sh
+                - -c
+                - >
+                  /var/lib/neo4j/bin/cypher-shell -u neo4j -p phac@2023 
+                  "MATCH () RETURN count(*) as count"
+              initialDelaySeconds: 30
+              periodSeconds: 10
+              timeoutSeconds: 10
+              successThreshold: 1
+              failureThreshold: 20
+          env:
+            {{- range $key, $value := .Values.environment }}
+            - name: {{ $key }}
+              value: {{ $value | quote }}
+            {{- end }}
+            - name: NEO4J_server_default__advertised__address
+              value: {{ printf "bolt.neo4j.%s.paradire.phac-aspc.alpha.canada.ca" .Values.paradire.pt | quote }}
+            - name: NEO4J_AUTH
+              valueFrom:
+                secretKeyRef:
+                  name: neo4j-secret
+                  key: NEO4J_AUTH
+          volumeMounts:
+            - name: data
+              mountPath: /data
+            - name: import
+              mountPath: /var/lib/neo4j/import
+            - name: logs
+              mountPath: /logs
+            - name: plugins
+              mountPath: /var/lib/neo4j/plugins
+            - name: certs
+              mountPath: /certificates
