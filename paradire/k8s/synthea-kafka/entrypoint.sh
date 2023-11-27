@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [ "$pt" = "phac" ]; then
+if [ "${pt^^}" = "PHAC" ]; then
     ./federal-cluster.sh
 else
     if [ "$CRON_JOB" = "false" ]; then

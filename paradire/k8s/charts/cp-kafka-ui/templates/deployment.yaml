@@ -83,11 +83,17 @@ spec:
           - name: KAFKA_CLUSTERS_0_READONLY
             value: 'false'
           - name: SPRING_SECURITY_USER_NAME
-            value: "kafkaui"
+            valueFrom:
+              secretKeyRef:
+                name: kafka-ui-secret
+                key: username
           - name: KAFKA_CLUSTERS_0_METRICS_PORT
             value: "5555"
           - name: SPRING_SECURITY_USER_PASSWORD
-            value: "phac@2023"
+            valueFrom:
+              secretKeyRef:
+                name: kafka-ui-secret
+                key: password
           {{- if .Values.jmx.port }}
           - name: JMX_PORT
             value: "{{ .Values.jmx.port }}"

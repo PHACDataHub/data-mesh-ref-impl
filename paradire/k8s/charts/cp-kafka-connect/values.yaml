@@ -126,11 +126,11 @@ secrets:
 ## As an example such a similar script is added to "cp-helm-charts/examples/create-connectors.sh"
 ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
 livenessProbe:
-  # httpGet:
-  #   path: /connectors
-  #   port: 8083
-  # initialDelaySeconds: 30
-  # periodSeconds: 5
-  # failureThreshold: 10
+  httpGet:
+    path: /connectors
+    port: 8083
+  initialDelaySeconds: 30
+  periodSeconds: 5
+  failureThreshold: 10
 persistence:
   size: 1Gi

@@ -89,3 +89,7 @@ external:
   type: LoadBalancer
   externalTrafficPolicy: Cluster
   port: 8089
+
+kafkaUiSecret:
+  username: 
+  password:

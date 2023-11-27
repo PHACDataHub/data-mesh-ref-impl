@@ -13,6 +13,21 @@ spec:
         app: governance-ui
     spec:
       enableServiceLinks: false
+      serviceAccountName: job-service-account
+      initContainers:
+      - name: check-registry
+        image: curlimages/curl
+        command: ['sh', '-c', 'until curl -s --head --request GET {{ .Values.schemaRegistry.url | quote }} && curl -s --head --request GET {{ .Values.schemaRegistry.fUrl | quote }}; do echo "Waiting for Schema Registry"; sleep 5; done;']
+      - name: wait-for-kafka-job
+        image: bitnami/kubectl
+        command: ['sh', '-c']
+        args:
+        - |
+          until kubectl get job cp-kafka-job -o jsonpath='{.status.succeeded}' | grep 1; do
+            echo "Waiting for cp-kafka-job to complete..."
+            sleep 5
+          done
+          echo "cp-kafka-job completed"
       containers:
       - name: governance-ui
         image: northamerica-northeast1-docker.pkg.dev/phx-01he5rx4wsv/paradire/governance-ui

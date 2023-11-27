@@ -1,4 +1,3 @@
-# ingress.yaml
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -6,34 +5,17 @@ metadata:
   annotations:
     kubernetes.io/ingress.allow-http: "true"
     kubernetes.io/ingress.global-static-ip-name: {{ .Values.pt | lower }}-cluster-ip
-    # cert-manager.io/cluster-issuer: letsencrypt-production
-    # acme.cert-manager.io/http01-edit-in-place: "true"
+    cert-manager.io/cluster-issuer: letsencrypt-dns-{{ .Values.envSetting }}
+    acme.cert-manager.io/http01-edit-in-place: "true"
     kubernetes.io/ingress.class: gce
 spec:
   ingressClassName: "gce"
-  # tls:
-  #   - secretName: governance-ui-ssl-prod
-  #     hosts:
-  #       - governance.{{ .Values.pt | lower }}.paradire.phac-aspc.alpha.canada.ca
-  #   - secretName: neo4j-ssl-prod
-  #     hosts:
-  #       - neo4j.{{ .Values.pt | lower }}.paradire.phac-aspc.alpha.canada.ca
-  #       - bolt.neo4j.{{ .Values.pt | lower }}.paradire.phac-aspc.alpha.canada.ca
-  #   - secretName: neodash-ssl-prod
-  #     hosts:
-  #       - neodash.{{ .Values.pt | lower }}.paradire.phac-aspc.alpha.canada.ca
-  #   - secretName: cp-kafka-ui-ssl-prod
-  #     hosts:
-  #       - kafkaui.{{ .Values.pt }}.paradire.phac-aspc.alpha.canada.ca
-  #       - kafka.{{ .Values.pt }}.paradire.phac-aspc.alpha.canada.ca
-  #   - secretName: patient-browser-ssl-prod
-  #     hosts:
-  #       - patient-browser.{{ .Values.pt }}.paradire.phac-aspc.alpha.canada.ca
-  #   - secretName: hapi-fhir-ssl-prod
-  #     hosts:
-  #       - fhir.{{ .Values.pt }}.paradire.phac-aspc.alpha.canada.ca
-
+  tls:
+    - secretName: wildcard-ssl-{{ .Values.envSetting }}
+      hosts:
+        - "*.{{ .Values.pt | lower }}.paradire.phac-aspc.alpha.canada.ca"
   rules:
+{{ if ne .Values.pt "phac" }}
   - host: governance.{{ .Values.pt | lower }}.paradire.phac-aspc.alpha.canada.ca
     http:
       paths:
@@ -44,6 +26,27 @@ spec:
               number: 3000
         path: /
         pathType: Prefix
+  - host: patient-browser.{{ .Values.pt | lower }}.paradire.phac-aspc.alpha.canada.ca
+    http:
+      paths:
+      - backend: 
+          service:
+            name: patient-browser-svc
+            port:
+              number: 8079
+        path: /
+        pathType: Prefix
+  - host: fhir.{{ .Values.pt | lower }}.paradire.phac-aspc.alpha.canada.ca
+    http:
+      paths:
+      - backend: 
+          service:
+            name: hapi-fhir-svc
+            port:
+              number: 8080
+        path: /
+        pathType: Prefix
+{{ end }}
   - host: neo4j.{{ .Values.pt | lower }}.paradire.phac-aspc.alpha.canada.ca
     http:
       paths:
@@ -52,6 +55,13 @@ spec:
             name: neo4j
             port:
               number: 7474
+        path: /browser
+        pathType: Prefix
+      - backend: 
+          service:
+            name: neo4j
+            port:
+              number: 7687
         path: /
         pathType: Prefix
   - host: neodash.{{ .Values.pt | lower }}.paradire.phac-aspc.alpha.canada.ca
@@ -84,25 +94,3 @@ spec:
               number: 8089
         path: /
         pathType: Prefix
-  - host: patient-browser.{{ .Values.pt | lower }}.paradire.phac-aspc.alpha.canada.ca
-    http:
-      paths:
-      - backend: 
-          service:
-            name: patient-browser-svc
-            port:
-              number: 8079
-        path: /
-        pathType: Prefix
-  - host: fhir.{{ .Values.pt | lower }}.paradire.phac-aspc.alpha.canada.ca
-    http:
-      paths:
-      - backend: 
-          service:
-            name: hapi-fhir-svc
-            port:
-              number: 8080
-        path: /
-        pathType: Prefix
-
-

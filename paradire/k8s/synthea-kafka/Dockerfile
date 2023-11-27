@@ -77,6 +77,9 @@ COPY ./analytics/v2_events/ /workspace/analytics/v2_events
 COPY ./analytics/v2_pt_connectors/ /workspace/analytics/v2_pt_connectors
 COPY ./analytics/v2_f_connectors/ /workspace/analytics/v2_f_connectors
 
+# Modify JSON files in v2_pt_connectors and v2_f_connectors
+RUN find /workspace/analytics/v2_pt_connectors /workspace/analytics/v2_f_connectors -type f -name '*.json' -exec sh -c 'jq ".config.\"key.converter.schema.registry.url\" = \"http://cp-schema-registry:8081\" | .config.\"value.converter.schema.registry.url\" = \"http://cp-schema-registry:8081\"" "$1" > temp.json && mv temp.json "$1"' sh {} \;
+
 # Make sure scripts are executable
 RUN chmod +x entrypoint.sh federal-cluster.sh pt-cluster.sh pt-cluster-cron.sh 
 

@@ -24,11 +24,20 @@ spec:
         - name: PGDATA
           value: "{{ .Values.db.pgdata }}"
         - name: POSTGRES_PASSWORD
-          value: "{{ .Values.db.postgresPassword }}"
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secret
+              key: postgresPassword
         - name: POSTGRES_USER
-          value: "{{ .Values.db.postgresUser }}"
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secret
+              key: postgresUser
         - name: POSTGRES_DB
-          value: "{{ .Values.db.postgresDB }}"
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secret
+              key: postgresDB
         volumeMounts:
         - name: postgres-storage
           mountPath: "/var/lib/postgresql/data" 

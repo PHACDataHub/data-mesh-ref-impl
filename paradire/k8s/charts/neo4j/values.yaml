@@ -13,7 +13,6 @@ service:
 
 environment:
   NEO4J_ACCEPT_LICENSE_AGREEMENT: "yes"
-  NEO4J_AUTH: "neo4j/phac@2023"
   NEO4j_server_bolt_advertised_address: ":7687"
   NEO4j_server_http_advertised_address: ":7474"
   NEO4J_server_default__listen__address: "0.0.0.0"
@@ -32,17 +31,25 @@ environment:
   NEO4J_dbms_ssl_policy_bolt_public__certificate: tls.crt
 
 job:
-  NEO4J_USERNAME: "neo4j"
-  NEO4J_PASSWORD: "phac@2023"
+  repository: neo4j
+  tag: "5.12.0"
+  NEO4J_APOC_VERSION: "5.12.0"
+  NEO4J_APOC_EXTENDED_VERSION: "5.12.0"
+  NEO4J_GDS_VERSION: "2.5.0"
 
-persistence:
-  enabled: true
-  size: 10Gi
-  mounts:
-    import: /import
-    data: /data
-    logs: /logs
-    plugins: /plugins
 
 paradire:
   pt: nb
+
+envSetting: statging
+
+neo4jSecret:
+  NEO4J_AUTH: 
+  NEO4J_USERNAME: 
+  NEO4J_PASSWORD: 
+
+storage:
+  dataPvcSize: "10Gi"
+  importPvcSize: "10Gi"
+  logsPvcSize: "10Gi"
+  pluginsPvcSize: "10Gi"

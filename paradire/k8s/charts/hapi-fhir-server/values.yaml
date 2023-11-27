@@ -5,9 +5,6 @@ server:
 
 db:
   image: "postgres"
-  postgresPassword: "admin"
-  postgresUser: "admin"
-  postgresDB: "hapi"
   volumeMount: "/var/lib/postgresql/data" 
   size: "10Gi"
   port: 5432
@@ -16,3 +13,8 @@ db:
 
 paradire:
   pt: nb
+
+postgresSecret:
+  postgresPassword:
+  postgresUser:
+  postgresDB:

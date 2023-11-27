@@ -12,6 +12,22 @@ spec:
       labels:
         app: acg
     spec:
+      enableServiceLinks: false
+      serviceAccountName: job-service-account
+      initContainers:
+      - name: check-registry
+        image: curlimages/curl
+        command: ['sh', '-c', 'until curl -s --head --request GET {{ .Values.schemaRegistry.url | quote }} && curl -s --head --request GET {{ .Values.schemaRegistry.fUrl | quote }}; do echo "Waiting for Schema Registry"; sleep 5; done;']
+      - name: wait-for-kafka-job
+        image: bitnami/kubectl
+        command: ['sh', '-c']
+        args:
+        - |
+          until kubectl get job cp-kafka-job -o jsonpath='{.status.succeeded}' | grep 1; do
+            echo "Waiting for cp-kafka-job to complete..."
+            sleep 5
+          done
+          echo "cp-kafka-job completed"
       containers:
       - name: acg
         image: northamerica-northeast1-docker.pkg.dev/phx-01he5rx4wsv/paradire/acg
@@ -19,15 +35,12 @@ spec:
         env:
         - name: BROKER_LIST
           value: {{ printf "%s:9092" (include "cp-kafka.cp-kafka-headless.fullname" .)  | quote}}
-          # value: "{{ printf "cp-kafka-0.%s.nb:9092" (include "cp-kafka.cp-kafka-headless.fullname" .) }},{{ printf "cp-kafka-1.%s.nb:9092" (include "cp-kafka.cp-kafka-headless.fullname" .) }},{{ printf "cp-kafka-2.%s.nb:9092" (include "cp-kafka.cp-kafka-headless.fullname" .) }},{{ printf "cp-kafka-3.%s.nb:9092" (include "cp-kafka.cp-kafka-headless.fullname" .) }}"
         - name: SCHEMA_REGISTRY_URL
-          value: "http://cp-schema-registry:8081"
+          value: {{ .Values.schemaRegistry.url | quote }}
         - name: F_BROKER_LIST
           value: {{ printf "%s.phac:9092" (include "cp-kafka.cp-kafka-headless.fullname" .)  | quote}}
-          # value: "35.234.253.243:9093,35.234.253.243:9095,35.234.253.243:9097,35.234.253.243:9099"
         - name: F_SCHEMA_REGISTRY_URL
-          value: "http://cp-schema-registry.phac:8081"
-          # value: {{ printf "%s.phac:9092" (include "cp-kafka.cp-kafka-headless.fullname" .)  | quote}}
+          value: {{ .Values.schemaRegistry.fUrl | quote }}
         - name: F_SCHEMA_REGISTRY_PORT
           value: "8081"
         - name: PT

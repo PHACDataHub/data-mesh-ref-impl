@@ -19,39 +19,71 @@ spec:
         image: "{{ .Values.imageCreateTopic }}:{{ .Values.imageCreateTopicTag }}"
         env:
           - name: pt
-            value: "{{ .Values.pt }}"
+            value: "{{ .Values.pt | upper }}"
         command: ["/bin/sh", "-c"]
         args:
         - |
-          # Check if Kafka is up by listing topics
-          until kafka-topics --bootstrap-server {{ template "cp-kafka-job.kafka.bootstrapServers" . }} --list; do
-            echo "Waiting for Kafka to be ready..."
-            sleep 5
-          done
-          echo "Kafka is ready."
-          
+          check_service_ready() {
+              local service_name=$1
+              local service_url=$2
+
+              echo "Checking $service_name..."
+              until curl -s "$service_url" > /dev/null; do
+                  echo "Waiting for $service_name to be ready..."
+                  sleep 5
+              done
+              echo "$service_name is ready."
+          }
+
+          check_kafka_ready() {
+              local bootstrap_servers={{ template "cp-kafka-job.kafka.bootstrapServers" . }}
+              
+              echo "Checking Kafka..."
+              until kafka-topics --bootstrap-server "$bootstrap_servers" --list; do
+                  echo "Waiting for Kafka to be ready..."
+                  sleep 5
+              done
+              echo "Kafka is ready."
+          }
+
+          create_kafka_topic() {
+              local topic=$1
+              local bootstrap_servers={{ template "cp-kafka-job.kafka.bootstrapServers" . }}
+              local replication_factor="{{ $.Values.replicationFactor }}"
+              local partitions="{{ $.Values.partitions }}"
+              local retention_ms="{{ $.Values.retentionMs }}"
+
+              if ! kafka-topics --bootstrap-server "$bootstrap_servers" --topic "$topic" --describe > /dev/null 2>&1; then
+                  echo "Creating topic: $topic"
+                  if [[ $topic == fas_* || $topic == far_* ]]; then
+                      kafka-topics --bootstrap-server "$bootstrap_servers" --create --if-not-exists --topic "$topic" --replication-factor "$replication_factor" --partitions "$partitions" --config retention.ms="$retention_ms"
+                  else
+                      kafka-topics --bootstrap-server "$bootstrap_servers" --create --if-not-exists --topic "$topic" --replication-factor "$replication_factor" --partitions "$partitions"
+                  fi
+              else
+                  echo "Topic $topic already exists, skipping creation."
+              fi
+          }
+
+          # Check services
+          check_kafka_ready
+          check_service_ready "Kafka Connect" {{ template "cp-kafka-job.cp-kafka-connect.service-name" . }}
+          check_service_ready "Schema Registry" {{ template "cp-kafka-job.cp-schema-registry.service-name" . }}
+
+          # Define topics
           pt_topics=("allergies" "careplans" "claims_transactions" "claims" "conditions" "devices" "encounters" "imaging_studies" "immunizations" "medications" "observations" "organizations" "patient_expenses" "patients" "payer_transitions" "payers" "procedures" "providers" "supplies" "symptoms" "fas_1" "fas_2" "fas_3" "fas_4" "fas_5" "fas_6" "fas_7" "fas_8" "fas_9" "far_1" "far_2" "far_3" "far_4" "far_5" "far_6" "far_7" "far_8" "far_9")
           phac_topics=("fas_1" "fas_2" "fas_3" "fas_4" "fas_5" "fas_6" "fas_7" "fas_8" "fas_9" "far_1" "far_2" "far_3" "far_4" "far_5" "far_6" "far_7" "far_8" "far_9")
 
-          if [ "$pt" == "phac" ]; then
+          # Select topics based on pt
+          if [ "$pt" = "PHAC" ]; then
               topics=("${phac_topics[@]}")
           else
               topics=("${pt_topics[@]}")
           fi
 
+          # Create Kafka topics
           for topic in "${topics[@]}"; do
-              if ! kafka-topics --bootstrap-server {{ template "cp-kafka-job.kafka.bootstrapServers" . }} --topic $topic --describe > /dev/null 2>&1; then
-                  echo "Creating topic: $topic"
-
-                  # Check if topic is a fas or far topic
-                  if [[ $topic == fas_* || $topic == far_* ]]; then
-                      kafka-topics --bootstrap-server {{ template "cp-kafka-job.kafka.bootstrapServers" . }} --create --if-not-exists --topic $topic --replication-factor {{ $.Values.replicationFactor }} --partitions {{ $.Values.partitions }} --config retention.ms={{ $.Values.retentionMs }}
-                  else
-                      kafka-topics --bootstrap-server {{ template "cp-kafka-job.kafka.bootstrapServers" . }} --create --if-not-exists --topic $topic --replication-factor {{ $.Values.replicationFactor }} --partitions {{ $.Values.partitions }}
-                  fi
-              else
-                  echo "Topic $topic already exists, skipping creation."
-              fi
+              create_kafka_topic "$topic"
           done
 
           echo "Topic setup completed."
@@ -60,16 +92,15 @@ spec:
         image: curlimages/curl:latest
         env:
           - name: pt
-            value: "{{ .Values.pt }}"
+            value: "{{ .Values.pt | upper }}"
         command: ["/bin/sh", "-c"]
         args:
         - |
           # Skip health check if pt is 'phac'
-          if [ "$pt" = "phac" ]; then
-            echo "Skipping HAPI FHIR server health check for 'phac'."
+          if [ "$pt" = "PHAC" ]; then
+            echo "Skipping checks for 'phac'."
             exit 0
           fi
-
           # Check if HAPI FHIR server is up and returns HTTP 200 OK
           until [ "$(curl -o /dev/null -s -w '%{http_code}\n' {{ .Values.fihrHealthCheckUrl }})" = "200" ]; do
             echo "Waiting for HAPI FHIR server to be ready..."
@@ -84,7 +115,7 @@ spec:
           - name: sampling_size
             value: "{{ .Values.samplingSize }}"
           - name: pt
-            value: "{{ .Values.pt }}"
+            value: "{{ .Values.pt | upper }}"
           - name: fihr_server_url
             value: "{{ .Values.fihrServerUrl }}"
           - name: CONNECT_URL

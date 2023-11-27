@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Immunization Records Gateway Links</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+</head>
+<body>
+    <div class="container">
+        <h3 class="header center-align">Immunization Records Gateway Links</h3>
+        <div class="row justify-content-center">
+            {% for province, services in entities.items() %}
+                <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3 card-container">
+                    <div class="province-card">
+                        <div class="province-title">{{ province | capitalize }}</div>
+                        {% for service in services %}
+                            <a href="{{ service.url }}" target="_blank" class="service-btn">{{ service.name | capitalize }}</a>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</body>
+</html>

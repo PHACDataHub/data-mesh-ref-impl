@@ -1,0 +1,89 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: neo4j-job
+spec:
+  template:
+    spec:
+      volumes:
+        - name: import-config
+          configMap:
+            name: neo4j-config
+        - name: import
+          persistentVolumeClaim:
+            claimName: import-pvc
+        - name: plugins
+          persistentVolumeClaim:
+            claimName: plugins-pvc
+      containers:
+        - name: neo4j-job
+          image: "{{ .Values.job.repository }}:{{ .Values.job.tag }}"
+          imagePullPolicy: Always
+          command: ["/bin/bash", "-c"]
+          args:
+            - |
+              # Check if Neo4j is ready
+              until cypher-shell -u $NEO4J_USERNAME -p $NEO4J_PASSWORD -a bolt://neo4j:7687 "RETURN 'Neo4j is up'"; do
+                  echo 'Waiting for Neo4j to be ready...'
+                  sleep 5
+              done
+
+              # Apply constraints and indexes
+              cypher-shell -u $NEO4J_USERNAME -p $NEO4J_PASSWORD -a bolt://neo4j:7687 --file /var/lib/neo4j/import/v2_entity_constraints.cql
+              echo 'Constraints and indexes are created ✅'
+
+              # Set dashboard version and user
+              dashboard_version="2.4"
+              dashboard_user="neo4j"
+
+              # Choose the dashboard file based on the PT environment variable
+              if [ "$PT" = "phac" ]; then
+                  dashboard_file="f_neodash.json"
+                  dashboard_title="Federal Analytics Platform"
+              else
+                  dashboard_file="pt_neodash.json"
+                  dashboard_title="${PT} Analytics Platform"
+
+                  # Update the dashboard title in the JSON
+                  json_content=$(cat "/var/lib/neo4j/import/$dashboard_file")
+                  updated_json=$(echo "$json_content" | jq --arg pt "$dashboard_title" '.title = $pt')
+                  echo "$updated_json" > "/var/lib/neo4j/import/$dashboard_file"
+              fi
+
+              # Load and execute Cypher query
+              full_dashboard_path="/var/lib/neo4j/import/$dashboard_file"
+              dashboard_uuid=$(cat "$full_dashboard_path" | jq '.uuid')
+              cypher_query="CALL apoc.load.json(\"file:///$dashboard_file\") YIELD value AS content 
+              MERGE (n:_Neodash_Dashboard) 
+              SET n.date = DATETIME(), n.title = \"$dashboard_title\", n.version=\"$dashboard_version\", 
+              n.user=\"$dashboard_user\", n.uuid=$dashboard_uuid, n.content=apoc.convert.toJson(content) 
+              RETURN n.date, n.title, n.version, n.user, n.uuid"
+              echo "Reading dashboard file $dashboard_file"
+              echo "$cypher_query" | cypher-shell -u $NEO4J_USERNAME -p $NEO4J_PASSWORD -a bolt://neo4j:7687
+
+              # Check for errors
+              if [ $? -ne 0 ]; then
+                  echo "Error: Failed to execute the Cypher query."
+                  exit 1
+              fi
+
+              echo "Dashboard data loaded successfully."
+          env:
+            - name: NEO4J_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: neo4j-secret
+                  key: NEO4J_USERNAME
+            - name: NEO4J_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: neo4j-secret
+                  key: NEO4J_PASSWORD
+            - name: PT
+              value: "{{ .Values.paradire.pt }}"
+          volumeMounts:
+            - name: import
+              mountPath: /var/lib/neo4j/import
+            - name: plugins
+              mountPath: /var/lib/neo4j/plugins
+      restartPolicy: OnFailure
