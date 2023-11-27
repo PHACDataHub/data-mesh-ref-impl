@@ -78,7 +78,7 @@ export default function Home() {
   const monitorResponses = useRef<
     {
       request_id: string;
-      items: string[];
+      items: React.ReactNode[];
     }[]
   >([]);
 
@@ -115,6 +115,8 @@ export default function Home() {
       let label = data.name;
       let description = "";
 
+      let selectedFields: ResourceTypeField[] = [];
+
       if (json_schema.entrypoints && data.name in json_schema.entrypoints) {
         const r = json_schema.entrypoints[data.name];
         if (r && data.event === "query") {
@@ -147,9 +149,11 @@ export default function Home() {
                 // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
                 request_reference.description) ||
               description;
-            const ref_name = r.items.$ref.replace("#/definitions/", "")
+            const ref_name = r.items.$ref.replace("#/definitions/", "");
             const t = selectedResourceTypes.find((s) => s.name === ref_name);
-            // TODO: color codes
+            if (t) {
+              selectedFields = t.selectedFields;
+            }
           }
         }
       }
@@ -180,7 +184,9 @@ export default function Home() {
           (m) => m.request_id === request_id,
         );
         if (responses) {
-          responses.items.push(JSON.stringify(data.message, null, 2));
+          responses.items.push(
+            colorCodeResponseData(data.message, selectedFields),
+          );
 
           const response_group = monitorItems.current.findIndex(
             (mi) => mi.key === `response_${request_id}`,
@@ -200,9 +206,7 @@ export default function Home() {
                     children: (
                       <div>
                         <p>{description}</p>
-                        {responses.items.map((i, idx) => (
-                          <pre key={`${idx}`}>{i}</pre>
-                        ))}
+                        {responses.items}
                       </div>
                     ),
                   },
@@ -236,7 +240,7 @@ export default function Home() {
     },
   });
 
-  const [showPanel, setShowPanel] = useState(true);
+  const [showPanel, setShowPanel] = useState(false);
 
   const updateSelectedFieldsHandler = useCallback(
     (name: string, selectedFields: ResourceTypeField[]) => {
@@ -317,6 +321,41 @@ export default function Home() {
       if (obj.restrict) restrictions.push("is restricted");
     }
     return ` ${restrictions.join(", ")}`;
+  };
+
+  const colorCodeResponseData = (
+    data: unknown,
+    fields: ResourceTypeField[],
+  ) => {
+    if (typeof data !== "object" || !data) return "<pre />";
+    const colorFields = fields
+      .filter((f) => typeof f === "object")
+      .map((f) => Object.entries(f))
+      .map(([f]) => f);
+
+    return (
+      <pre>
+        {Object.entries(data)
+          .filter(([field]) => field !== "request_id")
+          .map(([field, val]) => {
+            let color = "inherit";
+            const rule = colorFields.find((f) => f && f[0] === field);
+            if (rule) {
+              const cr = rule[1] as ResourceTypeFieldOptions;
+              // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+              if (cr.format || cr.hash) color = "green";
+              if (cr.hidden) color = "#bbb";
+              if (cr.restrict) color = "red";
+            }
+            return (
+              <span key={`${field}`} style={{ color }}>
+                {`  ${JSON.stringify(field)}: ${JSON.stringify(val)}\n`}
+              </span>
+            );
+          })}
+        <hr />
+      </pre>
+    );
   };
 
   const applyClickHandler = useCallback(async () => {
@@ -512,7 +551,7 @@ export default function Home() {
                 {!showPanel && (
                   <Content className="h-[5%]">
                     <Button onClick={expandClickHandler}>
-                      <UpSquareOutlined /> Data Preview
+                      <UpSquareOutlined /> Advanced
                     </Button>
                   </Content>
                 )}
@@ -565,8 +604,12 @@ export default function Home() {
                                   return (
                                     <li key={key}>
                                       <strong>
-                                        {(dereference(ref, json_schema) as any)
-                                          ?.label ?? key}
+                                        {(
+                                          dereference(
+                                            ref,
+                                            json_schema,
+                                          ) as unknown as { label: string }
+                                        )?.label ?? key}
                                       </strong>
                                       <ul>
                                         {restrictions.length === 0 && (
@@ -633,11 +676,8 @@ export default function Home() {
                             className: "flex-1 h-full",
                             children: (
                               <div className="h-full overflow-auto">
-                                <Title level={3}>
-                                  {PT} -&gt; PHAC Live Monitoring
-                                </Title>
+                                <Title level={3}>Live Monitoring</Title>
                                 <Timeline
-                                  mode="alternate"
                                   className="mt-5"
                                   pending="Monitoring ACG..."
                                   items={monitorItems.current}

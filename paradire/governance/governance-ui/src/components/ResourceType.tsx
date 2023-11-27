@@ -22,7 +22,6 @@ import {
   Table,
   Checkbox,
   Typography,
-  Button,
 } from "antd";
 import { type CheckboxChangeEvent } from "antd/es/checkbox";
 
@@ -193,7 +192,6 @@ export default function ResourceType({
             {referenced_schema.description}
           </Text>
         </div>
-        {/* <Button type="primary">Apply</Button> */}
       </div>
       <div ref={container}>
         <Table
