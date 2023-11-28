@@ -9,6 +9,7 @@
  * transformations are specified as custom directives.  The following directives
  * are (supported)[./directive.ts]:
  *   - @date - transforms a date into a string using a format string
+ *   - @transform - transforms a string using a regular expression
  *   - @hash - performs a one way hash of the property
  *   - @blank  - replaces the value with the word "** restricted **"
  *   - @selectable - loosely based on neo4j - this removes the property entirely

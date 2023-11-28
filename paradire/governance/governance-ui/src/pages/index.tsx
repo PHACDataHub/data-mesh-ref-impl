@@ -14,18 +14,19 @@ import Editor from "@monaco-editor/react";
 import {
   Button,
   Select,
-  Collapse,
   Layout,
   Menu,
   Typography,
   ConfigProvider,
   Tooltip,
   Tabs,
-  Timeline,
-  type TimelineItemProps,
 } from "antd";
 
-import { UpSquareOutlined, DownSquareOutlined } from "@ant-design/icons";
+import {
+  UpSquareOutlined,
+  DownSquareOutlined,
+  ClearOutlined,
+} from "@ant-design/icons";
 
 import ResourceType from "~/components/ResourceType";
 
@@ -41,6 +42,7 @@ import {
 
 import { api } from "~/utils/api";
 import { type ACGStatus } from "~/server/api/routers/post";
+import Monitor, { type ACGEvent } from "~/components/Monitor";
 
 const { Header, Content, Sider } = Layout;
 const { Title, Text } = Typography;
@@ -72,17 +74,13 @@ export default function Home() {
   );
 
   const [acg, setAcg] = useState<ACGStatus | null>(null);
+  const [showPanel, setShowPanel] = useState(false);
 
   const [monitorEnabled, setMonitorEnabled] = useState(false);
-  const monitorItems = useRef<TimelineItemProps[]>([]);
-  const monitorResponses = useRef<
-    {
-      request_id: string;
-      items: React.ReactNode[];
-    }[]
-  >([]);
+  const monitorItems = useRef<ACGEvent[]>([]);
+  const monitorTimer = useRef<Record<string, NodeJS.Timeout>>({});
 
-  const [, forceUpdate] = useReducer((x: number) => x + 1, 0);
+  const [updateCount, forceUpdate] = useReducer((x: number) => x + 1, 0);
 
   const [activeResourceType, setActiveResourceType] = useState<string>("");
 
@@ -160,60 +158,37 @@ export default function Home() {
 
       if (data.event === "query") {
         monitorItems.current.push({
-          color: "blue",
-          children: (
-            <Collapse
-              items={[
-                {
-                  key: "1",
-                  label: `${label} [${request_id}]`,
-                  children: (
-                    <div>
-                      <p>{description}</p>
-                      <pre>{JSON.stringify(data.message, null, 2)}</pre>
-                    </div>
-                  ),
-                },
-              ]}
-            />
-          ),
+          time: new Date(),
+          fields: selectedFields,
+          query: {
+            status: "pending",
+            request_id,
+            label,
+            description,
+            payload: data.message,
+          },
+          responses: [],
         });
-        monitorResponses.current.push({ request_id, items: [] });
+        monitorTimer.current[request_id] = setTimeout(() => {
+          const i = monitorItems.current.find(
+            (m) => m.query.request_id === request_id,
+          );
+          if (i) i.query.status = "timeout";
+          forceUpdate();
+        }, 5000);
       } else {
-        const responses = monitorResponses.current.find(
-          (m) => m.request_id === request_id,
+        const i = monitorItems.current.find(
+          (m) => m.query.request_id === request_id,
         );
-        if (responses) {
-          responses.items.push(
-            colorCodeResponseData(data.message, selectedFields),
-          );
-
-          const response_group = monitorItems.current.findIndex(
-            (mi) => mi.key === `response_${request_id}`,
-          );
-          if (response_group > -1)
-            monitorItems.current.splice(response_group, 1);
-
-          monitorItems.current.push({
-            key: `response_${request_id}`,
-            color: "green",
-            children: (
-              <Collapse
-                items={[
-                  {
-                    key: "1",
-                    label: `${label} [${request_id}] responses (${responses.items.length})`,
-                    children: (
-                      <div>
-                        <p>{description}</p>
-                        {responses.items}
-                      </div>
-                    ),
-                  },
-                ]}
-              />
-            ),
-          });
+        if (i) {
+          i.query.status = "streaming";
+          i.fields = selectedFields;
+          i.responses.push(data.message);
+          clearTimeout(monitorTimer.current[request_id]);
+          monitorTimer.current[request_id] = setTimeout(() => {
+            i.query.status = "complete";
+            forceUpdate();
+          }, 1500);
         }
       }
       forceUpdate();
@@ -239,8 +214,6 @@ export default function Home() {
       console.log("-- started --");
     },
   });
-
-  const [showPanel, setShowPanel] = useState(false);
 
   const updateSelectedFieldsHandler = useCallback(
     (name: string, selectedFields: ResourceTypeField[]) => {
@@ -323,48 +296,20 @@ export default function Home() {
     return ` ${restrictions.join(", ")}`;
   };
 
-  const colorCodeResponseData = (
-    data: unknown,
-    fields: ResourceTypeField[],
-  ) => {
-    if (typeof data !== "object" || !data) return "<pre />";
-    const colorFields = fields
-      .filter((f) => typeof f === "object")
-      .map((f) => Object.entries(f))
-      .map(([f]) => f);
-
-    return (
-      <pre>
-        {Object.entries(data)
-          .filter(([field]) => field !== "request_id")
-          .map(([field, val]) => {
-            let color = "inherit";
-            const rule = colorFields.find((f) => f && f[0] === field);
-            if (rule) {
-              const cr = rule[1] as ResourceTypeFieldOptions;
-              // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-              if (cr.format || cr.hash) color = "green";
-              if (cr.hidden) color = "#bbb";
-              if (cr.restrict) color = "red";
-            }
-            return (
-              <span key={`${field}`} style={{ color }}>
-                {`  ${JSON.stringify(field)}: ${JSON.stringify(val)}\n`}
-              </span>
-            );
-          })}
-        <hr />
-      </pre>
-    );
-  };
-
   const applyClickHandler = useCallback(async () => {
     await updateAcg.mutateAsync({ ruleset: yaml });
   }, [updateAcg, yaml]);
 
   const expandClickHandler = useCallback(() => {
     setShowPanel(!showPanel);
+    setMonitorEnabled(false);
+    monitorItems.current.splice(0, monitorItems.current.length);
   }, [showPanel]);
+
+  const clearMonitorHandler = useCallback(() => {
+    monitorItems.current.splice(0, monitorItems.current.length);
+    forceUpdate();
+  }, []);
 
   const PT = useMemo(() => {
     if (pt.data?.pt) return pt.data.pt;
@@ -425,7 +370,7 @@ export default function Home() {
             >
               {PT} Data Governance Gateway
             </Title>
-            <div>
+            {/* <div>
               <Button
                 className="rounded-none border-0  border-b-[1px] border-white p-1"
                 type="link"
@@ -434,7 +379,7 @@ export default function Home() {
                   FR
                 </Text>
               </Button>
-            </div>
+            </div> */}
           </Header>
 
           <Layout>
@@ -528,7 +473,7 @@ export default function Home() {
               <Content>
                 <Content
                   className={`${
-                    showPanel ? "h-[50%]" : "h-[95%]"
+                    showPanel ? "h-[50%]" : "h-full"
                   } overflow-auto`}
                 >
                   {Object.entries(json_schema.discriminator.mapping)
@@ -549,11 +494,11 @@ export default function Home() {
                     ))}
                 </Content>
                 {!showPanel && (
-                  <Content className="h-[5%]">
+                  <div className="absolute bottom-[32px]">
                     <Button onClick={expandClickHandler}>
                       <UpSquareOutlined /> Advanced
                     </Button>
-                  </Content>
+                  </div>
                 )}
                 {showPanel && (
                   <Content className="h-[50%] border-2 p-2">
@@ -613,10 +558,7 @@ export default function Home() {
                                       </strong>
                                       <ul>
                                         {restrictions.length === 0 && (
-                                          <li>
-                                            WARNING: Full access, no
-                                            restrictions.
-                                          </li>
+                                          <li>Full access, no restrictions.</li>
                                         )}
                                         {restrictions.map(
                                           (r, idx) =>
@@ -676,12 +618,24 @@ export default function Home() {
                             className: "flex-1 h-full",
                             children: (
                               <div className="h-full overflow-auto">
-                                <Title level={3}>Live Monitoring</Title>
-                                <Timeline
-                                  className="mt-5"
-                                  pending="Monitoring ACG..."
-                                  items={monitorItems.current}
-                                />
+                                <Title level={3} className="flex justify-start">
+                                  <Button
+                                    shape="circle"
+                                    type="text"
+                                    title="Clear events"
+                                    disabled={monitorItems.current.length === 0}
+                                    onClick={clearMonitorHandler}
+                                  >
+                                    <ClearOutlined />
+                                  </Button>
+                                  Live Monitoring
+                                </Title>
+                                <div className="mt-5">
+                                  <Monitor
+                                    updateCount={updateCount}
+                                    events={monitorItems.current}
+                                  />
+                                </div>
                               </div>
                             ),
                           },
