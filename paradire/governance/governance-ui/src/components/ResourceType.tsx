@@ -22,9 +22,11 @@ import {
   Table,
   Checkbox,
   Typography,
-  Button,
+  Popover,
 } from "antd";
 import { type CheckboxChangeEvent } from "antd/es/checkbox";
+import BoldedText from "./BoldedText";
+import { InfoCircleOutlined } from "@ant-design/icons";
 
 const { Column } = Table;
 const { Title, Text } = Typography;
@@ -44,6 +46,24 @@ const { Search } = Input;
 
 const namedFieldFilter = (search: string) => (field: ResourceTypeField) =>
   field !== search && !(typeof field === "object" && search in field);
+
+const required_fields = ["request_id", "pt", "timestamp"];
+
+const req_sort_val = ({
+  field,
+  required,
+}: {
+  required: boolean;
+  field: string;
+}) => {
+  if (field === "__divider__") {
+    return 2;
+  }
+  if (required) {
+    return 3;
+  }
+  return 0;
+};
 
 export default function ResourceType({
   name,
@@ -69,6 +89,7 @@ export default function ResourceType({
     [],
   );
   const [height, setHeight] = useState<number>(0);
+  const [filter, setFilter] = useState("");
 
   const fields = selectedFields ?? _selectedFields;
 
@@ -157,6 +178,10 @@ export default function ResourceType({
   //   [fields, name, onChange],
   // );
 
+  const searchHandler = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+    setFilter(event.target.value);
+  }, []);
+
   const referenced_schema = dereference(reference, schema);
   if (!referenced_schema || typeof referenced_schema === "boolean")
     return undefined;
@@ -166,9 +191,16 @@ export default function ResourceType({
   if (!referenced_schema.properties) return undefined;
 
   const dataSource = Object.entries(referenced_schema.properties)
-    .filter(([field]) => !field.startsWith("_") && field !== "resourceType")
+    .filter(
+      ([field, val]) =>
+        !field.startsWith("_") &&
+        field !== "resourceType" &&
+        (filter === "" ||
+          field.toLowerCase().includes(filter.toLowerCase()) ||
+          (typeof val === "object" &&
+            val.description?.toLowerCase().includes(filter.toLowerCase()))),
+    )
     .map(([field, val]) => {
-      // if (typeof val === "boolean") return undefined;
       const checked = getFieldIfSelected(field, fields);
       const fieldConf = typeof checked === "object" ? checked[field] : {};
       return {
@@ -179,8 +211,22 @@ export default function ResourceType({
         hash: Boolean(fieldConf?.hash),
         transform: fieldConf?.format ?? "",
         format: typeof val !== "boolean" && val.format,
+        type: typeof val !== "boolean" && val.type,
+        required: required_fields.includes(field),
       };
-    });
+    })
+    .concat({
+      key: "divider",
+      field: "__divider__",
+      description: "",
+      restrict: false,
+      hash: false,
+      transform: "",
+      format: "",
+      type: false,
+      required: true,
+    })
+    .sort((a, b) => req_sort_val(a) - req_sort_val(b));
 
   return (
     <div ref={parent} className="h-full">
@@ -193,43 +239,80 @@ export default function ResourceType({
             {referenced_schema.description}
           </Text>
         </div>
-        {/* <Button type="primary">Apply</Button> */}
       </div>
       <div ref={container}>
         <Table
           dataSource={dataSource}
           pagination={{ pageSize: dataSource.length }}
           scroll={{ y: height }}
+          onRow={(data: { field: string }) => {
+            if (data.field !== "__divider__") return {};
+            return {
+              className: "bg-[#fafafa]",
+            };
+          }}
         >
           <Column
-            title={<div><Search disabled placeholder="Search fields" /></div>}
+            title={
+              <div>
+                <Search onChange={searchHandler} placeholder="Search fields" />
+              </div>
+            }
+            onCell={(data: { required: boolean }) => ({
+              colSpan: data.required ? 4 : 1,
+            })}
             render={({
               field,
               description,
             }: {
               field: string;
               description: string;
-            }) => (
-              <>
-                <Text style={{ color: "#1890ff", fontWeight: 400 }}>
-                  {field}
-                </Text>
-                {description && (
+            }) =>
+              (field === "__divider__" && (
+                <>
+                  <Text style={{ fontWeight: 600 }}>Required Fields</Text>
                   <p className="m-0">
                     <Text style={{ color: "#707070", fontWeight: 400 }}>
-                      {description}
+                      The following fields are required to be shared by the
+                      analytics platform and must be delivered in their original
+                      state.
                     </Text>
                   </p>
-                )}
-              </>
-            )}
+                </>
+              )) || (
+                <>
+                  <Text style={{ color: "#1890ff", fontWeight: 400 }}>
+                    <BoldedText bold={filter} text={field} />
+                  </Text>
+                  {description && (
+                    <p className="m-0">
+                      <Text style={{ color: "#707070", fontWeight: 400 }}>
+                        <BoldedText bold={filter} text={description} />
+                      </Text>
+                    </p>
+                  )}
+                </>
+              )
+            }
           />
           <Column
             title="Restrict"
             width={130}
-            sorter={(a: { restrict: boolean }, b: { restrict: boolean }) =>
-              +b.restrict - +a.restrict
-            }
+            sorter={(
+              a: { restrict: boolean; required: boolean; field: string },
+              b: { restrict: boolean; required: boolean; field: string },
+            ) => {
+              const av = req_sort_val(a);
+              const bv = req_sort_val(b);
+              if (bv > av) return 0;
+              if (bv < av) return 0;
+              if (+b.restrict > +a.restrict) return 1;
+              if (+b.restrict < +a.restrict) return -1;
+              return 0;
+            }}
+            onCell={(data) => ({
+              colSpan: data.required ? 0 : 1,
+            })}
             render={({
               field,
               restrict,
@@ -252,10 +335,32 @@ export default function ResourceType({
             )}
           />
           <Column
-            title="One-way hash"
-            sorter={(a: { hash: boolean }, b: { hash: boolean }) =>
-              +b.hash - +a.hash
+            title={
+              <div>
+                One-way hash{" "}
+                <Popover
+                  content="Convert to a string that is computationally difficult to reverse; however identical for a given input value."
+                  placement="bottom"
+                >
+                  <InfoCircleOutlined />
+                </Popover>
+              </div>
             }
+            sorter={(
+              a: { hash: boolean; required: boolean; field: string },
+              b: { hash: boolean; required: boolean; field: string },
+            ) => {
+              const av = req_sort_val(a);
+              const bv = req_sort_val(b);
+              if (bv > av) return 0;
+              if (bv < av) return 0;
+              if (+b.hash > +a.hash) return 1;
+              if (+b.hash < +a.hash) return -1;
+              return 0;
+            }}
+            onCell={(data) => ({
+              colSpan: data.required ? 0 : 1,
+            })}
             width={130}
             render={({ field, hash }: { field: string; hash: boolean }) => (
               <Space direction="vertical">
@@ -273,19 +378,27 @@ export default function ResourceType({
           <Column
             title="Transform"
             width={150}
+            onCell={(data: { required: boolean }) => ({
+              colSpan: data.required ? 0 : 1,
+            })}
             render={({
               field,
               transform,
               format,
+              type,
             }: {
               field: string;
               transform: string;
               format: string;
-            }) => (
+              type: string;
+            }) => (type === "string" &&
               <Input
                 value={transform}
-                placeholder="date format"
-                disabled={!["date", "date-time"].includes(format)}
+                placeholder={
+                  ["date", "date-time"].includes(format)
+                    ? "date format"
+                    : "regex"
+                }
                 onChange={
                   updateSwitchFieldOptionHandler(field, "format") as (
                     e: ChangeEvent<HTMLInputElement>,

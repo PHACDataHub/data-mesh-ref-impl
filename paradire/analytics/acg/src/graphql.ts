@@ -17,12 +17,16 @@ import {
   dateDirective,
   hashDirective,
   topicDirective,
+  transformDirective,
 } from "./directives.js";
 
 const { dateDirectiveTypeDefs, dateDirectiveTransformer } =
   dateDirective("date");
 const { hashDirectiveTypeDefs, hashDirectiveTransformer } =
   hashDirective("hash");
+
+const { transformDirectiveTransformer, transformDirectiveTypeDefs } =
+  transformDirective("transform");
 
 const { restrictDirectiveTypeDefs, restrictDirectiveTransformer } =
   restrictDirective("restrict");
@@ -46,6 +50,7 @@ export const create_graphql_schema = async (
       "directive @defer(if: Boolean, label: String) on FRAGMENT_SPREAD | INLINE_FRAGMENT\n",
       "directive @stream(if: Boolean, label: String, initialCount: Int = 0) on FIELD\n",
       dateDirectiveTypeDefs,
+      transformDirectiveTypeDefs,
       hashDirectiveTypeDefs,
       restrictDirectiveTypeDefs,
       topicDirectiveTypeDefs
@@ -95,12 +100,12 @@ export const create_graphql_schema = async (
 
   /**
    * Generate a query suitable for streaming records of the given type.
-   * 
+   *
    * The parameters of the query are not processed, this is merely to engage
    * the GraphQL Engine, and start to process requests.
-   * 
-   * @param f 
-   * @returns 
+   *
+   * @param f
+   * @returns
    */
   const get_default_query = (f: GraphQLField<unknown, unknown, unknown>) => {
     let query = `query ${f.name} { \n`;
@@ -134,15 +139,17 @@ export const create_graphql_schema = async (
 
   const schema = hashDirectiveTransformer(
     restrictDirectiveTransformer(
-      dateDirectiveTransformer(
-        makeExecutableSchema({
-          typeDefs,
-          resolvers: {
-            Date: GraphQLDateType,
-            DateTime: GraphQLDateTimeType,
-            Query: Object.fromEntries(query_topic_map),
-          },
-        })
+      transformDirectiveTransformer(
+        dateDirectiveTransformer(
+          makeExecutableSchema({
+            typeDefs,
+            resolvers: {
+              Date: GraphQLDateType,
+              DateTime: GraphQLDateTimeType,
+              Query: Object.fromEntries(query_topic_map),
+            },
+          })
+        )
       )
     )
   );

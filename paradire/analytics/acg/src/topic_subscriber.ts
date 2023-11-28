@@ -9,6 +9,9 @@ import { PubSub } from "graphql-subscriptions";
 
 const instance_id = (Math.random() + 1).toString(36).substring(7);
 
+// Kafka topic to post monitoring messages
+const monitor_topic = "acg_monitor";
+
 // In-memory queue to move messages from kafka consumer to graphql resolver.
 const pubsub = new PubSub();
 
@@ -58,8 +61,17 @@ export const subscribeToTopic = async ({
   });
   await pt_producer.connect();
 
+  // Create a producer to create a log of federal requests in the PT platform
+  const pt_monitor_producer = kafka.pt.producer({
+    allowAutoTopicCreation: true,
+    createPartitioner: Partitioners.DefaultPartitioner,
+  });
+  await pt_monitor_producer.connect();
+
   // Create a consumer that listens for federal analytics requests
-  const fed_consumer = kafka.federal.consumer({ groupId: `${name}-${instance_id}` });
+  const fed_consumer = kafka.federal.consumer({
+    groupId: `${name}-${instance_id}`,
+  });
   await fed_consumer.connect();
   await fed_consumer.subscribe({
     topic: topic.request,
@@ -85,9 +97,25 @@ export const subscribeToTopic = async ({
           // Send the message received from the federal analytics platform to the
           // to the PT platform.
           console.debug(`[${name}] sending request to PT.`);
+          await pt_producer.connect();
           await pt_producer.send({
             topic: topic.request,
             messages: [forwardMessage],
+          });
+          console.debug(`[${name}] logging request to monitoring topic.`);
+          await pt_monitor_producer.connect();
+          await pt_monitor_producer.send({
+            topic: monitor_topic,
+            messages: [
+              {
+                key: (Math.random() + 1).toString(36).substring(7),
+                value: JSON.stringify({
+                  name,
+                  event: "query",
+                  message: value,
+                }),
+              },
+            ],
           });
         }
       }
@@ -139,6 +167,7 @@ export const subscribeToTopic = async ({
         console.log(`[${name}] Disconnecting kafka producers.`);
         await fed_producer.disconnect();
         await pt_producer.disconnect();
+        await pt_monitor_producer.disconnect();
         if (iterator) {
           console.log(`[${name}] Ending async iterator.`);
           iterator.return();
@@ -175,6 +204,22 @@ export const subscribeToTopic = async ({
             topic: topic.response,
             messages: [forwardMessage],
           });
+          console.debug(`[${name}] logging response to monitoring topic.`);
+          await pt_monitor_producer.connect();
+          await pt_monitor_producer.send({
+            topic: monitor_topic,
+            messages: [
+              {
+                key: (Math.random() + 1).toString(36).substring(7),
+                value: JSON.stringify({
+                  name,
+                  event: "response",
+                  message: value,
+                }),
+              },
+            ],
+          });
+
         } catch (e) {
           console.error(e);
         }

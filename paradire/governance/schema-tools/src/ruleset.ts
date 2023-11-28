@@ -306,13 +306,24 @@ const fieldSpecToGraphQlType = (
       },
     ];
   }
-  if (options.format) {
+  if (options.format && ["date", "date-time"].includes(fieldSpec.format)) {
     fieldName = addFieldDirective({
       field: fieldName,
       directive: `@date(format: "${options.format}")`,
       regex: {
         search: (match) =>
           new RegExp(`(.*?)${match}(.*?): (DateTime|Date)([!])?(.*)`),
+        replace: (dir) => `$1$2: String$4 ${dir}`,
+      },
+      directives,
+    });
+  } else if (options.format) {
+    fieldName = addFieldDirective({
+      field: fieldName,
+      directive: `@transform(regex: "${options.format}")`,
+      regex: {
+        search: (match) =>
+          new RegExp(`(.*?)${match}(.*?): (String)([!])?(.*)`),
         replace: (dir) => `$1$2: String$4 ${dir}`,
       },
       directives,

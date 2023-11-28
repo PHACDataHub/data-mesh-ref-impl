@@ -1,13 +1,11 @@
 import { Kafka, Partitioners } from "kafkajs";
 import { z } from "zod";
 
-import { env } from "~/env.mjs";
+import { env } from "../../../env.mjs";
 
-import {
-  createTRPCRouter,
-  protectedProcedure,
-  publicProcedure,
-} from "~/server/api/trpc";
+import { observable } from "@trpc/server/observable";
+
+import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 
 // Connection to PT kafka
 const kafka_pt = new Kafka({
@@ -21,32 +19,27 @@ const pt_producer = kafka_pt.producer({
 });
 await pt_producer.connect();
 
+export type ACGStatus = {
+  online: boolean;
+  ruleset: false | string;
+};
 
-const pt_consumer = kafka_pt.consumer({
-  groupId: `governance-ui-${(Math.random() + 1).toString(36).substring(7)}`,
-  allowAutoTopicCreation: true,
-});
-await pt_consumer.connect();
+export type ACGMonitor = {
+  event: "query" | "response";
+  name: string;
+  message: string;
+};
 
-const acg_status = { online: false };
 const topic = "acg_ruleset_config";
 const status_topic = "acg-status";
-await pt_consumer.subscribe({ topic: status_topic });
-await pt_consumer.run({
-  // eslint-disable-next-line @typescript-eslint/require-await
-  eachMessage: async ({ message }) => {
-    const msg = message.value?.toString();
-    acg_status.online = msg === "pong" || msg === "ready";
-  },
-});
+const monitor_topic = "acg_monitor";
 
 export const postRouter = createTRPCRouter({
-  hello: publicProcedure
-    .query(() => {
-      return {
-        pt: `${env.PT}`.toUpperCase(),
-      };
-    }),
+  hello: publicProcedure.query(() => {
+    return {
+      pt: `${env.PT}`.toUpperCase(),
+    };
+  }),
 
   ping: publicProcedure.mutation(async () => {
     const key = (Math.random() + 1).toString(36).substring(7);
@@ -56,11 +49,77 @@ export const postRouter = createTRPCRouter({
     });
   }),
 
-  acg_status: publicProcedure
-    .query(() => {
-      return acg_status;
-    }),
+  onAcgMonitor: publicProcedure.subscription(async () => {
+    console.info("-= subscribing to ACG Monitor =-");
 
+    const pt_consumer = kafka_pt.consumer({
+      groupId: `governance-ui-${(Math.random() + 1).toString(36).substring(7)}`,
+      allowAutoTopicCreation: true,
+    });
+    await pt_consumer.connect();
+    await pt_consumer.subscribe({ topic: monitor_topic });
+
+    return observable<ACGMonitor>((emit) => {
+      void pt_consumer.run({
+        // eslint-disable-next-line @typescript-eslint/require-await
+        eachMessage: async ({ message }) => {
+          console.info("-= MONITOR FROM ACG =-");
+          try {
+            const msg = message.value?.toString();
+            if (msg) {
+              const payload = JSON.parse(msg) as ACGMonitor;
+              emit.next(payload);
+            }
+          } catch (e) {
+            console.error(e);
+          }
+        },
+      });
+
+      return () => {
+        void pt_consumer.disconnect();
+      };
+    });
+  }),
+
+  onAcgStatusUpdate: publicProcedure.subscription(async () => {
+    console.info("-= subscribing to ACG updates =-");
+    const pt_consumer = kafka_pt.consumer({
+      groupId: `governance-ui-${(Math.random() + 1).toString(36).substring(7)}`,
+      allowAutoTopicCreation: true,
+    });
+    await pt_consumer.connect();
+    await pt_consumer.subscribe({ topic: status_topic });
+
+    return observable<ACGStatus | "ready">((emit) => {
+      pt_consumer.on("consumer.group_join", () => {
+        console.log("-- group joined ");
+        emit.next("ready");
+      });
+      void pt_consumer.run({
+        // eslint-disable-next-line @typescript-eslint/require-await
+        eachMessage: async ({ message }) => {
+          console.info("-= UPDATE FROM ACG =-");
+          const msg = message.value?.toString();
+          if (msg?.startsWith("status")) {
+            try {
+              const status = JSON.parse(
+                msg.substring(6, msg.length),
+              ) as ACGStatus;
+              console.debug(`[ACG] ${status.online ? "Online" : "Offline"}.`);
+              emit.next(status);
+            } catch (e) {
+              console.error("ERROR: Invalid status update from ACG.");
+            }
+          }
+        },
+      });
+
+      return () => {
+        void pt_consumer.disconnect();
+      };
+    });
+  }),
 
   updateAcg: publicProcedure
     .input(z.object({ ruleset: z.string() }))

@@ -9,12 +9,18 @@
 
 import { initTRPC, TRPCError } from "@trpc/server";
 import { type CreateNextContextOptions } from "@trpc/server/adapters/next";
+
+import { type NodeHTTPCreateContextFnOptions } from "@trpc/server/dist/adapters/node-http";
+import { type IncomingMessage } from "http";
+import type ws from "ws";
+
 import { type Session } from "next-auth";
 import superjson from "superjson";
 import { ZodError } from "zod";
 
-import { getServerAuthSession } from "~/server/auth";
-import { db } from "~/server/db";
+import { getServerAuthSession } from "../auth";
+import { db } from "../db";
+import { type NextApiRequest, type NextApiResponse } from "next";
 
 /**
  * 1. CONTEXT
@@ -51,15 +57,24 @@ const createInnerTRPCContext = (opts: CreateContextOptions) => {
  *
  * @see https://trpc.io/docs/context
  */
-export const createTRPCContext = async (opts: CreateNextContextOptions) => {
+export const createTRPCContext = async (
+  opts:
+    | CreateNextContextOptions
+    | NodeHTTPCreateContextFnOptions<IncomingMessage, ws>,
+) => {
   const { req, res } = opts;
 
-  // Get the session from the server using the getServerSession wrapper function
-  const session = await getServerAuthSession({ req, res });
+  if (!("CLOSED" in res && "cookies" in req)) {
+    const session = await getServerAuthSession({
+      req: req as NextApiRequest,
+      res: res as NextApiResponse,
+    });
+    return createInnerTRPCContext({
+      session,
+    });
+  }
 
-  return createInnerTRPCContext({
-    session,
-  });
+  return createInnerTRPCContext({ session: null });
 };
 
 /**

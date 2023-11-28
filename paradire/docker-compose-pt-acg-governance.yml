@@ -72,6 +72,28 @@ services:
       BROKER_PORT: ${BROKER_INTERNAL_PORT}
       NEXTAUTH_SECRET: ${NEXTAUTH_SECRET}
       NEXTAUTH_URL: "http://nowhere"
+      GOVERNANCE_UI_URL: "http://${PUBLIC_IP}:${GOVERNANCE_UI_PORT}"
+      GOVERNANCE_WS_URL: "ws://${PUBLIC_IP}:${GOVERNANCE_UI_WS_PORT}"
+      PT: ${PT}
+
+    networks:
+      - backend
+    restart: always
+
+  governance-ui-wss:
+    build:
+      context: .
+      dockerfile: ./governance/governance-ui/Dockerfile.wsserver
+    container_name: governance-ui-wss
+    ports:
+      - ${GOVERNANCE_UI_WS_PORT}:3001
+    environment:
+      BROKER_HOST: broker
+      BROKER_PORT: ${BROKER_INTERNAL_PORT}
+      NEXTAUTH_SECRET: ${NEXTAUTH_SECRET}
+      NEXTAUTH_URL: "http://nowhere"
+      GOVERNANCE_UI_URL: "http://${PUBLIC_IP}:${GOVERNANCE_UI_PORT}"
+      GOVERNANCE_WS_URL: "ws://${PUBLIC_IP}:${GOVERNANCE_UI_WS_PORT}"
       PT: ${PT}
 
     networks:

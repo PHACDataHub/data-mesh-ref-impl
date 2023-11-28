@@ -24,13 +24,14 @@ export const env = createEnv({
     NEXTAUTH_URL: z.preprocess(
       // This makes Vercel deployments not fail if you don't set NEXTAUTH_URL
       // Since NextAuth.js automatically uses the VERCEL_URL if present.
-      (str) => process.env.NEXT_PUBLIC_PUBLIC_IP ? `http://${process.env.NEXT_PUBLIC_PUBLIC_IP}:${process.env.NEXT_PUBLIC_GATEWAY_PORT}` : str,
+      (str) => process.env.PUBLIC_IP ? `http://${process.env.PUBLIC_IP}:${process.env.GATEWAY_PORT}` : str,
       // VERCEL_URL doesn't include `https` so it cant be validated as a URL
       process.env.VERCEL ? z.string() : z.string().url()
     ),
     BROKER_HOST: z.string(),
     BROKER_PORT: z.number(),
     PT: z.string(),
+    GOVERNANCE_WS_URL: z.string().optional(),
   },
 
   /**
@@ -48,6 +49,7 @@ export const env = createEnv({
    */
   runtimeEnv: {
     DATABASE_URL: process.env.DATABASE_URL ?? "file:./db.sqlite",
+    GOVERNANCE_WS_URL: process.env.GOVERNANCE_WS_URL,
     PT: process.env.PT,
     NODE_ENV: process.env.NODE_ENV,
     NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,

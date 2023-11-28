@@ -9,6 +9,7 @@
  * transformations are specified as custom directives.  The following directives
  * are (supported)[./directive.ts]:
  *   - @date - transforms a date into a string using a format string
+ *   - @transform - transforms a string using a regular expression
  *   - @hash - performs a one way hash of the property
  *   - @blank  - replaces the value with the word "** restricted **"
  *   - @selectable - loosely based on neo4j - this removes the property entirely
@@ -101,6 +102,16 @@ await config_consumer.connect();
 await config_consumer.subscribe({
   topic,
 });
+
+// Load the latest version of the ruleset spec from a file.
+// TODO: May just read it from the topic in the future.
+const ruleset = (await existsSync("./ruleset.yaml"))
+  ? (await readFileSync("./ruleset.yaml")).toString()
+  : false;
+
+const acgStatusMessage = (online: boolean) =>
+  `status${JSON.stringify({ online, ruleset })}`;
+
 const reload = new Promise<void>((resolve) => {
   config_consumer.run({
     eachMessage: async ({ message }) => {
@@ -136,17 +147,13 @@ status_consumer.run({
       console.debug("pong");
       status_producer.send({
         topic: "acg-status",
-        messages: [{ key, value: "pong" }],
+        messages: [
+          { key, value: acgStatusMessage(true) },
+        ],
       });
     }
   },
 });
-
-// Load the latest version of the ruleset spec from a file.
-// TODO: May just read it from the topic in the future.
-const ruleset = (await existsSync("./ruleset.yaml"))
-  ? (await readFileSync("./ruleset.yaml")).toString()
-  : false;
 
 try {
   if (typeof ruleset === "string") {
@@ -166,13 +173,16 @@ try {
           async serverWillStart() {
             return {
               async drainServer() {
-                // Make sure all kafka connections are terminated gracefully.
-                await status_consumer.disconnect();
-                await config_consumer.disconnect();
-                for (const x of query_topic_map) {
-                  if (typeof x[1] === "object") await x[1].dispose();
-                }
-                await status_producer.disconnect();
+                // Because groupIds are random, we can just quit without waiting
+                // for graceful shutdown.  This is fine for a PoC.
+                process.exit(0);
+                // // Make sure all kafka connections are terminated gracefully.
+                // await status_consumer.disconnect();
+                // await config_consumer.disconnect();
+                // for (const x of query_topic_map) {
+                //   if (typeof x[1] === "object") await x[1].dispose();
+                // }
+                // await status_producer.disconnect();
               },
             };
           },
@@ -239,13 +249,13 @@ try {
     let key = (Math.random() + 1).toString(36).substring(7);
     status_producer.send({
       topic: "acg-status",
-      messages: [{ key, value: "ready" }],
+      messages: [{ key, value: acgStatusMessage(true) }],
     });
     await reload;
     key = (Math.random() + 1).toString(36).substring(7);
-    status_producer.send({
+    await status_producer.send({
       topic: "acg-status",
-      messages: [{ key, value: "reload" }],
+      messages: [{ key, value: acgStatusMessage(false) }],
     });
     if (started) await server.stop();
     process.exit(0);
