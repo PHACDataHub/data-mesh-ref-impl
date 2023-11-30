@@ -12,6 +12,10 @@ spec:
       labels:
         app: neodash
     spec:
+      {{- $dashboardName := "Federal Analytics Platform" }}
+      {{- if ne .Values.paradire.pt "phac" }}
+        {{- $dashboardName = printf "%s Analytics Platform" (.Values.paradire.pt | upper) }}
+      {{- end }}
       containers:
         - name: neodash
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -31,6 +35,6 @@ spec:
             - name: standaloneDatabase
               value: "{{ .Values.env.standaloneDatabase }}"
             - name: standaloneDashboardName
-              value: {{ .Values.paradire.pt | lower }} Analytics Platform
+              value: "{{ $dashboardName }}"
             - name: standaloneDashboardDatabase
               value: "{{ .Values.env.standaloneDashboardDatabase }}"

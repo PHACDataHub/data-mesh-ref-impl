@@ -11,18 +11,18 @@ if ! [[ "$action_choice" == "1" || "$action_choice" == "2" || "$action_choice" =
     exit 1
 fi
 
-env_setting="staging"
+env_setting="production"
 
-if [[ "$action_choice" == "1" || "$action_choice" == "2" ]]; then
-    echo "Choose the environment: 1 for staging, 2 for production"
-    read env_choice
+# if [[ "$action_choice" == "1" || "$action_choice" == "2" ]]; then
+#     echo "Choose the environment: 1 for staging, 2 for production"
+#     read env_choice
 
-    if [[ "$env_choice" == "2" ]]; then
-        env_setting="production"
-    elif [[ "$env_choice" != "1" ]]; then
-        echo "Invalid choice. Defaulting to staging environment."
-    fi
-fi
+#     if [[ "$env_choice" == "2" ]]; then
+#         env_setting="production"
+#     elif [[ "$env_choice" != "1" ]]; then
+#         echo "Invalid choice. Defaulting to staging environment."
+#     fi
+# fi
 
 if [[ "$action_choice" == "-1" ]]; then
     read -p "Are you sure you want to proceed with uninstallation? (Y/N): " confirm_response
@@ -83,9 +83,11 @@ for pt in "${selected_provinces[@]}"; do
         --set acg.pt="$pt" \
         --set cp-kafka-cj.cronSchedule="$cron_schedule" \
         --set cp-kafka-cj.pt="$pt" \
+        --set cp-kafka-cj.enabled=false \
         --set cp-kafka-cj.GCPBucketName="paradire-synthea-data" \
         --set cp-kafka-job.GCPBucketName="paradire-synthea-data" \
         --set neo4j.envSetting="$env_setting" \
+        --set hapi-fhir-server.paradire.pt="$pt" \
         --set neo4j.paradire.pt="$pt" \
         --set patient-browser.paradire.pt="$pt" \
         --set paradire-ingress.envSetting="$env_setting" \
