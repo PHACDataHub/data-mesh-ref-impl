@@ -10,7 +10,7 @@ export const env = createEnv({
     NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
     BROKER_HOST: z.string(),
     BROKER_PORT: z.number(),
-    PT: z.string(),
+    PT: z.string().optional(),
     WS_URL: z.string().optional(),
   },
 

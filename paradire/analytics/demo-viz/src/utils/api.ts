@@ -54,9 +54,10 @@ export const api = createTRPCNext<AppRouter>({
        */
       links: [
         loggerLink({
-          enabled: (opts) =>
-            process.env.NODE_ENV === "development" ||
-            (opts.direction === "down" && opts.result instanceof Error),
+          enabled: () => false,
+          // (opts) =>
+          //   process.env.NODE_ENV === "development" ||
+          //   (opts.direction === "down" && opts.result instanceof Error),
         }),
         getEndingLink(),
       ],

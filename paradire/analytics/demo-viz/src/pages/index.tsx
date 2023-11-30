@@ -1,19 +1,11 @@
 import Head from "next/head";
-import { useEffect, useReducer, useRef, useState } from "react";
+import { useCallback, useEffect, useReducer, useRef, useState } from "react";
 
-import uPlot from "uplot";
-import "uplot/dist/uPlot.min.css";
+import { api } from "~/utils/api";
+import { type PT } from "~/server/api/routers/post";
+import Plot from "~/components/Plot";
 
-import ColorScheme from "color-scheme";
-
-// import * as Rickshaw from "rickshaw";
-
-const scheme = new ColorScheme();
-scheme.from_hue(21).scheme("triade").variation("soft");
-
-const colors: string[] = scheme.colors();
-
-const PTs = [
+const PTs: PT[] = [
   "YT",
   "SK",
   "QC",
@@ -29,77 +21,77 @@ const PTs = [
   "AB",
 ];
 
-import { api } from "~/utils/api";
+const minimum_date = new Date("01/01/1945");
+const maximum_date = new Date(Date.now());
 
-const max_points = 60;
+const years: number[] = [];
+const months: number[] = [];
+for (
+  let y = minimum_date.getFullYear();
+  y <= maximum_date.getFullYear();
+  y += 1
+) {
+  years.push(Date.parse(`01/01/${y}`) / 1000);
+  for (let m = 1; m <= 12; m += 1) {
+    months.push(Date.parse(`01/${m}/${y}`) / 1000);
+  }
+}
 
 export default function Home() {
-  const graph_container = useRef<HTMLDivElement>(null);
-  const plot = useRef<uPlot>(null);
+  const year_data = useRef<number[][]>([
+    years,
+    ...PTs.map(() => (Array(years.length) as number[]).fill(0)),
+  ]);
+  const month_data = useRef<number[][]>([
+    months,
+    ...PTs.map(() => (Array(months.length) as number[]).fill(0)),
+  ]);
+
+  const [records, setRecords] = useState(0);
 
   api.post.onData.useSubscription(undefined, {
     enabled: true,
     onData(data) {
-      console.log(data);
-    }
-  })
+      const d = new Date(data.immunization_date);
+      const y = d.getFullYear();
+      const m = d.getMonth();
 
+      const pt_index = PTs.indexOf(data.pt);
+      const y_index = year_data.current[0]?.indexOf(
+        Date.parse(`01/01/${y}`) / 1000,
+      );
+      const m_index = month_data.current[0]?.indexOf(
+        Date.parse(`01/${m}/${y}`) / 1000,
+      );
+
+      const pt_y_row = year_data.current[pt_index + 1];
+      const pt_m_row = month_data.current[pt_index + 1];
+
+      if (
+        pt_y_row &&
+        pt_m_row &&
+        typeof y_index === "number" &&
+        y_index >= 0 &&
+        typeof m_index === "number" &&
+        m_index >= 0
+      ) {
+        pt_y_row[y_index] += 1;
+        pt_m_row[m_index] += 1;
+      }
+    },
+  });
 
   useEffect(() => {
-    if (graph_container.current && !plot.current) {
-      const opts = {
-        title: "Vaccination Status",
-        width: 800,
-        height: 300,
-        cursor: {
-          drag: {
-            setScale: false,
-          },
-        },
-        select: {
-          show: false,
-        },
-        // tzDate: (ts: number) => uPlot.tzDate(new Date(ts * 1e3), "Etc/UTC"),
-        // fmtDate: tpl => uPlot.fmtDate(tpl, ruNames),
-        series: [
-          {
-            label: "X",
-          },
-        ].concat(PTs.map((pt, i) => ({ label: pt, stroke: `#${colors[i]}` }))),
-      };
-      const yrs: number[] = [1950, 1951, 1952];
-      // for (let x = 1950; x += 1; x <= 1960) {yrs.push(x);}
-      const mos = "Jan,Feb,Mar,Apr,May,Jun,Jul,Aug,Sep,Oct,Nov,Dec".split(",");
-      const ts: number[] = [];
-      yrs.forEach((y) => {
-        mos.forEach((m) => {
-          ts.push(Date.parse("01 " + m + " " + y + " 00:00:00 UTC") / 1000);
-        });
-      });
-
-      const data = [ts];
-      PTs.forEach((pt) => {
-        data.push(ts.map((t, i) => Math.floor(Math.random() * 500)));
-      });
-
-      plot.current = new uPlot(opts, data, graph_container.current);
-      setInterval(() => {
-        const nd = data.map((d, i) => {
-          if (i === 0) {
-            d.splice(0, 1);
-            d.push(d[d.length - 1] + 356 * 60 * 60);
-            return d;
-          }
-          d.splice(0, 1);
-          d.push(Math.floor(Math.random() * 500));
-          return d;
-          // .filter((_, i) => i !== 0)
-          // .concat([vals[Math.floor(Math.random() * vals.length)]]);
-        });
-        console.log(nd[1].length);
-        plot.current.setData(nd);
-      }, 1000);
-    }
+    const t = setInterval(() => {
+      setRecords(
+        year_data.current
+          .filter((_, i) => i > 0)
+          .reduce((p, c) => p + c.reduce((c1, c2) => c1 + c2, 0), 0),
+      );
+    }, 1000);
+    return () => {
+      clearInterval(t);
+    };
   }, []);
 
   return (
@@ -112,7 +104,22 @@ export default function Home() {
         />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <div ref={graph_container} />
+      <main className="flex h-screen flex-col p-2">
+        <div className="flex-1">
+          <Plot
+            records={records}
+            title="Total yearly vaccinations per PT"
+            data={year_data.current}
+            PTs={PTs}
+            start={Date.parse("01/01/2005") / 1000}
+          />
+        </div>
+        <div>
+          <span className="text-sm">
+            Available records: {Intl.NumberFormat("en-CA").format(records)}.
+          </span>
+        </div>
+      </main>
     </>
   );
 }

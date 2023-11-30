@@ -1,14 +1,28 @@
-import { z } from "zod";
-import { Kafka, Partitioners } from "kafkajs";
+import { Kafka } from "kafkajs";
 import { SchemaRegistry } from "@kafkajs/confluent-schema-registry";
 
 import { createTRPCRouter, publicProcedure } from "../trpc";
 import { env } from "../../../env.js";
 import { observable } from "@trpc/server/observable";
 
-type FAS_5 = {
+export type PT =
+  | "YT"
+  | "SK"
+  | "QC"
+  | "PE"
+  | "ON"
+  | "NU"
+  | "NT"
+  | "NS"
+  | "NL"
+  | "NB"
+  | "MB"
+  | "BC"
+  | "AB";
+
+export type FAS_5 = {
   request_id: string;
-  pt: string;
+  pt: PT;
   immunization_date: string;
   immunization_code: string;
   immunization_description: string;
@@ -42,7 +56,6 @@ const registry_phac = new SchemaRegistry({
   host: `http://${env.BROKER_HOST}:8081`,
 });
 
-
 export const postRouter = createTRPCRouter({
   hello: publicProcedure.query(() => {
     return {
@@ -63,10 +76,11 @@ export const postRouter = createTRPCRouter({
     return observable<FAS_5>((emit) => {
       void pt_consumer.run({
         eachMessage: async ({ message }) => {
-          console.info("-= DATA FROM ACG =-");
           if (message.value) {
             try {
-              const value = (await registry_phac.decode(message.value)) as FAS_5;
+              const value = (await registry_phac.decode(
+                message.value,
+              )) as FAS_5;
               if (value) {
                 const payload = value;
                 emit.next(payload);
