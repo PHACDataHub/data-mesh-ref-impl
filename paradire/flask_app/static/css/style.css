@@ -1,39 +1,33 @@
 body, html {
-    font-family: 'Arial', sans-serif;
+    font-family: 'Open Sans', sans-serif; /* Changed to a modern font */
     margin: 0;
     padding: 0;
     width: 100%;
     height: 100%;
-    background-color: #222f3e;
+    background-color: #f4f7f6; /* Changed to a lighter shade for modern look */
 }
 
 .container {
-    max-width: 1200px;
-    margin: 20px auto;
-    padding: 20px;
-    background-color: #c8d6e5;
+    padding: 20px 5%; /* Reduced padding and removed max-width */
+    background-color: #ffffff; /* Lighter background for the container */
     justify-content: center;
     align-items: center; 
-    box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    box-shadow: 0 0 15px rgba(0,0,0,0.05); /* Softer shadow for flat design */
     border-radius: 8px;
 }
 
 .header.center-align {
     text-align: center;
-    width: 100%;
-    margin: 0 auto;
-    margin-bottom: 50px;
+    margin-bottom: 20px; /* Reduced margin for a tighter header */
     color: #333;
-    display: block;
-    font-weight: bold;
-    font-size: 2.5rem;
+    font-weight: 600; /* Less bold for a lighter appearance */
+    font-size: 1.8rem; /* Smaller font size for header */
 }
 
 .row {
     display: flex;
     flex-wrap: wrap;
     margin-right: -15px;
-    width: 100%;
     margin-left: -15px;
 }
 
@@ -44,66 +38,65 @@ body, html {
 .province-card {
     background-color: #fff;
     border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-    padding: 20px;
-    margin-bottom: 30px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1); /* Flatter shadow */
+    padding: 15px; /* Reduced padding */
+    margin-bottom: 20px; /* Reduced margin for a tighter layout */
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .province-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+    transform: translateY(-3px); /* Subtler hover effect */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15); /* Slightly deeper shadow on hover */
 }
 
 .province-title {
-    font-size: 1.8rem;
-    font-weight: bold;
-    margin-bottom: 25px;
-    color: #222f3e;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    font-size: 1.5rem; /* Smaller font size for titles */
+    font-weight: 600; /* Less bold */
+    margin-bottom: 15px; /* Less margin for a tighter layout */
+    color: #333;
 }
 
 .service-btn {
-    display: block;
-    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600; /* Less bold */
     width: 100%;
-    padding: 15px; 
-    margin-bottom: 15px;
+    padding: 12px 20px; /* More padding for a pill look */
+    margin-bottom: 10px; /* Reduced margin */
     border: none;
-    border-radius: 5px;
+    border-radius: 20px; /* Rounded for a modern 'pill' look */
     text-decoration: none;
-    color: white;
+    color: #fff;
     background-color: #007bff;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05); /* Softer shadow */
+    transition: background-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
 }
 
 .service-btn:hover {
-    background-color: #222f3e;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-    color: white !important;
+    background-color: #0056b3; /* Darker shade on hover */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Slightly deeper shadow on hover */
+    transform: scale(1.05); /* Scale up on hover for interactive feedback */
 }
 
-
+/* Media queries for responsiveness */
 @media (min-width: 768px) {
     .card-container {
-        flex: 0 0 calc(50% - 30px); 
-        max-width: calc(50% - 30px);
+        flex: 0 0 100%;
+        max-width: 100%;
     }
 }
 
 @media (min-width: 992px) {
     .card-container {
-        flex: 0 0 calc(33.333% - 30px);
-        max-width: calc(33.333% - 30px);
+        flex: 0 0 50%;
+        max-width: 50%;
     }
 }
 
 @media (min-width: 1200px) {
     .card-container {
-        flex: 0 0 calc(25% - 30px);
-        max-width: calc(25% - 30px);
+        flex: 0 0 25%;
+        max-width: 25%;
     }
 }

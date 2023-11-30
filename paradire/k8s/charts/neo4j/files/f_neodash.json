@@ -2,8 +2,8 @@
     "title": "Federal Analytics Platform",
     "version": "2.4",
     "settings": {
-      "pagenumber": 3,
-      "editable": false,
+      "pagenumber": 0,
+      "editable": true,
       "fullscreenEnabled": false,
       "parameters": {
         "neodash_patient_name": "",
@@ -127,8 +127,8 @@
           },
           {
             "id": "5cc7a34e-58f4-46aa-ae85-acc8cdeed9ab",
-            "title": "Percentage of vaccinated population per zip code for the Period above",
-            "query": "MATCH (h:FAR_1_HELPER)\nWITH h\n  MATCH (n:FAS_1 {request_id: h.request_id})\nWITH DISTINCT(n.patient_zip) AS zip, COLLECT([n.status_percent, n.patient_status]) AS ps, SUM(n.status_percent) AS sum\nWITH zip, ps\n  WHERE SIZE(ps) = 3 AND sum <= 105\nWITH\n  zip, ps ORDER BY zip SKIP TOINTEGER(RAND() * 50) + 1  LIMIT 100\nWITH zip, ps\n  UNWIND ps AS e\nRETURN zip, e[0] AS status_percent, e[1] AS patient_status\n  \n",
+            "title": "Percentage of vaccinated population per zip code for the Period above (in 50 zip codes)",
+            "query": "MATCH (h:FAR_1_HELPER)\nWITH h\n  MATCH (n:FAS_1 {request_id: h.request_id})\nWITH DISTINCT(n.patient_zip) AS zip, COLLECT([n.status_percent, n.patient_status]) AS ps, SUM(n.status_percent) AS sum\nWITH zip, ps\n  WHERE SIZE(ps) = 3 AND sum <= 105\nWITH\n  zip, ps ORDER BY zip SKIP TOINTEGER(RAND() * 10) + 1  LIMIT 50\nWITH zip, ps\n  UNWIND ps AS e\nRETURN zip, e[0] AS status_percent, e[1] AS patient_status\n  \n",
             "width": 24,
             "height": 6,
             "x": 0,
@@ -355,7 +355,7 @@
               "refreshButtonEnabled": true,
               "downloadImageEnabled": true,
               "fullscreenEnabled": true,
-              "autorun": false
+              "autorun": true
             },
             "schema": []
           }
@@ -368,9 +368,9 @@
             "id": "e591e48d-492f-4b95-87c5-328e6fe9ca35",
             "title": "Query",
             "query": "MERGE (h:FAR_4_HELPER)\n  SET h.request_id = apoc.create.uuid()\nWITH h\n  CREATE (n:FAR_4)\n    SET\n      n.request_id = h.request_id,\n      n.cvx_list = \"43,52\",\n      n.pt_list = \"AB,BC,MB,NB,NL,NT,NS,NU,ON,PE,QC,SK,YT\",\n      n.timestamp = apoc.date.currentTimestamp(),\n      n.doc = \"All PTs: Which zip code where patients travel to organization to get vaccinated.\"\nRETURN n.request_id\n\n\n\n\n\n\n",
-            "width": 8,
+            "width": 10,
             "height": 2,
-            "x": 16,
+            "x": 14,
             "y": 0,
             "type": "table",
             "selection": {},
@@ -383,8 +383,8 @@
             "id": "7f58c9db-1510-47df-957e-9c314b56bd0c",
             "title": "Hep A/B vaccinations at zip code - organization",
             "query": "MATCH (h:FAR_4_HELPER)\nWITH h\n  MATCH (n:FAS_4 {request_id: h.request_id})\nRETURN [n.patient_zip, n.organization_name] AS path, n.vaccination_count ORDER BY path\n",
-            "width": 16,
-            "height": 8,
+            "width": 14,
+            "height": 9,
             "x": 0,
             "y": 0,
             "type": "sunburst",
@@ -402,7 +402,7 @@
               "downloadImageEnabled": true,
               "fullscreenEnabled": true,
               "colors": "paired",
-              "autorun": false
+              "autorun": true
             },
             "schema": []
           },
@@ -410,11 +410,11 @@
             "id": "9bad2b22-8500-4d03-acd9-f32493586033",
             "title": "Hep A/B vaccinations at PTs",
             "query": "MATCH (h:FAR_4_HELPER)\nWITH h\n  MATCH (n:FAS_4 {request_id: h.request_id})\nRETURN [n.pt] AS path, COUNT(n.vaccination_count) AS count ORDER BY path\n",
-            "width": 8,
-            "height": 6,
-            "x": 16,
+            "width": 10,
+            "height": 7,
+            "x": 14,
             "y": 2,
-            "type": "sunburst",
+            "type": "pie",
             "selection": {
               "index": "path",
               "value": "count",
@@ -429,7 +429,7 @@
               "downloadImageEnabled": true,
               "fullscreenEnabled": true,
               "colors": "paired",
-              "autorun": false
+              "autorun": true
             },
             "schema": []
           }
@@ -454,7 +454,7 @@
               "columnWidths": "[5, 2, 17, 13, 15, 5, 5, 4, 4, 2, 2, 3]",
               "downloadImageEnabled": true,
               "fullscreenEnabled": true,
-              "autorun": false
+              "autorun": true
             }
           },
           {
@@ -464,13 +464,91 @@
             "width": 6,
             "height": 2,
             "x": 0,
-            "y": 8,
+            "y": 24,
             "type": "table",
             "selection": {},
             "settings": {
               "autorun": false,
               "refreshButtonEnabled": true
             }
+          },
+          {
+            "id": "747c7b3e-808d-4e42-9c7e-d6705ed088f7",
+            "title": "Vaccination records for 12 CVXs",
+            "query": "MATCH (h:FAR_5_HELPER)\nWITH h\n  MATCH (n:FAS_5 {request_id: h.request_id})\nWITH\n  n.immunization_code AS code, SUBSTRING(TOSTRING(n.immunization_date), 0, 4) AS year\nWITH\n  DISTINCT(year) AS year, COLLECT(code) AS codes\nRETURN\n  year,\n  REDUCE(c=0, e IN codes | CASE WHEN e = '03' THEN c + 1 ELSE c END) AS MRR,\n  REDUCE(c=0, e IN codes | CASE WHEN e = '08' THEN c + 1 ELSE c END) AS HepB,\n  REDUCE(c=0, e IN codes | CASE WHEN e = '21' THEN c + 1 ELSE c END) AS Varicella,\n  REDUCE(c=0, e IN codes | CASE WHEN e = '49' THEN c + 1 ELSE c END) AS Hib,\n  REDUCE(c=0, e IN codes | CASE WHEN e = '83' THEN c + 1 ELSE c END) AS HepA,\n  REDUCE(c=0, e IN codes | CASE WHEN e = '115' THEN c + 1 ELSE c END) AS Tdap,\n  REDUCE(c=0, e IN codes | CASE WHEN e = '62' THEN c + 1 ELSE c END) AS HPV_e,\n  REDUCE(c=0, e IN codes | CASE WHEN e = '114' THEN c + 1 ELSE c END) AS Meningococcal,\n  REDUCE(c=0, e IN codes | CASE WHEN e = '113' THEN c + 1 ELSE c END) AS Td_adult,\n  REDUCE(c=0, e IN codes | CASE WHEN e = '43' THEN c + 1 ELSE c END) AS HepB_adult,\n  REDUCE(c=0, e IN codes | CASE WHEN e = '52' THEN c + 1 ELSE c END) AS HepA_adult,\n  REDUCE(c=0, e IN codes | CASE WHEN e = '10' THEN c + 1 ELSE c END) AS IPV\n  ORDER BY year  \n",
+            "width": 24,
+            "height": 8,
+            "x": 0,
+            "y": 8,
+            "type": "line",
+            "selection": {
+              "x": "year",
+              "value": [
+                "MRR",
+                "HPV_e",
+                "HepA",
+                "HepA_adult",
+                "HepB_adult",
+                "HepB",
+                "Hib",
+                "Td_adult",
+                "IPV",
+                "Tdap",
+                "Varicella",
+                "Meningococcal"
+              ]
+            },
+            "settings": {
+              "refreshButtonEnabled": true,
+              "allowDownload": true,
+              "columnWidths": "[5, 2, 17, 13, 15, 5, 5, 4, 4, 2, 2, 3]",
+              "downloadImageEnabled": true,
+              "fullscreenEnabled": true,
+              "autorun": true,
+              "colors": "paired",
+              "legend": true
+            },
+            "schema": []
+          },
+          {
+            "id": "0da1a8bb-abb0-4c53-ac0e-97fecc615cd3",
+            "title": "Vaccination records per PT",
+            "query": "MATCH (h:FAR_5_HELPER)\nWITH h\n  MATCH (n:FAS_5 {request_id: h.request_id})\nWITH\n  n.pt AS pt, SUBSTRING(TOSTRING(n.immunization_date), 0, 4) AS year\nWITH \n  DISTINCT(year) AS year, COLLECT(pt) AS pts\nRETURN\n  year,\n  REDUCE(c=0, e IN pts | CASE WHEN e = 'AB' THEN c + 1 ELSE c END) AS AB,\n  REDUCE(c=0, e IN pts | CASE WHEN e = 'BC' THEN c + 1 ELSE c END) AS BC,\n  REDUCE(c=0, e IN pts | CASE WHEN e = 'MB' THEN c + 1 ELSE c END) AS MB,\n  REDUCE(c=0, e IN pts | CASE WHEN e = 'NB' THEN c + 1 ELSE c END) AS NB,\n  REDUCE(c=0, e IN pts | CASE WHEN e = 'NL' THEN c + 1 ELSE c END) AS NL,\n  REDUCE(c=0, e IN pts | CASE WHEN e = 'NS' THEN c + 1 ELSE c END) AS NS,\n  REDUCE(c=0, e IN pts | CASE WHEN e = 'NT' THEN c + 1 ELSE c END) AS NT,\n  REDUCE(c=0, e IN pts | CASE WHEN e = 'NU' THEN c + 1 ELSE c END) AS NU,\n  REDUCE(c=0, e IN pts | CASE WHEN e = 'ON' THEN c + 1 ELSE c END) AS ON,\n  REDUCE(c=0, e IN pts | CASE WHEN e = 'QC' THEN c + 1 ELSE c END) AS QC,\n  REDUCE(c=0, e IN pts | CASE WHEN e = 'PE' THEN c + 1 ELSE c END) AS PE,\n  REDUCE(c=0, e IN pts | CASE WHEN e = 'SK' THEN c + 1 ELSE c END) AS SK,\n  REDUCE(c=0, e IN pts | CASE WHEN e = 'YT' THEN c + 1 ELSE c END) AS YT\n  ORDER BY year  \n  \n",
+            "width": 24,
+            "height": 8,
+            "x": 0,
+            "y": 16,
+            "type": "line",
+            "selection": {
+              "x": "year",
+              "value": [
+                "AB",
+                "BC",
+                "MB",
+                "NB",
+                "NL",
+                "NS",
+                "NT",
+                "NU",
+                "ON",
+                "PE",
+                "QC",
+                "SK",
+                "YT"
+              ]
+            },
+            "settings": {
+              "refreshButtonEnabled": true,
+              "allowDownload": true,
+              "columnWidths": "[5, 2, 17, 13, 15, 5, 5, 4, 4, 2, 2, 3]",
+              "downloadImageEnabled": true,
+              "fullscreenEnabled": true,
+              "autorun": true,
+              "legend": true,
+              "colors": "paired",
+              "yScale": "linear"
+            },
+            "schema": []
           }
         ]
       },
@@ -499,7 +577,7 @@
               "enableArcLinkLabels": true,
               "downloadImageEnabled": true,
               "fullscreenEnabled": true,
-              "autorun": false,
+              "autorun": true,
               "refreshButtonEnabled": true
             },
             "schema": []
@@ -528,7 +606,7 @@
               "arcLinkLabelsSkipAngle": 3,
               "fullscreenEnabled": true,
               "refreshButtonEnabled": true,
-              "autorun": false
+              "autorun": true
             },
             "schema": []
           },
@@ -555,7 +633,7 @@
               "downloadImageEnabled": true,
               "arcLinkLabelsSkipAngle": 3,
               "fullscreenEnabled": true,
-              "autorun": false,
+              "autorun": true,
               "refreshButtonEnabled": true
             },
             "schema": []
@@ -625,7 +703,7 @@
               "fullscreenEnabled": true,
               "downloadImageEnabled": true,
               "compact": true,
-              "autorun": false,
+              "autorun": true,
               "refreshButtonEnabled": true,
               "columnWidths": "[3,4,12,70]"
             }

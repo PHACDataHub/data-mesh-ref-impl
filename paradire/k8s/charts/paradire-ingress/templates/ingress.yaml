@@ -23,8 +23,15 @@ spec:
           service:
             name: governance-ui-svc
             port:
-              number: 3000
+              number: 3080
         path: /
+        pathType: Prefix
+      - backend: 
+          service:
+            name: governance-ui-svc
+            port:
+              number: 3080
+        path: /ws
         pathType: Prefix
   - host: patient-browser.{{ .Values.pt | lower }}.paradire.phac-aspc.alpha.canada.ca
     http:
