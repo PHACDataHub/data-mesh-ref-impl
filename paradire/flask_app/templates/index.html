@@ -6,21 +6,17 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.1/css/all.css" integrity="sha384-v2S3aP6Mzun6Tt78z1sA7U9boFQ0NSHrPpekYRwoLl+VBRQU9Uu1tRZ4pfa1j1z" crossorigin="anonymous">
 </head>
 <body>
     <div class="container">
         <h3 class="header center-align">Immunization Records Gateway Links</h3>
         <div class="row justify-content-center">
             {% for province, services in entities.items() %}
-                <div class="col card-container">
+                <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3 card-container">
                     <div class="province-card">
                         <div class="province-title">{{ province | capitalize }}</div>
                         {% for service in services %}
-                            <a href="{{ service.url }}" target="_blank" class="service-btn">
-                                <i class="fas fa-link"></i> <!-- FontAwesome icon -->
-                                {{ service.name | capitalize }}
-                            </a>
+                            <a href="{{ service.url }}" target="_blank" class="service-btn">{{ service.name | capitalize }}</a>
                         {% endfor %}
                     </div>
                 </div>
