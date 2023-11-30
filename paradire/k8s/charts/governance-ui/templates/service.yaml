@@ -4,7 +4,7 @@ metadata:
   name: governance-ui-svc
 spec:
   ports:
-    - port: 3000
+    - port: 3080
       protocol: TCP
   selector:
     app: governance-ui

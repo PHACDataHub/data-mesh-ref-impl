@@ -23,6 +23,7 @@ spec:
       containers:
       - name: links-app
         image: northamerica-northeast1-docker.pkg.dev/phx-01he5rx4wsv/paradire/links-app:latest
+        imagePullPolicy: Always
         ports:
         - containerPort: 80
         env:
@@ -55,15 +56,15 @@ metadata:
   annotations:
     kubernetes.io/ingress.allow-http: "true"
     kubernetes.io/ingress.global-static-ip-name: links-cluster-ip
-    cert-manager.io/cluster-issuer: letsencrypt-dns-staging
+    cert-manager.io/cluster-issuer: letsencrypt-dns-production
     acme.cert-manager.io/http01-edit-in-place: "true"
     kubernetes.io/ingress.class: gce
 spec:
   ingressClassName: "gce"
   tls:
-    - secretName: wildcard-ssl-staging
+    - secretName: wildcard-ssl-production
       hosts:
-        - "*.links.paradire.phac-aspc.alpha.canada.ca"
+        - "links.paradire.phac-aspc.alpha.canada.ca"
   rules:
   - host: links.paradire.phac-aspc.alpha.canada.ca
     http:
