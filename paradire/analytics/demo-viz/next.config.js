@@ -9,7 +9,17 @@ await import("./src/env.js");
 
 /** @type {import("next").NextConfig} */
 const config = {
+  output: "standalone",
   reactStrictMode: true,
+  transpilePackages: [
+    "antd",
+    "@ant-design/icons",
+    "@ant-design/icons-svg",
+    "rc-util",
+    "rc-pagination",
+    "rc-picker",
+    "rc-tree",
+    "rc-table",],
 
   /**
    * If you are using `appDir` then you must comment the below `i18n` config out.

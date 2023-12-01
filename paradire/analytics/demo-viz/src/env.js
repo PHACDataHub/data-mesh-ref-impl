@@ -10,8 +10,7 @@ export const env = createEnv({
     NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
     BROKER_HOST: z.string(),
     BROKER_PORT: z.number(),
-    PT: z.string().optional(),
-    WS_URL: z.string().optional(),
+    WS_URL: z.string(),
   },
 
   /**
@@ -31,7 +30,6 @@ export const env = createEnv({
     NODE_ENV: process.env.NODE_ENV,
     BROKER_HOST: process.env.BROKER_HOST,
     BROKER_PORT: parseInt(process.env.BROKER_PORT ?? "INVALID", 10),
-    PT: process.env.PT,
     WS_URL: process.env.WS_URL,
     // NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
   },

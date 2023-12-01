@@ -6,7 +6,7 @@
   "scripts": {
     "copyWasm": "copy-files-from-to --config copy-files-from-to.json",
     "build": "npm run copyWasm && next build",
-    "build:ws": "rm -rf dist && tsc --project tsconfig.wsserver.json && find dist -iname *.js -exec tsc-esm {} \\; && mv dist/env.mjs dist/env.mjs.js",
+    "build:ws": "rm -rf dist && tsc --project tsconfig.wsserver.json && find dist -iname \"*.js\" -exec tsc-esm {} \\; && mv dist/env.js dist/env.js.js",
     "dev:ws": "nodemon -I --exec node --es-module-specifier-resolution=node --loader ts-node/esm src/server/wsServer.ts",
     "dev:next": "npm run copyWasm && next dev -p 3005",
     "dev": "npm run dev:next & npm run dev:ws",
@@ -21,7 +21,9 @@
     "@trpc/next": "^10.43.6",
     "@trpc/react-query": "^10.43.6",
     "@trpc/server": "^10.43.6",
+    "antd": "^5.11.5",
     "color-scheme": "^1.0.1",
+    "dayjs": "^1.11.10",
     "dotenv": "^16.3.1",
     "kafkajs": "^2.2.4",
     "next": "^14.0.3",
@@ -55,6 +57,7 @@
     "prettier-plugin-tailwindcss": "^0.5.7",
     "tailwindcss": "^3.3.5",
     "ts-node-dev": "^2.0.0",
+    "tsc-esm": "^1.0.4",
     "typescript": "^5.1.6"
   },
   "ct3aMetadata": {

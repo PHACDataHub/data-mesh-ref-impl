@@ -57,12 +57,6 @@ const registry_phac = new SchemaRegistry({
 });
 
 export const postRouter = createTRPCRouter({
-  hello: publicProcedure.query(() => {
-    return {
-      pt: `${env.PT}`.toUpperCase(),
-    };
-  }),
-
   onData: publicProcedure.subscription(async () => {
     console.info("-= subscribing to ACG =-");
 

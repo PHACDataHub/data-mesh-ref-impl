@@ -16,6 +16,14 @@ import superjson from "superjson";
 
 import { type AppRouter } from "~/server/api/root";
 
+let WS_URL = "";
+if (typeof window !== "undefined") {
+  const data = await fetch("/api/env/WS_URL");
+  const gov_env = (await data.json()) as { WS_URL: string };
+  if (gov_env.WS_URL) WS_URL = gov_env.WS_URL;
+}
+
+
 const getBaseUrl = () => {
   if (typeof window !== "undefined") return ""; // browser should use relative url
   if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`; // SSR should use vercel url
@@ -29,7 +37,7 @@ function getEndingLink() {
     });
   }
   const client = createWSClient({
-    url: `ws://localhost:${process.env.WS_PORT ?? 3006}`,
+    url: WS_URL || `ws://localhost:${process.env.WS_PORT ?? 3006}`,
   });
   return wsLink<AppRouter>({
     client,
