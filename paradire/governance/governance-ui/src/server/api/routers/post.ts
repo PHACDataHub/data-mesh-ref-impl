@@ -1,5 +1,6 @@
 import { Kafka, Partitioners } from "kafkajs";
 import { z } from "zod";
+import * as crypto from 'crypto';
 
 import { env } from "../../../env.mjs";
 
