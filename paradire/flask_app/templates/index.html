@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Immunization Records Gateway Links</title>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -14,10 +15,16 @@
             {% for province, services in entities.items() %}
                 <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3 card-container">
                     <div class="province-card">
-                        <div class="province-title">{{ province | capitalize }}</div>
+                        <div class="province-title">{{ province }}</div>
                         {% for service in services %}
                             <a href="{{ service.url }}" target="_blank" class="service-btn">{{ service.name | capitalize }}</a>
                         {% endfor %}
+                        <div class="status-indicator">
+                            <span class="status-text">Initializing Health Check</span>
+                            <svg class="health-indicator" id="health-indicator-{{ province }}" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
+                                <circle cx="12" cy="12" r="10" fill="#808080"/>
+                            </svg>
+                        </div>
                     </div>
                 </div>
             {% endfor %}
@@ -25,5 +32,41 @@
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script>
+        function updateHealthStatus() {
+            const provinces = document.querySelectorAll('.province-card');
+            provinces.forEach((province, index) => {
+                const provinceName = province.querySelector('.province-title').textContent.trim();
+                const indicator = province.querySelector('.health-indicator circle');
+                let statusText = province.querySelector('.status-text');
+
+                fetch(`/health-check/${provinceName}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        let isProvinceHealthy = true;
+                        for (let service in data[provinceName]) {
+                            if (data[provinceName][service] !== "healthy") {
+                                isProvinceHealthy = false;
+                                break;
+                            }
+                        }
+                        if (isProvinceHealthy) {
+                            indicator.setAttribute('fill', '#008000');
+                            statusText.textContent = 'Online';
+                        } else {
+                            indicator.setAttribute('fill', '#FF0000');
+                            statusText.textContent = 'Offline';
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        indicator.setAttribute('fill', '#FF0000');
+                        statusText.textContent = 'Offline';
+                    });
+            });
+        }
+        updateHealthStatus();
+        setInterval(updateHealthStatus, 300000);
+    </script>
 </body>
 </html>

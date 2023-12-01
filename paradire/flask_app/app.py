@@ -1,4 +1,5 @@
 from flask import Flask, render_template, jsonify
+import requests
 
 app = Flask(__name__)
 
@@ -131,6 +132,29 @@ entities = {
 @app.route('/')
 def index():
     return render_template('index.html', entities=entities)
+
+def check_health(url):
+    try:
+        print(url)
+        response = requests.get(url, timeout=5, allow_redirects=True)
+        return response.status_code in (200, 302)
+    except requests.exceptions.RequestException as e:
+        print(f"Error checking {url}: {e}")
+        return None 
+
+@app.route('/health-check/<province_name>')
+def health_check(province_name):
+    print(f"Checking health for province: {province_name}")
+    province_name = province_name.replace("%20", " ")
+    if province_name in entities:
+        province_health_status = {}
+        for service in entities[province_name]:
+            result = check_health(service['url'])
+            health_status = "healthy" if result else "error" if result is None else "unhealthy"
+            province_health_status[service['name']] = health_status
+        return jsonify({province_name: province_health_status})
+    else:
+        return jsonify({"error": "Province not found"}), 404
 
 if __name__ == '__main__':
     app.run(debug=True)
