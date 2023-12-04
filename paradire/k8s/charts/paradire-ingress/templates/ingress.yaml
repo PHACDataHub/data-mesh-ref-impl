@@ -15,6 +15,25 @@ spec:
       hosts:
         - "*.{{ .Values.pt | lower }}.paradire.phac-aspc.alpha.canada.ca"
   rules:
+{{ if eq .Values.pt "phac" }}
+  - host: streaming.{{ .Values.pt | lower }}.paradire.phac-aspc.alpha.canada.ca
+    http:
+      paths:
+      - backend: 
+          service:
+            name: streaming-ui-svc
+            port:
+              number: 3090
+        path: /
+        pathType: Prefix
+      - backend: 
+          service:
+            name: streaming-ui-svc
+            port:
+              number: 3090
+        path: /ws
+        pathType: Prefix
+{{ end }}
 {{ if ne .Values.pt "phac" }}
   - host: governance.{{ .Values.pt | lower }}.paradire.phac-aspc.alpha.canada.ca
     http:
@@ -101,3 +120,4 @@ spec:
               number: 8089
         path: /
         pathType: Prefix
+

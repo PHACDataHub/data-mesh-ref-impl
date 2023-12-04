@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: streaming-ui
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: streaming-ui
+  template:
+    metadata:
+      labels:
+        app: streaming-ui
+    spec:
+      enableServiceLinks: false
+      containers:
+      - name: streaming-ui
+        image: northamerica-northeast1-docker.pkg.dev/phx-01he5rx4wsv/paradire/demo-viz:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 3000
+        env:
+        - name: BROKER_HOST
+          value: {{ printf (include "cp-kafka-rest.cp-kafka-headless.fullname" .)  | quote}}
+        - name: BROKER_PORT
+          value: "9092"
+        - name: HOSTNAME
+          value: "0.0.0.0"
+        - name: WS_URL
+          value: "wss://streaming.phac.paradire.phac-aspc.alpha.canada.ca/ws"
+        - name: F_SCHEMA_REGISTRY_URL
+          value: {{ .Values.schemaRegistry.fUrl | quote }}
+      - name: streaming-ui-wss
+        image: northamerica-northeast1-docker.pkg.dev/phx-01he5rx4wsv/paradire/demo-viz-wss:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 3006
+        env:
+        - name: BROKER_HOST
+          value: {{ printf (include "cp-kafka-rest.cp-kafka-headless.fullname" .)  | quote}}
+        - name: BROKER_PORT
+          value: "9092"
+        - name: HOSTNAME
+          value: "0.0.0.0"
+        - name: WS_URL
+          value: "wss://streaming.phac.paradire.phac-aspc.alpha.canada.ca/ws"
+        - name: F_SCHEMA_REGISTRY_URL
+          value: {{ .Values.schemaRegistry.fUrl | quote }}
+      - name: nginx-streaming-proxy
+        image: northamerica-northeast1-docker.pkg.dev/phx-01he5rx4wsv/paradire/streaming-nginx-proxy
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 3090

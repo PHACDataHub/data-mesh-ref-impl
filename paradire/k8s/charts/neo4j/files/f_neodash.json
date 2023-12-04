@@ -120,6 +120,41 @@
     },
     "pages": [
       {
+        "title": "Live Stream Vaccination Records",
+        "reports": [
+          {
+            "id": "d7effaff-2cbe-43fd-8650-3b6ef73947f8",
+            "title": "Total yearly vaccinations per PT (Live)",
+            "query": "https://streaming.phac.paradire.phac-aspc.alpha.canada.ca",
+            "width": 24,
+            "height": 5,
+            "x": 0,
+            "y": 0,
+            "type": "iframe",
+            "selection": {},
+            "settings": {
+              "fullscreenEnabled": false
+            },
+            "schema": []
+          },
+          {
+            "id": "2f9296c7-acb0-4103-9fc6-8a12d3e28efc",
+            "title": "Initiate stream",
+            "query": "MERGE (h:FAR_5_HELPER)\n  SET h.request_id = apoc.create.uuid()\nWITH h\n  CREATE (n:FAR_5)\n    SET\n      n.request_id = h.request_id,\n      n.pt_list = \"AB,BC,MB,NB,NL,NT,NS,NU,ON,PE,QC,SK,YT\",\n      n.timestamp = apoc.date.currentTimestamp(),\n      n.doc = \"All PTs: Vaccination record streams.\"\nRETURN n.request_id\n\n\n\n\n\n\n\n\n\n",
+            "width": 24,
+            "height": 2,
+            "x": 0,
+            "y": 5,
+            "type": "table",
+            "selection": {},
+            "settings": {
+              "autorun": false,
+              "refreshButtonEnabled": true
+            }
+          }
+        ]
+      },      
+      {
         "reports": [
           {
             "schema": [],
