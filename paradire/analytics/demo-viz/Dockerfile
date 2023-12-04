@@ -1,17 +1,13 @@
 ##### DEPENDENCIES
 
-FROM --platform=linux/amd64 node:16-alpine3.17 AS deps
+FROM --platform=linux/amd64 node:18-alpine3.17 AS deps
 RUN apk add --no-cache libc6-compat openssl1.1-compat
 
 WORKDIR /app
 
-# Install Prisma Client - remove if not using Prisma
-
-COPY ./governance/governance-ui/prisma ./
-
 # Install dependencies based on the preferred package manager
 
-COPY ./governance/governance-ui/package.json ./governance/governance-ui/yarn.lock* ./governance/governance-ui/package-lock.json* ./governance/governance-ui/pnpm-lock.yaml\* ./
+COPY ./analytics/demo-viz/package.json ./analytics/demo-viz/yarn.lock* ./analytics/demo-viz/package-lock.json* ./analytics/demo-viz/pnpm-lock.yaml\* ./
 
 RUN \
     if [ -f yarn.lock ]; then yarn --frozen-lockfile; \
@@ -22,24 +18,13 @@ RUN \
 
 ##### BUILDER
 
-FROM --platform=linux/amd64 node:16-alpine3.17 AS builder
-
-# Install schema-tools
-RUN npm install --global typescript
-WORKDIR /schema-tools
-COPY ./governance/schema-tools/package.json ./governance/schema-tools/package-lock.json /schema-tools/
-RUN npm ci
-COPY ./governance/schema-tools/ /schema-tools/
-RUN tsc && npm link
-
+FROM --platform=linux/amd64 node:18-alpine3.17 AS builder
 
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
-COPY ./governance/governance-ui/ .
+COPY ./analytics/demo-viz/ .
 
 ENV NEXT_TELEMETRY_DISABLED 1
-
-RUN npm link @phac-aspc-dgg/schema-tools
 
 RUN \
     if [ -f yarn.lock ]; then SKIP_ENV_VALIDATION=1 yarn build; \
@@ -50,7 +35,7 @@ RUN \
 
 ##### RUNNER
 
-FROM --platform=linux/amd64 node:16-alpine3.17 AS runner
+FROM --platform=linux/amd64 node:18-alpine3.17 AS runner
 
 WORKDIR /app
 
@@ -61,7 +46,7 @@ ENV NEXT_TELEMETRY_DISABLED 1
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
-COPY --from=builder /app/next.config.mjs ./
+COPY --from=builder /app/next.config.js ./
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/package.json ./package.json
 
@@ -70,8 +55,5 @@ COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
 USER nextjs
 EXPOSE 3000
-
-ENV PORT 3000
-ENV WS_PORT 3001
 
 CMD ["node", "server.js"]
