@@ -5,10 +5,10 @@
 # [Part III - PT and F clusters in harmony](#part-iii---pt-and-f-clusters-in-harmony)
 
 
-# Kubernetes Cluster Deployment Script: `launch_pt_federal_cluster.sh`
+# Kubernetes Cluster Deployment Script
 
 ## Overview
-The `launch_pt_federal_cluster.sh` script is an automation tool for managing Kubernetes cluster deployments for 13 provinces and a Federal cluster. It leverages Helm, a package manager for Kubernetes, to facilitate the installation, upgrade, and uninstallation of these clusters.
+The [`launch_pt_federal_cluster.sh`](../k8s/launch_pt_federal_cluster.sh) script is an automation tool for managing Kubernetes cluster deployments for 13 provinces and a Federal cluster. It leverages Helm, a package manager for Kubernetes, to facilitate the installation, upgrade, and uninstallation of these clusters.
 
 ## Prerequisites
 - Bash shell.
@@ -58,11 +58,7 @@ Execute the script in a Bash environment:
 
 ## Architecture
 
-![Alt text for the image](https://github.com/PHACDataHub/data-mesh-ref-impl/blob/main/paradire/k8s/architecture/k8s-paradire.svg)
-
-![Draw.io](https://github.com/PHACDataHub/data-mesh-ref-impl/blob/main/paradire/k8s/architecture/k8s-paradire.drawio)
-
-
+![The deployed architecture](../k8s/architecture/k8s-paradire.png)
 
 --- 
 
