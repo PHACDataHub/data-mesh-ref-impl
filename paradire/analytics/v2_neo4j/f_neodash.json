@@ -1,90 +1,122 @@
 {
-    "title": "Federal Analytics Platform",
-    "version": "2.4",
     "settings": {
-      "pagenumber": 0,
-      "editable": true,
       "fullscreenEnabled": false,
+      "downloadImageEnabled": true,
+      "editable": true,
+      "theme": "light",
+      "queryTimeLimit": 300,
       "parameters": {
-        "neodash_patient_name": "",
-        "neodash_patient_name_display": "",
-        "neodash_procedure_year_start": "2010",
-        "neodash_procedure_year_end": "2022",
-        "neodash_provider_name": "Truman805 Crona259",
+        "neodash_organization_zip_display": "L3R 4Z8",
+        "neodash_far_1_covid_cvx_list": "207,208",
+        "neodash_period_length": "3",
+        "neodash_far_1_start_date": {
+          "year": 2021,
+          "month": 1,
+          "day": 1
+        },
         "neodash_provider_name_display": "Truman805 Crona259",
-        "neodash_procedure_description": "Chest X-ray",
-        "neodash_procedure_description_display": "Chest X-ray",
-        "neodash_procedure_description_1": "Depression screening (procedure)",
-        "neodash_procedure_description_1_display": "Depression screening (procedure)",
-        "neodash_organization_name": "Bulimia Anorexia Nervosa Association (Bana)",
-        "neodash_organization_name_display": "Bulimia Anorexia Nervosa Association (Bana)",
-        "neodash_procedure_description_2": "Medication Reconciliation (procedure)",
-        "neodash_procedure_description_2_display": "Medication Reconciliation (procedure)",
+        "neodash_months": "1",
+        "neodash_patient_name_display": "",
+        "neodash_patient_city_display": [],
         "neodash_procedure_description_3": "Assessment of anxiety (procedure)",
+        "neodash_patient_city": [],
+        "neodash_procedure_description_2": "Medication Reconciliation (procedure)",
+        "neodash_procedure_description_1": "Depression screening (procedure)",
+        "neodash_organization_name": "Bulimia Anorexia Nervosa Association (Bana)",
+        "neodash_city": "",
+        "neodash_procedure_description_1_display": "Depression screening (procedure)",
+        "neodash_procedure_description_display": "Chest X-ray",
+        "neodash_province": "British Columbia",
+        "neodash_cvx_codes": "03,08,20,21,49,83,114,115,119,133",
+        "neodash_far_1_end_date": {
+          "year": 2021,
+          "month": 1,
+          "day": 1
+        },
         "neodash_procedure_description_3_display": "Assessment of anxiety (procedure)",
         "neodash_organization_zip": "L3R 4Z8",
-        "neodash_organization_zip_display": "L3R 4Z8",
-        "neodash_organization_city": "Mississauga",
-        "neodash_organization_city_display": "Mississauga",
-        "neodash_organization_city_2": "Toronto",
-        "neodash_organization_city_2_display": "Toronto",
-        "neodash_organization_city_3": "Toronto",
-        "neodash_organization_city_3_display": "Toronto",
-        "neodash_province": "British Columbia",
-        "neodash_city": "",
+        "neodash_patient_name": "",
+        "neodash_far_1_period_length": "3",
+        "neodash_number_of_periods": "4",
         "neodash_end_date": {
           "year": 2021,
           "month": 4,
           "day": 1
         },
-        "neodash_start_date": {
-          "year": 2021,
-          "month": 1,
-          "day": 1
-        },
-        "neodash_patient_state": "",
+        "neodash_organization_city_2_display": "Toronto",
+        "neodash_organization_city_display": "Mississauga",
+        "neodash_organization_name_display": "Bulimia Anorexia Nervosa Association (Bana)",
+        "neodash_procedure_year_end": "2022",
         "neodash_patient_state_display": "",
-        "neodash_patient_city": [],
-        "neodash_patient_city_display": [],
-        "neodash_patient_zip": [],
-        "neodash_patient_zip_display": [],
+        "neodash_provider_name": "Truman805 Crona259",
         "neodash_immunization_code": [
           "207",
           "208"
         ],
-        "neodash_immunization_code_display": [
-          "207",
-          "208"
-        ],
-        "neodash_period_length": "3",
-        "neodash_months": "1",
-        "neodash_number_of_periods": "4",
         "undefined": {
           "year": 2020,
           "month": 1,
           "day": 1
         },
-        "neodash_cvx_codes": "03,08,20,21,49,83,114,115,119,133",
-        "neodash_pt_list": "AB,BC,MB,NB,NL,NT,NS,NU,ON,PE,QC,SK,YT",
-        "neodash_far_1_covid_cvx_list": "207,208",
-        "neodash_far_1_start_date": {
-          "year": 2020,
+        "neodash_procedure_year_start": "2010",
+        "neodash_patient_state": "",
+        "neodash_far_1_request_id_display": "b78f6df2-5d7c-4a37-8a67-1d9902714df2",
+        "neodash_organization_city_2": "Toronto",
+        "neodash_organization_city_3": "Toronto",
+        "neodash_far_1_number_of_periods": "4",
+        "neodash_procedure_description_2_display": "Medication Reconciliation (procedure)",
+        "neodash_far_1_request_id": "b78f6df2-5d7c-4a37-8a67-1d9902714df2",
+        "neodash_start_date": {
+          "year": 2021,
           "month": 1,
           "day": 1
         },
-        "neodash_far_1_period_length": "3",
-        "neodash_far_1_number_of_periods": "4",
-        "neodash_far_1_request_id": "b78f6df2-5d7c-4a37-8a67-1d9902714df2",
-        "neodash_far_1_request_id_display": "b78f6df2-5d7c-4a37-8a67-1d9902714df2",
-        "neodash_far_1_end_date": {
-          "year": 2021,
-          "month": 10,
-          "day": 1
+        "neodash_patient_zip_display": [],
+        "neodash_organization_city_3_display": "Toronto",
+        "neodash_organization_city": "Mississauga",
+        "neodash_procedure_description": "Chest X-ray",
+        "neodash_patient_zip": [],
+        "neodash_immunization_code_display": [
+          "207",
+          "208"
+        ],
+        "neodash_pt_list": "AB,BC,MB,NB,NL,NT,NS,NU,ON,PE,QC,SK,YT"
+      },
+      "pagenumber": 0
+    },
+    "extensions": {
+      "styling": {
+        "active": true
+      },
+      "query-translator": {
+        "settings": {
+          "modelType": "gpt-4-0613"
+        },
+        "modelProvider": "OpenAI",
+        "active": true,
+        "lastMessages": {
+          "0": {
+            "8e85c1a2-0183-45bb-bde5-3c56d125452c": "How many Patients are there?"
+          },
+          "1": {
+            "92b6ed72-5695-4cbe-ae19-3c89e8b9d1a0": "How many patients are there?"
+          },
+          "11": {
+            "5c3a6aa3-1d75-41b0-875e-61e8409b4446": "How many Patients are there per Zip?",
+            "d4bf8b5b-38bd-4ca4-944e-009f1b1f23cd": "How many Patients are there per zip?"
+          }
         }
       },
-      "theme": "light",
-      "downloadImageEnabled": true,
-      "queryTimeLimit": 300
+      "active": true,
+      "activeReducers": [
+        "DASHBOARD/EXTENSIONS/QUERY_TRANSLATOR/"
+      ],
+      "advanced-charts": {
+        "active": true
+      },
+      "actions": {
+        "active": true
+      }
     },
     "pages": [
       {
@@ -101,7 +133,7 @@
             "type": "iframe",
             "selection": {},
             "settings": {
-              "fullscreenEnabled": false,
+              "fullscreenEnabled": false
             },
             "schema": []
           },
@@ -126,396 +158,542 @@
         "title": "FAR 1: Vaccination Status",
         "reports": [
           {
-            "id": "03ad1539-42c6-48c7-acb8-9d1f805e6690",
-            "title": "Start date",
+            "schema": [],
+            "settings": {
+              "entityType": "far_1_start_date",
+              "parameterName": "neodash_far_1_start_date",
+              "type": "Date Picker"
+            },
+            "selection": {},
             "query": "RETURN true;",
             "width": 4,
-            "height": 2,
             "x": 8,
             "y": 0,
+            "id": "03ad1539-42c6-48c7-acb8-9d1f805e6690",
+            "title": "Start date",
             "type": "select",
-            "selection": {},
-            "settings": {
-              "type": "Date Picker",
-              "entityType": "far_1_start_date",
-              "parameterName": "neodash_far_1_start_date"
-            },
-            "schema": []
+            "height": 2
           },
           {
-            "id": "c5c66081-c3b3-4d58-85fc-47541f7948f0",
-            "title": "CVXs",
-            "query": "RETURN true;",
-            "width": 4,
-            "height": 2,
-            "x": 0,
-            "y": 0,
-            "type": "select",
-            "selection": {},
+            "schema": [],
             "settings": {
-              "type": "Free Text",
               "multiSelector": true,
               "entityType": "far_1_covid_cvx_list",
-              "parameterName": "neodash_far_1_covid_cvx_list"
+              "parameterName": "neodash_far_1_covid_cvx_list",
+              "type": "Free Text"
             },
-            "schema": []
+            "selection": {},
+            "query": "RETURN true;",
+            "width": 4,
+            "x": 0,
+            "y": 0,
+            "id": "c5c66081-c3b3-4d58-85fc-47541f7948f0",
+            "title": "CVXs",
+            "type": "select",
+            "height": 2
           },
           {
-            "id": "5cc7a34e-58f4-46aa-ae85-acc8cdeed9ab",
-            "title": "Percentage of vaccinated population per zip code for the Period above (in 50 zip codes)",
-            "query": "MATCH (h:FAR_1_HELPER)\nWITH h\n  MATCH (n:FAS_1 {request_id: h.request_id})\nWITH DISTINCT(n.patient_zip) AS zip, COLLECT([n.status_percent, n.patient_status]) AS ps, SUM(n.status_percent) AS sum\nWITH zip, ps\n  WHERE SIZE(ps) = 3 AND sum <= 105\nWITH\n  zip, ps ORDER BY zip SKIP TOINTEGER(RAND() * 10) + 1  LIMIT 50\nWITH zip, ps\n  UNWIND ps AS e\nRETURN zip, e[0] AS status_percent, e[1] AS patient_status\n  \n",
-            "width": 24,
-            "height": 6,
-            "x": 0,
-            "y": 2,
-            "type": "bar",
+            "schema": [],
+            "settings": {
+              "barValues": true,
+              "fullscreenEnabled": true,
+              "downloadImageEnabled": true,
+              "styleRules": [
+                {
+                  "condition": "=",
+                  "field": "patient_status",
+                  "customization": "bar color",
+                  "value": "Unvaccinated",
+                  "customizationValue": "red"
+                },
+                {
+                  "condition": "=",
+                  "field": "patient_status",
+                  "customization": "bar color",
+                  "value": "One-dosed",
+                  "customizationValue": "orange"
+                },
+                {
+                  "condition": "=",
+                  "field": "patient_status",
+                  "customization": "bar color",
+                  "value": "Fully vaccinated",
+                  "customizationValue": "green"
+                }
+              ],
+              "autorun": true,
+              "refreshButtonEnabled": true,
+              "showOptionalSelections": true
+            },
             "selection": {
               "index": "zip",
               "value": "status_percent",
               "key": "patient_status"
             },
-            "settings": {
-              "refreshButtonEnabled": true,
-              "showOptionalSelections": true,
-              "barValues": true,
-              "styleRules": [
-                {
-                  "field": "patient_status",
-                  "condition": "=",
-                  "value": "Unvaccinated",
-                  "customization": "bar color",
-                  "customizationValue": "red"
-                },
-                {
-                  "field": "patient_status",
-                  "condition": "=",
-                  "value": "One-dosed",
-                  "customization": "bar color",
-                  "customizationValue": "orange"
-                },
-                {
-                  "field": "patient_status",
-                  "condition": "=",
-                  "value": "Fully vaccinated",
-                  "customization": "bar color",
-                  "customizationValue": "green"
-                }
-              ],
-              "downloadImageEnabled": true,
-              "fullscreenEnabled": true,
-              "autorun": true
-            },
-            "schema": []
+            "query": "MATCH (h:FAR_1_HELPER)\nWITH h\n  MATCH (n:FAS_1 {request_id: h.request_id_1})\nWITH DISTINCT(n.patient_zip) AS zip, n.status_percent AS status_percent, n.patient_status AS patient_status\n  WHERE NOT(\"0123456789\" CONTAINS SUBSTRING(zip, 0, 1))\nRETURN zip, status_percent, patient_status ORDER BY zip LIMIT 90\n  \n",
+            "width": 24,
+            "x": 0,
+            "y": 2,
+            "id": "5cc7a34e-58f4-46aa-ae85-acc8cdeed9ab",
+            "title": "Percentage of vaccinated population per zip code for the Period above (in first 30 zip codes by alphabetical order)",
+            "type": "bar",
+            "height": 6
           },
           {
-            "id": "4ef8cd04-8df5-4e8f-bcd8-903cd951f769",
-            "title": "PTs",
-            "query": "RETURN true;",
-            "width": 4,
-            "height": 2,
-            "x": 4,
-            "y": 0,
-            "type": "select",
-            "selection": {},
+            "schema": [],
             "settings": {
-              "type": "Free Text",
-              "entityType": "pt_list",
-              "parameterName": "neodash_pt_list"
-            },
-            "schema": []
-          },
-          {
-            "id": "87b45734-28a5-4407-9148-b54892341a1d",
-            "title": "Send query to PTs",
-            "query": "MERGE (h:FAR_1_HELPER)\n  SET h.request_id = apoc.create.uuid()\nWITH h\n  CREATE (n:FAR_1)\n    SET\n      n.request_id = h.request_id,\n      n.covid_cvx_list = $neodash_far_1_covid_cvx_list,\n      n.start_date = TOSTRING($neodash_far_1_start_date),\n      n.end_date = TOSTRING($neodash_far_1_end_date),\n      n.pt_list = $neodash_pt_list,\n      n.timestamp = apoc.date.currentTimestamp(),\n      n.doc = \"All PTs: COVID-19 monovalent Moderna adult (12+ yrs) vaccine, 1st/2nd dosage.\"\nRETURN n.request_id;\n",
-            "width": 8,
-            "height": 2,
-            "x": 16,
-            "y": 0,
-            "type": "table",
-            "selection": {},
-            "settings": {
-              "type": "Free Text",
               "entityType": "pt_list",
               "parameterName": "neodash_pt_list",
-              "autorun": false,
-              "fullscreenEnabled": true,
-              "refreshButtonEnabled": true
+              "type": "Free Text"
             },
-            "schema": []
-          },
-          {
-            "id": "b0d00a34-f1bc-4b6e-9d82-0f9f47b185eb",
-            "title": "End date",
+            "selection": {},
             "query": "RETURN true;",
             "width": 4,
-            "height": 2,
-            "x": 12,
+            "x": 4,
             "y": 0,
+            "id": "4ef8cd04-8df5-4e8f-bcd8-903cd951f769",
+            "title": "PTs",
             "type": "select",
-            "selection": {},
-            "settings": {
-              "type": "Date Picker",
-              "entityType": "far_1_end_date",
-              "parameterName": "neodash_far_1_end_date"
-            },
-            "schema": []
-          }
-        ]
-      },
-      {
-        "title": "FAR 2 - Vaccination Schedule",
-        "reports": [
+            "height": 2
+          },
           {
-            "id": "86f385fb-67dd-45c0-858b-880cfa402475",
-            "title": "Vaccination schedule",
-            "query": "WITH apoc.convert.toJson(apoc.map.fromPairs([[\"03\", 6], [\"08\", 6], [\"20\", 18], [\"21\", 12], [\"49\", 18], [\"83\", 18], [\"114\", 2], [\"115\", 48], [\"119\", 4], [\"133\", 4]])) AS cvx_maps\nWITH apoc.map.sortedProperties(apoc.convert.fromJsonMap(cvx_maps)) AS sortedList\n  UNWIND sortedList AS sorted\nRETURN sorted[0] AS CVX, sorted[1] AS months",
-            "width": 8,
-            "height": 2,
-            "x": 0,
-            "y": 0,
-            "type": "table",
-            "selection": {},
+            "schema": [],
             "settings": {
-              "clusterMarkers": true,
-              "layerType": "heatmap",
-              "separateOverlappingMarkers": true,
-              "defaultNodeSize": "small",
-              "autorun": true,
+              "fullscreenEnabled": true,
+              "entityType": "pt_list",
+              "autorun": false,
               "refreshButtonEnabled": true,
-              "columnWidths": "[3,3,3,3,3,3,3,3,3,3,3]",
+              "parameterName": "neodash_pt_list",
+              "type": "Free Text",
               "compact": true,
               "transposed": true
             },
-            "schema": []
-          },
-          {
-            "id": "436f4a2d-a06a-4381-ab2c-f684cdcfbc22",
-            "title": "Query",
-            "query": "MERGE (h:FAR_2_HELPER)\n  SET h.request_id = apoc.create.uuid()\nWITH h\n  CREATE (n:FAR_2)\n    SET \n      n.request_id = h.request_id,\n      n.cvx_maps = apoc.convert.toJson(apoc.map.fromPairs([[\"03\", 6], [\"08\", 6], [\"20\", 18], [\"21\", 12], [\"49\", 18], [\"83\", 18], [\"114\", 2], [\"115\", 48], [\"119\", 4], [\"133\", 4]])), \n      n.pt_list = \"AB,BC,MB,NB,NL,NT,NS,NU,ON,PE,QC,SK,YT\",\n      n.timestamp = apoc.date.currentTimestamp(),\n      n.doc = \"All PT: Young children missing vaccination schedule\"\nRETURN n.request_id\n\n\n\n",
-            "width": 4,
-            "height": 2,
-            "x": 8,
+            "selection": {},
+            "query": "MERGE (h:FAR_1_HELPER)\n  SET \n    h.request_id_1 = apoc.create.uuid(),\n    h.request_id_2 = apoc.create.uuid(),\n    h.request_id_3 = apoc.create.uuid(),\n    h.request_id_4 = apoc.create.uuid()\nWITH h\n  CREATE (n1:FAR_1)\n    SET\n      n1.request_id = h.request_id_1,\n      n1.covid_cvx_list = $neodash_far_1_covid_cvx_list,\n      n1.start_date = TOSTRING($neodash_far_1_start_date),\n      n1.end_date = TOSTRING($neodash_far_1_start_date + DURATION({months: 3})),\n      n1.pt_list = $neodash_pt_list,\n      n1.timestamp = apoc.date.currentTimestamp(),\n      n1.doc = \"All PTs: COVID-19 monovalent Moderna adult (12+ yrs) vaccine, 1st/2nd dosage.\"\n  CREATE (n2:FAR_1)\n    SET\n      n2.request_id = h.request_id_2,\n      n2.covid_cvx_list = $neodash_far_1_covid_cvx_list,\n      n2.start_date = TOSTRING($neodash_far_1_start_date),\n      n2.end_date = TOSTRING($neodash_far_1_start_date + DURATION({months: 6})),\n      n2.pt_list = $neodash_pt_list,\n      n2.timestamp = apoc.date.currentTimestamp(),\n      n2.doc = \"All PTs: COVID-19 monovalent Moderna adult (12+ yrs) vaccine, 1st/2nd dosage.\"\n  CREATE (n3:FAR_1)\n    SET\n      n3.request_id = h.request_id_3,\n      n3.covid_cvx_list = $neodash_far_1_covid_cvx_list,\n      n3.start_date = TOSTRING($neodash_far_1_start_date),\n      n3.end_date = TOSTRING($neodash_far_1_start_date + DURATION({months: 9})),\n      n3.pt_list = $neodash_pt_list,\n      n3.timestamp = apoc.date.currentTimestamp(),\n      n3.doc = \"All PTs: COVID-19 monovalent Moderna adult (12+ yrs) vaccine, 1st/2nd dosage.\"\n  CREATE (n4:FAR_1)\n    SET\n      n4.request_id = h.request_id_4,\n      n4.covid_cvx_list = $neodash_far_1_covid_cvx_list,\n      n4.start_date = TOSTRING($neodash_far_1_start_date),\n      n4.end_date = TOSTRING($neodash_far_1_start_date + DURATION({months: 12})),\n      n4.pt_list = $neodash_pt_list,\n      n4.timestamp = apoc.date.currentTimestamp(),\n      n4.doc = \"All PTs: COVID-19 monovalent Moderna adult (12+ yrs) vaccine, 1st/2nd dosage.\"\nRETURN TOSTRING($neodash_far_1_start_date) AS start, TOSTRING($neodash_far_1_start_date + DURATION({months: 12})) AS end;\n",
+            "width": 8,
+            "x": 16,
             "y": 0,
+            "id": "87b45734-28a5-4407-9148-b54892341a1d",
+            "title": "Send query to PTs",
             "type": "table",
-            "selection": {},
-            "settings": {
-              "columnWidths": "[3,5,25]",
-              "refreshButtonEnabled": true,
-              "autorun": false
-            },
-            "schema": []
+            "height": 2
           },
           {
-            "id": "5e8e2c58-d535-4b12-ad81-bd0a5e087d09",
-            "title": "Young children missing vaccination schedule",
-            "query": "MATCH (h:FAR_2_HELPER)\nWITH h\n  MATCH (n:FAS_2 {request_id: h.request_id})\nRETURN \n  n.patient_zip AS zip, n.patient_count AS patient_count, n.missing_doses AS missing_doses\n  ORDER BY patient_count DESC\n\n\n\n",
-            "width": 12,
-            "height": 6,
-            "x": 0,
-            "y": 2,
-            "type": "table",
-            "selection": {},
+            "schema": [],
             "settings": {
-              "columnWidths": "[3,5,25]",
-              "refreshButtonEnabled": true,
-              "autorun": true,
-              "compact": true
+              "entityType": "far_1_end_date",
+              "parameterName": "neodash_far_1_end_date",
+              "type": "Date Picker"
             },
-            "schema": []
-          },
-          {
-            "id": "31166f72-9124-400f-87ba-8a45a001cd1b",
-            "title": "Top 30 zip code where young children missing vaccination schedule",
-            "query": "MATCH (h:FAR_2_HELPER)\nWITH h\n  MATCH (n:FAS_2 {request_id: h.request_id})\nRETURN\n  n.patient_zip AS zip,\n  n.patient_count AS patient_count,\n  n.missing_doses AS missing_doses\n  ORDER BY patient_count DESC LIMIT 30\n\n\n\n",
-            "width": 12,
-            "height": 8,
+            "selection": {},
+            "query": "RETURN true;",
+            "width": 4,
             "x": 12,
             "y": 0,
-            "type": "pie",
+            "id": "b0d00a34-f1bc-4b6e-9d82-0f9f47b185eb",
+            "title": "End date",
+            "type": "select",
+            "height": 2
+          },
+          {
+            "schema": [],
+            "settings": {
+              "barValues": true,
+              "fullscreenEnabled": true,
+              "downloadImageEnabled": true,
+              "styleRules": [
+                {
+                  "condition": "=",
+                  "field": "patient_status",
+                  "customization": "bar color",
+                  "value": "Unvaccinated",
+                  "customizationValue": "red"
+                },
+                {
+                  "condition": "=",
+                  "field": "patient_status",
+                  "customization": "bar color",
+                  "value": "One-dosed",
+                  "customizationValue": "orange"
+                },
+                {
+                  "condition": "=",
+                  "field": "patient_status",
+                  "customization": "bar color",
+                  "value": "Fully vaccinated",
+                  "customizationValue": "green"
+                }
+              ],
+              "autorun": true,
+              "refreshButtonEnabled": true,
+              "showOptionalSelections": true
+            },
+            "selection": {
+              "index": "zip",
+              "value": "status_percent",
+              "key": "patient_status"
+            },
+            "query": "MATCH (h:FAR_1_HELPER)\nWITH h\n  MATCH (n:FAS_1 {request_id: h.request_id_2})\nWITH DISTINCT(n.patient_zip) AS zip, n.status_percent AS status_percent, n.patient_status AS patient_status\n  WHERE NOT(\"0123456789\" CONTAINS SUBSTRING(zip, 0, 1))\nRETURN zip, status_percent, patient_status ORDER BY zip LIMIT 90\n  \n",
+            "width": 24,
+            "x": 0,
+            "y": 8,
+            "id": "c6622d2e-f431-42a3-ba46-a10b678f26cd",
+            "title": "Percentage of vaccinated population per zip code for the Period above (in first 30 zip codes by alphabetical order)",
+            "type": "bar",
+            "height": 6
+          },
+          {
+            "schema": [],
+            "settings": {
+              "barValues": true,
+              "fullscreenEnabled": true,
+              "downloadImageEnabled": true,
+              "styleRules": [
+                {
+                  "condition": "=",
+                  "field": "patient_status",
+                  "customization": "bar color",
+                  "value": "Unvaccinated",
+                  "customizationValue": "red"
+                },
+                {
+                  "condition": "=",
+                  "field": "patient_status",
+                  "customization": "bar color",
+                  "value": "One-dosed",
+                  "customizationValue": "orange"
+                },
+                {
+                  "condition": "=",
+                  "field": "patient_status",
+                  "customization": "bar color",
+                  "value": "Fully vaccinated",
+                  "customizationValue": "green"
+                }
+              ],
+              "autorun": true,
+              "refreshButtonEnabled": true,
+              "showOptionalSelections": true
+            },
+            "selection": {
+              "index": "zip",
+              "value": "status_percent",
+              "key": "patient_status"
+            },
+            "query": "MATCH (h:FAR_1_HELPER)\nWITH h\n  MATCH (n:FAS_1 {request_id: h.request_id_3})\nWITH DISTINCT(n.patient_zip) AS zip, n.status_percent AS status_percent, n.patient_status AS patient_status\n  WHERE NOT(\"0123456789\" CONTAINS SUBSTRING(zip, 0, 1))\nRETURN zip, status_percent, patient_status ORDER BY zip LIMIT 90\n  \n",
+            "width": 24,
+            "x": 0,
+            "y": 14,
+            "id": "ee0fe633-8a6c-44f8-b769-22e46cbd345b",
+            "title": "Percentage of vaccinated population per zip code for the Period above (in first 30 zip codes by alphabetical order)",
+            "type": "bar",
+            "height": 6
+          },
+          {
+            "schema": [],
+            "settings": {
+              "barValues": true,
+              "fullscreenEnabled": true,
+              "downloadImageEnabled": true,
+              "styleRules": [
+                {
+                  "condition": "=",
+                  "field": "patient_status",
+                  "customization": "bar color",
+                  "value": "Unvaccinated",
+                  "customizationValue": "red"
+                },
+                {
+                  "condition": "=",
+                  "field": "patient_status",
+                  "customization": "bar color",
+                  "value": "One-dosed",
+                  "customizationValue": "orange"
+                },
+                {
+                  "condition": "=",
+                  "field": "patient_status",
+                  "customization": "bar color",
+                  "value": "Fully vaccinated",
+                  "customizationValue": "green"
+                }
+              ],
+              "autorun": true,
+              "refreshButtonEnabled": true,
+              "showOptionalSelections": true
+            },
+            "selection": {
+              "index": "zip",
+              "value": "status_percent",
+              "key": "patient_status"
+            },
+            "query": "MATCH (h:FAR_1_HELPER)\nWITH h\n  MATCH (n:FAS_1 {request_id: h.request_id_4})\nWITH DISTINCT(n.patient_zip) AS zip, n.status_percent AS status_percent, n.patient_status AS patient_status\n  WHERE NOT(\"0123456789\" CONTAINS SUBSTRING(zip, 0, 1))\nRETURN zip, status_percent, patient_status ORDER BY zip LIMIT 90\n  \n",
+            "width": 24,
+            "x": 0,
+            "y": 20,
+            "id": "f5b1942c-f9f2-458c-8f62-c8900bf74f4e",
+            "title": "Percentage of vaccinated population per zip code for the Period above (in first 30 zip codes by alphabetical order)",
+            "type": "bar",
+            "height": 6
+          }
+        ],
+        "title": "FAR 1: Vaccination Status"
+      },
+      {
+        "reports": [
+          {
+            "schema": [],
+            "settings": {
+              "transposed": true,
+              "layerType": "heatmap",
+              "compact": true,
+              "separateOverlappingMarkers": true,
+              "autorun": true,
+              "refreshButtonEnabled": true,
+              "clusterMarkers": true,
+              "columnWidths": "[3,3,3,3,3,3,3,3,3,3,3]",
+              "defaultNodeSize": "small"
+            },
+            "selection": {},
+            "query": "WITH apoc.convert.toJson(apoc.map.fromPairs([[\"03\", 6], [\"08\", 6], [\"20\", 18], [\"21\", 12], [\"49\", 18], [\"83\", 18], [\"114\", 2], [\"115\", 48], [\"119\", 4], [\"133\", 4]])) AS cvx_maps\nWITH apoc.map.sortedProperties(apoc.convert.fromJsonMap(cvx_maps)) AS sortedList\n  UNWIND sortedList AS sorted\nRETURN sorted[0] AS CVX, sorted[1] AS months",
+            "width": 8,
+            "x": 0,
+            "y": 0,
+            "id": "86f385fb-67dd-45c0-858b-880cfa402475",
+            "title": "Vaccination schedule",
+            "type": "table",
+            "height": 2
+          },
+          {
+            "schema": [],
+            "settings": {
+              "autorun": false,
+              "refreshButtonEnabled": true,
+              "columnWidths": "[3,5,25]"
+            },
+            "selection": {},
+            "query": "MERGE (h:FAR_2_HELPER)\n  SET h.request_id = apoc.create.uuid()\nWITH h\n  CREATE (n:FAR_2)\n    SET \n      n.request_id = h.request_id,\n      n.cvx_maps = apoc.convert.toJson(apoc.map.fromPairs([[\"03\", 6], [\"08\", 6], [\"20\", 18], [\"21\", 12], [\"49\", 18], [\"83\", 18], [\"114\", 2], [\"115\", 48], [\"119\", 4], [\"133\", 4]])), \n      n.pt_list = \"AB,BC,MB,NB,NL,NT,NS,NU,ON,PE,QC,SK,YT\",\n      n.timestamp = apoc.date.currentTimestamp(),\n      n.doc = \"All PT: Young children missing vaccination schedule\"\nRETURN n.request_id\n\n\n\n",
+            "width": 4,
+            "x": 8,
+            "y": 0,
+            "id": "436f4a2d-a06a-4381-ab2c-f684cdcfbc22",
+            "title": "Query",
+            "type": "table",
+            "height": 2
+          },
+          {
+            "schema": [],
+            "settings": {
+              "compact": true,
+              "autorun": true,
+              "refreshButtonEnabled": true,
+              "columnWidths": "[3,5,25]"
+            },
+            "selection": {},
+            "query": "MATCH (h:FAR_2_HELPER)\nWITH h\n  MATCH (n:FAS_2 {request_id: h.request_id})\nRETURN \n  n.patient_zip AS zip, n.patient_count AS patient_count, n.missing_doses AS missing_doses\n  ORDER BY patient_count DESC\n\n\n\n",
+            "width": 12,
+            "x": 0,
+            "y": 2,
+            "id": "5e8e2c58-d535-4b12-ad81-bd0a5e087d09",
+            "title": "Young children missing vaccination schedule",
+            "type": "table",
+            "height": 6
+          },
+          {
+            "schema": [],
+            "settings": {
+              "autorun": true,
+              "refreshButtonEnabled": true,
+              "columnWidths": "[3,5,25]"
+            },
             "selection": {
               "index": "zip",
               "value": "patient_count",
               "key": "(none)"
             },
-            "settings": {
-              "columnWidths": "[3,5,25]",
-              "refreshButtonEnabled": true,
-              "autorun": true
-            },
-            "schema": []
+            "query": "MATCH (h:FAR_2_HELPER)\nWITH h\n  MATCH (n:FAS_2 {request_id: h.request_id})\n     WHERE NOT(\"0123456789\" CONTAINS SUBSTRING(n.patient_zip, 0, 1))\nRETURN\n  n.patient_zip AS zip,\n  n.patient_count AS patient_count,\n  n.missing_doses AS missing_doses\n  ORDER BY patient_count DESC LIMIT 20\n\n\n\n",
+            "width": 12,
+            "x": 12,
+            "y": 0,
+            "id": "31166f72-9124-400f-87ba-8a45a001cd1b",
+            "title": "Top 20 zip code where young children missing vaccination schedule",
+            "type": "pie",
+            "height": 8
           }
-        ]
+        ],
+        "title": "FAR 2 - Vaccination Schedule"
       },
       {
-        "title": "FAR 3 - Travel distance",
         "reports": [
           {
-            "id": "406de899-7155-4e34-82d8-45570b5039f5",
-            "title": "Query",
+            "schema": [],
+            "settings": {
+              "fullscreenEnabled": true,
+              "downloadImageEnabled": true,
+              "borderWidth": 1,
+              "autorun": false,
+              "refreshButtonEnabled": true,
+              "mapDrillDown": true
+            },
+            "selection": {},
             "query": "MERGE (h:FAR_3_HELPER)\n  SET h.request_id = apoc.create.uuid()\nWITH h\n  CREATE (n:FAR_3)\n    SET\n      n.request_id = h.request_id,\n      n.cvx_list = \"43,52\",\n      n.pt_list = \"AB,BC,MB,NB,NL,NT,NS,NU,ON,PE,QC,SK,YT\",\n      n.timestamp = apoc.date.currentTimestamp(),\n      n.doc = \"All PTs: Travel distance to get Hepatitis A/B vaccine, adult dosage.\"\nRETURN n.request_id\n\n\n\n",
             "width": 6,
-            "height": 2,
             "x": 0,
             "y": 8,
+            "id": "406de899-7155-4e34-82d8-45570b5039f5",
+            "title": "Query",
             "type": "table",
-            "selection": {},
-            "settings": {
-              "mapDrillDown": true,
-              "borderWidth": 1,
-              "refreshButtonEnabled": true,
-              "downloadImageEnabled": true,
-              "fullscreenEnabled": true,
-              "autorun": false
-            },
-            "schema": []
+            "height": 2
           },
           {
-            "id": "a3683eef-645f-4592-a45d-b678f627f054",
-            "title": "Top 100 zip code with farthest average travel distance to get vaccinated",
-            "query": "MATCH (h:FAR_3_HELPER)\nWITH h\n  MATCH (n:FAS_3 {request_id: h.request_id})\nRETURN [n.pt, n.patient_zip, n.organization_name] AS path, n.average_distance AS average_distance ORDER BY average_distance DESC LIMIT 100\n\n\n\n\n",
-            "width": 24,
-            "height": 8,
-            "x": 0,
-            "y": 0,
-            "type": "treeMap",
+            "schema": [],
+            "settings": {
+              "fullscreenEnabled": true,
+              "downloadImageEnabled": true,
+              "borderWidth": 1,
+              "autorun": true,
+              "refreshButtonEnabled": true,
+              "mapDrillDown": true
+            },
             "selection": {
               "index": "path",
               "value": "average_distance",
               "key": "(none)"
             },
-            "settings": {
-              "mapDrillDown": true,
-              "borderWidth": 1,
-              "refreshButtonEnabled": true,
-              "downloadImageEnabled": true,
-              "fullscreenEnabled": true,
-              "autorun": true
-            },
-            "schema": []
+            "query": "MATCH (h:FAR_3_HELPER)\nWITH h\n  MATCH (n:FAS_3 {request_id: h.request_id})\nRETURN [n.pt, n.patient_zip, n.organization_name] AS path, n.average_distance AS average_distance ORDER BY average_distance DESC LIMIT 100\n\n\n\n\n",
+            "width": 24,
+            "x": 0,
+            "y": 0,
+            "id": "a3683eef-645f-4592-a45d-b678f627f054",
+            "title": "Top 100 zip code with farthest average travel distance to get vaccinated",
+            "type": "treeMap",
+            "height": 8
           }
-        ]
+        ],
+        "title": "FAR 3 - Travel distance"
       },
       {
-        "title": "FAR 4 - Vaccination traffic",
         "reports": [
           {
-            "id": "e591e48d-492f-4b95-87c5-328e6fe9ca35",
-            "title": "Query",
-            "query": "MERGE (h:FAR_4_HELPER)\n  SET h.request_id = apoc.create.uuid()\nWITH h\n  CREATE (n:FAR_4)\n    SET\n      n.request_id = h.request_id,\n      n.cvx_list = \"43,52\",\n      n.pt_list = \"AB,BC,MB,NB,NL,NT,NS,NU,ON,PE,QC,SK,YT\",\n      n.timestamp = apoc.date.currentTimestamp(),\n      n.doc = \"All PTs: Which zip code where patients travel to organization to get vaccinated.\"\nRETURN n.request_id\n\n\n\n\n\n\n",
-            "width": 10,
-            "height": 2,
-            "x": 14,
-            "y": 0,
-            "type": "table",
-            "selection": {},
             "settings": {
               "autorun": false,
               "refreshButtonEnabled": true
-            }
+            },
+            "selection": {},
+            "query": "MERGE (h:FAR_4_HELPER)\n  SET h.request_id = apoc.create.uuid()\nWITH h\n  CREATE (n:FAR_4)\n    SET\n      n.request_id = h.request_id,\n      n.cvx_list = \"43,52\",\n      n.pt_list = \"AB,BC,MB,NB,NL,NT,NS,NU,ON,PE,QC,SK,YT\",\n      n.timestamp = apoc.date.currentTimestamp(),\n      n.doc = \"All PTs: Which zip code where patients travel to organization to get vaccinated.\"\nRETURN n.request_id\n\n\n\n\n\n\n",
+            "width": 10,
+            "x": 14,
+            "y": 0,
+            "id": "e591e48d-492f-4b95-87c5-328e6fe9ca35",
+            "title": "Query",
+            "type": "table",
+            "height": 2
           },
           {
-            "id": "7f58c9db-1510-47df-957e-9c314b56bd0c",
-            "title": "Hep A/B vaccinations at zip code - organization",
-            "query": "MATCH (h:FAR_4_HELPER)\nWITH h\n  MATCH (n:FAS_4 {request_id: h.request_id})\nRETURN [n.patient_zip, n.organization_name] AS path, n.vaccination_count ORDER BY path\n",
-            "width": 14,
-            "height": 9,
-            "x": 0,
-            "y": 0,
-            "type": "sunburst",
+            "schema": [],
+            "settings": {
+              "layout": "horizontal",
+              "fullscreenEnabled": true,
+              "downloadImageEnabled": true,
+              "legend": false,
+              "autorun": true,
+              "refreshButtonEnabled": true,
+              "interactive": true,
+              "labelProperty": "count",
+              "colors": "paired"
+            },
             "selection": {
               "index": "path",
               "value": "n.vaccination_count",
               "key": "(none)"
             },
-            "settings": {
-              "layout": "horizontal",
-              "refreshButtonEnabled": true,
-              "legend": false,
-              "interactive": true,
-              "labelProperty": "count",
-              "downloadImageEnabled": true,
-              "fullscreenEnabled": true,
-              "colors": "paired",
-              "autorun": true
-            },
-            "schema": []
+            "query": "MATCH (h:FAR_4_HELPER)\nWITH h\n  MATCH (n:FAS_4 {request_id: h.request_id})\nRETURN [n.patient_zip, n.organization_name] AS path, n.vaccination_count ORDER BY path\n",
+            "width": 14,
+            "x": 0,
+            "y": 0,
+            "id": "7f58c9db-1510-47df-957e-9c314b56bd0c",
+            "title": "Hep A/B vaccinations at zip code - organization",
+            "type": "sunburst",
+            "height": 9
           },
           {
-            "id": "9bad2b22-8500-4d03-acd9-f32493586033",
-            "title": "Hep A/B vaccinations at PTs",
-            "query": "MATCH (h:FAR_4_HELPER)\nWITH h\n  MATCH (n:FAS_4 {request_id: h.request_id})\nRETURN [n.pt] AS path, COUNT(n.vaccination_count) AS count ORDER BY path\n",
-            "width": 10,
-            "height": 7,
-            "x": 14,
-            "y": 2,
-            "type": "pie",
+            "schema": [],
+            "settings": {
+              "layout": "horizontal",
+              "fullscreenEnabled": true,
+              "downloadImageEnabled": true,
+              "legend": false,
+              "autorun": true,
+              "refreshButtonEnabled": true,
+              "interactive": true,
+              "labelProperty": "count",
+              "colors": "paired"
+            },
             "selection": {
               "index": "path",
               "value": "count",
               "key": "(none)"
             },
-            "settings": {
-              "layout": "horizontal",
-              "refreshButtonEnabled": true,
-              "legend": false,
-              "interactive": true,
-              "labelProperty": "count",
-              "downloadImageEnabled": true,
-              "fullscreenEnabled": true,
-              "colors": "paired",
-              "autorun": true
-            },
-            "schema": []
+            "query": "MATCH (h:FAR_4_HELPER)\nWITH h\n  MATCH (n:FAS_4 {request_id: h.request_id})\nRETURN [n.pt] AS path, COUNT(n.vaccination_count) AS count ORDER BY path\n",
+            "width": 10,
+            "x": 14,
+            "y": 2,
+            "id": "9bad2b22-8500-4d03-acd9-f32493586033",
+            "title": "Hep A/B vaccinations at PTs",
+            "type": "pie",
+            "height": 7
           }
-        ]
+        ],
+        "title": "FAR 4 - Vaccination traffic"
       },
       {
-        "title": "FAR 5 - Vaccination Records",
         "reports": [
           {
-            "id": "08515114-4351-44fa-829b-4a90bc3959f4",
-            "title": "Random consecutive 1000 events in the stream of vaccination records",
+            "settings": {
+              "fullscreenEnabled": true,
+              "downloadImageEnabled": true,
+              "autorun": true,
+              "refreshButtonEnabled": true,
+              "columnWidths": "[5, 2, 17, 13, 15, 5, 5, 4, 4, 2, 2, 3]",
+              "allowDownload": true
+            },
+            "selection": {},
             "query": "MATCH (h:FAR_5_HELPER)\nWITH h\n  MATCH (n:FAS_5 {request_id: h.request_id})\nWITH n SKIP TOINTEGER(RAND() * 1000) + 1 LIMIT 1000\nRETURN\n  SUBSTRING(TOSTRING(n.immunization_date), 0, 10) AS date,\n  n.immunization_code AS cvx,\n  n.immunization_description AS cvx_description,\n  SUBSTRING(n.organization_name, 0, 50) AS organization,\n  n.encounter_description AS encounter,\n  n.encounter_code AS snomet_ct,\n  SUBSTRING(n.patient_id, 0, 8) AS patient,\n  n.patient_birth_date AS birth_date,\n  n.patient_address AS address,\n  n.patient_zip AS zip,\n  n.patient_gender AS gender,\n  n.patient_race AS race\n  ORDER BY date",
             "width": 24,
-            "height": 8,
             "x": 0,
             "y": 0,
+            "id": "08515114-4351-44fa-829b-4a90bc3959f4",
+            "title": "Random consecutive 1000 events in the stream of vaccination records",
             "type": "table",
-            "selection": {},
-            "settings": {
-              "refreshButtonEnabled": true,
-              "allowDownload": true,
-              "columnWidths": "[5, 2, 17, 13, 15, 5, 5, 4, 4, 2, 2, 3]",
-              "downloadImageEnabled": true,
-              "fullscreenEnabled": true,
-              "autorun": true
-            }
+            "height": 8
           },
           {
-            "id": "cbc58e77-5b2f-4d08-9ec7-667cfe53c1fd",
-            "title": "Query",
-            "query": "MERGE (h:FAR_5_HELPER)\n  SET h.request_id = apoc.create.uuid()\nWITH h\n  CREATE (n:FAR_5)\n    SET\n      n.request_id = h.request_id,\n      n.pt_list = \"AB,BC,MB,NB,NL,NT,NS,NU,ON,PE,QC,SK,YT\",\n      n.timestamp = apoc.date.currentTimestamp(),\n      n.doc = \"All PTs: Vaccination record streams.\"\nRETURN n.request_id\n\n\n\n\n\n\n\n\n\n",
-            "width": 6,
-            "height": 2,
-            "x": 0,
-            "y": 24,
-            "type": "table",
-            "selection": {},
             "settings": {
               "autorun": false,
               "refreshButtonEnabled": true
-            }
+            },
+            "selection": {},
+            "query": "MERGE (h:FAR_5_HELPER)\n  SET h.request_id = apoc.create.uuid()\nWITH h\n  CREATE (n:FAR_5)\n    SET\n      n.request_id = h.request_id,\n      n.pt_list = \"AB,BC,MB,NB,NL,NT,NS,NU,ON,PE,QC,SK,YT\",\n      n.timestamp = apoc.date.currentTimestamp(),\n      n.doc = \"All PTs: Vaccination record streams.\"\nRETURN n.request_id\n\n\n\n\n\n\n\n\n\n",
+            "width": 6,
+            "x": 0,
+            "y": 24,
+            "id": "cbc58e77-5b2f-4d08-9ec7-667cfe53c1fd",
+            "title": "Query",
+            "type": "table",
+            "height": 2
           },
           {
-            "id": "747c7b3e-808d-4e42-9c7e-d6705ed088f7",
-            "title": "Vaccination records for 12 CVXs",
-            "query": "MATCH (h:FAR_5_HELPER)\nWITH h\n  MATCH (n:FAS_5 {request_id: h.request_id})\nWITH\n  n.immunization_code AS code, SUBSTRING(TOSTRING(n.immunization_date), 0, 4) AS year\nWITH\n  DISTINCT(year) AS year, COLLECT(code) AS codes\nRETURN\n  year,\n  REDUCE(c=0, e IN codes | CASE WHEN e = '03' THEN c + 1 ELSE c END) AS MRR,\n  REDUCE(c=0, e IN codes | CASE WHEN e = '08' THEN c + 1 ELSE c END) AS HepB,\n  REDUCE(c=0, e IN codes | CASE WHEN e = '21' THEN c + 1 ELSE c END) AS Varicella,\n  REDUCE(c=0, e IN codes | CASE WHEN e = '49' THEN c + 1 ELSE c END) AS Hib,\n  REDUCE(c=0, e IN codes | CASE WHEN e = '83' THEN c + 1 ELSE c END) AS HepA,\n  REDUCE(c=0, e IN codes | CASE WHEN e = '115' THEN c + 1 ELSE c END) AS Tdap,\n  REDUCE(c=0, e IN codes | CASE WHEN e = '62' THEN c + 1 ELSE c END) AS HPV_e,\n  REDUCE(c=0, e IN codes | CASE WHEN e = '114' THEN c + 1 ELSE c END) AS Meningococcal,\n  REDUCE(c=0, e IN codes | CASE WHEN e = '113' THEN c + 1 ELSE c END) AS Td_adult,\n  REDUCE(c=0, e IN codes | CASE WHEN e = '43' THEN c + 1 ELSE c END) AS HepB_adult,\n  REDUCE(c=0, e IN codes | CASE WHEN e = '52' THEN c + 1 ELSE c END) AS HepA_adult,\n  REDUCE(c=0, e IN codes | CASE WHEN e = '10' THEN c + 1 ELSE c END) AS IPV\n  ORDER BY year  \n",
-            "width": 24,
-            "height": 8,
-            "x": 0,
-            "y": 8,
-            "type": "line",
+            "schema": [],
+            "settings": {
+              "fullscreenEnabled": true,
+              "downloadImageEnabled": true,
+              "autorun": true,
+              "legend": true,
+              "refreshButtonEnabled": true,
+              "columnWidths": "[5, 2, 17, 13, 15, 5, 5, 4, 4, 2, 2, 3]",
+              "allowDownload": true,
+              "colors": "paired"
+            },
             "selection": {
               "x": "year",
               "value": [
@@ -533,27 +711,28 @@
                 "Meningococcal"
               ]
             },
-            "settings": {
-              "refreshButtonEnabled": true,
-              "allowDownload": true,
-              "columnWidths": "[5, 2, 17, 13, 15, 5, 5, 4, 4, 2, 2, 3]",
-              "downloadImageEnabled": true,
-              "fullscreenEnabled": true,
-              "autorun": true,
-              "colors": "paired",
-              "legend": true
-            },
-            "schema": []
+            "query": "MATCH (h:FAR_5_HELPER)\nWITH h\n  MATCH (n:FAS_5 {request_id: h.request_id})\nWITH\n  n.immunization_code AS code, SUBSTRING(TOSTRING(n.immunization_date), 0, 4) AS year\nWITH\n  DISTINCT(year) AS year, COLLECT(code) AS codes\nRETURN\n  year,\n  REDUCE(c=0, e IN codes | CASE WHEN e = '03' THEN c + 1 ELSE c END) AS MRR,\n  REDUCE(c=0, e IN codes | CASE WHEN e = '08' THEN c + 1 ELSE c END) AS HepB,\n  REDUCE(c=0, e IN codes | CASE WHEN e = '21' THEN c + 1 ELSE c END) AS Varicella,\n  REDUCE(c=0, e IN codes | CASE WHEN e = '49' THEN c + 1 ELSE c END) AS Hib,\n  REDUCE(c=0, e IN codes | CASE WHEN e = '83' THEN c + 1 ELSE c END) AS HepA,\n  REDUCE(c=0, e IN codes | CASE WHEN e = '115' THEN c + 1 ELSE c END) AS Tdap,\n  REDUCE(c=0, e IN codes | CASE WHEN e = '62' THEN c + 1 ELSE c END) AS HPV_e,\n  REDUCE(c=0, e IN codes | CASE WHEN e = '114' THEN c + 1 ELSE c END) AS Meningococcal,\n  REDUCE(c=0, e IN codes | CASE WHEN e = '113' THEN c + 1 ELSE c END) AS Td_adult,\n  REDUCE(c=0, e IN codes | CASE WHEN e = '43' THEN c + 1 ELSE c END) AS HepB_adult,\n  REDUCE(c=0, e IN codes | CASE WHEN e = '52' THEN c + 1 ELSE c END) AS HepA_adult,\n  REDUCE(c=0, e IN codes | CASE WHEN e = '10' THEN c + 1 ELSE c END) AS IPV\n  ORDER BY year  \n",
+            "width": 24,
+            "x": 0,
+            "y": 8,
+            "id": "747c7b3e-808d-4e42-9c7e-d6705ed088f7",
+            "title": "Vaccination records for 12 CVXs",
+            "type": "line",
+            "height": 8
           },
           {
-            "id": "0da1a8bb-abb0-4c53-ac0e-97fecc615cd3",
-            "title": "Vaccination records per PT",
-            "query": "MATCH (h:FAR_5_HELPER)\nWITH h\n  MATCH (n:FAS_5 {request_id: h.request_id})\nWITH\n  n.pt AS pt, SUBSTRING(TOSTRING(n.immunization_date), 0, 4) AS year\nWITH \n  DISTINCT(year) AS year, COLLECT(pt) AS pts\nRETURN\n  year,\n  REDUCE(c=0, e IN pts | CASE WHEN e = 'AB' THEN c + 1 ELSE c END) AS AB,\n  REDUCE(c=0, e IN pts | CASE WHEN e = 'BC' THEN c + 1 ELSE c END) AS BC,\n  REDUCE(c=0, e IN pts | CASE WHEN e = 'MB' THEN c + 1 ELSE c END) AS MB,\n  REDUCE(c=0, e IN pts | CASE WHEN e = 'NB' THEN c + 1 ELSE c END) AS NB,\n  REDUCE(c=0, e IN pts | CASE WHEN e = 'NL' THEN c + 1 ELSE c END) AS NL,\n  REDUCE(c=0, e IN pts | CASE WHEN e = 'NS' THEN c + 1 ELSE c END) AS NS,\n  REDUCE(c=0, e IN pts | CASE WHEN e = 'NT' THEN c + 1 ELSE c END) AS NT,\n  REDUCE(c=0, e IN pts | CASE WHEN e = 'NU' THEN c + 1 ELSE c END) AS NU,\n  REDUCE(c=0, e IN pts | CASE WHEN e = 'ON' THEN c + 1 ELSE c END) AS ON,\n  REDUCE(c=0, e IN pts | CASE WHEN e = 'QC' THEN c + 1 ELSE c END) AS QC,\n  REDUCE(c=0, e IN pts | CASE WHEN e = 'PE' THEN c + 1 ELSE c END) AS PE,\n  REDUCE(c=0, e IN pts | CASE WHEN e = 'SK' THEN c + 1 ELSE c END) AS SK,\n  REDUCE(c=0, e IN pts | CASE WHEN e = 'YT' THEN c + 1 ELSE c END) AS YT\n  ORDER BY year  \n  \n",
-            "width": 24,
-            "height": 8,
-            "x": 0,
-            "y": 16,
-            "type": "line",
+            "schema": [],
+            "settings": {
+              "fullscreenEnabled": true,
+              "downloadImageEnabled": true,
+              "autorun": true,
+              "legend": true,
+              "refreshButtonEnabled": true,
+              "columnWidths": "[5, 2, 17, 13, 15, 5, 5, 4, 4, 2, 2, 3]",
+              "yScale": "linear",
+              "allowDownload": true,
+              "colors": "paired"
+            },
             "selection": {
               "x": "year",
               "value": [
@@ -572,249 +751,214 @@
                 "YT"
               ]
             },
-            "settings": {
-              "refreshButtonEnabled": true,
-              "allowDownload": true,
-              "columnWidths": "[5, 2, 17, 13, 15, 5, 5, 4, 4, 2, 2, 3]",
-              "downloadImageEnabled": true,
-              "fullscreenEnabled": true,
-              "autorun": true,
-              "legend": true,
-              "colors": "paired",
-              "yScale": "linear"
-            },
-            "schema": []
-          }
-        ]
-      },
-      {
-        "title": "KI - Key Indicators",
-        "reports": [
-          {
-            "id": "203e7295-aff1-44cc-9849-aa36d04a17a3",
-            "title": "Distribution of top 100 conditions (other than medication review due or screening for employment)",
-            "query": "MATCH (h:FAR_6_HELPER)\nWITH h\n  MATCH (n:FAS_6 {request_id: h.request_id})\nWITH n.condition_description AS description, SUM(n.condition_count) AS count ORDER BY count DESC LIMIT 100\nRETURN description, count",
+            "query": "MATCH (h:FAR_5_HELPER)\nWITH h\n  MATCH (n:FAS_5 {request_id: h.request_id})\nWITH\n  n.pt AS pt, SUBSTRING(TOSTRING(n.immunization_date), 0, 4) AS year\nWITH \n  DISTINCT(year) AS year, COLLECT(pt) AS pts\nRETURN\n  year,\n  REDUCE(c=0, e IN pts | CASE WHEN e = 'AB' THEN c + 1 ELSE c END) AS AB,\n  REDUCE(c=0, e IN pts | CASE WHEN e = 'BC' THEN c + 1 ELSE c END) AS BC,\n  REDUCE(c=0, e IN pts | CASE WHEN e = 'MB' THEN c + 1 ELSE c END) AS MB,\n  REDUCE(c=0, e IN pts | CASE WHEN e = 'NB' THEN c + 1 ELSE c END) AS NB,\n  REDUCE(c=0, e IN pts | CASE WHEN e = 'NL' THEN c + 1 ELSE c END) AS NL,\n  REDUCE(c=0, e IN pts | CASE WHEN e = 'NS' THEN c + 1 ELSE c END) AS NS,\n  REDUCE(c=0, e IN pts | CASE WHEN e = 'NT' THEN c + 1 ELSE c END) AS NT,\n  REDUCE(c=0, e IN pts | CASE WHEN e = 'NU' THEN c + 1 ELSE c END) AS NU,\n  REDUCE(c=0, e IN pts | CASE WHEN e = 'ON' THEN c + 1 ELSE c END) AS ON,\n  REDUCE(c=0, e IN pts | CASE WHEN e = 'QC' THEN c + 1 ELSE c END) AS QC,\n  REDUCE(c=0, e IN pts | CASE WHEN e = 'PE' THEN c + 1 ELSE c END) AS PE,\n  REDUCE(c=0, e IN pts | CASE WHEN e = 'SK' THEN c + 1 ELSE c END) AS SK,\n  REDUCE(c=0, e IN pts | CASE WHEN e = 'YT' THEN c + 1 ELSE c END) AS YT\n  ORDER BY year  \n  \n",
             "width": 24,
-            "height": 8,
-            "x": 0,
-            "y": 0,
-            "type": "pie",
-            "selection": {
-              "index": "description",
-              "value": "count",
-              "key": "(none)"
-            },
-            "settings": {
-              "legend": false,
-              "sortByValue": true,
-              "arcLabelsSkipAngle": 10,
-              "colors": "paired",
-              "enableArcLinkLabels": true,
-              "downloadImageEnabled": true,
-              "fullscreenEnabled": true,
-              "autorun": true,
-              "refreshButtonEnabled": true
-            },
-            "schema": []
-          },
-          {
-            "id": "e03318cc-1509-4081-9657-3e5573dde596",
-            "title": "Distribution of top 100 reasons for medication",
-            "query": "MATCH (h:FAR_7_HELPER)\nWITH h\n  MATCH (n:FAS_7 {request_id: h.request_id})\nWITH n.medication_reason_description AS description, SUM(n.medication_reason_count) AS count ORDER BY count DESC LIMIT 100\nRETURN description, count\n\n\n",
-            "width": 24,
-            "height": 8,
-            "x": 0,
-            "y": 8,
-            "type": "pie",
-            "selection": {
-              "index": "description",
-              "value": "count",
-              "key": "(none)"
-            },
-            "settings": {
-              "legend": false,
-              "sortByValue": true,
-              "arcLabelsSkipAngle": 10,
-              "colors": "set3",
-              "enableArcLinkLabels": true,
-              "downloadImageEnabled": true,
-              "arcLinkLabelsSkipAngle": 3,
-              "fullscreenEnabled": true,
-              "refreshButtonEnabled": true,
-              "autorun": true
-            },
-            "schema": []
-          },
-          {
-            "id": "3bb97486-eb77-48aa-a415-8a4f0ef1b39d",
-            "title": "Distribution of top 100 procedures",
-            "query": "MATCH (h:FAR_8_HELPER)\nWITH h\n  MATCH (n:FAS_8 {request_id: h.request_id})\nWITH n.procedure_description AS description, SUM(n.procedure_count) AS count ORDER BY count DESC LIMIT 100\nRETURN description, count\n\n\n",
-            "width": 24,
-            "height": 8,
             "x": 0,
             "y": 16,
-            "type": "pie",
+            "id": "0da1a8bb-abb0-4c53-ac0e-97fecc615cd3",
+            "title": "Vaccination records per PT",
+            "type": "line",
+            "height": 8
+          }
+        ],
+        "title": "FAR 5 - Vaccination Records"
+      },
+      {
+        "reports": [
+          {
+            "schema": [],
+            "settings": {
+              "fullscreenEnabled": true,
+              "downloadImageEnabled": true,
+              "legend": false,
+              "autorun": true,
+              "enableArcLinkLabels": true,
+              "arcLabelsSkipAngle": 10,
+              "refreshButtonEnabled": true,
+              "sortByValue": true,
+              "colors": "paired"
+            },
             "selection": {
               "index": "description",
               "value": "count",
               "key": "(none)"
             },
-            "settings": {
-              "legend": false,
-              "sortByValue": true,
-              "arcLabelsSkipAngle": 10,
-              "colors": "category10",
-              "enableArcLinkLabels": true,
-              "downloadImageEnabled": true,
-              "arcLinkLabelsSkipAngle": 3,
-              "fullscreenEnabled": true,
-              "autorun": true,
-              "refreshButtonEnabled": true
-            },
-            "schema": []
-          },
-          {
-            "id": "0530f6f5-04b3-4b49-9b8a-392d48ccaaf2",
-            "title": "Query A",
-            "query": "MERGE (h:FAR_6_HELPER)\n  SET h.request_id = apoc.create.uuid()\nWITH h\n  CREATE (n:FAR_6)\n    SET \n      n.request_id = h.request_id,\n      n.pt_list = \"AB,BC,MB,NB,NL,NT,NS,NU,ON,PE,QC,SK,YT\",\n      n.timestamp = apoc.date.currentTimestamp(),\n      n.doc = \"All PTs: Statistics for requested conditions\"\nRETURN n.request_id;",
-            "width": 8,
-            "height": 2,
-            "x": 0,
-            "y": 24,
-            "type": "table",
-            "selection": {},
-            "settings": {
-              "autorun": false,
-              "refreshButtonEnabled": true
-            }
-          },
-          {
-            "id": "77587484-3024-4e56-8f7a-23e9beedb127",
-            "title": "Query B",
-            "query": "MERGE (h:FAR_7_HELPER)\n  SET h.request_id = apoc.create.uuid()\nWITH h\n  CREATE (n:FAR_7)\n    SET \n      n.request_id = h.request_id,\n      n.pt_list = \"AB,BC,MB,NB,NL,NT,NS,NU,ON,PE,QC,SK,YT\",\n      n.timestamp = apoc.date.currentTimestamp(),\n      n.doc = \"All PTs: Statistics for requested medication reasons\"\nRETURN n.request_id;",
-            "width": 8,
-            "height": 2,
-            "x": 8,
-            "y": 24,
-            "type": "table",
-            "selection": {},
-            "settings": {
-              "autorun": false,
-              "refreshButtonEnabled": true
-            }
-          },
-          {
-            "id": "147b3a3a-2400-4bf4-b5c6-df61e9453d38",
-            "title": "Query C",
-            "query": "MERGE (h:FAR_8_HELPER)\n  SET h.request_id = apoc.create.uuid()\nWITH h\n  CREATE (n:FAR_8)\n    SET \n      n.request_id = h.request_id,\n      n.pt_list = \"AB,BC,MB,NB,NL,NT,NS,NU,ON,PE,QC,SK,YT\",\n      n.timestamp = apoc.date.currentTimestamp(),\n      n.doc = \"All PTs: Statistics for requested procedures\"\nRETURN n.request_id;",
-            "width": 8,
-            "height": 2,
-            "x": 16,
-            "y": 24,
-            "type": "table",
-            "selection": {},
-            "settings": {
-              "autorun": false,
-              "refreshButtonEnabled": true
-            }
-          }
-        ]
-      },
-      {
-        "title": "RI - Research Indicator",
-        "reports": [
-          {
-            "id": "ced06a1b-bb79-4adb-a0dd-ff89f0c1ae22",
-            "title": "Where would they have been immunized? (Top 30 zip code with most young patients missing vaccination schedule)",
-            "query": "MATCH (h:FAR_9_HELPER)\nWITH h\n  MATCH (n:FAS_9 {request_id: h.request_id})\nRETURN\n  n.patient_zip AS zip,\n  n.patient_count AS patient_count,\n  n.missing_doses AS missing_doses,\n  n.organization_list AS organization_list\n  ORDER BY patient_count DESC LIMIT 30\n",
+            "query": "MATCH (h:FAR_6_HELPER)\nWITH h\n  MATCH (n:FAS_6 {request_id: h.request_id})\nWITH DISTINCT(n.condition_description) AS description, SUM(n.condition_count) AS count ORDER BY count DESC\nWITH COLLECT([description, count]) AS description_counts\nWITH \n  description_counts[0..10] AS description_counts,\n  REDUCE(l=0, e IN description_counts[10..] | CASE WHEN e IS NOT NULL THEN l+e[1] ELSE l END) AS other_count\nWITH \n  description_counts + [['Others', other_count]] AS description_counts\n  UNWIND description_counts AS description_count\nRETURN description_count[0] AS description, description_count[1] AS count",
             "width": 24,
-            "height": 8,
             "x": 0,
             "y": 0,
-            "type": "table",
-            "selection": {},
+            "id": "203e7295-aff1-44cc-9849-aa36d04a17a3",
+            "title": "Distribution of top 10 conditions (other than medication review due or screening for employment)",
+            "type": "pie",
+            "height": 8
+          },
+          {
+            "schema": [],
             "settings": {
-              "allowDownload": true,
+              "fullscreenEnabled": true,
+              "downloadImageEnabled": true,
+              "legend": false,
+              "autorun": true,
+              "enableArcLinkLabels": true,
+              "arcLabelsSkipAngle": 10,
+              "refreshButtonEnabled": true,
+              "sortByValue": true,
+              "colors": "paired",
+              "arcLinkLabelsSkipAngle": 3
+            },
+            "selection": {
+              "index": "description",
+              "value": "count",
+              "key": "(none)"
+            },
+            "query": "MATCH (h:FAR_7_HELPER)\nWITH h\n  MATCH (n:FAS_7 {request_id: h.request_id})\nWITH n.medication_reason_description AS description, SUM(n.medication_reason_count) AS count ORDER BY count DESC\nWITH COLLECT([description, count]) AS description_counts\nWITH \n  description_counts[0..10] AS description_counts,\n  REDUCE(l=0, e IN description_counts[10..] | CASE WHEN e IS NOT NULL THEN l+e[1] ELSE l END) AS other_count\nWITH \n  description_counts + [['Others', other_count]] AS description_counts\n  UNWIND description_counts AS description_count\nRETURN description_count[0] AS description, description_count[1] AS count\n",
+            "width": 24,
+            "x": 0,
+            "y": 8,
+            "id": "e03318cc-1509-4081-9657-3e5573dde596",
+            "title": "Distribution of top 10 reasons for medication",
+            "type": "pie",
+            "height": 8
+          },
+          {
+            "schema": [],
+            "settings": {
+              "fullscreenEnabled": true,
+              "downloadImageEnabled": true,
+              "legend": false,
+              "autorun": true,
+              "enableArcLinkLabels": true,
+              "arcLabelsSkipAngle": 10,
+              "refreshButtonEnabled": true,
+              "sortByValue": true,
+              "colors": "paired",
+              "arcLinkLabelsSkipAngle": 3
+            },
+            "selection": {
+              "index": "description",
+              "value": "count",
+              "key": "(none)"
+            },
+            "query": "MATCH (h:FAR_8_HELPER)\nWITH h\n  MATCH (n:FAS_8 {request_id: h.request_id})\nWITH n.procedure_description AS description, SUM(n.procedure_count) AS count ORDER BY count DESC\nWITH COLLECT([description, count]) AS description_counts\nWITH \n  description_counts[0..10] AS description_counts,\n  REDUCE(l=0, e IN description_counts[10..] | CASE WHEN e IS NOT NULL THEN l+e[1] ELSE l END) AS other_count\nWITH \n  description_counts + [['Others', other_count]] AS description_counts\n  UNWIND description_counts AS description_count\nRETURN description_count[0] AS description, description_count[1] AS count\n\n\n",
+            "width": 24,
+            "x": 0,
+            "y": 16,
+            "id": "3bb97486-eb77-48aa-a415-8a4f0ef1b39d",
+            "title": "Distribution of top 10 procedures",
+            "type": "pie",
+            "height": 8
+          },
+          {
+            "settings": {
+              "autorun": false,
+              "refreshButtonEnabled": true
+            },
+            "selection": {},
+            "query": "MERGE (h:FAR_6_HELPER)\n  SET h.request_id = apoc.create.uuid()\nWITH h\n  CREATE (n:FAR_6)\n    SET \n      n.request_id = h.request_id,\n      n.pt_list = \"AB,BC,MB,NB,NL,NT,NS,NU,ON,PE,QC,SK,YT\",\n      n.timestamp = apoc.date.currentTimestamp(),\n      n.doc = \"All PTs: Statistics for requested conditions\"\nRETURN n.request_id;",
+            "width": 8,
+            "x": 0,
+            "y": 24,
+            "id": "0530f6f5-04b3-4b49-9b8a-392d48ccaaf2",
+            "title": "Query A",
+            "type": "table",
+            "height": 2
+          },
+          {
+            "settings": {
+              "autorun": false,
+              "refreshButtonEnabled": true
+            },
+            "selection": {},
+            "query": "MERGE (h:FAR_7_HELPER)\n  SET h.request_id = apoc.create.uuid()\nWITH h\n  CREATE (n:FAR_7)\n    SET \n      n.request_id = h.request_id,\n      n.pt_list = \"AB,BC,MB,NB,NL,NT,NS,NU,ON,PE,QC,SK,YT\",\n      n.timestamp = apoc.date.currentTimestamp(),\n      n.doc = \"All PTs: Statistics for requested medication reasons\"\nRETURN n.request_id;",
+            "width": 8,
+            "x": 8,
+            "y": 24,
+            "id": "77587484-3024-4e56-8f7a-23e9beedb127",
+            "title": "Query B",
+            "type": "table",
+            "height": 2
+          },
+          {
+            "settings": {
+              "autorun": false,
+              "refreshButtonEnabled": true
+            },
+            "selection": {},
+            "query": "MERGE (h:FAR_8_HELPER)\n  SET h.request_id = apoc.create.uuid()\nWITH h\n  CREATE (n:FAR_8)\n    SET \n      n.request_id = h.request_id,\n      n.pt_list = \"AB,BC,MB,NB,NL,NT,NS,NU,ON,PE,QC,SK,YT\",\n      n.timestamp = apoc.date.currentTimestamp(),\n      n.doc = \"All PTs: Statistics for requested procedures\"\nRETURN n.request_id;",
+            "width": 8,
+            "x": 16,
+            "y": 24,
+            "id": "147b3a3a-2400-4bf4-b5c6-df61e9453d38",
+            "title": "Query C",
+            "type": "table",
+            "height": 2
+          }
+        ],
+        "title": "KI - Key Indicators"
+      },
+      {
+        "reports": [
+          {
+            "settings": {
               "fullscreenEnabled": true,
               "downloadImageEnabled": true,
               "compact": true,
               "autorun": true,
               "refreshButtonEnabled": true,
-              "columnWidths": "[3,4,12,70]"
-            }
-          },
-          {
-            "id": "6bbd6915-c9c5-4b71-8176-be209cfbccb2",
-            "title": "Query",
-            "query": "MERGE (h:FAR_9_HELPER)\n  SET h.request_id = apoc.create.uuid()\nWITH h\nCREATE (n:FAR_9)\n    SET \n      n.request_id = h.request_id,\n      n.cvx_maps = apoc.convert.toJson(apoc.map.fromPairs([[\"03\", 6], [\"08\", 6], [\"20\", 18], [\"21\", 12], [\"49\", 18], [\"83\", 18], [\"114\", 2], [\"115\", 48], [\"119\", 4], [\"133\", 4]])), \n      n.pt_list = \"AB,BC,MB,NB,NL,NT,NS,NU,ON,PE,QC,SK,YT\",\n      n.timestamp = apoc.date.currentTimestamp(),\n      n.doc = \"All PT: Young children missing vaccination schedule\"\nRETURN n.request_id;\n\n\n",
-            "width": 6,
-            "height": 2,
-            "x": 0,
-            "y": 8,
-            "type": "table",
+              "columnWidths": "[3,4,12,70]",
+              "allowDownload": true
+            },
             "selection": {},
-            "settings": {
-              "autorun": false,
-              "refreshButtonEnabled": true
-            }
-          }
-        ]
-      },
-      {
-        "title": "Cleanup",
-        "reports": [
-          {
-            "id": "82e4fd02-7c2c-4401-b5e9-3ad60dd4e121",
-            "title": "Cleanup",
-            "query": "WITH [\"FAR\", \"FAS\"] AS entity_list\n    UNWIND entity_list AS entity\nWITH entity, SPLIT(\"1,2,3,4,5,6,7,8,9\", \",\") AS counter_list\n    UNWIND counter_list AS counter\nWITH entity + \"_\" + counter AS current_entity,\n    \"MATCH (n:\" + entity + \"_\" + counter + \") RETURN n\" AS batch_producer,\n    \" WITH n DETACH DELETE n\" AS batch_runner\nWITH current_entity, batch_producer, batch_runner\n    CALL apoc.periodic.iterate(batch_producer, batch_runner, {batchSize:10000, parallel:true})\n        YIELD total RETURN current_entity, total;\n\n\n\n",
-            "width": 6,
-            "height": 6,
+            "query": "MATCH (h:FAR_9_HELPER)\nWITH h\n  MATCH (n:FAS_9 {request_id: h.request_id})\n    WHERE NOT(\"0123456789\" CONTAINS SUBSTRING(n.patient_zip, 0, 1))\nRETURN\n  n.patient_zip AS zip,\n  n.patient_count AS patient_count,\n  n.missing_doses AS missing_doses,\n  n.organization_list AS organization_list\n  ORDER BY patient_count DESC LIMIT 30\n",
+            "width": 24,
             "x": 0,
             "y": 0,
+            "id": "ced06a1b-bb79-4adb-a0dd-ff89f0c1ae22",
+            "title": "Where would they have been immunized? (Top 30 zip code with most young patients missing vaccination schedule)",
             "type": "table",
-            "selection": {},
+            "height": 8
+          },
+          {
             "settings": {
               "autorun": false,
               "refreshButtonEnabled": true
-            }
+            },
+            "selection": {},
+            "query": "MERGE (h:FAR_9_HELPER)\n  SET h.request_id = apoc.create.uuid()\nWITH h\nCREATE (n:FAR_9)\n    SET \n      n.request_id = h.request_id,\n      n.cvx_maps = apoc.convert.toJson(apoc.map.fromPairs([[\"03\", 6], [\"08\", 6], [\"20\", 18], [\"21\", 12], [\"49\", 18], [\"83\", 18], [\"114\", 2], [\"115\", 48], [\"119\", 4], [\"133\", 4]])), \n      n.pt_list = \"AB,BC,MB,NB,NL,NT,NS,NU,ON,PE,QC,SK,YT\",\n      n.timestamp = apoc.date.currentTimestamp(),\n      n.doc = \"All PT: Young children missing vaccination schedule\"\nRETURN n.request_id;\n\n\n",
+            "width": 6,
+            "x": 0,
+            "y": 8,
+            "id": "6bbd6915-c9c5-4b71-8176-be209cfbccb2",
+            "title": "Query",
+            "type": "table",
+            "height": 2
           }
-        ]
+        ],
+        "title": "RI - Research Indicator"
+      },
+      {
+        "reports": [
+          {
+            "settings": {
+              "autorun": false,
+              "refreshButtonEnabled": true
+            },
+            "selection": {},
+            "query": "WITH [\"FAR\", \"FAS\"] AS entity_list\n    UNWIND entity_list AS entity\nWITH entity, SPLIT(\"1,2,3,4,5,6,7,8,9\", \",\") AS counter_list\n    UNWIND counter_list AS counter\nWITH entity + \"_\" + counter AS current_entity,\n    \"MATCH (n:\" + entity + \"_\" + counter + \") RETURN n\" AS batch_producer,\n    \" WITH n DETACH DELETE n\" AS batch_runner\nWITH current_entity, batch_producer, batch_runner\n    CALL apoc.periodic.iterate(batch_producer, batch_runner, {batchSize:10000, parallel:true})\n        YIELD total RETURN current_entity, total;\n\n\n\n",
+            "width": 6,
+            "x": 0,
+            "y": 0,
+            "id": "82e4fd02-7c2c-4401-b5e9-3ad60dd4e121",
+            "title": "Cleanup",
+            "type": "table",
+            "height": 6
+          }
+        ],
+        "title": "Cleanup"
       }
     ],
+    "title": "Federal Analytics Platform",
+    "version": "2.4",
     "parameters": {},
-    "extensions": {
-      "active": true,
-      "activeReducers": [
-        "DASHBOARD/EXTENSIONS/QUERY_TRANSLATOR/"
-      ],
-      "advanced-charts": {
-        "active": true
-      },
-      "styling": {
-        "active": true
-      },
-      "actions": {
-        "active": true
-      },
-      "query-translator": {
-        "active": true,
-        "modelProvider": "OpenAI",
-        "settings": {
-          "modelType": "gpt-4-0613"
-        },
-        "lastMessages": {
-          "0": {
-            "8e85c1a2-0183-45bb-bde5-3c56d125452c": "How many Patients are there?"
-          },
-          "1": {
-            "92b6ed72-5695-4cbe-ae19-3c89e8b9d1a0": "How many patients are there?"
-          },
-          "11": {
-            "5c3a6aa3-1d75-41b0-875e-61e8409b4446": "How many Patients are there per Zip?",
-            "d4bf8b5b-38bd-4ca4-944e-009f1b1f23cd": "How many Patients are there per zip?"
-          }
-        }
-      }
-    },
     "uuid": "d8f4a139-ffac-48d2-a8ba-212458f19495"
   }
