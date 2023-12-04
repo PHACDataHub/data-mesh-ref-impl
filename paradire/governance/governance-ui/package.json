@@ -10,7 +10,7 @@
     "db:studio": "prisma studio",
     "dev:ws": "nodemon -I --exec node --es-module-specifier-resolution=node --loader ts-node/esm src/server/wsServer.ts",
     "dev:next": "next dev",
-    "dev": "next dev & npm run dev:ws",
+    "dev": "npm run dev:next & npm run dev:ws",
     "postinstall": "prisma generate",
     "lint": "next lint",
     "start": "next start"
@@ -39,8 +39,6 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "superjson": "^1.13.1",
-    "ts-node-dev": "^2.0.0",
-    "tsc-esm": "^1.0.4",
     "ws": "^8.14.2",
     "yaml": "^2.3.3",
     "zod": "^3.22.4",
@@ -64,6 +62,7 @@
     "prettier-plugin-tailwindcss": "^0.5.1",
     "prisma": "^5.1.1",
     "tailwindcss": "^3.3.3",
+    "ts-node-dev": "^2.0.0",
     "typescript": "^5.1.6"
   },
   "ct3aMetadata": {
