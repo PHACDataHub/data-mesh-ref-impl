@@ -18,7 +18,7 @@ cp-kafka:
 ## ------------------------------------------------------
 cp-kafka-cj:
   enabled: true
-  samplingSize: 1000
+  samplingSize: 500
   pt: "ab"
   cronJob: "true"
   GCPBucketName: "paradire-synthea-data"
@@ -109,10 +109,10 @@ hapi-fhir-server:
 neo4j:
   enabled: true
   storage:
-    dataPvcSize: "10Gi"
-    importPvcSize: "10Gi"
-    logsPvcSize: "10Gi"
-    pluginsPvcSize: "10Gi"
+    dataPvcSize: "50Gi"
+    importPvcSize: "50Gi"
+    logsPvcSize: "50Gi"
+    pluginsPvcSize: "50Gi"
   env-val: statging
   neo4jSecret:
     NEO4J_AUTH: "bmVvNGovcGhhY0AyMDIz" # base64 encoded 'neo4j/phac@2023'

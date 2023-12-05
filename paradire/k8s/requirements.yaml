@@ -51,6 +51,10 @@ dependencies:
   version: 0.1.0
   repository: file://./charts/governance-ui
   condition: governance-ui.enabled
+- name: streaming-ui
+  version: 0.1.0
+  repository: file://./charts/streaming-ui
+  condition: streaming-ui.enabled
 - name: acg
   version: 0.1.0
   repository: file://./charts/acg

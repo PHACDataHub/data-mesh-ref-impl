@@ -8,102 +8,97 @@ body, html {
 }
 
 .container {
-    max-width: 1200px;
+    max-width: 1500px;
     margin: 20px auto;
-    padding: 20px;
+    padding: 10px;
     background-color: #c8d6e5;
-    justify-content: center;
-    align-items: center; 
     box-shadow: 0 0 15px rgba(0,0,0,0.1);
     border-radius: 8px;
 }
 
 .header.center-align {
     text-align: center;
-    width: 100%;
-    margin: 0 auto;
     margin-bottom: 50px;
     color: #333;
-    display: block;
     font-weight: bold;
     font-size: 2.5rem;
 }
 
-.row {
+.card {
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    margin-left: 50px;
+    margin-right: 50px;
+    transition: box-shadow 0.3s ease;
+}
+
+.card:hover {
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.card-body {
     display: flex;
-    flex-wrap: wrap;
-    margin-right: -15px;
-    width: 100%;
-    margin-left: -15px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between; /* Adjusted to space-between to push elements to the ends */
+    padding: 10px;
 }
 
-.card-container {
-    padding: 15px;
+.card-top {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start; /* Keep province name aligned to the left */
+    flex-grow: 1; /* Allow this div to grow and fill the space */
+    margin-bottom: 5px; /* Space between this section and buttons */
+    margin-top: 5px; /* Space between this section and buttons */
 }
 
-.province-card {
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-    padding: 20px;
-    margin-bottom: 30px;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+.status-indicator {
+    display: flex;
+    align-items: center;
+    padding-right: 20px; /* Right padding for space between indicator and buttons */
 }
 
-.province-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 6px 12px rgba(0,0,0,0.3);
-}
-
-.province-title {
-    font-size: 1.8rem;
-    font-weight: bold;
-    margin-bottom: 25px;
-    color: #222f3e;
+.province {
+    font-size: 20px;
+    font-weight: 700;
     white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    margin-right: 10px; /* Space between province name and online status */
 }
 
-.service-btn {
-    display: block;
-    font-weight: bold;
-    width: 100%;
-    padding: 15px; 
-    margin-bottom: 15px;
-    border: none;
-    border-radius: 5px;
+.buttons {
+    display: flex;
+    justify-content: flex-end; /* Align to the right */
+    gap: 10px;
+    flex-grow: 0; /* Prevent buttons div from growing */
+}
+
+
+.container .btn {
+    display: flex;
+    align-items: center;
     text-decoration: none;
+    padding: 5px 10px;
     color: white;
-    background-color: #007bff;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: box-shadow 0.3s;
+    margin: 0 5px 5px 0; /* Adjust margins for buttons */
 }
 
-.service-btn:hover {
-    background-color: #222f3e;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-    color: white !important;
+.container .btn-icon {
+    margin-right: 5px;
 }
 
-
-@media (min-width: 768px) {
-    .card-container {
-        flex: 0 0 calc(50% - 30px); /* Two cards per row with padding */
-        max-width: calc(50% - 30px);
-    }
+.container .btn:hover {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
 }
 
-@media (min-width: 992px) {
-    .card-container {
-        flex: 0 0 calc(33.333% - 30px); /* Three cards per row with padding */
-        max-width: calc(33.333% - 30px);
-    }
-}
-
-@media (min-width: 1200px) {
-    .card-container {
-        flex: 0 0 calc(25% - 30px); /* Four cards per row with padding */
-        max-width: calc(25% - 30px);
-    }
-}
+.container .btn-Governance-UI { background-color: #007BA7; }
+.container .btn-Kafka-UI { background-color: #FF4040; }
+.container .btn-Patient-Browser { background-color: #50C878; }
+.container .btn-HAPI-FHIR-Server { background-color: #9966CC; }
+.container .btn-Neo4j { background-color: #F28500; }
+.container .btn-Neodash { background-color: #B2456E; }

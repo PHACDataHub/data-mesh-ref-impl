@@ -84,6 +84,7 @@ for pt in "${selected_provinces[@]}"; do
         --set cp-kafka-cj.cronSchedule="$cron_schedule" \
         --set cp-kafka-cj.pt="$pt" \
         --set cp-kafka-cj.enabled=false \
+        --set streaming-ui.enabled=false \
         --set cp-kafka-cj.GCPBucketName="paradire-synthea-data" \
         --set cp-kafka-job.GCPBucketName="paradire-synthea-data" \
         --set neo4j.envSetting="$env_setting" \
