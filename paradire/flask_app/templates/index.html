@@ -11,32 +11,38 @@
 <body>
     <div class="container">
         <h3 class="header center-align">Immunization Records Gateway Links</h3>
-        <div class="row justify-content-center">
-            {% for province, services in entities.items() %}
-                <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3 card-container">
-                    <div class="province-card">
-                        <div class="province-title">{{ province }}</div>
-                        {% for service in services %}
-                            <a href="{{ service.url }}" target="_blank" class="service-btn">{{ service.name | capitalize }}</a>
-                        {% endfor %}
-                        <div class="status-indicator">
-                            <span class="status-text">Initializing Health Check</span>
-                            <svg class="health-indicator" id="health-indicator-{{ province }}" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
-                                <circle cx="12" cy="12" r="10" fill="#808080"/>
-                            </svg>
-                        </div>
+        {% for province, services in entities.items() %}
+        <div class="card">
+            <div class="card-body">
+                <!-- Card top now only includes the status indicator and province name -->
+                <div class="card-top">
+                    <div class="status-indicator">
+                        <svg class="health-indicator" id="health-indicator-{{ province }}" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
+                            <circle cx="12" cy="12" r="10" fill="#808080"/>
+                        </svg>
                     </div>
+                    <div class="province">{{ province }}</div>
                 </div>
-            {% endfor %}
-        </div>
+                <!-- Buttons div moved outside of card-top so it can be right-aligned -->
+                <div class="buttons">
+                    {% for service in services %}
+                    <a href="{{ service.url }}" target="_blank" class="btn {{ 'btn-' + service.name | replace(' ', '-') }}">
+                        <img src="{{ url_for('static', filename='svg/' + service.name + '.svg') }}" alt="{{ service.name }} Icon" class="btn-icon">
+                        {{ service.name }}
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+        </div> 
+        {% endfor %}
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
     <script>
         function updateHealthStatus() {
-            const provinces = document.querySelectorAll('.province-card');
+            const provinces = document.querySelectorAll('.card');
             provinces.forEach((province, index) => {
-                const provinceName = province.querySelector('.province-title').textContent.trim();
+                const provinceName = province.querySelector('.province').textContent.trim();
                 const indicator = province.querySelector('.health-indicator circle');
                 let statusText = province.querySelector('.status-text');
 
@@ -52,16 +58,13 @@
                         }
                         if (isProvinceHealthy) {
                             indicator.setAttribute('fill', '#008000');
-                            statusText.textContent = 'Online';
                         } else {
                             indicator.setAttribute('fill', '#FF0000');
-                            statusText.textContent = 'Offline';
                         }
                     })
                     .catch(error => {
                         console.error('Error:', error);
                         indicator.setAttribute('fill', '#FF0000');
-                        statusText.textContent = 'Offline';
                     });
             });
         }

@@ -5,9 +5,9 @@ app = Flask(__name__)
 
 entities = {
     "Federal": [
-        {"name": "Kafka UI", "url": "https://kafkaui.phac.paradire.phac-aspc.alpha.canada.ca"},
         {"name": "Neo4j", "url": "https://neo4j.phac.paradire.phac-aspc.alpha.canada.ca/browser"},
-        {"name": "Neodash", "url": "https://neodash.phac.paradire.phac-aspc.alpha.canada.ca"}
+        {"name": "Neodash", "url": "https://neodash.phac.paradire.phac-aspc.alpha.canada.ca"},
+        {"name": "Kafka UI", "url": "https://kafkaui.phac.paradire.phac-aspc.alpha.canada.ca"}
         # {"name": "Neodash Designer", "url": "https://neodash-designer.phac.paradire.phac-aspc.alpha.canada.ca"}
     ],
     "Alberta (AB)": [
