@@ -11,6 +11,7 @@ export const env = createEnv({
     BROKER_HOST: z.string(),
     BROKER_PORT: z.number(),
     WS_URL: z.string(),
+    F_SCHEMA_REGISTRY_URL: z.string(),
   },
 
   /**
@@ -31,6 +32,7 @@ export const env = createEnv({
     BROKER_HOST: process.env.BROKER_HOST,
     BROKER_PORT: parseInt(process.env.BROKER_PORT ?? "INVALID", 10),
     WS_URL: process.env.WS_URL,
+    F_SCHEMA_REGISTRY_URL: process.env.F_SCHEMA_REGISTRY_URL,
     // NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
   },
   /**

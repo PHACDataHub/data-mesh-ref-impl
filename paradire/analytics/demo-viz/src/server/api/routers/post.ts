@@ -44,8 +44,8 @@ export type FAS_5 = {
   timestamp: number;
 };
 
-console.log([`${env.BROKER_HOST}:${env.BROKER_PORT}`]);
-console.log(`http://${env.BROKER_HOST}:8081`);
+console.log(`Kafka broker: ${env.BROKER_HOST}:${env.BROKER_PORT}`);
+console.log(`Schema registry: ${env.F_SCHEMA_REGISTRY_URL}`);
 
 // Connection to Federal kafka
 const kafka_phac = new Kafka({
@@ -53,7 +53,7 @@ const kafka_phac = new Kafka({
   brokers: [`${env.BROKER_HOST}:${env.BROKER_PORT}`],
 });
 const registry_phac = new SchemaRegistry({
-  host: `http://${env.BROKER_HOST}:8081`,
+  host: env.F_SCHEMA_REGISTRY_URL,
 });
 
 export const postRouter = createTRPCRouter({
