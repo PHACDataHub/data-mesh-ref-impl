@@ -1,28 +1,28 @@
-# Create T3 App
+# Streaming visualization demo
 
-This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
+Having an event driven architecture means we can also leverage data in real-time as
+it arrives into the system.
 
-## What's next? How do I make an app with this?
+This PoC demonstrates how we can graph events as they are received in real-time.  The example
+uses the [FAR_5](/doc/part-i.md) response data.
 
-We try to keep this project as simple as possible, so you can start with just the scaffolding we set up for you, and add additional things later when they become necessary.
+## How does it work?
 
-If you are not familiar with the different technologies used in this project, please refer to the respective docs. If you still are in the wind, please join our [Discord](https://t3.gg/discord) and ask for help.
+This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.  The
+backend connects to kafka and streams events to the frontend via [tRPC](https://trpc.io) 
+supscriptions over websockets.
 
-- [Next.js](https://nextjs.org)
-- [NextAuth.js](https://next-auth.js.org)
-- [Prisma](https://prisma.io)
-- [Tailwind CSS](https://tailwindcss.com)
-- [tRPC](https://trpc.io)
+## Deployment
 
-## Learn More
+There are 3 distinct services created in project.
 
-To learn more about the [T3 Stack](https://create.t3.gg/), take a look at the following resources:
+  - The backend
+  - The frontend
+  - The websocket server.
 
-- [Documentation](https://create.t3.gg/)
-- [Learn the T3 Stack](https://create.t3.gg/en/faq#what-learning-resources-are-currently-available) — Check out these awesome tutorials
+The backend and the frontend can both be served by a single docker image, the websocket
+server however is a separate deployment.
 
-You can check out the [create-t3-app GitHub repository](https://github.com/t3-oss/create-t3-app) — your feedback and contributions are welcome!
+- [Dockerfile](./Dockerfile)
+- [Dockerfile.wsserver](./Dockerfile.wsserver)
 
-## How do I deploy this?
-
-Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel), [Netlify](https://create.t3.gg/en/deployment/netlify) and [Docker](https://create.t3.gg/en/deployment/docker) for more information.

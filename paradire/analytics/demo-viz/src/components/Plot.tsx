@@ -31,19 +31,17 @@ const initialize_uplot = (
     series: [
       {
         label: "X",
-      },
+      }
     ].concat(
       PTs.map((pt, i) => ({
-        // scale: "V",
         label: pt,
         stroke: `#${colors[i]}`,
       })),
     ),
     axes: [
-      { font, labelFont: font },
+      { labelFont: font },
       {
         label: "Vaccinations",
-        font,
         labelFont: font,
         show: true,
         grid: { show: true },
@@ -57,19 +55,69 @@ const initialize_uplot = (
 export default function Plot({
   PTs,
   data,
-  records,
   start,
   stop,
 }: {
   PTs: PT[];
   data: AlignedData;
-  records: number;
   start?: number;
   stop?: number;
 }) {
   const graph_container = useRef<HTMLDivElement>(null);
   const parent_container = useRef<HTMLDivElement>(null);
   const ref = useRef<{ plot: uPlot | null }>({ plot: null });
+
+  const play = useCallback(
+    (position: number, window: number, data: AlignedData, plot: uPlot) => {
+      if (data.length > 0) {
+        if (Array.isArray(data[0]) && data[0].length > position) {
+          // const sp = data[0][position];
+          // const ep = data[0][Math.min(position + window, data[0].length - 1)];
+          // const start = sp ? new Date(sp * 1000).toLocaleDateString() : "N/A";
+          // const end = ep ? new Date(ep * 1000).toLocaleDateString() : "N/A";
+          // console.debug(`Playing from ${start} to ${end}`);
+          plot.setData(
+            data.map((d) =>
+             Array.isArray(d) ? d.slice(position, position + window) : [],
+            ) as AlignedData,
+          );
+        }
+      }
+    },
+    [],
+  );
+
+  const setPlotData = useCallback(
+    (d: AlignedData) => {
+      if (!ref.current.plot) {
+        setTimeout(() => setPlotData(d), 200);
+        return;
+      }
+      const X = d[0];
+      if (ref.current.plot && Array.isArray(X)) {
+        let s = 0;
+        if (typeof start === "number") {
+          for (let x = 0; x < X.length; x += 1) {
+            const e = X[x];
+            if (typeof e === "number" && e <= start) {
+              s = x;
+            } else break;
+          }
+        }
+        let w = X.length - 1;
+        if (typeof stop === "number") {
+          for (let x = 0; x < X.length; x += 1) {
+            const e = X[x];
+            if (typeof e === "number" && e <= stop) {
+              w = x;
+            } else break;
+          }
+        }
+        play(s, w - s, d, ref.current.plot);
+      }
+    },
+    [start, stop],
+  );
 
   useEffect(() => {
     const resize = () => {
@@ -98,58 +146,9 @@ export default function Plot({
     };
   }, [PTs]);
 
-  const play = useCallback(
-    (position: number, window: number, data: AlignedData, plot: uPlot) => {
-      if (data.length > 0) {
-        if (Array.isArray(data[0]) && data[0].length > position) {
-          // const sp = data[0][position];
-          // const ep = data[0][Math.min(position + window, data[0].length - 1)];
-          // const start = sp ? new Date(sp * 1000).toLocaleDateString() : "N/A";
-          // const end = ep ? new Date(ep * 1000).toLocaleDateString() : "N/A";
-          // console.debug(`Playing from ${start} to ${end}`);
-          plot.setData(
-            data.map((d) =>
-              d.slice(position, position + window),
-            ) as AlignedData,
-          );
-        }
-      }
-    },
-    [],
-  );
-
   useEffect(() => {
-    const setData = (d: AlignedData) => {
-      if (!ref.current.plot) {
-        setTimeout(() => setData(d), 200);
-        return;
-      }
-      const X = d[0];
-      if (ref.current.plot && Array.isArray(X)) {
-        let s = 0;
-        if (typeof start === "number") {
-          for (let x = 0; x < X.length; x += 1) {
-            const e = X[x];
-            if (e && e <= start) {
-              s = x;
-            } else break;
-          }
-        }
-        let w = X.length - 1;
-        if (typeof stop === "number") {
-          for (let x = 0; x < X.length; x += 1) {
-            const e = X[x];
-            if (e && e <= stop) {
-              w = x;
-            } else break;
-          }
-        }
-
-        play(s, w - s, d, ref.current.plot);
-      }
-    };
-    setData(data);
-  }, [data, records, start, stop]);
+    setPlotData(data);
+  }, [data, start, stop]);
 
   return (
     <div ref={parent_container} className="flex flex-1 flex-col">

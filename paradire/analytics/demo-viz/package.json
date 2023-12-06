@@ -4,11 +4,11 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "copyWasm": "copy-files-from-to --config copy-files-from-to.json",
-    "build": "npm run copyWasm && next build",
-    "build:ws": "rm -rf dist && tsc --project tsconfig.wsserver.json && find dist -iname \"*.js\" -exec tsc-esm {} \\; && mv dist/env.js dist/env.js.js",
+    "copyCache": "copy-files-from-to --config copy-files-from-to.json",
+    "build": "next build",
+    "build:ws": "rm -rf dist && tsc --project tsconfig.wsserver.json && find dist -iname \"*.js\" -exec tsc-esm {} \\; && mv dist/env.js dist/env.js.js && npm run copyCache",
     "dev:ws": "nodemon -I --exec node --es-module-specifier-resolution=node --loader ts-node/esm src/server/wsServer.ts",
-    "dev:next": "npm run copyWasm && next dev -p 3005",
+    "dev:next": "next dev -p 3005",
     "dev": "npm run dev:next & npm run dev:ws",
     "lint": "next lint",
     "start": "next start"
@@ -25,6 +25,7 @@
     "color-scheme": "^1.0.1",
     "dayjs": "^1.11.10",
     "dotenv": "^16.3.1",
+    "graphql-subscriptions": "^2.0.0",
     "kafkajs": "^2.2.4",
     "next": "^14.0.3",
     "react": "18.2.0",
