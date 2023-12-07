@@ -39,6 +39,13 @@ How to read this document:
 ### III. [PT and F clusters in harmony](/.part-iii.md)
 ### IV. [Looking forward with hindsight](./part-iv.md)
 
+## Sub projects
+
+- [Governance UI](../governance/governance-ui/README.md)
+- [Access control gateway](../analytics/acg/README.md)
+- [Live streaming demo](../analytics/demo-viz/README.md)
+- [GraphQL Server](../governance/gateway/README.md)
+
 --- 
 
 &nbsp;

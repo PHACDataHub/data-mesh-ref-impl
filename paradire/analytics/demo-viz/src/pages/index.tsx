@@ -1,14 +1,18 @@
 import Head from "next/head";
 
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 import {
   DatePicker,
   Radio,
   Button,
+  Spin,
+  Select,
   type RadioChangeEvent,
   Badge,
 } from "antd";
+
+import { ReloadOutlined } from "@ant-design/icons";
 import dayjs, { type Dayjs } from "dayjs";
 
 import { type AlignedData } from "uplot";
@@ -45,13 +49,16 @@ export default function Home() {
   // If enabled, will begin to stream cached data from `cached.json` in the root of the repo
   const [streamingCached, setStreamingCached] = useState(false);
 
+  // If empty, indicates we are polling for the latest request id - otherwise is the selected request id.
+  const [requestId, setRequestId] = useState("");
+
   // This is where the data points are stored
   const [summaryData, setSummaryData] =
     useState<SummaryData>(generateEmptyData());
 
   // Memoized calculation of the sum of all yearly data points.
   // (Only considers year because all sums are the same, and there are less loops here)
-    const records = useMemo(
+  const records = useMemo(
     () =>
       summaryData.year_data
         .filter((_, i) => i > 0)
@@ -67,9 +74,13 @@ export default function Home() {
     return summaryData.daily_data as AlignedData;
   }, [mode, summaryData]);
 
+  const requestIdQuery = api.post.getRequestIds.useQuery(undefined, {
+    refetchOnWindowFocus: false,
+  });
+
   // tRPC subscription hook, when new data arrives update the data via `setSummaryData`.
   api.post.onData.useSubscription(
-    { clientId, cached: streamingCached },
+    { clientId, cached: streamingCached, requestId },
     {
       enabled: streamingEnabled,
       onData(data) {
@@ -77,6 +88,23 @@ export default function Home() {
       },
     },
   );
+
+  useEffect(() => {
+    if (!requestIdQuery.data) return;
+    if (requestIdQuery.data.length === 0) {
+      setRequestId("");
+      const poll = async () => {
+        const { data } = await requestIdQuery.refetch();
+        if (!data || data.length === 0) {
+          setTimeout(() => void poll(), 1000);
+        }
+        if (data?.[0]) setRequestId(data[0]);
+      };
+      void poll();
+    } else if (requestId === "" && requestIdQuery.data[0]) {
+      setRequestId(requestIdQuery.data[0]);
+    }
+  }, [requestIdQuery.data, requestId]);
 
   // Handler called when the mode is changed.
   const modeChangeHandler = useCallback((e: RadioChangeEvent) => {
@@ -99,22 +127,38 @@ export default function Home() {
   const resetHandler = useCallback(() => {
     // get a new client id to get a new storage bucket on the backend
     setClientId(`viz-${(Math.random() + 1).toString(36).substring(7)}`);
-    
+
     // zero the data in the browser's memory
     setSummaryData(generateEmptyData());
-    
+
+    // Get the latest request_ids if in streaming mode
+    if (!streamingCached) {
+      setRequestId("");
+      requestIdQuery.remove();
+      void requestIdQuery.refetch();
+    }
+
     // toggle streaming on/off
     setStreamingEnabled(false);
     setTimeout(() => setStreamingEnabled(true), 100);
-  }, []);
+  }, [streamingCached]);
 
-  // Handler called when the stream/playback selector is changed.
+  // Handler called when the stream/simulation selector is changed.
   const cacheHandler = useCallback((e: RadioChangeEvent) => {
     // Perform a reset
     resetHandler();
 
     // Update cache mode
     setStreamingCached(Boolean(e.target.value));
+  }, []);
+
+  const requestChangeHandler = useCallback((value: string) => {
+    // Update the request id
+    setRequestId(value);
+
+    // zero the data in the browser's memory
+    setSummaryData(generateEmptyData());
+
   }, []);
 
   return (
@@ -178,20 +222,46 @@ export default function Home() {
           />
           <Radio.Group
             options={[
+              { label: "Simulate", value: true },
               { label: "Stream", value: false },
-              { label: "Playback", value: true },
             ]}
             value={streamingCached}
             onChange={cacheHandler}
             optionType="button"
             buttonStyle="solid"
           />
-
-          <div className="flex flex-1 justify-end">
-            <Button onClick={resetHandler} className="bg-red-600 text-white">
-              Reset
-            </Button>
-          </div>
+          {!streamingCached && (
+            <div className="flex flex-1 items-center justify-end space-x-5">
+              <Select
+                placeholder="Request id"
+                value={requestId || undefined}
+                onChange={requestChangeHandler}
+                options={requestIdQuery.data?.map((ri) => ({
+                  value: ri,
+                  label: ri,
+                }))}
+              />
+              {((requestId === "" ||
+                requestIdQuery.isFetching ||
+                requestIdQuery.isLoading) && <Spin />) || (
+                <Button
+                  shape="circle"
+                  icon={<ReloadOutlined />}
+                  onClick={resetHandler}
+                />
+              )}
+            </div>
+          )}
+          {streamingCached && (
+            <div className="flex flex-1 justify-end">
+              <Button
+                onClick={resetHandler}
+                className="bg-green-600 text-white"
+              >
+                Restart
+              </Button>
+            </div>
+          )}
         </div>
       </main>
     </>

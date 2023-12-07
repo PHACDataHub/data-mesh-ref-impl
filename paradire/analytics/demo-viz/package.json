@@ -14,6 +14,7 @@
     "start": "next start"
   },
   "dependencies": {
+    "@ant-design/icons": "^5.2.6",
     "@kafkajs/confluent-schema-registry": "^3.3.0",
     "@t3-oss/env-nextjs": "^0.7.1",
     "@tanstack/react-query": "^4.36.1",

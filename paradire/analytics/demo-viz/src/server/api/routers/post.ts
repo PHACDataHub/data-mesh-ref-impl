@@ -1,8 +1,10 @@
-import { Kafka } from "kafkajs";
-import { SchemaRegistry } from "@kafkajs/confluent-schema-registry";
 import { z } from "zod";
 
+import { Kafka } from "kafkajs";
+import { SchemaRegistry } from "@kafkajs/confluent-schema-registry";
 import { PubSub } from "graphql-subscriptions";
+
+// import neo4j from "neo4j-driver";
 
 import { createTRPCRouter, publicProcedure } from "../trpc";
 import { env } from "../../../env.js";
@@ -14,7 +16,7 @@ import { readFileSync, writeFileSync } from "fs";
 // Allow more than 10 listeners
 process.setMaxListeners(1000);
 
-
+// Type for PTs (to allow the strings being used as keys)
 export type PT =
   | "YT"
   | "SK"
@@ -30,12 +32,14 @@ export type PT =
   | "BC"
   | "AB";
 
+// Type of summary data used directly by the client to draw plots
 export type SummaryData = {
   year_data: number[][];
   month_data: number[][];
   daily_data: number[][];
 };
 
+// Response type for FAS_5 (mapped from avro)
 export type FAS_5 = {
   request_id: string;
   pt: PT;
@@ -72,15 +76,17 @@ const cached_data = JSON.parse(
   readFileSync("./cached.json").toString(),
 ) as SummaryData[];
 
-
 console.log(`Kafka broker: ${env.BROKER_HOST}:${env.BROKER_PORT}`);
 console.log(`Schema registry: ${env.F_SCHEMA_REGISTRY_URL}`);
 
 // Create pubsub object to forward messages from the kafka consumer to websockets subscriptions
 const pubsub = new PubSub();
 
-// Initialize storage for data objects by clientId
+// Initialize storage for data objects by requestId
 const data_storage: Record<string, SummaryData> = {};
+
+// Ordered array of available request_ids  (Alternative for connecting to Neo4j)
+const request_ids: string[] = [];
 
 // References to garbage collection timers, to cancel them if needed.
 const data_gc: Record<string, NodeJS.Timeout> = {};
@@ -109,6 +115,12 @@ const registry_phac = new SchemaRegistry({
   host: env.F_SCHEMA_REGISTRY_URL,
 });
 
+// Connect to Neo4J
+// const neo4j_driver = neo4j.driver(
+//   `bolt://${env.BROKER_HOST}:`,
+//   neo4j.auth.basic("neo4j", "phac@2023"),
+// );
+
 // Create a consumer for the service, and subscribe to the fas_5 topic.
 console.info("-= subscribing to Kafka topic [fas_5] =-");
 const pt_consumer = kafka_phac.consumer({
@@ -129,6 +141,29 @@ let cache_recorder: NodeJS.Timeout;
 
 // Create an empty cache object  (only used in collect_cache is true)
 const cache: SummaryData[] = [];
+
+/**
+ * Perform garbage collection of collected stream data in 5 minutes.
+ *
+ * @param request_id Stream request id
+ */
+const gc_stream = (request_id: string) => {
+  return {
+    abort: () => clearTimeout(data_gc[request_id]),
+    clean: () => {
+      clearTimeout(data_gc[request_id]);
+      if (typeof data_storage[request_id] === "object") {
+        data_gc[request_id] = setTimeout(() => {
+          console.log(`-- GC data storage. [${request_id}] --`);
+          delete data_storage[request_id];
+          const i = request_ids.indexOf(request_id);
+          if (i >= 0) request_ids.splice(i, 1);
+          clearTimeout(data_gc[request_id]);
+        }, 300000);
+      }
+    },
+  };
+};
 
 // The following function will be executing everytime a message arrives in kafka
 void pt_consumer.run({
@@ -183,11 +218,71 @@ void pt_consumer.run({
             records = 0;
             start_time = undefined;
           }, 1000);
-          
+
           // This is the only important bit in here - this broadcasts the kafka message
           // to any subscribed clients to be processed.  (Each client gets their own sums - this
           // is to avoid the data not arriving in order)
-          await pubsub.publish("stream", data);
+
+          // Create storage for this request id if it doesn't exist.
+
+          if (typeof data_storage[data.request_id] !== "object") {
+            console.log(
+              `-- Initializing new data object. [${data.request_id}] --`,
+            );
+            data_storage[data.request_id] = generateEmptyData();
+            if (!request_ids.includes(data.request_id)) request_ids.unshift(data.request_id);
+          }
+
+          // Get a reference to the storage object
+          const store = data_storage[data.request_id];
+          if (!store) {
+            // this should never happen, but is here for type safety
+            throw new Error("Unable to allocate store.");
+          }
+          const { year_data, month_data, daily_data } = store;
+
+          // Add 1 to the existing sums
+          const d = new Date(data.immunization_date);
+          const y = d.getFullYear();
+          const m = d.getMonth() + 1;
+          const day = d.getDate();
+
+          const pt_index = PTs.indexOf(data.pt);
+          const y_index = year_data[0]?.indexOf(
+            Date.parse(`01/01/${y}`) / 1000,
+          );
+          const m_index = month_data[0]?.indexOf(
+            Date.parse(`${m}/01/${y}`) / 1000,
+          );
+          const d_index = daily_data[0]?.indexOf(
+            Date.parse(`${m}/${day}/${y}`) / 1000,
+          );
+
+          const pt_y_row = year_data[pt_index + 1];
+          const pt_m_row = month_data[pt_index + 1];
+          const pt_d_row = daily_data[pt_index + 1];
+
+          if (
+            pt_y_row &&
+            pt_m_row &&
+            pt_d_row &&
+            typeof y_index === "number" &&
+            y_index >= 0 &&
+            typeof m_index === "number" &&
+            m_index >= 0 &&
+            typeof d_index === "number" &&
+            d_index >= 0
+          ) {
+            pt_y_row[y_index] += 1;
+            pt_m_row[m_index] += 1;
+            pt_d_row[d_index] += 1;
+          }
+
+          // Schedule GC for storage immediately.  (There may be no clients)
+          gc_stream(data.request_id).clean();
+
+          // Let clients know there has been an update for this request_id.
+          await pubsub.publish(data.request_id, data);
         }
       } catch (e) {
         console.error(e);
@@ -198,33 +293,49 @@ void pt_consumer.run({
 
 // This is the actual subscription
 export const postRouter = createTRPCRouter({
+  getRequestIds: publicProcedure.query(async () => {
+    // // Fetch latest request_id from Neo4j and return it to the client
+    // console.log("== fetching latest request id ==");
+    // const { records } = await neo4j_driver.executeQuery(
+    //   "MATCH (h:FAR_5_HELPER) RETURN h.request_id AS request_id",
+    // );
+    // for (const record of records) {
+    //   return record.get("request_id") as string;
+    // }
+    // return "";
+    return request_ids;
+  }),
   onData: publicProcedure
     .input(
-      z.object({ clientId: z.string(), cached: z.boolean().default(true) }),
+      z.object({
+        clientId: z.string(),
+        requestId: z.string(),
+        cached: z.boolean(),
+      }),
     )
     .subscription(async ({ input }) => {
-      // Abort GC on existing data objects
-      clearTimeout(data_gc[input.clientId]);
+      if (input.cached) {
+        console.log("=== starting cache playback ===");
+        setTimeout(() => {
+          playback_cache(input.clientId, 0);
+        }, 300);
 
-      // Prepare each data point with an initial zero.
-      if (typeof data_storage[input.clientId] !== "object") {
-        console.log(`-- Initializing new data object. [${input.clientId}] --`);
-        data_storage[input.clientId] = generateEmptyData();
-        if (input.cached) {
-          setTimeout(() => {
-            playback_cache(input.clientId, 0);
-          }, 300);
-        }
-      } else {
-        console.log(
-          `-- Connecting to existing data object. [${input.clientId}] --`,
-        );
+        return observable<SummaryData>((emit) => {
+          console.log("-- subscribing to pubsub --");
+          const sub = pubsub.subscribe(input.clientId, (data: SummaryData) => {
+            emit.next(data);
+          });
+
+          return () => {
+            // Cleanup
+            clearTimeout(data_cache_timers[input.clientId]);
+            void (async () => {
+              console.log("-- disconnecting from pubsub --");
+              pubsub.unsubscribe(await sub);
+            })();
+          };
+        });
       }
-
-      // Get a reference to the storage object for this clientId.
-      const store = data_storage[input.clientId];
-      if (!store) return null; // this would never happen, but is here for type safety
-      const { year_data, month_data, daily_data } = store;
 
       // Reference to the response timer, needed to stop the interval when a client disconnects
       let response_timer: NodeJS.Timeout | null = null;
@@ -233,74 +344,33 @@ export const postRouter = createTRPCRouter({
       let dirty = true;
 
       return observable<SummaryData>((emit) => {
-        if (!input.cached) {
-          // Every 50ms check if the dirty flag is set - if so return the data to the client.
-          response_timer = setInterval(() => {
-            if (dirty) {
-              emit.next({ year_data, month_data, daily_data });
-              dirty = false;
-            }
-          }, 50);
-        }
+        const gc = gc_stream(input.requestId);
+        // Every 50ms check if the dirty flag is set - if so return the data to the client.
+        response_timer = setInterval(() => {
+          const store = data_storage[input.requestId];
+          if (dirty && store) {
+            // Delay any pending GC
+            gc.abort();
+            // Send the data to the client
+            emit.next(store);
+            dirty = false;
+          }
+        }, 50);
 
         console.log("-- subscribing to pubsub --");
-        const sub = input.cached
-          ? pubsub.subscribe(input.clientId, (data: SummaryData) => {
-              // When cached, just return the data without performing sums.
-              emit.next(data);
-            })
-          : pubsub.subscribe("stream", (data: FAS_5) => {
-              // Perform a sum of the data, and set the dirty flag to true
-              const d = new Date(data.immunization_date);
-              const y = d.getFullYear();
-              const m = d.getMonth() + 1;
-              const day = d.getDate();
-
-              const pt_index = PTs.indexOf(data.pt);
-              const y_index = year_data[0]?.indexOf(
-                Date.parse(`01/01/${y}`) / 1000,
-              );
-              const m_index = month_data[0]?.indexOf(
-                Date.parse(`${m}/01/${y}`) / 1000,
-              );
-              const d_index = daily_data[0]?.indexOf(
-                Date.parse(`${m}/${day}/${y}`) / 1000,
-              );
-
-              const pt_y_row = year_data[pt_index + 1];
-              const pt_m_row = month_data[pt_index + 1];
-              const pt_d_row = daily_data[pt_index + 1];
-
-              if (
-                pt_y_row &&
-                pt_m_row &&
-                pt_d_row &&
-                typeof y_index === "number" &&
-                y_index >= 0 &&
-                typeof m_index === "number" &&
-                m_index >= 0 &&
-                typeof d_index === "number" &&
-                d_index >= 0
-              ) {
-                pt_y_row[y_index] += 1;
-                pt_m_row[m_index] += 1;
-                pt_d_row[d_index] += 1;
-              }
-              dirty = true;
-            });
+        const sub = pubsub.subscribe(input.requestId, () => {
+          // Set the dirty flag to true to schedule an update within 50ms
+          dirty = true;
+        });
 
         return () => {
           // Cleanup
           if (response_timer) clearInterval(response_timer);
-          void sub.then((n) => {
+          void (async () => {
             console.log("-- disconnecting from pubsub --");
-            pubsub.unsubscribe(n);
-          });
-          data_gc[input.clientId] = setTimeout(() => {
-            console.log(`-- GC data storage. [${input.clientId}] --`);
-            delete data_storage[input.clientId];
-          }, 10000);
-          if (input.cached) clearTimeout(data_cache_timers[input.clientId]);
+            pubsub.unsubscribe(await sub);
+            gc.clean();
+          })();
         };
       });
     }),
