@@ -1,8 +1,5 @@
 /**
  * GraphQL Directives responsible for data transformations
- * 
- * NOTICE: This file was copied from the ACG and will likely be moved into a
- * shared library.
  */
 import { GraphQLSchema, defaultFieldResolver } from "graphql";
 import { MapperKind, getDirective, mapSchema } from "@graphql-tools/utils";
@@ -80,15 +77,49 @@ export function hashDirective(directiveName: string) {
 }
 
 /**
+ * Convert a string using the provided regular expression.
+ * @param directiveName Name of graphql directive
+ * @returns
+ */
+export function transformDirective(directiveName: string) {
+  return {
+    transformDirectiveTypeDefs:
+      "directive @transform(regex: String) on FIELD_DEFINITION\n",
+    transformDirectiveTransformer: (schema: GraphQLSchema) =>
+      mapSchema(schema, {
+        [MapperKind.OBJECT_FIELD]: (fieldConfig) => {
+          const fieldDirective = getDirective(
+            schema,
+            fieldConfig,
+            directiveName
+          )?.[0];
+          if (fieldDirective) {
+            const { resolve = defaultFieldResolver } = fieldConfig;
+            fieldConfig.resolve = async (source, args, context, info) => {
+              const result = await resolve(source, args, context, info);
+              if (typeof result === "string") {
+                const rg = new RegExp(fieldDirective.regex).exec(result);
+                if (Array.isArray(rg)) return rg.join(", ");
+              }
+              return null;
+            };
+          }
+          return fieldConfig;
+        },
+      }),
+  };
+}
+
+/**
  * Fields with this directive are returned but their values are empty strings
  * when the type is string, -1 for integers
  * @param directiveName Name of directive
  * @returns
  */
-export function blankDirective(directiveName: string) {
+export function restrictDirective(directiveName: string) {
   return {
-    blankDirectiveTypeDefs: "directive @blank on FIELD_DEFINITION\n",
-    blankDirectiveTransformer: (schema: GraphQLSchema) =>
+    restrictDirectiveTypeDefs: "directive @restrict on FIELD_DEFINITION\n",
+    restrictDirectiveTransformer: (schema: GraphQLSchema) =>
       mapSchema(schema, {
         [MapperKind.OBJECT_FIELD]: (fieldConfig) => {
           const fieldDirective = getDirective(

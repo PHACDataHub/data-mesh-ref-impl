@@ -8,10 +8,17 @@
     "files": [
         "/dist"
     ],
+    "scripts": {
+        "compile": "tsc",
+        "dev": "tsc --watch"
+    },
     "dependencies": {
         "@types/json-schema": "^7.0.14",
         "graphql": "^16.8.1",
         "json-schema": "^0.4.0",
         "yaml": "^2.3.4"
+    },
+    "devDependencies": {
+        "typescript": "^5.3.3"
     }
 }
