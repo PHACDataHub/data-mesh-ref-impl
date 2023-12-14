@@ -11,11 +11,11 @@ metadata:
     cloud.google.com/backend-config: '{ "default": "{{ template "cp-kafka-ui.fullname" . }}-backendconfig" }'
 spec:
   ports:
-      - name: kafka-ui
+      - name: http-ui
         port: {{ .Values.servicePort }}
         targetPort: 8080
     {{- if .Values.prometheus.jmx.enabled }}
-      - name: metrics
+      - name: http-metrics
         port: {{ .Values.prometheus.jmx.port }}
     {{- end }}
   selector:

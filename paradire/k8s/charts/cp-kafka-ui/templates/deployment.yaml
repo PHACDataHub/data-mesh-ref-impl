@@ -7,6 +7,7 @@ metadata:
     chart: {{ template "cp-kafka-ui.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+    version: v1
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
@@ -18,6 +19,7 @@ spec:
       labels:
         app: {{ template "cp-kafka-ui.name" . }}
         release: {{ .Release.Name }}
+        version: v1
       {{- if or .Values.podAnnotations .Values.prometheus.jmx.enabled }}
       annotations:
       {{- range $key, $value := .Values.podAnnotations }}

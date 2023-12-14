@@ -11,6 +11,7 @@ spec:
     metadata:
       labels:
         app: streaming-ui
+        version: v1
     spec:
       enableServiceLinks: false
       containers:
@@ -46,8 +47,3 @@ spec:
           value: "wss://streaming.phac.paradire.phac-aspc.alpha.canada.ca/ws"
         - name: F_SCHEMA_REGISTRY_URL
           value: {{ .Values.schemaRegistry.fUrl | quote }}
-      - name: nginx-streaming-proxy
-        image: northamerica-northeast1-docker.pkg.dev/phx-01he5rx4wsv/paradire/streaming-nginx-proxy
-        imagePullPolicy: Always
-        ports:
-        - containerPort: 3090

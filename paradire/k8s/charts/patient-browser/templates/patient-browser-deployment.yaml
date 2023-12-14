@@ -11,6 +11,7 @@ spec:
     metadata:
       labels:
         app: patient-browser
+        version: v1
     spec:
       containers:
       - name: patient-browser

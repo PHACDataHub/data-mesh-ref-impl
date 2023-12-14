@@ -9,10 +9,10 @@ metadata:
     heritage: {{ .Release.Service }}
 spec:
   ports:
-      - name: ksql-server
+      - name: http-server
         port: {{ .Values.servicePort }}
     {{- if .Values.prometheus.jmx.enabled }}
-      - name: metrics
+      - name: tcp-metrics
         port: {{ .Values.prometheus.jmx.port }}
     {{- end }}
   selector:

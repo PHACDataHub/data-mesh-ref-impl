@@ -1,26 +1,7 @@
-from flask import Flask, render_template, jsonify, redirect, url_for
+from flask import Flask, render_template, jsonify
 import requests
-import requests
-from flask_oidc import OpenIDConnect
-from keycloak import KeycloakOpenID
 
 app = Flask(__name__)
-
-# OIDC Configuration
-app.config.update({
-    'SECRET_KEY': 'Your-Secret-Key',
-    'OIDC_CLIENT_SECRETS': './client_secrets.json',
-    'OIDC_ID_TOKEN_COOKIE_SECURE': False,  # Set to True in production
-    'OIDC_REQUIRE_VERIFIED_EMAIL': False,
-    'OIDC_VALID_ISSUERS': ['https://[keycloak-server]/auth/realms/Paradire'],
-    'OIDC_OPENID_REALM': 'Paradire',
-    'OIDC_SCOPES': ['openid', 'email', 'profile'],
-    'OVERWRITE_REDIRECT_URI': 'https://links.paradire.phac-aspc.alpha.canada.ca/oidc_callback',
-    'OIDC_INTROSPECTION_AUTH_METHOD': 'client_secret_post'
-})
-
-oidc = OpenIDConnect(app)
-
 
 entities = {
     "Federal": [
@@ -149,7 +130,6 @@ entities = {
 }
 
 @app.route('/')
-@oidc.require_login
 def index():
     return render_template('index.html', entities=entities)
 
@@ -161,16 +141,6 @@ def check_health(url):
     except requests.exceptions.RequestException as e:
         print(f"Error checking {url}: {e}")
         return None 
-
-@app.route('/logout')
-def logout():
-    oidc.logout()
-    return 'Hi, you have been logged out!'
-
-@app.route('/login')
-@oidc.require_login
-def login():
-    return redirect(url_for('index'))
 
 @app.route('/health-check/<province_name>')
 def health_check(province_name):

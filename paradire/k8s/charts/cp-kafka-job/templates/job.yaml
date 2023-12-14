@@ -12,6 +12,8 @@ spec:
     metadata:
       labels:
         app: {{ template "cp-kafka-job.name" . }}
+      # annotations:
+      #   proxy.istio.io/config: '{"holdApplicationUntilProxyStarts": true}'
     spec:
       restartPolicy: Never
       initContainers:

@@ -4,6 +4,7 @@ metadata:
   creationTimestamp: null
   labels:
     app: hapi-fhir-db
+    version: v1
   name: hapi-fhir-db
 spec:
   replicas: 1
@@ -16,9 +17,12 @@ spec:
     metadata:
       labels:
         app: hapi-fhir-db
+        version: v1
     spec:
       containers:
       - name: hapi-fhir-db
+        ports:
+        - containerPort: 5432
         image: "{{ .Values.db.image }}"
         env:
         - name: PGDATA

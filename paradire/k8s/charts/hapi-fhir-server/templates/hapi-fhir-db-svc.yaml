@@ -9,6 +9,6 @@ spec:
   ports:
     - port: {{ .Values.db.port }}
       targetPort: {{ .Values.db.targetPort }}
-      name: hapi-fhir-db
+      name: tcp-db
   selector:
     app: hapi-fhir-db

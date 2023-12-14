@@ -3,8 +3,23 @@ kind: Service
 metadata:
   name: streaming-ui-svc
 spec:
-  ports:
-    - port: 3090
-      protocol: TCP
   selector:
     app: streaming-ui
+  ports:
+    - name: http-streaming
+      protocol: TCP
+      port: 3000
+      targetPort: 3000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: streaming-ui-wss-svc
+spec:
+  selector:
+    app: streaming-ui
+  ports:
+    - name: ws-streaming
+      protocol: TCP
+      port: 3006
+      targetPort: 3006
