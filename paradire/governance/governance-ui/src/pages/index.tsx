@@ -183,7 +183,9 @@ export default function Home() {
         if (i) {
           i.query.status = "streaming";
           i.fields = selectedFields;
-          i.responses.push(data.message);
+          if (i.responses.length < 10) {
+            i.responses.push(data.message);
+          }
           clearTimeout(monitorTimer.current[request_id]);
           monitorTimer.current[request_id] = setTimeout(() => {
             i.query.status = "complete";
