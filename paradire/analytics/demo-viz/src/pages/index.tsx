@@ -1,6 +1,6 @@
 import Head from "next/head";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import {
   DatePicker,
@@ -35,7 +35,7 @@ export default function Home() {
   const [mode, setMode] = useState<"yearly" | "monthly" | "daily">("monthly");
 
   // Determine the default start date and end date of the visualization.
-  const [startDate, setStartDate] = useState<Dayjs>(dayjs("01/01/2005"));
+  const [startDate, setStartDate] = useState<Dayjs>(dayjs("01/01/2014"));
   const [endDate, setEndDate] = useState<Dayjs>(dayjs(maximum_date));
 
   // Generate a unique client id to allow resuming of data streams if the WS connection is disconnected.
@@ -51,6 +51,8 @@ export default function Home() {
 
   // If empty, indicates we are polling for the latest request id - otherwise is the selected request id.
   const [requestId, setRequestId] = useState("");
+
+  const pollingRef = useRef<NodeJS.Timeout | null>(null);
 
   // This is where the data points are stored
   const [summaryData, setSummaryData] =
@@ -90,21 +92,34 @@ export default function Home() {
   );
 
   useEffect(() => {
-    if (!requestIdQuery.data) return;
-    if (requestIdQuery.data.length === 0) {
-      setRequestId("");
+    if (pollingRef.current) {
+      clearTimeout(pollingRef.current);
+      pollingRef.current = null;
+    }
+    if (
+      !streamingCached &&
+      requestIdQuery.data &&
+      requestIdQuery.data.length === 0
+    ) {
       const poll = async () => {
         const { data } = await requestIdQuery.refetch();
         if (!data || data.length === 0) {
-          setTimeout(() => void poll(), 1000);
+          pollingRef.current = setTimeout(() => void poll(), 1000);
+        } else {
+          pollingRef.current = null;
+          setRequestId(data[0] ?? "");
         }
-        if (data?.[0]) setRequestId(data[0]);
       };
       void poll();
-    } else if (requestId === "" && requestIdQuery.data[0]) {
-      setRequestId(requestIdQuery.data[0]);
+    } else if (
+      !streamingCached &&
+      requestIdQuery.data &&
+      requestIdQuery.data.length > 0 &&
+      requestId === ""
+    ) {
+      setRequestId(requestIdQuery.data[0] ?? "");
     }
-  }, [requestIdQuery.data, requestId]);
+  }, [streamingCached, requestIdQuery.data, requestId]);
 
   // Handler called when the mode is changed.
   const modeChangeHandler = useCallback((e: RadioChangeEvent) => {
@@ -158,7 +173,6 @@ export default function Home() {
 
     // zero the data in the browser's memory
     setSummaryData(generateEmptyData());
-
   }, []);
 
   return (
@@ -199,8 +213,8 @@ export default function Home() {
                 value: [dayjs(minimum_date), dayjs()],
               },
               {
-                label: "Since 2005",
-                value: [dayjs("01/01/2005"), dayjs()],
+                label: "Since 2014",
+                value: [dayjs("01/01/2014"), dayjs()],
               },
               {
                 label: "2019 - 2022",

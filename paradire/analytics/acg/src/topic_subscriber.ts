@@ -6,6 +6,7 @@ import { type SchemaRegistry } from "@kafkajs/confluent-schema-registry";
 import { Partitioners, type Kafka } from "kafkajs";
 
 import { PubSub } from "graphql-subscriptions";
+import { heartbeat_or_die } from "./heartbeat.js";
 
 const instance_id = (Math.random() + 1).toString(36).substring(7);
 
@@ -72,6 +73,7 @@ export const subscribeToTopic = async ({
   const fed_consumer = kafka.federal.consumer({
     groupId: `${name}-${instance_id}`,
   });
+  heartbeat_or_die(fed_consumer);
   await fed_consumer.connect();
   await fed_consumer.subscribe({
     topic: topic.request,
@@ -133,6 +135,7 @@ export const subscribeToTopic = async ({
   // Create a consumer that listens for responses to analytics requests from
   // PT.
   const pt_consumer = kafka.pt.consumer({ groupId: `${name}-${instance_id}` });
+  heartbeat_or_die(pt_consumer);
   await pt_consumer.connect();
   await pt_consumer.subscribe({
     topic: topic.response,
@@ -219,7 +222,6 @@ export const subscribeToTopic = async ({
               },
             ],
           });
-
         } catch (e) {
           console.error(e);
         }

@@ -3,7 +3,7 @@ export {
   expandRuleset,
   getFieldIfSelected,
   getFieldType,
-  getNamespacedRef,
+  refOrUnknown,
   isFieldSelected,
   ruleSetToSelectedResourceTypes,
   rulesToGraphQl,
