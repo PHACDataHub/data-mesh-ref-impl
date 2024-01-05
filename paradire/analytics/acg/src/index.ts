@@ -47,6 +47,7 @@ import {
 
 import { create_graphql_schema } from "./graphql.js";
 import { existsSync, readFileSync, writeFileSync } from "fs";
+import { heartbeat_or_die } from "./heartbeat.js";
 
 const instance_id = (Math.random() + 1).toString(36).substring(7);
 
@@ -98,6 +99,7 @@ const config_consumer = kafka_pt.consumer({
   groupId: `acg-config-connector-${instance_id}`,
   allowAutoTopicCreation: true,
 });
+heartbeat_or_die(config_consumer);
 await config_consumer.connect();
 await config_consumer.subscribe({
   topic,
@@ -130,6 +132,7 @@ const status_consumer = kafka_pt.consumer({
   groupId: `acg-status-${instance_id}`,
   allowAutoTopicCreation: true,
 });
+heartbeat_or_die(status_consumer);
 await status_consumer.connect();
 await status_consumer.subscribe({
   topic: "acg-status",
@@ -147,9 +150,7 @@ status_consumer.run({
       console.debug("pong");
       status_producer.send({
         topic: "acg-status",
-        messages: [
-          { key, value: acgStatusMessage(true) },
-        ],
+        messages: [{ key, value: acgStatusMessage(true) }],
       });
     }
   },
@@ -202,44 +203,50 @@ try {
       if (typeof name === "string" && typeof resolver === "object") {
         if (name in fields) {
           new Promise(async () => {
-            const query = get_default_query(fields[name]);
-            console.log(`Executing query: ${query}`);
-            const listener = await server.executeOperation({ query });
-            started = true;
-            if (listener.body.kind === "single") {
-              console.error("--- error[124] ---");
-              console.log(
-                JSON.stringify(listener.body.singleResult.errors, null, 2)
-              );
-              process.exit();
-            } else if (listener.body.kind === "incremental") {
-              for await (const result of listener.body.subsequentResults) {
-                if ("incremental" in result) {
-                  result.incremental?.forEach((inc) => {
-                    if ("items" in inc && Array.isArray(inc.items)) {
-                      inc.items.forEach(async (item) => {
-                        console.debug(
-                          `[${name}] - ${item.request_id} - received data from graphql`
-                        );
-                        await resolver.send_to_fed(item);
-                      });
+            try {
+              const query = get_default_query(fields[name]);
+              console.log(`Executing query: ${query}`);
+              const listener = await server.executeOperation({ query });
+              started = true;
+              if (listener.body.kind === "single") {
+                console.error("--- error[124] ---");
+                console.log(
+                  JSON.stringify(listener.body.singleResult.errors, null, 2)
+                );
+                process.exit();
+              } else if (listener.body.kind === "incremental") {
+                for await (const result of listener.body.subsequentResults) {
+                  if ("incremental" in result) {
+                    result.incremental?.forEach((inc) => {
+                      if ("items" in inc && Array.isArray(inc.items)) {
+                        inc.items.forEach(async (item) => {
+                          console.debug(
+                            `[${name}] - ${item.request_id} - received data from graphql`
+                          );
+                          await resolver.send_to_fed(item);
+                        });
+                      }
+                    });
+                  } else {
+                    if (
+                      "completed" in result &&
+                      Array.isArray(result.completed)
+                    ) {
+                      result.completed
+                        .filter((c) => typeof c !== "undefined")
+                        .forEach((c) => console.log(c.errors));
                     }
-                  });
-                } else {
-                  if (
-                    "completed" in result &&
-                    Array.isArray(result.completed)
-                  ) {
-                    result.completed
-                      .filter((c) => typeof c !== "undefined")
-                      .forEach((c) => console.log(c.errors));
                   }
                 }
+              } else {
+                console.error("--- error[150] ---");
+                console.log(listener);
+                process.exit();
               }
-            } else {
-              console.error("--- error[150] ---");
-              console.log(listener);
-              process.exit();
+            } catch (e) {
+              // An error has occurred, restart.
+              console.error(e);
+              process.exit(1);
             }
           });
         }

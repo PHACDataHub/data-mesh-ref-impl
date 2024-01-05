@@ -12,7 +12,6 @@ import {
   GraphQLNonNull,
   GraphQLInputObjectType,
   GraphQLList,
-  GraphQLUnionType,
 } from "graphql";
 
 import { Document, parse } from "yaml";
@@ -30,10 +29,6 @@ export type ResourceTypeFieldOptions = {
 export type ResourceTypeField =
   | string
   | Record<string, ResourceTypeFieldOptions>;
-
-/**
- * Type describing a resource type by name and what fields are selected.
- */
 
 export type ResourceTypeSelection = {
   name: string;
@@ -78,9 +73,17 @@ export interface AvroSchema {
   fields: AvroSchemaType[];
 }
 
-export const getNamespacedRef = (ref: string | undefined) =>
-  `${ref ?? "UNKNOWN"}`;
+/**
+ * @param ref Reference string
+ * @returns `ref` or UNKNOWN if undefined.
+ */
+export const refOrUnknown = (ref: string | undefined) => `${ref ?? "UNKNOWN"}`;
 
+/**
+ * Given an array of resource types, returns the ruleset yaml specification.
+ * @param resourceTypes Array of resource types
+ * @returns Ruleset yaml
+ */
 export const selectedResourceTypesToRuleSet = (
   resourceTypes: ResourceTypeSelection[]
 ) => {
@@ -97,6 +100,12 @@ export const selectedResourceTypesToRuleSet = (
   return doc.toString();
 };
 
+/**
+ * Transform a ruleset yaml specification into an array of resource type
+ * selections.
+ * @param yaml Ruleset yaml
+ * @returns Array of resource type selections
+ */
 export const ruleSetToSelectedResourceTypes = (yaml: string) => {
   const selection: ResourceTypeSelection[] = [];
   const doc = parse(yaml) as RuleSetDocument;
@@ -116,6 +125,12 @@ export const ruleSetToSelectedResourceTypes = (yaml: string) => {
   return selection;
 };
 
+/**
+ *
+ * @param field Named field
+ * @param fields Array of resource type fields
+ * @returns If `field` is selected in `fields`, return it; otherwise return null
+ */
 export function getFieldIfSelected(field: string, fields: ResourceTypeField[]) {
   return fields.find(
     (f) =>
@@ -124,14 +139,31 @@ export function getFieldIfSelected(field: string, fields: ResourceTypeField[]) {
   );
 }
 
+/**
+ * @param field Named field
+ * @param fields Array of resource type fields
+ * @returns true if field is selected in `fields`, false otherwise.
+ */
 export function isFieldSelected(field: string, fields: ResourceTypeField[]) {
   return Boolean(getFieldIfSelected(field, fields));
 }
 
+/**
+ *
+ * @param fieldSpec JSON Schema field definition
+ * @returns True if the field is an array, false otherwise.
+ */
 const isFieldSpecArray = (fieldSpec: JSONSchema6) =>
   fieldSpec.type === "array" ||
   (Array.isArray(fieldSpec.type) && fieldSpec.type.includes("array"));
 
+/**
+ *
+ * @param name Name of field
+ * @param fieldSpec JSON Schema field definition
+ * @param schema Entire JSON Schema
+ * @returns Type of field
+ */
 export function getFieldType(
   name: string,
   fieldSpec: JSONSchema6,
@@ -148,7 +180,7 @@ export function getFieldType(
   if (reference) {
     const ref = dereference(reference, schema);
     if (ref && typeof ref !== "boolean") {
-      if (ref.properties) return [getNamespacedRef(reference), true, nullable];
+      if (ref.properties) return [refOrUnknown(reference), true, nullable];
       if (ref.type) return [ref.type as string, false, nullable];
       return ["UNSUPPORTED", false, nullable];
     }
@@ -187,7 +219,7 @@ export const expandRuleset = (
 ) => {
   // expand by adding all resource types
   resourceTypes.forEach((RT) => {
-    const NS = getNamespacedRef(RT.ref);
+    const NS = refOrUnknown(RT.ref);
     const def = dereference(RT.ref, schema);
     if (!def || typeof def === "boolean") return;
     if (!expanded.find((ex) => ex.name === NS)) {
@@ -322,8 +354,7 @@ const fieldSpecToGraphQlType = (
       field: fieldName,
       directive: `@transform(regex: "${options.format}")`,
       regex: {
-        search: (match) =>
-          new RegExp(`(.*?)${match}(.*?): (String)([!])?(.*)`),
+        search: (match) => new RegExp(`(.*?)${match}(.*?): (String)([!])?(.*)`),
         replace: (dir) => `$1$2: String$4 ${dir}`,
       },
       directives,
@@ -624,7 +655,7 @@ export const rulesetToAvro = (yaml: string, schema: JSONSchema6) => {
                 items:
                   typeof fieldSpec.items === "object"
                     ? "$ref" in fieldSpec.items &&
-                      getNamespacedRef(fieldSpec.items.$ref)
+                      refOrUnknown(fieldSpec.items.$ref)
                     : fieldSpec.items,
               }
             );

@@ -1,7 +1,7 @@
 import { Timeline } from "antd";
 import MonitoringEvent from "./MonitoringEvent";
 import { type ResourceTypeField } from "@phac-aspc-dgg/schema-tools";
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useRef } from "react";
 
 export type ACGEvent = {
   time: Date;
