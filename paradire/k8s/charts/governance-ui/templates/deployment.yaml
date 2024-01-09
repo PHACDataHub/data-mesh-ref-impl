@@ -16,9 +16,6 @@ spec:
       enableServiceLinks: false
       serviceAccountName: job-service-account
       initContainers:
-      - name: check-registry
-        image: curlimages/curl
-        command: ['sh', '-c', 'until curl -s --head --request GET {{ .Values.schemaRegistry.url | quote }} && curl -s --head --request GET {{ .Values.schemaRegistry.fUrl | quote }}; do echo "Waiting for Schema Registry"; sleep 5; done;']
       - name: wait-for-kafka-job
         image: bitnami/kubectl
         command: ['sh', '-c']

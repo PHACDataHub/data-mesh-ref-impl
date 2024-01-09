@@ -103,9 +103,9 @@ neo4j:
   enabled: true
   storage:
     dataPvcSize: "50Gi"
-    importPvcSize: "50Gi"
-    logsPvcSize: "50Gi"
-    pluginsPvcSize: "50Gi"
+    importPvcSize: "10Gi"
+    logsPvcSize: "10Gi"
+    pluginsPvcSize: "10Gi"
   env-val: statging
     
 ## ------------------------------------------------------

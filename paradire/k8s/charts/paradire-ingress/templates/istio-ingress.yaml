@@ -70,7 +70,7 @@ spec:
         inject.istio.io/templates: gateway
       labels:
         istio: ingressgateway
-        istio.io/rev: asm-managed
+        istio.io/rev: dev
         version: v1
         app: istio-ingressgateway
     spec:
