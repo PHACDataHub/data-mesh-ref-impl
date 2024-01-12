@@ -9,7 +9,7 @@ spec:
   ports:
     - port: {{ .Values.server.port }}
       targetPort: {{ .Values.server.targetPort }}
-      name: hapi-fhir-server
+      name: http-server 
   selector:
     app: hapi-fhir-server
 status:

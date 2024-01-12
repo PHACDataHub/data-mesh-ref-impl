@@ -11,7 +11,7 @@ spec:
     - name: https
       port: {{ .Values.service.httpsPort }}
       targetPort: 7473
-    - name: bolt
+    - name: tcp-bolt
       port: {{ .Values.service.boltPort }}
       targetPort: 7687
   selector:

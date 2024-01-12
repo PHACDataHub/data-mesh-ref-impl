@@ -13,6 +13,7 @@ spec:
     metadata:
       labels:
         app: neo4j
+        version: v1
     spec:
       volumes:
         - name: data

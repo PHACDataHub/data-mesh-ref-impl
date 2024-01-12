@@ -7,6 +7,7 @@ spec:
     app: neodash
   ports:
     - protocol: TCP
+      name: tcp-svc
       port: {{ .Values.service.port }}
       targetPort: {{ .Values.service.targetPort }}
   type: {{ .Values.service.type }}

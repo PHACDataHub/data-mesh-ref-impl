@@ -11,8 +11,21 @@ if ! [[ "$action_choice" == "1" || "$action_choice" == "2" || "$action_choice" =
     exit 1
 fi
 
-env_setting="production"
+encrypted_secrets_dir="./k8s-encrypted-secrets"
+secrets_files=("hapi-fhir-postgres-secret.yaml.enc" "kafka-ui-secret.yaml.enc" "neo4j-secret.yaml.enc")
 
+if ! helm plugin list | grep -q secrets; then
+    echo "Helm Secrets plugin is not installed. Installing it now..."
+    helm plugin install https://github.com/jkroepke/helm-secrets --version v3.11.0
+    if [ $? -ne 0 ]; then
+        echo "Failed to install Helm Secrets plugin. Exiting."
+        exit 1
+    fi
+    echo "Helm Secrets plugin installed successfully."
+fi
+
+
+env_setting="production"
 # if [[ "$action_choice" == "1" || "$action_choice" == "2" ]]; then
 #     echo "Choose the environment: 1 for staging, 2 for production"
 #     read env_choice
@@ -51,48 +64,78 @@ for pt in "${selected_provinces[@]}"; do
         ((cron_hour++))
     fi
     cron_schedule="${cron_minute} ${cron_hour} * * *"
+    cron_schedule=$(echo "$cron_schedule" | sed 's/\*/\\*/g')
 
     cmd="upgrade"
     if [[ "$action_choice" == "1" ]]; then
         cmd="install"
     fi
 
+    secrets_args=""
+    for file in "${secrets_files[@]}"; do
+        full_path="$encrypted_secrets_dir/$file"
+        if [[ -f "$full_path" ]]; then
+            secrets_args+="-f $full_path "
+        else
+            echo "Warning: Secret file not found: $full_path"
+        fi
+    done
+
+    load_balancer_ip=$(gcloud compute addresses describe "$pt-ingress-ip" --format="get(address)" --region northamerica-northeast1)
+    # Check if the IP was successfully retrieved
+    if [ -z "$load_balancer_ip" ]; then
+        echo "Failed to fetch load balancer IP for $pt. Exiting."
+        exit 1
+    fi
+
     if [[ "$pt" == "phac" ]]; then
-        helm $cmd "$pt" . --namespace="$pt" --create-namespace \
-        --set acg.enabled=false \
+        chart_name="$pt"
+        helm_command="helm secrets $cmd \"$chart_name\" . --namespace=\"$pt\" --create-namespace $secrets_args"
+        additional_sets="--set acg.enabled=false \
         --set governance-ui.enabled=false \
         --set hapi-fhir-server.enabled=false \
         --set patient-browser.enabled=false \
         --set cp-kafka-cj.enabled=false \
-        --set cp-kafka-ui.paradire.pt="$pt" \
-        --set cp-kafka-job.pt="$pt" \
-        --set neo4j.envSetting="$env_setting" \
-        --set neo4j.paradire.pt="$pt" \
-        --set neodash.paradire.pt="$pt" \
-        --set neodash-designer.paradire.pt="$pt" \
-        --set paradire-ingress.envSetting="$env_setting" \
-        --set paradire-ingress.pt="$pt" || exit $?
+        --set cp-kafka-ui.paradire.pt=\"$pt\" \
+        --set cp-kafka-job.pt=\"$pt\" \
+        --set neo4j.envSetting=\"$env_setting\" \
+        --set neo4j.paradire.pt=\"$pt\" \
+        --set neodash.paradire.pt=\"$pt\" \
+        --set neodash-designer.paradire.pt=\"$pt\" \
+        --set paradire-ingress.loadBalancerIP=\"$load_balancer_ip\" \
+        --set paradire-ingress.envSetting=\"$env_setting\" \
+        --set paradire-ingress.pt=\"$pt\""
+
+        # Debugging output
+        # echo "Executing command: $helm_command $additional_sets"
+        eval $helm_command $additional_sets || exit $?
     else
         # Deploy all components for other provinces
-        helm $cmd "$pt"-province . --namespace="$pt" --create-namespace \
-        --set cp-kafka-ui.paradire.pt="$pt" \
-        --set cp-kafka-job.pt="$pt" \
-        --set governance-ui.pt="$pt" \
-        --set neodash.paradire.pt="$pt" \
-        --set neodash-designer.paradire.pt="$pt" \
-        --set acg.pt="$pt" \
-        --set cp-kafka-cj.cronSchedule="$cron_schedule" \
-        --set cp-kafka-cj.pt="$pt" \
+        chart_name="$pt-province"
+        helm_command="helm secrets $cmd \"$chart_name\" . --namespace=\"$pt\" --create-namespace $secrets_args"
+        additional_sets="--set cp-kafka-ui.paradire.pt=\"$pt\" \
+        --set cp-kafka-job.pt=\"$pt\" \
+        --set governance-ui.pt=\"$pt\" \
+        --set neodash.paradire.pt=\"$pt\" \
+        --set neodash-designer.paradire.pt=\"$pt\" \
+        --set acg.pt=\"$pt\" \
         --set cp-kafka-cj.enabled=false \
+        --set cp-kafka-cj.cronSchedule=\"$cron_schedule\" \
+        --set cp-kafka-cj.pt=\"$pt\" \
         --set streaming-ui.enabled=false \
-        --set cp-kafka-cj.GCPBucketName="paradire-synthea-data" \
-        --set cp-kafka-job.GCPBucketName="paradire-synthea-data" \
-        --set neo4j.envSetting="$env_setting" \
-        --set hapi-fhir-server.paradire.pt="$pt" \
-        --set neo4j.paradire.pt="$pt" \
-        --set patient-browser.paradire.pt="$pt" \
-        --set paradire-ingress.envSetting="$env_setting" \
-        --set paradire-ingress.pt="$pt" || exit $?
+        --set cp-kafka-cj.GCPBucketName=\"paradire-synthea-data\" \
+        --set cp-kafka-job.GCPBucketName=\"paradire-synthea-data\" \
+        --set neo4j.envSetting=\"$env_setting\" \
+        --set hapi-fhir-server.paradire.pt=\"$pt\" \
+        --set neo4j.paradire.pt=\"$pt\" \
+        --set patient-browser.paradire.pt=\"$pt\" \
+        --set paradire-ingress.envSetting=\"$env_setting\" \
+        --set paradire-ingress.loadBalancerIP=\"$load_balancer_ip\" \
+        --set paradire-ingress.pt=\"$pt\""
+
+        # Debugging output
+        # echo "Executing command: $helm_command $additional_sets"
+        eval $helm_command $additional_sets || exit $?
     fi
 
     # Increment the start time by 20 minutes for the next province

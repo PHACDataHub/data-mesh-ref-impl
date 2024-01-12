@@ -11,13 +11,11 @@ spec:
     metadata:
       labels:
         app: governance-ui
+        version: v1
     spec:
       enableServiceLinks: false
       serviceAccountName: job-service-account
       initContainers:
-      - name: check-registry
-        image: curlimages/curl
-        command: ['sh', '-c', 'until curl -s --head --request GET {{ .Values.schemaRegistry.url | quote }} && curl -s --head --request GET {{ .Values.schemaRegistry.fUrl | quote }}; do echo "Waiting for Schema Registry"; sleep 5; done;']
       - name: wait-for-kafka-job
         image: bitnami/kubectl
         command: ['sh', '-c']
@@ -73,8 +71,3 @@ spec:
           value: "https://governance.{{ .Values.pt | lower }}.paradire.phac-aspc.alpha.canada.ca"
         - name: GOVERNANCE_WS_URL
           value: "wss://governance.{{ .Values.pt | lower }}.paradire.phac-aspc.alpha.canada.ca/ws"
-      - name: nginx-proxy
-        image: northamerica-northeast1-docker.pkg.dev/phx-01he5rx4wsv/paradire/nginx-proxy:latest
-        imagePullPolicy: Always
-        ports:
-        - containerPort: 3080

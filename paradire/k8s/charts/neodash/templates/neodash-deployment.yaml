@@ -11,6 +11,7 @@ spec:
     metadata:
       labels:
         app: neodash
+        version: v1
     spec:
       {{- $dashboardName := "Federal Analytics Platform" }}
       {{- if ne .Values.paradire.pt "phac" }}

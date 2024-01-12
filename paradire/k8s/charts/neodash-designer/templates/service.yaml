@@ -8,6 +8,6 @@ spec:
   - port: {{ .Values.neodash.designerPort }}
     targetPort: 5005
     protocol: TCP
-    name: http
+    name: http-neodash
   selector:
     app: neodash-designer

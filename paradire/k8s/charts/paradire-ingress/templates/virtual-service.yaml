@@ -1,0 +1,187 @@
+{{ if eq .Values.pt "phac" }}
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: streaming-service
+  namespace: "{{ .Values.pt | lower }}"
+spec:
+  hosts:
+  - "streaming.{{ .Values.pt | lower }}.paradire.phac-aspc.alpha.canada.ca"
+  gateways:
+  - "{{ .Values.pt | lower }}-gateway"
+  http:
+  - match:
+    - uri:
+        prefix: "/ws"
+    route:
+    - destination:
+        host: streaming-ui-wss-svc
+        port:
+          number: 3006
+  - match:
+    - uri:
+        prefix: "/"
+    route:
+    - destination:
+        host: streaming-ui-svc
+        port:
+          number: 3000
+{{ end }}
+{{ if ne .Values.pt "phac" }}
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: governance-service
+  namespace: "{{ .Values.pt | lower }}"
+spec:
+  hosts:
+  - "governance.{{ .Values.pt | lower }}.paradire.phac-aspc.alpha.canada.ca"
+  gateways:
+  - "{{ .Values.pt | lower }}-gateway"
+  http:
+  - match:
+    - uri:
+        prefix: "/ws"
+    route:
+    - destination:
+        host: governance-wss
+        port:
+          number: 3001
+  - match:
+    - uri:
+        prefix: "/"
+    route:
+    - destination:
+        host: governance-ui-svc
+        port:
+          number: 3000
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: patient-browser-service
+  namespace: "{{ .Values.pt | lower }}"
+spec:
+  hosts:
+  - "patient-browser.{{ .Values.pt | lower }}.paradire.phac-aspc.alpha.canada.ca"
+  gateways:
+  - "{{ .Values.pt | lower }}-gateway"
+  http:
+  - match:
+    - uri:
+        prefix: "/"
+    route:
+    - destination:
+        host: patient-browser-svc
+        port:
+          number: 8079
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: fhir-service
+  namespace: "{{ .Values.pt | lower }}"
+spec:
+  hosts:
+  - "fhir.{{ .Values.pt | lower }}.paradire.phac-aspc.alpha.canada.ca"
+  gateways:
+  - "{{ .Values.pt | lower }}-gateway"
+  http:
+  - match:
+    - uri:
+        prefix: "/"
+    route:
+    - destination:
+        host: hapi-fhir-svc
+        port:
+          number: 8080
+{{ end }}
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: neo4j-service
+  namespace: "{{ .Values.pt | lower }}"
+spec:
+  hosts:
+  - "neo4j.{{ .Values.pt | lower }}.paradire.phac-aspc.alpha.canada.ca"
+  gateways:
+  - "{{ .Values.pt | lower }}-gateway"
+  http:
+  - match:
+    - uri:
+        prefix: "/browser"
+    route:
+    - destination:
+        host: neo4j
+        port:
+          number: 7474
+  - match:
+    - uri:
+        prefix: "/"
+    route:
+    - destination:
+        host: neo4j
+        port:
+          number: 7687
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: neodash-service
+  namespace: "{{ .Values.pt | lower }}"
+spec:
+  hosts:
+  - "neodash.{{ .Values.pt | lower }}.paradire.phac-aspc.alpha.canada.ca"
+  gateways:
+  - "{{ .Values.pt | lower }}-gateway"
+  http:
+  - match:
+    - uri:
+        prefix: "/"
+    route:
+    - destination:
+        host: neodash-svc
+        port:
+          number: 5005
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: neodash-designer-service
+  namespace: "{{ .Values.pt | lower }}"
+spec:
+  hosts:
+  - "neodash-designer.{{ .Values.pt | lower }}.paradire.phac-aspc.alpha.canada.ca"
+  gateways:
+  - "{{ .Values.pt | lower }}-gateway"
+  http:
+  - match:
+    - uri:
+        prefix: "/"
+    route:
+    - destination:
+        host: neodash-designer-svc
+        port:
+          number: 5006
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: kafkaui-service
+  namespace: "{{ .Values.pt | lower }}"
+spec:
+  hosts:
+  - "kafkaui.{{ .Values.pt | lower }}.paradire.phac-aspc.alpha.canada.ca"
+  gateways:
+  - "{{ .Values.pt | lower }}-gateway"
+  http:
+  - match:
+    - uri:
+        prefix: "/"
+    route:
+    - destination:
+        host: cp-kafka-ui
+        port:
+          number: 8089

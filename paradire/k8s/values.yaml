@@ -53,9 +53,6 @@ cp-kafka-rest:
 ## ------------------------------------------------------
 cp-kafka-ui:
   enabled: true
-  kafkaUiSecret:
-    username: "a2Fma2F1aQ=="  # base64 encoded 'kafkaui'
-    password: "cGhhY0AyMDIz"  # base64 encoded 'phac@2023'
   paradire:
     pt: "ab"
 
@@ -96,10 +93,6 @@ hapi-fhir-server:
   enabled: true
   db:
     size: "20Gi"
-  postgresSecret:
-    postgresPassword: "YWRtaW4="  # base64 encoded 'admin'
-    postgresUser: "YWRtaW4="      # base64 encoded 'admin'
-    postgresDB: "aGFwaQ=="        # base64 encoded 'hapi'
   paradire:
     pt: "ab"
 
@@ -110,14 +103,10 @@ neo4j:
   enabled: true
   storage:
     dataPvcSize: "50Gi"
-    importPvcSize: "50Gi"
-    logsPvcSize: "50Gi"
-    pluginsPvcSize: "50Gi"
+    importPvcSize: "10Gi"
+    logsPvcSize: "10Gi"
+    pluginsPvcSize: "10Gi"
   env-val: statging
-  neo4jSecret:
-    NEO4J_AUTH: "bmVvNGovcGhhY0AyMDIz" # base64 encoded 'neo4j/phac@2023'
-    NEO4J_USERNAME: "bmVvNGo="         # base64 encoded 'neo4j'
-    NEO4J_PASSWORD: "cGhhY0AyMDIz"     # base64 encoded 'phac@2023'
     
 ## ------------------------------------------------------
 ## Neodash

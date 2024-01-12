@@ -7,6 +7,7 @@ metadata:
     chart: {{ template "cp-kafka-cj.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+    version: v1
 spec:
   schedule: "{{ .Values.cronSchedule }}" 
   successfulJobsHistoryLimit: 0 
@@ -17,6 +18,9 @@ spec:
         metadata:
           labels:
             app: {{ template "cp-kafka-cj.name" . }}
+            version: v1
+          annotations:
+            proxy.istio.io/config: '{"holdApplicationUntilProxyStarts": true}'
         spec:
           restartPolicy: Never
           initContainers:

@@ -20,6 +20,9 @@ imagePullSecrets:
 
 servicePort: 8083
 
+logLevel: WARN
+toolsLogLevel: ERROR
+
 ## Kafka Connect properties
 ## ref: https://docs.confluent.io/current/connect/userguide.html#configuring-workers
 configurationOverrides:
