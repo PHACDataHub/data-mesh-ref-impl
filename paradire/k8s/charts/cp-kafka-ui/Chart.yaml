@@ -1,4 +1,0 @@
-apiVersion: v2
-description: A Helm chart for Confluent Kafka UI on Kubernetes
-name: cp-kafka-ui
-version: 0.1.0
