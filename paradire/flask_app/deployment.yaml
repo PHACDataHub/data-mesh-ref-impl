@@ -1,0 +1,160 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: links
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: links-app-deployment
+  namespace: links
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: links-app
+  template:
+    metadata:
+      labels:
+        app: links-app
+    spec:
+      containers:
+      - name: links-app
+        image: northamerica-northeast1-docker.pkg.dev/phx-01he5rx4wsv/paradire/links-app:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 80
+        env:
+        - name: FLASK_APP
+          value: "app.py"
+        - name: FLASK_DEBUG
+          value: "0"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: links-app-service
+  namespace: links
+spec:
+  selector:
+    app: links-app
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+  type: ClusterIP
+
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: links-ingress-cert
+  namespace: istio-system
+spec:
+  dnsNames:
+    - "links.paradire.alpha.phac.gc.ca"
+  issuerRef:
+    kind: ClusterIssuer
+    name: letsencrypt-dns-production
+  secretName: wildcard-ssl-production
+  privateKey:
+    algorithm: RSA
+    encoding: PKCS8
+    size: 4096
+
+---
+apiVersion: networking.istio.io/v1beta1
+kind: Gateway
+metadata:
+  name: links-gateway
+  namespace: istio-system
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+    - port:
+        number: 80
+        name: http
+        protocol: HTTP
+      hosts:
+        - "links.paradire.alpha.phac.gc.ca"
+      tls:
+        httpsRedirect: true
+    - port:
+        number: 443
+        name: https
+        protocol: HTTPS
+      hosts:
+        - "links.paradire.alpha.phac.gc.ca"
+      tls:
+        mode: SIMPLE
+        credentialName: wildcard-ssl-production
+
+---
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: links-virtualservice
+  namespace: links
+spec:
+  hosts:
+  - links.paradire.alpha.phac.gc.ca
+  gateways:
+  - istio-system/links-gateway
+  http:
+  - match:
+    - uri:
+        prefix: /
+    route:
+    - destination:
+        host: links-app-service.links.svc.cluster.local
+        port:
+          number: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: istio-ingressgateway
+  namespace: istio-system
+spec:
+  type: LoadBalancer
+  loadBalancerIP: 35.203.42.179
+  selector:
+    istio: ingressgateway
+  ports:
+  - name: http
+    port: 80
+    targetPort: 8080
+  - name: https
+    port: 443
+    targetPort: 8443
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: istio-ingressgateway-sds
+  namespace: istio-system
+rules:
+- apiGroups: [""]
+  resources: ["secrets"]
+  verbs: ["get", "watch", "list"]
+  resourceNames:
+  - wildcard-ssl-production
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: istio-ingressgateway-sds
+  namespace: istio-system
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: istio-ingressgateway-sds
+subjects:
+- kind: ServiceAccount
+  name: istio-ingressgateway-service-account
+  namespace: istio-system

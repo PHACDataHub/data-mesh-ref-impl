@@ -1,16 +1,16 @@
 # Use an official Python runtime as a base image
 FROM python:3.8-slim
 
-# Define the working directory for your Flask app
+# Define the working directory for your Flask app inside the container
 WORKDIR /app
 
-# Copy your Flask application files into the container at /app
-COPY /flask_app /app
+# Copy the contents of the flask_app directory into the container's /app directory
+COPY . /app
 
 # Install any needed packages specified in requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Make port 80 available to the world outside this container
+# Expose port 80 for the Flask app
 EXPOSE 80
 
 # Set environment variables

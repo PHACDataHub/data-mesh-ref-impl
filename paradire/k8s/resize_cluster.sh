@@ -7,7 +7,7 @@ NODE_POOL="pool-1"
 REGION="northamerica-northeast1-a"
 EXPECTED_NODE_COUNT=10
 
-NAMESPACES=("phac" "bc" "ab" "mb" "nb" "nl" "ns" "nt" "nu" "on" "pe" "qc" "sk" "yt")
+NAMESPACES=("phac" "bc" "on")
 
 scale_deployments() {
     scale_factor=$1

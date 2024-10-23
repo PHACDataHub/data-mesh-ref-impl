@@ -4,7 +4,7 @@ metadata:
   name: ingress-cert
 spec:
   dnsNames:
-    - "*.{{ .Values.pt | lower }}.paradire.phac-aspc.alpha.canada.ca"
+    - "*.{{ .Values.pt | lower }}.paradire.alpha.phac.gc.ca"
   issuerRef:
     kind: ClusterIssuer
     name: letsencrypt-dns-{{ .Values.envSetting }}
@@ -24,7 +24,7 @@ spec:
         name: http
         protocol: HTTP
       hosts:
-        - "*.{{ .Values.pt | lower }}.paradire.phac-aspc.alpha.canada.ca"
+        - "*.{{ .Values.pt | lower }}.paradire.alpha.phac.gc.ca"
       tls:
         httpsRedirect: true
     - port:
@@ -32,7 +32,7 @@ spec:
         name: https
         protocol: HTTPS
       hosts:
-        - "*.{{ .Values.pt | lower }}.paradire.phac-aspc.alpha.canada.ca"
+        - "*.{{ .Values.pt | lower }}.paradire.alpha.phac.gc.ca"
       tls:
         mode: SIMPLE
         credentialName: wildcard-ssl-{{ .Values.envSetting }}

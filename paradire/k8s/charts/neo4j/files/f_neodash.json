@@ -125,7 +125,7 @@
           {
             "id": "d7effaff-2cbe-43fd-8650-3b6ef73947f8",
             "title": "Total yearly vaccinations per PT (Live)",
-            "query": "https://streaming.phac.paradire.phac-aspc.alpha.canada.ca",
+            "query": "https://streaming.phac.paradire.alpha.phac.gc.ca",
             "width": 24,
             "height": 5,
             "x": 0,

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-provinces="phac bc ab mb nb nl ns nt nu on pe qc sk yt"
+provinces="phac bc on"
 selected_provinces=($provinces)
 
 echo "Choose an action: 1 for install, 2 for upgrade, -1 for uninstall"
@@ -119,10 +119,10 @@ for pt in "${selected_provinces[@]}"; do
         --set neodash.paradire.pt=\"$pt\" \
         --set neodash-designer.paradire.pt=\"$pt\" \
         --set acg.pt=\"$pt\" \
-        --set cp-kafka-cj.enabled=false \
+        --set cp-kafka-cj.enabled=true \
         --set cp-kafka-cj.cronSchedule=\"$cron_schedule\" \
         --set cp-kafka-cj.pt=\"$pt\" \
-        --set streaming-ui.enabled=false \
+        --set streaming-ui.enabled=true \
         --set cp-kafka-cj.GCPBucketName=\"paradire-synthea-data\" \
         --set cp-kafka-job.GCPBucketName=\"paradire-synthea-data\" \
         --set neo4j.envSetting=\"$env_setting\" \

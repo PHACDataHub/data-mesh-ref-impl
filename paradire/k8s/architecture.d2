@@ -1,0 +1,57 @@
+box "Federated Data Architecture for IRG Project" {
+    shape: rectangle
+    label: "Overview of Federated Data Architecture for the IRG Project"
+
+    "Data Sources" {
+        shape: rectangle
+        label: "Provincial, Territorial, Federal Data\n\nHealth data from provinces, territories, and federal agencies, including immunization records."
+    }
+
+    "Access Control Gateway" {
+        shape: rectangle
+        label: "Access Control Gateway (ACG)\n\nEnforces data governance, including access control, anonymization, and transformation, ensuring privacy compliance."
+    }
+
+    "Kafka Stream" {
+        shape: cylinder
+        label: "Kafka Stream\n\nFacilitates real-time data streaming, keeping data up-to-date for downstream analysis."
+    }
+
+    "Neo4j" {
+        shape: rectangle
+        label: "Neo4j Graph Database\n\nStores and analyzes complex relationships in immunization data, supporting advanced queries."
+    }
+
+    "Neodash" {
+        shape: rectangle
+        label: "Neodash Visualization Tool\n\nVisualizes graph data from Neo4j, helping users explore relationships in the data."
+    }
+
+    "Visualization Layer" {
+        shape: rectangle
+        label: "BI Tools\n\nPower BI and Tableau create dashboards and reports from Neo4j data."
+
+        "Power BI" {
+            label: "Power BI\n\nMicrosoft's tool for interactive dashboards."
+        }
+        "Tableau" {
+            label: "Tableau\n\nA leading tool for creating detailed visualizations."
+        }
+    }
+
+    "Data Sources" -> "Access Control Gateway" {
+        label: "Data ingestion"
+    }
+    "Access Control Gateway" -> "Kafka Stream" {
+        label: "Governance-compliant streaming"
+    }
+    "Kafka Stream" -> "Neo4j" {
+        label: "Real-time data integration"
+    }
+    "Neo4j" -> "Neodash" {
+        label: "Graph data visualization"
+    }
+    "Neo4j" -> "Visualization Layer" {
+        label: "BI Tools integration"
+    }
+}

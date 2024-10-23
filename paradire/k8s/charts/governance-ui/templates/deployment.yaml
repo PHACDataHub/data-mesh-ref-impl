@@ -46,9 +46,9 @@ spec:
         - name: HOSTNAME
           value: "0.0.0.0"
         - name: GOVERNANCE_UI_URL
-          value: "https://governance.{{ .Values.pt | lower }}.paradire.phac-aspc.alpha.canada.ca"
+          value: "https://governance.{{ .Values.pt | lower }}.paradire.alpha.phac.gc.ca"
         - name: GOVERNANCE_WS_URL
-          value: "wss://governance.{{ .Values.pt | lower }}.paradire.phac-aspc.alpha.canada.ca/ws"
+          value: "wss://governance.{{ .Values.pt | lower }}.paradire.alpha.phac.gc.ca/ws"
       - name: governance-ui-wss
         image: northamerica-northeast1-docker.pkg.dev/phx-01he5rx4wsv/paradire/governance-ui-wss:latest
         imagePullPolicy: Always
@@ -68,6 +68,6 @@ spec:
         - name: HOSTNAME
           value: "0.0.0.0"
         - name: GOVERNANCE_UI_URL
-          value: "https://governance.{{ .Values.pt | lower }}.paradire.phac-aspc.alpha.canada.ca"
+          value: "https://governance.{{ .Values.pt | lower }}.paradire.alpha.phac.gc.ca"
         - name: GOVERNANCE_WS_URL
-          value: "wss://governance.{{ .Values.pt | lower }}.paradire.phac-aspc.alpha.canada.ca/ws"
+          value: "wss://governance.{{ .Values.pt | lower }}.paradire.alpha.phac.gc.ca/ws"

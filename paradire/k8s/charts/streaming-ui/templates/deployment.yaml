@@ -28,7 +28,7 @@ spec:
         - name: HOSTNAME
           value: "0.0.0.0"
         - name: WS_URL
-          value: "wss://streaming.phac.paradire.phac-aspc.alpha.canada.ca/ws"
+          value: "wss://streaming.phac.paradire.alpha.phac.gc.ca/ws"
         - name: F_SCHEMA_REGISTRY_URL
           value: {{ .Values.schemaRegistry.fUrl | quote }}
       - name: streaming-ui-wss
@@ -44,6 +44,6 @@ spec:
         - name: HOSTNAME
           value: "0.0.0.0"
         - name: WS_URL
-          value: "wss://streaming.phac.paradire.phac-aspc.alpha.canada.ca/ws"
+          value: "wss://streaming.phac.paradire.alpha.phac.gc.ca/ws"
         - name: F_SCHEMA_REGISTRY_URL
           value: {{ .Values.schemaRegistry.fUrl | quote }}

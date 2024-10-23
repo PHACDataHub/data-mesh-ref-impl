@@ -30,7 +30,7 @@ spec:
             - name: standaloneProtocol
               value: "{{ .Values.env.standaloneProtocol }}"
             - name: standaloneHost
-              value: {{ printf "neo4j.%s.paradire.phac-aspc.alpha.canada.ca" .Values.paradire.pt | quote }}
+              value: {{ printf "neo4j.%s.paradire.alpha.phac.gc.ca" .Values.paradire.pt | quote }}
             - name: standalonePort
               value: "{{ .Values.env.standalonePort }}"
             - name: standaloneDatabase

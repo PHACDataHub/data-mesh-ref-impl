@@ -113,7 +113,7 @@ spec:
               value: {{ $value | quote }}
             {{- end }}
             - name: NEO4J_server_default__advertised__address
-              value: {{ printf "bolt.neo4j.%s.paradire.phac-aspc.alpha.canada.ca" .Values.paradire.pt | quote }}
+              value: {{ printf "bolt.neo4j.%s.paradire.alpha.phac.gc.ca" .Values.paradire.pt | quote }}
             - name: NEO4J_AUTH
               valueFrom:
                 secretKeyRef:

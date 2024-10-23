@@ -1,6 +1,6 @@
 #!/bin/bash
 
-NAMESPACES=("phac" "bc" "ab" "mb" "nb" "nl" "ns" "nt" "nu" "on" "pe" "qc" "sk" "yt")
+NAMESPACES=("phac" "bc" "on")
 
 for NAMESPACE in "${NAMESPACES[@]}"; do
     echo "Processing namespace: $NAMESPACE"

@@ -7,7 +7,7 @@ metadata:
 spec:
   acme:
     server: https://acme-v02.api.letsencrypt.org/directory
-    email: luc.belliveau@canada.ca
+    email: simardeep.singh@hc-sc.gc.ca
     privateKeySecretRef:
       name: letsencrypt-production
     solvers:
