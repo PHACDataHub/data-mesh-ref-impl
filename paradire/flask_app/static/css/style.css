@@ -1,3 +1,4 @@
+/* Global Styles */
 body, html {
     font-family: 'Arial', sans-serif;
     margin: 0;
@@ -16,6 +17,7 @@ body, html {
     border-radius: 8px;
 }
 
+/* Header */
 .header.center-align {
     text-align: center;
     margin-bottom: 50px;
@@ -24,13 +26,52 @@ body, html {
     font-size: 2.5rem;
 }
 
+/* Disclaimer Styling */
+.disclaimer {
+    background-color: #fffae6;
+    border: 1px solid #ffcc00;
+    padding: 15px;
+    border-radius: 8px;
+    font-size: 1rem;
+    color: #333;
+    margin-bottom: 20px;
+    margin-left: 50px; /* Same as card left margin */
+    margin-right: 50px; /* Same as card right margin */
+}
+
+/* Legend Styling */
+.legend {
+    background-color: #f8f9fa;
+    border: 1px solid #ddd;
+    padding: 15px;
+    border-radius: 8px;
+    margin-left: 50px; /* Same as card left margin */
+    margin-right: 50px; /* Same as card right margin */
+}
+
+.legend h5 {
+    font-weight: bold;
+    color: #333;
+}
+
+.legend ul {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+.legend ul li {
+    padding: 5px 0;
+    font-size: 1.1rem;
+}
+
+/* Card Styling */
 .card {
     background: #fff;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     margin-bottom: 20px;
-    margin-left: 50px;
-    margin-right: 50px;
+    margin-left: 50px; /* Left padding */
+    margin-right: 50px; /* Right padding */
     transition: box-shadow 0.3s ease;
 }
 
@@ -42,39 +83,40 @@ body, html {
     display: flex;
     flex-direction: row;
     align-items: center;
-    justify-content: space-between; /* Adjusted to space-between to push elements to the ends */
+    justify-content: space-between;
     padding: 10px;
 }
 
 .card-top {
     display: flex;
     align-items: center;
-    justify-content: flex-start; /* Keep province name aligned to the left */
-    flex-grow: 1; /* Allow this div to grow and fill the space */
-    margin-bottom: 5px; /* Space between this section and buttons */
-    margin-top: 5px; /* Space between this section and buttons */
+    justify-content: flex-start;
+    flex-grow: 1;
+    margin-bottom: 5px;
+    margin-top: 5px;
 }
 
+/* Status Indicator Styling */
 .status-indicator {
     display: flex;
     align-items: center;
-    padding-right: 20px; /* Right padding for space between indicator and buttons */
+    padding-right: 20px;
 }
 
 .province {
     font-size: 20px;
     font-weight: 700;
     white-space: nowrap;
-    margin-right: 10px; /* Space between province name and online status */
+    margin-right: 10px;
 }
 
+/* Button Styling */
 .buttons {
     display: flex;
-    justify-content: flex-end; /* Align to the right */
+    justify-content: flex-end;
     gap: 10px;
-    flex-grow: 0; /* Prevent buttons div from growing */
+    flex-grow: 0;
 }
-
 
 .container .btn {
     display: flex;
@@ -85,7 +127,7 @@ body, html {
     border-radius: 10px;
     cursor: pointer;
     transition: box-shadow 0.3s;
-    margin: 0 5px 5px 0; /* Adjust margins for buttons */
+    margin: 0 5px 5px 0;
 }
 
 .container .btn-icon {
@@ -96,6 +138,7 @@ body, html {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
 }
 
+/* Button Color Styles */
 .container .btn-Governance-UI { background-color: #007BA7; }
 .container .btn-Kafka-UI { background-color: #FF4040; }
 .container .btn-Patient-Browser { background-color: #50C878; }

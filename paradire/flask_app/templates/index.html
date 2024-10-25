@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Interoperable Immunization Data Initiative</title>
+    <title>Interoperable Immunization Data Initiative | Initiative de Données d'Immunisation Interopérables</title>
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
@@ -10,11 +10,15 @@
 </head>
 <body>
     <div class="container">
-        <h3 class="header center-align">Interoperable Immunization Data Initiative IIDI</h3>
+        <h3 class="header center-align">Interoperable Immunization Data Initiative (IIDI) | Initiative de Données d'Immunisation Interopérables (IDII)</h3>
+        <div class="disclaimer alert alert-warning mt-4" role="alert">
+            <p><strong>Disclaimer (EN):</strong> This web interface is temporary and is intended solely for facilitating current technical developments and testing. It is not for production use. Full production considerations, including bilingual and WCAG compliance, are currently in progress.</p>
+            <p><strong>Avis (FR) :</strong> Cette interface web est temporaire et vise uniquement à faciliter les développements techniques actuels et les tests. Elle n'est pas destinée à un usage en production. Les considérations de production complètes, y compris la conformité bilingue et WCAG, sont en cours.</p>
+        </div>
+        
         {% for province, services in entities.items() %}
         <div class="card">
             <div class="card-body">
-                <!-- Card top now only includes the status indicator and province name -->
                 <div class="card-top">
                     <div class="status-indicator">
                         <svg class="health-indicator" id="health-indicator-{{ province }}" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
@@ -23,7 +27,6 @@
                     </div>
                     <div class="province">{{ province }}</div>
                 </div>
-                <!-- Buttons div moved outside of card-top so it can be right-aligned -->
                 <div class="buttons">
                     {% for service in services %}
                     <a href="{{ service.url }}" target="_blank" class="btn {{ 'btn-' + service.name | replace(' ', '-') }}">
@@ -35,7 +38,33 @@
             </div>
         </div> 
         {% endfor %}
+        
+        <!-- Legend Section -->
+        <div class="legend mt-5 p-3 bg-light rounded border">
+            <h5 class="legend-title">Legend: What Each Button Does | Légende : Ce que fait chaque bouton</h5>
+            <ul class="legend-list">
+                <li><strong>Governance UI:</strong> Manages data governance rules and access control policies within the IIDI platform. | 
+                    <strong>Interface de Gouvernance :</strong> Gère les règles de gouvernance des données et les politiques de contrôle d'accès au sein de la plateforme IDII.
+                </li>
+                <li><strong>Patient Browser:</strong> Allows users to browse patient immunization data across provincial and federal systems while ensuring compliance with privacy regulations. | 
+                    <strong>Navigateur de Patients :</strong> Permet aux utilisateurs de consulter les données de vaccination des patients dans les systèmes provinciaux et fédéraux tout en garantissant la conformité aux réglementations de confidentialité.
+                </li>
+                <li><strong>HAPI FHIR Server:</strong> A healthcare data exchange server that follows the FHIR standard, used for storing and retrieving health records in a standardized format. | 
+                    <strong>Serveur HAPI FHIR :</strong> Un serveur d'échange de données de santé qui suit la norme FHIR, utilisé pour stocker et récupérer les dossiers médicaux dans un format standardisé.
+                </li>
+                <li><strong>Neo4j:</strong> A graph database used for complex queries and relationships across the immunization data, enabling advanced data analysis and visualization. | 
+                    <strong>Neo4j :</strong> Une base de données graphique utilisée pour les requêtes complexes et les relations sur les données de vaccination, permettant une analyse de données avancée et une visualisation.
+                </li>
+                <li><strong>Neodash:</strong> A dashboard built on top of Neo4j, used for visualizing data and building interactive reports related to immunization records. | 
+                    <strong>Neodash :</strong> Un tableau de bord construit sur Neo4j, utilisé pour visualiser les données et créer des rapports interactifs liés aux dossiers de vaccination.
+                </li>
+                <li><strong>Kafka UI:</strong> A user interface for Apache Kafka, which handles the event streaming for data ingestion and real-time processing across provincial and federal systems. | 
+                    <strong>Interface Kafka :</strong> Une interface utilisateur pour Apache Kafka, qui gère le streaming d'événements pour l'ingestion de données et le traitement en temps réel dans les systèmes provinciaux et fédéraux.
+                </li>
+            </ul>            
+        </div>
     </div>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
     <script>
@@ -44,7 +73,6 @@
             provinces.forEach((province, index) => {
                 const provinceName = province.querySelector('.province').textContent.trim();
                 const indicator = province.querySelector('.health-indicator circle');
-                let statusText = province.querySelector('.status-text');
 
                 fetch(`/health-check/${provinceName}`)
                     .then(response => response.json())
