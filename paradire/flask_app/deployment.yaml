@@ -131,30 +131,43 @@ spec:
   - name: https
     port: 443
     targetPort: 8443
-
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: istio-egressgateway
+  namespace: istio-system
+spec:
+  type: LoadBalancer
+  loadBalancerIP: 34.118.174.200
+  selector:
+    istio: egressgateway
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8080
+    - name: https
+      port: 443
+      targetPort: 8443
 ---
 apiVersion: rbac.authorization.k8s.io/v1
-kind: Role
+kind: ClusterRole
 metadata:
-  name: istio-ingressgateway-sds
-  namespace: istio-system
+  name: istio-egressgateway-sds
 rules:
 - apiGroups: [""]
   resources: ["secrets"]
   verbs: ["get", "watch", "list"]
-  resourceNames:
-  - wildcard-ssl-production
 ---
 apiVersion: rbac.authorization.k8s.io/v1
-kind: RoleBinding
+kind: ClusterRoleBinding
 metadata:
-  name: istio-ingressgateway-sds
-  namespace: istio-system
+  name: istio-egressgateway-sds
 roleRef:
   apiGroup: rbac.authorization.k8s.io
-  kind: Role
-  name: istio-ingressgateway-sds
+  kind: ClusterRole
+  name: istio-egressgateway-sds
 subjects:
 - kind: ServiceAccount
-  name: istio-ingressgateway-service-account
+  name: istio-egressgateway-service-account
   namespace: istio-system

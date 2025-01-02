@@ -1,0 +1,95 @@
+apiVersion: networking.istio.io/v1beta1
+kind: ServiceEntry
+metadata:
+  name: test-egress-service-entry
+  namespace: links
+spec:
+  hosts:
+    - httpbin.org
+  ports:
+    - number: 443
+      name: https
+      protocol: TLS
+  resolution: DNS
+  location: MESH_EXTERNAL
+---
+apiVersion: networking.istio.io/v1beta1
+kind: Gateway
+metadata:
+  name: iidi-egress-gateway
+  namespace: istio-system
+spec:
+  selector:
+    istio: egressgateway
+  servers:
+    - port:
+        number: 443
+        name: https
+        protocol: TLS
+      hosts:
+        - httpbin.org
+      tls:
+        mode: PASSTHROUGH
+---
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: test-egress-virtualservice
+  namespace: links
+spec:
+  hosts:
+    - httpbin.org
+  gateways:
+    - mesh
+    - istio-system/iidi-egress-gateway
+  tls:
+    - match:
+        - port: 443
+          sniHosts:
+            - httpbin.org
+          gateways:
+            - istio-system/iidi-egress-gateway
+      route:
+        - destination:
+            host: httpbin.org
+            port:
+              number: 443
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-egress-to-istio-egressgateway
+  namespace: links
+spec:
+  podSelector: {}
+  policyTypes:
+    - Egress
+  egress:
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              istio: system
+        - podSelector:
+            matchLabels:
+              istio: egressgateway
+      ports:
+        - protocol: TCP
+          port: 443
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: istio-egressgateway
+  namespace: istio-system
+spec:
+  type: LoadBalancer
+  loadBalancerIP: 34.118.174.200
+  selector:
+    istio: egressgateway
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8080
+    - name: https
+      port: 443
+      targetPort: 8443
