@@ -1,0 +1,29 @@
+apiVersion: networking.istio.io/v1beta1
+kind: Gateway
+metadata:
+  name: mesh-gateway
+  namespace: istio-ingress
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+    - port:
+        number: 80
+        name: http
+        protocol: HTTP
+      hosts:
+        - "iidi.alpha.phac.gc.ca"
+      tls:
+        httpsRedirect: true
+    - port:
+        number: 443
+        name: https
+        protocol: HTTPS
+      hosts:
+        - "iidi.alpha.phac.gc.ca"
+      tls:
+        mode: SIMPLE
+        credentialName: tlskeys
+        privateKey: sds
+        serverCertificate: sds
+        minProtocolVersion: TLSV1_3

@@ -1,0 +1,42 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - issuers.yaml
+patches:     
+  - target:
+      group: cert-manager.io
+      version: v1
+      kind: ClusterIssuer
+      name: letsencrypt-staging
+      namespace: istio-system
+    patch: |-
+      - op: add
+        path: /spec/acme/solvers/-
+        value:
+          selector: {}
+          dns01:
+            cloudDNS:
+              project: phx-01he5rx4wsv
+              hostedZoneName: iidi-alpha-phac-gc-ca
+      - op: add
+        path: /spec/acme/email
+        value: simardeep.singh@hc-sc.gc.ca
+
+  - target:
+      group: cert-manager.io
+      version: v1
+      kind: ClusterIssuer
+      name: letsencrypt-production
+      namespace: istio-system
+    patch: |-
+      - op: add
+        path: /spec/acme/solvers/-
+        value:
+          selector: {}
+          dns01:
+            cloudDNS:
+              project: phx-01he5rx4wsv
+              hostedZoneName: iidi-alpha-phac-gc-ca
+      - op: add
+        path: /spec/acme/email
+        value: simardeep.singh@hc-sc.gc.ca

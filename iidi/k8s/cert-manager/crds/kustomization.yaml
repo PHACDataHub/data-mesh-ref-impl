@@ -1,0 +1,102 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+# https://github.com/cert-manager/cert-manager/releases/download/v1.12.0/cert-manager.yaml
+
+resources:
+  - cert-manager.yaml
+
+patches:
+  # Add an argument to the cert-manager deployment to enable Workload identity
+  # This is needed because cert-manager needs permission to manipulate DNS records
+  # to complete a DNS01 challenge. Google's workload identity links K8s accounts
+  # to IAM accounts/roles.
+  # https://cert-manager.io/docs/configuration/acme/dns01/google/#gke-workload-identity
+  # autopilot compatibility: change leader election namespace. autopilot doesn't allow access to kube-system
+  # Using the minimum pod resources https://cloud.google.com/kubernetes-engine/docs/concepts/autopilot-resource-requests#compute-class-min-max
+
+  - target:
+      group: apps
+      version: v1
+      kind: Deployment
+      name: cert-manager
+      namespace: cert-manager
+    patch: |-
+      - op: add
+        # args/0 would prepend to the array, args/- appends
+        path: /spec/template/spec/containers/0/args
+        value:
+          - --v=2
+          - --cluster-resource-namespace=$(POD_NAMESPACE)
+          - --issuer-ambient-credentials=true
+          - --leader-election-namespace=cert-manager
+          - --dns01-recursive-nameservers=8.8.8.8:53
+          - --dns01-recursive-nameservers-only
+      - op: add
+        path: /spec/template/spec/containers/0/resources
+        value:
+          requests:
+            cpu: 50m
+            memory: 100Mi
+          limits:
+            cpu: 150m
+            memory: 300Mi            
+            
+  - target:
+      group: apps
+      version: v1
+      kind: Deployment
+      name: cert-manager-cainjector
+      namespace: cert-manager
+    patch: |-
+      - op: add
+        path: /spec/template/spec/containers/0/args
+        value:
+          - --v=2
+          - --leader-election-namespace=cert-manager
+      - op: add
+        path: /spec/template/spec/containers/0/resources
+        value:
+          requests:
+            cpu: 50m
+            memory: 100Mi
+          limits:
+            cpu: 150m
+            memory: 300Mi            
+
+  - target:
+      group: apps
+      version: v1
+      kind: Deployment
+      name: cert-manager-webhook
+      namespace: cert-manager
+    patch: |-
+      - op: add
+        path: /spec/template/spec/containers/0/resources
+        value:
+          requests:
+            cpu: 50m
+            memory: 100Mi
+          limits:
+            cpu: 150m
+            memory: 300Mi            
+
+  - target:
+      kind: "(Role|RoleBinding)"
+      name: "(cert-manager:leaderelection|cert-manager-cainjector:leaderelection)"
+    patch: |-
+      - op: replace
+        path: /metadata/namespace
+        value: cert-manager
+
+  # Patch the cert-manager service account so that it has permissions to use Cloud DNS:
+  # https://cert-manager.io/docs/configuration/acme/dns01/google/#link-ksa-to-gsa-in-kubernetes
+  - target:
+      version: v1
+      kind: ServiceAccount
+      name: cert-manager
+      namespace: cert-manager
+    patch: |-
+      - op: add
+        path: "/metadata/annotations"
+        value:
+          iam.gke.io/gcp-service-account: dns01-solver-iidi@phx-01he5rx4wsv.iam.gserviceaccount.com
