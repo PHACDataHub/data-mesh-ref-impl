@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: governance-ui
-  namespace: governance-ui
+  namespace: "bc"
 spec:
   replicas: 1
   selector:
@@ -23,21 +23,20 @@ spec:
         - containerPort: 3000
         env:
         - name: BROKER_HOST
-          value: cp-kafka-rest.cp-kafka-headless
+          value: "ADD-HOST"
         - name: BROKER_PORT
           value: "9092"
-        - name: NEXTAUTH_SECRET
-          value: "1234"
-        - name: PT
-          value: "ab"
         - name: NEXTAUTH_URL
           value: "http://nowhere"
         - name: HOSTNAME
           value: "0.0.0.0"
         - name: GOVERNANCE_UI_URL
-          value: "https://governance.ab.paradire.alpha.phac.gc.ca"
+          value: "https://governance.bc.iidi.alpha.phac.gc.ca"
         - name: GOVERNANCE_WS_URL
-          value: "wss://governance.ab.paradire.alpha.phac.gc.ca/ws"
+          value: "wss://governance.bc.iidi.alpha.phac.gc.ca/ws"
+        envFrom:
+        - configMapRef:
+            name: governance-ui-config
       - name: governance-ui-wss
         image: northamerica-northeast1-docker.pkg.dev/phx-01he5rx4wsv/paradire/governance-ui-wss:latest
         imagePullPolicy: Always
@@ -48,15 +47,14 @@ spec:
           value: cp-kafka-rest.cp-kafka-headless
         - name: BROKER_PORT
           value: "9092"
-        - name: NEXTAUTH_SECRET
-          value: "1234"
-        - name: PT
-          value: "ab"
         - name: NEXTAUTH_URL
           value: "http://nowhere"
         - name: HOSTNAME
           value: "0.0.0.0"
         - name: GOVERNANCE_UI_URL
-          value: "https://governance.ab.paradire.alpha.phac.gc.ca"
+          value: "https://governance.bc.iidi.alpha.phac.gc.ca"
         - name: GOVERNANCE_WS_URL
-          value: "wss://governance.ab.paradire.alpha.phac.gc.ca/ws"
+          value: "wss://governance.bc.iidi.alpha.phac.gc.ca/ws"
+        envFrom:
+        - configMapRef:
+            name: governance-ui-config

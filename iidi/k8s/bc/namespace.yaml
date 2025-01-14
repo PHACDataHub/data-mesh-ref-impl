@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: governance-ui
+  name: "bc"
   annotations:
     mesh.cloud.google.com/proxy: '{"managed": true}'
   labels:

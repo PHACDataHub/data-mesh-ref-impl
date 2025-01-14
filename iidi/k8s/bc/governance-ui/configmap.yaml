@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: governance-ui-config
+  namespace: "bc"
+data:
+  NEXTAUTH_SECRET: "DUMMY_PASSWORD"
+  PT: "bc"
+  SCHEMA_REGISTRY_URL: "SCHEMA_REGISTRY_URL"
+  SCHEMA_REGISTRY_FURL: "SCHEMA_REGISTRY_FEDERAL_URL"

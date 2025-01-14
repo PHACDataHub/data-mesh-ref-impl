@@ -458,3 +458,9 @@ $RECYCLE.BIN/
 *.lnk
 
 # End of https://www.toptal.com/developers/gitignore/api/windows,macos,linux
+iidi/k8s/bc/nats/certs/cert.pem
+iidi/k8s/bc/nats/certs/key.pem
+iidi/k8s/bc-pod.yaml
+iidi/k8s/test-pod.yaml
+paradire/k8s/pdb.yaml
+data.py

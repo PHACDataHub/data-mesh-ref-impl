@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: panorama-worker
+  namespace: "bc"
+  labels:
+    app: panorama-worker
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: panorama-worker
+  template:
+    metadata:
+      labels:
+        app: panorama-worker
+    spec:
+      containers:
+      - name: worker
+        image: northamerica-northeast1-docker.pkg.dev/phx-01he5rx4wsv/paradire/panaroma-worker
+        imagePullPolicy: Always
+        env:
+        - name: NATS_URL
+          value: "nats://nats-headless.bc.svc.cluster.local:4222"
+        volumeMounts:
+        - name: certs
+          mountPath: "/certs"
+          readOnly: true
+        command: ["python", "worker.py"]
+      volumes:
+      - name: certs
+        secret:
+          secretName: panorama-certificates
