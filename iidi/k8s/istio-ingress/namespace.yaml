@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: istio-ingress
+  annotations:
+    mesh.cloud.google.com/proxy: '{"managed": true}'
+  labels:
+    name: istio-system
+    istio.io/rev: asm-managed
+spec: {}
+status: {}

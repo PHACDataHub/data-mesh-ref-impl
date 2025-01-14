@@ -1,0 +1,31 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+- gw-certificate.yaml
+- ingress.yaml
+- mesh-gateway.yaml
+- namespace.yaml
+
+patches:
+# Patch the Istio ingress service so that our IP is used.
+- patch: |-
+    - op: add
+      path: /spec/loadBalancerIP
+      value: 34.95.6.18
+  target:
+    kind: Service
+    name: istio-ingressgateway
+    namespace: istio-ingress-egress
+    version: v1
+    
+- patch: |-
+    - op: add
+      path: /spec/template/spec/containers/0/env/-
+      value:
+        name: ISTIO_META_ENABLE_PROXY_ACCESS_LOG
+        value: "true"
+  target:
+    kind: Deployment
+    name: istio-ingressgateway
+    namespace: istio-ingress-egress
